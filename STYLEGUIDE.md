@@ -68,13 +68,32 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 ## 2. Branches & Git Workflow
 
-| Branch | Purpose             | Rules / Protection                                                          |
-| ------ | ------------------- | --------------------------------------------------------------------------- |
-| main   | Production          | Merge via PR, minimum 1 review <!--- vllt später noch: ", status checks"--> |
-| dev    | Stage / Integration | Merge via PR, minimum 1 review                                              |
+| Branch     | Purpose                                 | Rules / Protection                                                  |
+| ---------- | --------------------------------------- | ------------------------------------------------------------------- |
+| main       | Production                              | only changed though PR <!--- vllt später noch: ", status checks"--> |
+| dev        | Stage / Integration                     | Created from `main` branch, PR -> `main`, minimum 1 review          |
+| setup/\*   |  For inital setup, may be deleted later | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
+| feature/\* |  Adding new features                    | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
+| bugfix/\*  | self explanatory                        | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
 
 <!--- TODO: here either futher table entries concerning future branch names or 2.1 Branch Naming Conventions and then adding 2.2 to "Git Commit Rules"-->
 
 ### Git Commit Rules
 
 ## 3. Linting & Formatting
+
+---
+
+---
+
+# Format & Lint Vorschlag von ChatGBT
+
+| Zweck                 | Tool                                                                                             | Empfohlene Config                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **Linting**           | [ESLint](https://eslint.org/)                                                                    | `eslint-config-next` + `@typescript-eslint` + `eslint-plugin-prettier` |
+| **Formatting**        | [Prettier](https://prettier.io/)                                                                 | Einheitliches Codeformat                                               |
+| **Type Checking**     | TypeScript                                                                                       | `strict: true` in `tsconfig.json`                                      |
+| **Imports & Ordnung** | `eslint-plugin-import` oder `eslint-plugin-simple-import-sort`                                   | Automatische Sortierung & Checks                                       |
+| **Git Hooks**         | [Husky](https://typicode.github.io/husky) + [lint-staged](https://github.com/okonet/lint-staged) | Pre-commit Checks                                                      |
+| **Commit Style**      | [Commitlint](https://commitlint.js.org/)                                                         | Conventional Commits (`feat:`, `fix:`, etc.)                           |
+| **Code Style Doku**   | Markdown-Dokument im Repo (`STYLEGUIDE.md`)                                                      | Regeln + Beispiele für Teammitglieder                                  |
