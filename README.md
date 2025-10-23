@@ -42,6 +42,8 @@ npm run db:push
 npm run dev
 ```
 
+Zusätzlich müssen Umgebungsvariablen gesetzt werden, da die ```.env```im ```.gitignore```liegt. Aktuell können die Variablen direkt aus der ```.env-example```übertragen werden.
+
 ## Prod Environment
 
 tbd
