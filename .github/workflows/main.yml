@@ -13,7 +13,7 @@ jobs:
       with:
         owner: projekt-bht
         number: 1
-        token: ${{ secrets.ITERATIONACTION }}
+        token: ${{ secrets.MOVETONEXTITERATION }}
         iteration-field: Iteration
         iteration: last
         new-iteration: current
