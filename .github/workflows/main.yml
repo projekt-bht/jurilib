@@ -15,6 +15,6 @@ jobs:
         number: 1
         token: ${{ secrets.ITERATIONACTION }}
         iteration-field: Iteration
-        iteration: last
+        iteration: previous
         new-iteration: current
         excluded-statuses: "Done"
