@@ -1,62 +1,36 @@
-# Jurilib
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Description
+## Getting Started
 
-Wir wollen eine **Client-Server-Multipage-Webapplication** namens “Jurilib” entwerfen, welche dem Nutzer eine **simple Oberfläche, um komplexe Themen, wie die Suche nach einer Anwaltskanzlei, mit den eignen Worten vereinfacht und ermöglicht**. Diese Suche basiert auf einer eigens angelegten Datenbank, welche aus Anwaltskanzleien und Vereinen besteht. Nach erfolgreicher Suche, wird der Nutzer mit Profilen begrüßt und kann im Anschluss Anfragen zu Dienstleistungen stellen und mögliche Termine anfragen.
+First, run the development server:
 
-## Prerequisites
-
-Für die einfache Ausführung des Stacks haben wir start-global.sh angelegt. Dafür benötigt ihr vorab HomeBrew auf eurem Mac.
-
-Führt Folgendes lokal im Terminal aus, falls ihr [HomeBrew](https://brew.sh/de/) noch nicht installiert haben solltet
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-Nun installiert ihr euch [Colima](https://github.com/abiosoft/colima). Dies nutzen wir um eine leichtgewichtige Docker Laufzeitumgebung zu erstellen.
-
-```
-brew install colima
-```
-
-Nun seid ihr einsatzbereit ![(Lächeln)](https://projekt-wise25.atlassian.net/wiki/s/228520539/6452/d4a56d2badaeae11dd53ddd41df72e35fe3907b7/_/images/icons/emoticons/smile.png)
-
-## Dev Environment
-
-Um das Projekt lokal laufen zu lassen führt Folgendes aus:
-
-```
-./start-global.sh
-```
-
-Das erleichtert euch das eigentlich angedachte Setup des T3-Stacks und das initiale npm install.
-
-**Wichtig:** bei jeder Ausführung wird “npm install” ausgeführt. Wir sollten überprüfen, ob das unerwünschte Seiteneffekte mit sich zieht.
-
-Das angedachte Setup (nach initialem npm install) wäre wie folgt:
-
-```
-./start-database.sh
-npm run db:push
+```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Zusätzlich müssen Umgebungsvariablen gesetzt werden, da die ```.env```im ```.gitignore```liegt. Aktuell können die Variablen direkt aus der ```.env-example```übertragen werden.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Prod Environment
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-tbd
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Resources
+## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+To learn more about Next.js, take a look at the following resources:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-- [Next.js](https://nextjs.org/)
-- [NextAuth.js](https://next-auth.js.org/)
-- [Prisma](https://prisma.io/)
-- [Drizzle](https://orm.drizzle.team/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [tRPC](https://trpc.io/)
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
