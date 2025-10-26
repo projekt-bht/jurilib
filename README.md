@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
+# JURILIB
 ## Getting Started
+- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) oder [Colima](https://github.com/abiosoft/colima) starten
+- ```npm install``` zum Laden der Abhängigkeiten
+- ```.env```aus der ```sample.env``` Vorlage erstellen. (Kann einfach kopiert und umbenannt werden)
+- Aufsetzen des Datenbank-Containers via Docker:
+    - ```docker compose -f docker-compose.postgres.yml up -d```
+- Initialisieren der Datenbank via Script:
+    - ```npm run db:setup```
+- Starten des Webservers:
+    - ```npm run dev```
 
-First, run the development server:
+Im Anschluss könnt ihr [http://localhost:3000](http://localhost:3000) aufrufen, um die Anwendung zu sehen.
+Zusätzlich steht euch unter [http://localhost:5555](http://localhost:5555) das **Prisma Studio** *(visuelle Darstellung der Datenbank)* zur Verfügung.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Basic Next.js Struktur
+- ```/src/app/page.tsx``` bildet die Startpage
+- ```/src/app/pages/*``` bilden alle weiteren Frontend-Sites 
+- ```/src/app/pages/api/*``` bilden alle Backend-API 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Weitere Infos siehe [Learn More](##--Weitere--Ressourcen)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Daily Setup
+- ```npm run db:deploy```
+- ```npm run dev```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Anpassung des Datenbank-Schemas
+- unter ```/prisma/schema.prisma``` findet ihr das Datenbank-Schema
+- nach Anpassung des Schemas ist eine erneute Migration erforderlich:
+    - ```npm run db:dev``` wird euch nach einem Namen fragen. Dieser wird in eurer lokalen Migrationshistorie dargestellt. 
+    - **Keine Sorge:** hat keine Auswirkungen auf das Deployment oder Inhalt, oder, oder, oder...
 
-## Learn More
+## Weitere Ressourcen
 
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Prisma](https://prisma.io/) - ORM
+- [Tailwind CSS](https://tailwindcss.com/)
+
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
