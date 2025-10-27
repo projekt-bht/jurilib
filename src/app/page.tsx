@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import Test from "./test"
+import Test from "../components/Test/test"
 
 type backendResponse = {
     message: string
