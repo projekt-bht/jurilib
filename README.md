@@ -15,8 +15,8 @@ Zusätzlich steht euch unter [http://localhost:5555](http://localhost:5555) das 
 
 ### Basic Next.js Struktur
 - ```/src/app/page.tsx``` bildet die Startpage
-- ```/src/app/pages/*``` bilden alle weiteren Frontend-Sites 
-- ```/src/app/pages/api/*``` bilden alle Backend-API 
+- ```/src/app/[PageName]/page.tsx``` bilden alle weiteren Frontend-Sites 
+- ```/src/app/api/[Endpoint]/route.tsx``` bilden alle Backend-API's
 
 Weitere Infos siehe [Learn More](##--Weitere--Ressourcen)
 
