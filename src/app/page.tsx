@@ -1,8 +1,8 @@
 "use client"
 
-import Test from "@/pages/test"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import Test from "./test"
 
 type backendResponse = {
     message: string
