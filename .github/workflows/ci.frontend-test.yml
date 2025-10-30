@@ -10,7 +10,7 @@ on:
     branches: [ "dev", "main" ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
     # Angabe von mehreren Node Versionen erstellt verschiedene Instanzen, die alle das Projekt testen
@@ -19,6 +19,21 @@ jobs:
       matrix:
         node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: {{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: {{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: {{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d testdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v4
@@ -28,6 +43,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+
+    - name: Set DATABASE_URL
+      run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
     - name: Generate Prisma Client
       run: npx prisma generate
