@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "db:deploy": "npx prisma migrate deploy && npx prisma generate && npx prisma studio",
     "db:setup": "npx prisma migrate dev --name init && npx prisma generate && npx prisma studio",
     "db:dev": "npx prisma migrate dev && npx prisma generate && npx prisma studio"
@@ -30,6 +31,7 @@
     "eslint": "^9.38.0",
     "eslint-config-next": "^16.0.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "prisma": "^6.18.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
