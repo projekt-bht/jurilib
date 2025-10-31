@@ -1,14 +1,11 @@
-// src/lib/example.ts
-import "@/styles/globals.css";
+// import React from "react";
 
-import fs from "fs";
-import path from "path";
-import React from "react";
-import { z } from "zod";
-
-import type { User } from "../types";
-import { anotherUtil } from "../utils/anotherUtil";
-import { myUtil } from "../utils/myUtil";
-import type { SomeType } from "./localType";
-
-const hallo = 200;
+// export default function Example() {
+//   const x = 1;
+//   const y = 2;
+//   if (x == y) alert("equal"); // eqeqeq, no-alert
+//   const log = function () {
+//     console.log("debug");
+//   }; // prefer-arrow-callback
+//   x && log(); // no-unused-expressions
+// }
