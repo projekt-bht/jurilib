@@ -1,4 +1,5 @@
 'use client'
+import { LandingPage } from "@/components/LandingPage/LandingPage"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import Test from "../components/TestCompoment/test"
@@ -17,6 +18,7 @@ export default function Home() {
     //         }
     //     }).then(res => res.json())
 
+    /*
     const [data, setData] = useState<backendResponse>({} as backendResponse)
 
     useEffect(() => {
@@ -26,16 +28,10 @@ export default function Home() {
         }
         asyncCall()
     }, [])
-
+    */
     return (
         <>
-            <Test></Test>
-            <div>
-                <p>
-                    {data.message}
-                </p>
-            </div>
-            <Link href="/test2">Hier lang</Link>
+            <LandingPage></LandingPage>
         </>
     )
 }
