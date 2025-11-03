@@ -8,13 +8,13 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 - **Local variables & function arguments:** `lowerCamelCase`
   ```ts
-  let userName = "Alice";
+  let userName = 'Alice';
   ```
-- **Constants:** `UPPER_SNAKE_CASE`
+- **Enviroment Variables:** `UPPER_SNAKE_CASE`
   ```ts
-  const API_URL = "https://api.example.com";
+  const API_URL = 'https://api.example.com';
   ```
-- **Boolean variables:** use `is/has/can` prefixes
+- **Boolean variables:** use `is` / `has` / `can` prefixes
   ```ts
   const isActive = true;
   const hasAccess = false;
@@ -22,7 +22,7 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 ### 1.2 Functions & Methods
 
-- **Normal functions:** `lowerCamelCase``
+- **Normal functions:** `lowerCamelCase`
   ```ts
   function getUserName(id: string) {}
   ```
@@ -43,14 +43,13 @@ This styleguide defines coding conventions and workflow practices for the projec
   ```ts
   class UserService {}
   ```
-- **Interfaces:** `UpperCamelCase`, optional `I` prefix <!--- TODO: Decision here!-->
+- **Interfaces:** `UpperCamelCase` with a `I` prefix
   ```ts
-  interface User {}
   interface IUser {}
   ```
 - **Types / Enums:** `UpperCamelCase`
   ```ts
-  type UserRole = "admin" | "user";
+  type UserRole = 'admin' | 'user';
   enum Status {
     Active,
     Inactive,
@@ -60,40 +59,65 @@ This styleguide defines coding conventions and workflow practices for the projec
 ### 1.4 Files & Folders
 
 - **React components / classes:**  
-  `UpperCamelCase` → `UserCard.tsx` <!--- TODO: chatgbt suggested this after I mentions that we were using a T3 stack. don't know if this is relevant yet and if so, if we should also define naming conventions for other more specific things like css files -->
+  `UpperCamelCase` → `UserCard.tsx`
 - **Utilities / services:**  
-  `lowerCamelCase` or `kebab-case` → `authService.ts`, `dateUtils.ts`or `auth-service.ts`, `date-utils.ts` <!--- TODO: Decison here! -->
+  `lowerCamelCase` → `authService.ts`, `dateUtils.ts`
 - **Folders:**  
-  `kebab-case` or `UpperCamelCase` → `components/`, `services/`or `Components/`, `Services/` <!--- TODO: Decison here! -->
+  `UpperCamelCase` → `Components/`, `Services/`
 
-## 2. Branches & Git Workflow
+## 2. Branches
 
-| Branch     | Purpose                                 | Rules / Protection                                                  |
-| ---------- | --------------------------------------- | ------------------------------------------------------------------- |
-| main       | Production                              | only changed though PR <!--- vllt später noch: ", status checks"--> |
-| dev        | Stage / Integration                     | Created from `main` branch, PR -> `main`, minimum 1 review          |
-| setup/\*   |  For inital setup, may be deleted later | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
-| feature/\* |  Adding new features                    | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
-| bugfix/\*  | self explanatory                        | Created from `dev` branch, PR -> `dev`, minimum 1 review            |
+### 2.1 Branch Structure
 
-<!--- TODO: here either futher table entries concerning future branch names or 2.1 Branch Naming Conventions and then adding 2.2 to "Git Commit Rules"-->
+| Branch       | Purpose                                  | Rules / Protection                                          |
+| ------------ | ---------------------------------------- | ----------------------------------------------------------- |
+| **main**     | Production                               | only changed through PRs                                    |
+| **dev**      | Stage / Integration                      | Created from `main` branch, PRs -> `main`, minimum 1 review |
+| **setup/\*** |  For initial setup, may be deleted later | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **feat/\***  |  Adding new features                     | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **bug/\***   | self explanatory                         | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
 
-### Git Commit Rules
+### 2.2 Creating Branch
 
-## 3. Linting & Formatting
+Bracnches are created from an issue. This way, all commits within the branch are automatically linked to the issue.
 
----
+## 3. Git Commit Rules
 
----
+### 3.1 Basics
 
-# Format & Lint Vorschlag von ChatGBT
+- **Structure:** `<type>(<scope>): <short, imperative description>` or `<type>(<scope>): <short, imperative description> (<reference to issue>)`
+- **Language:** English
+- **Reference to issue:** There **allways (!)** has to be a reference to an issue. If the commit is not automatically linked to an issue through a branch, the reference has to be added manually.
 
-| Zweck                 | Tool                                                                                             | Empfohlene Config                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| **Linting**           | [ESLint](https://eslint.org/)                                                                    | `eslint-config-next` + `@typescript-eslint` + `eslint-plugin-prettier` |
-| **Formatting**        | [Prettier](https://prettier.io/)                                                                 | Einheitliches Codeformat                                               |
-| **Type Checking**     | TypeScript                                                                                       | `strict: true` in `tsconfig.json`                                      |
-| **Imports & Ordnung** | `eslint-plugin-import` oder `eslint-plugin-simple-import-sort`                                   | Automatische Sortierung & Checks                                       |
-| **Git Hooks**         | [Husky](https://typicode.github.io/husky) + [lint-staged](https://github.com/okonet/lint-staged) | Pre-commit Checks                                                      |
-| **Commit Style**      | [Commitlint](https://commitlint.js.org/)                                                         | Conventional Commits (`feat:`, `fix:`, etc.)                           |
-| **Code Style Doku**   | Markdown-Dokument im Repo (`STYLEGUIDE.md`)                                                      | Regeln + Beispiele für Teammitglieder                                  |
+### 3.2 Types
+
+| Type         | Meaning                                       |
+| ------------ | --------------------------------------------- |
+| **feat**     | A new feature                                 |
+| **fix**      | A bug fix                                     |
+| **docs**     | Documentation updates                         |
+| **style**    | Formatting or style-only changes              |
+| **refactor** | Internal code changes, no behavior change     |
+| **perf**     | Performance improvements                      |
+| **test**     | Add or update tests                           |
+| **chore**    | Maintenance tasks, dependency updates, config |
+| **ci**       | Continuous integration / deployment setup     |
+| **revert**   | Revert a previous commit                      |
+
+### 3.3 Examples
+
+| Bad             | Good                                                  |
+| --------------- | ----------------------------------------------------- |
+| “updated stuff” | `feat(auth): add password reset flow (refs #7)`       |
+| “fixed bug”     | `fix(api): prevent null pointer on login (fixes #54)` |
+| “cleanup”       | `refactor(ui): remove unused button props (#83)`      |
+
+## 4. Linting & Formatting
+
+| **Purpose**            | **Tool**                                                     | **Recommended Configuration**                                          |
+| ---------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **Linting**            | [ESLint](https://eslint.org/)                                | `eslint-config-next` + `@typescript-eslint` + `eslint-plugin-prettier` |
+| **Formatting**         | [Prettier](https://prettier.io/)                             | Consistent code formatting                                             |
+| **Type Checking**      | TypeScript                                                   | `strict: true` in `tsconfig.json`                                      |
+| **Imports & Ordering** | `eslint-plugin-import` or `eslint-plugin-simple-import-sort` | Automatic sorting and validation of imports                            |
+| **Code Style Docs**    | Markdown document in the repository (`STYLEGUIDE.md`)        | Contains rules and examples for team members                           |
