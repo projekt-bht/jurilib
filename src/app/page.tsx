@@ -1,9 +1,7 @@
-"use client"
-
+'use client'
 import Link from "next/link"
 import { useEffect, useState } from "react"
-
-import Test from "../components/Test/test"
+import Test from "../components/TestCompoment/test"
 
 type backendResponse = {
     message: string

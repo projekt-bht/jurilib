@@ -14,15 +14,118 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  name      String?
+enum UserType {
+  USER
+  EMPLOYEE
+  ADMIN
 }
 
-model Test{
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  test      Boolean
+enum OrganizationType {
+  LAW_FIRM
+  ASSOCIATION
+}
+
+//Maybe rename to CaseStatus? 
+enum RequestStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum AppointmentStatus {
+  CONFIRMED
+  CANCELED
+  OPEN
+}
+
+enum PricingModel {
+  FIXED
+  HOURLY
+}
+
+model User {
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  password        String
+  phone           String?
+  address         String?
+  type            UserType
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  organization    Organization?     @relation(fields: [organizationId], references: [id])
+  organizationId  String?
+  requests        Request[]
+  appointments    Appointment[]
+}
+
+model Organization {
+  id              String            @id @default(uuid())
+  name            String
+  description     String
+  email           String            @unique
+  phone           String?
+  address         String?
+  website         String?
+  expertiseArea   String
+  type            OrganizationType
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  users           User[]
+  services        Service[]
+  appointments    Appointment[]
+  requests        Request[]
+}
+
+//Evtl hier Enum für Dienstleistungstyp? Erstgespräch etc..
+model Service {
+  id              String            @id @default(uuid())
+  organizationId  String
+  title           String
+  description     String
+  pricingModel    PricingModel      @default(FIXED)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  organization    Organization      @relation(fields: [organizationId], references: [id])
+  requests        Request[]
+}
+
+//Maybe rename to Case?
+model Request {
+  id              String            @id @default(uuid())
+  userId          String
+  organizationId  String
+  serviceId       String
+  title           String
+  description     String
+  documents       String?
+  status          RequestStatus     @default(OPEN)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user            User              @relation(fields: [userId], references: [id])
+  //maybe multiple services? 
+  organization    Organization?     @relation(fields: [organizationId], references: [id])
+  service         Service?          @relation(fields: [serviceId], references: [id])
+  appointments    Appointment[]
+}
+
+model Appointment {
+  id              String            @id @default(uuid())
+  requestId       String?
+  userId          String?
+  organizationId  String?
+  duration        Int?
+  status          AppointmentStatus @default(OPEN)
+  meetingLink     String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  request         Request?          @relation(fields: [requestId], references: [id])
+  user            User?             @relation(fields: [userId], references: [id])
+  organization    Organization?     @relation(fields: [organizationId], references: [id])
 }
