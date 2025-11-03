@@ -1,4 +1,5 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import { PrismaClient } from '~/generated/prisma/client';
 
 export async function GET(_req: NextRequest) {

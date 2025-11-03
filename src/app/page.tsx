@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+
 import Test from "../components/Test/test"
 
 type backendResponse = {
@@ -30,7 +31,7 @@ export default function Home() {
 
     return (
         <>
-            <Test></Test>
+            <Test />
             <div>
                 <p>
                     {data.message}

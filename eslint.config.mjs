@@ -8,6 +8,13 @@ const eslintConfig = defineConfig([
   ...nextTS,
   prettier, // Override default ignores of eslint-config-next.
   {
+    files: ["src/**/*.{ts,tsx,js,jsx}"],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.eslint.json"],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     plugins: { "simple-import-sort": simpleImportSort },
     rules: {
       // sorting of imports and exports sortieren / declaring warn
@@ -51,22 +58,10 @@ const eslintConfig = defineConfig([
       "no-new-func": "error",
     },
   },
-  {
-    files: ["**/*.{ts,tsx,js,jsx}"],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
   globalIgnores([
-    // Default ignores of eslint-config-next:
-    // TODO rausfinden, welche Dateien noch ignoriert werden müssen
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
+    // Ignore everything outside /src
+    "**/*",
+    "!src/**",
   ]),
 ]);
 export default eslintConfig;
