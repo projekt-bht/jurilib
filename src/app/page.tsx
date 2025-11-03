@@ -29,7 +29,7 @@ export default function Home() {
 
     return (
         <>
-            <Test></Test>
+            <Test />
             <div>
                 <p>
                     {data.message}
