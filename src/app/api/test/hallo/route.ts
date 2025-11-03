@@ -1,4 +1,5 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 import db from '@/lib/db';
 
 // Testroute to check the number of users in the database
