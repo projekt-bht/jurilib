@@ -94,6 +94,7 @@ Bracnches are created from an issue. This way, all commits within the branch are
 | Type         | Meaning                                       |
 | ------------ | --------------------------------------------- |
 | **feat**     | A new feature                                 |
+| **merge**    | Reoslving merge conflicts                     |
 | **fix**      | A bug fix                                     |
 | **docs**     | Documentation updates                         |
 | **style**    | Formatting or style-only changes              |
