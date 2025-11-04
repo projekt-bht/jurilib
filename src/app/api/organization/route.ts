@@ -2,17 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 
 import db from '@/lib/db';
 import { OrganizationCreateInput } from "~/generated/prisma/models";
-import { Organization } from "~/generated/prisma/client";
 
 import prisma from "@/lib/db";
+import vectoriseData from "@/app/vectoriseData";
 
 export async function POST(req:NextRequest){
     const body = await req.json();
     const organizationInfo: OrganizationCreateInput = body;
-    console.log(organizationInfo);
+
+    //TODO: Validierung
+    const input = `
+      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
+      Beschreibung: ${organizationInfo.description}
+      `
+    const expertiseVector = await vectoriseData(input)
 
     try{
-        db.organization.create({data:organizationInfo})
+        const createdOrganization = await db.organization.create({data:organizationInfo})
+        await db.$executeRawUnsafe(
+            `UPDATE "Organization"
+            SET "expertiseVector" = $1::vector
+            WHERE "id" = $2`,
+            expertiseVector,
+            createdOrganization.id
+        )
         return NextResponse.json({status:204})
     } catch(e){
         throw e

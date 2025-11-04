@@ -102,7 +102,7 @@ model Organization {
   address         String?
   website         String?
   expertiseArea   Areas[]
-  expertiseVector Unsupported("vector")?
+  expertiseVector Unsupported("vector(3072)")?
   type            OrganizationType
 
   createdAt       DateTime          @default(now())
