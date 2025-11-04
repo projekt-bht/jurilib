@@ -1,6 +1,6 @@
 import { fakerDE as faker } from "@faker-js/faker";
 import prisma from "../src/lib/db"
-import { OrganizationType, UserType } from "../generated/prisma/enums";
+import { Areas, OrganizationType, UserType } from "../generated/prisma/enums";
 import { userAgent } from "next/server";
 
 // code inspired by:
@@ -11,6 +11,7 @@ const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AM
 const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 
 async function main() {
+    await prisma.$executeRawUnsafe(`CREATE EXTENSION IF NOT EXISTS vector;`)
     // Cleanup for each Seeding
 
     await prisma.appointment.deleteMany();
@@ -31,7 +32,7 @@ async function main() {
     name: orgName,
     description: faker.company.catchPhrase(),
     email: faker.internet.email(),
-    expertiseArea: faker.commerce.department(),
+    expertiseArea: [faker.helpers.enumValue(Areas)],
     type: faker.helpers.enumValue(OrganizationType),
     },
   });
