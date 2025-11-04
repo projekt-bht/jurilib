@@ -32,6 +32,40 @@ export async function POST(req:NextRequest){
     }
 }
 
+export async function PATCH(req:NextRequest){
+    const body = await req.json();
+    const organizationInfo: OrganizationCreateInput = body;
+
+    //TODO: Validierung
+    if(!organizationInfo.id)
+        return NextResponse.json({status: 400})
+
+    const input = `
+      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
+      Beschreibung: ${organizationInfo.description}
+      `
+    const expertiseVector = await vectoriseData(input)
+
+    try{
+        const updatedOrganization = await db.organization.update({
+        where: { id: organizationInfo.id },
+        data: {
+            ...organizationInfo
+        },
+        })
+        await db.$executeRawUnsafe(
+            `UPDATE "Organization"
+            SET "expertiseVector" = $1::vector
+            WHERE "id" = $2`,
+            expertiseVector,
+            updatedOrganization.id
+        )
+        return NextResponse.json({status:204})
+    } catch(e){
+        throw e
+    }
+}
+
 export async function GET(_req:NextRequest){
     const organizations = await prisma.organization.findMany()
     return NextResponse.json(organizations)
