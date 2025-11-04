@@ -26,7 +26,7 @@ export async function POST(req:NextRequest){
             expertiseVector,
             createdOrganization.id
         )
-        return NextResponse.json({status:204})
+        return NextResponse.json({ message: "Created" }, { status: 201 })
     } catch(e){
         throw e
     }
@@ -60,7 +60,7 @@ export async function PATCH(req:NextRequest){
             expertiseVector,
             updatedOrganization.id
         )
-        return NextResponse.json({status:204})
+        return NextResponse.json({ message: "Patched" }, { status: 200 })
     } catch(e){
         throw e
     }
