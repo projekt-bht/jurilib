@@ -43,6 +43,39 @@ enum PricingModel {
   HOURLY
 }
 
+enum Areas {
+  MIETRECHT
+  VERKEHRSRECHT
+  ARBEITSRECHT
+  FAMILIENRECHT
+  ERBRECHT
+  STRAFRECHT
+  ZIVILRECHT
+  VERWALTUNGSRECHT
+  STEUERRECHT
+  SOZIALRECHT
+  VERTRAGSRECHT
+  HANDELSRECHT
+  GESELLSCHAFTSRECHT
+  WETTBEWERBSRECHT
+  URHEBERRECHT
+  MARKENRECHT
+  PATENTRECHT
+  MEDIZINRECHT
+  VERSICHERUNGSRECHT
+  BAURECHT
+  UMWELTRECHT
+  ASYLRECHT
+  ITRECHT
+  DATENSCHUTZRECHT
+  ENERGIERECHT
+  AGRARRECHT
+  WIRTSCHAFTSRECHT
+  BANKRECHT
+  INSOLVENZRECHT
+  PROZESSRECHT
+}
+
 model User {
   id              String            @id @default(uuid())
   name            String
@@ -68,7 +101,8 @@ model Organization {
   phone           String?
   address         String?
   website         String?
-  expertiseArea   String
+  expertiseArea   Areas[]
+  expertiseVector Unsupported("vector")?
   type            OrganizationType
 
   createdAt       DateTime          @default(now())
