@@ -17,7 +17,7 @@ const mockOrganization: Organization = {
     "phone": "+49 89 1234567",
     "address": "München, Germany",
     "website": "https://rechtsberatum.de",
-    "expertiseArea": "Arbeitsrecht",
+    "expertiseArea": ["Arbeitsrecht"],
     "type": "LAW_FIRM",
     "createdAt": new Date(),
     "updatedAt": new Date(),

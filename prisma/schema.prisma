@@ -44,36 +44,36 @@ enum PricingModel {
 }
 
 enum Areas {
-  MIETRECHT
-  VERKEHRSRECHT
-  ARBEITSRECHT
-  FAMILIENRECHT
-  ERBRECHT
-  STRAFRECHT
-  ZIVILRECHT
-  VERWALTUNGSRECHT
-  STEUERRECHT
-  SOZIALRECHT
-  VERTRAGSRECHT
-  HANDELSRECHT
-  GESELLSCHAFTSRECHT
-  WETTBEWERBSRECHT
-  URHEBERRECHT
-  MARKENRECHT
-  PATENTRECHT
-  MEDIZINRECHT
-  VERSICHERUNGSRECHT
-  BAURECHT
-  UMWELTRECHT
-  ASYLRECHT
-  ITRECHT
-  DATENSCHUTZRECHT
-  ENERGIERECHT
-  AGRARRECHT
-  WIRTSCHAFTSRECHT
-  BANKRECHT
-  INSOLVENZRECHT
-  PROZESSRECHT
+  Mietrecht
+  Verkehrsrecht
+  Arbeitsrecht
+  Familienrecht
+  Erbrecht
+  Strafrecht
+  Zivilrecht
+  Verwaltungsrecht
+  Steuerrecht
+  Sozialrecht
+  Vertragsrecht
+  Handelsrecht
+  Gesellschaftsrecht
+  Wettbewerbsrecht
+  Urheberrecht
+  Markenrecht
+  Patentrecht
+  Medizinrecht
+  Versicherungsrecht
+  Baurecht
+  Umweltrecht
+  Asylrecht
+  Itrecht
+  Datenschutzrecht
+  Energierecht
+  Agrarrecht
+  Wirtschaftsrecht
+  Bankrecht
+  Insolvenzrecht
+  Prozessrecht
 }
 
 model User {
