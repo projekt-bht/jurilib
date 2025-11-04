@@ -4,7 +4,7 @@ import db from '@/lib/db';
 import { OrganizationCreateInput } from "~/generated/prisma/models";
 
 import prisma from "@/lib/db";
-import vectoriseData from "@/app/vectoriseData";
+import vectoriseData from "@/../helper/vectoriseData";
 
 export async function POST(req:NextRequest){
     const body = await req.json();

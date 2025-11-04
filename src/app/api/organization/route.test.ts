@@ -3,7 +3,7 @@ import { POST, PATCH, GET } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
 import { OrganizationCreateInput } from '~/generated/prisma/models';
 
-jest.mock("@/app/vectoriseData", () => jest.fn(async () => Array(3072).fill(0.01)))
+jest.mock("@/../helper/vectoriseData", () => jest.fn(async () => Array(3072).fill(0.01)))
 
 describe('Organization Routen teset', () => {
 
