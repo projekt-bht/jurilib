@@ -1,18 +1,16 @@
 'use client';
-
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemFooter, ItemTitle } from "@/components/ui/item";
 import type { Organization } from "~/generated/prisma/client";
 
 export default function ProfileCard(organization: Organization) {
-    const router = useRouter();
 
     return (
         <Item
             variant="outline"
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full max-w-2xl px-4 py-3 mt-4 mx-auto gap-2"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full max-w-2xl px-4 py-3 mt-4 mx-auto gap-2 shadow-md hover:shadow-lg transition-shadow"
         >
             <ItemContent className="flex-1">
                 <ItemTitle className="text-base sm:text-lg font-semibold">{organization.name}</ItemTitle>
@@ -26,13 +24,11 @@ export default function ProfileCard(organization: Organization) {
                         {/* Placeholder for pricing info, adjust as needed */}
                         <p>€€€</p>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="w-full sm:w-auto bg-black text-white hover:bg-gray-500 hover:text-white"
-                        onClick={() => router.push('/')}
-                    >
-                        Zum Profil
-                    </Button>
+                    <Link href={`/organizations/${organization.id}`}>
+                        <Button className="w-full sm:w-auto bg-black text-white hover:bg-gray-500 hover:text-white" variant="outline">
+                            Zum Profil
+                        </Button>
+                    </Link>
                 </div>
             </ItemActions>
             <ItemFooter className="w-full text-sm text-gray-500">
