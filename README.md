@@ -44,6 +44,26 @@ Stellt sicher, dass der Docker Container läuft. Danach...
   - `npm run db:dev` wird euch nach einem Namen fragen. Dieser wird in eurer lokalen Migrationshistorie dargestellt.
   - **Keine Sorge:** hat keine Auswirkungen auf das Deployment oder Inhalt, oder, oder, oder...
 
+## Frontend Icons
+
+Für die Nutzung von Icons im Frontend, kann die Library [Lucide](https://lucide.dev/icons/) genutzt werden.
+Icons können einfach als React Komponenten implentiert werden.
+Folgende Props können bei jedem Icon angepasst werden:
+
+| name                | type    | default      |
+| ------------------- | ------- | ------------ |
+| size                | number  | 24           |
+| color               | string  | currentColor |
+| strokeWidth         | number  | 2            |
+| absoluteStrokeWidth | boolean | false        |
+
+Einfache Implementierung über:
+
+```
+const App = () => {
+  return <Camera size={48} fill="red" />;
+};
+```
 ## Weitere Ressourcen
 
 To learn more about Next.js, take a look at the following resources:
