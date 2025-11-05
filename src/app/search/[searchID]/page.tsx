@@ -1,5 +1,6 @@
 import OrganizationCard from "@/components/Organization/OrganizationCard"
 import type { Organization } from "~/generated/prisma/client";
+import { Areas } from "~/generated/prisma/client";
 
 async function getResults(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}/search/${id}`, { cache: 'no-store' });
@@ -31,7 +32,7 @@ export default async function SearchResults({ params }: { params: { id: string }
       "phone": "+49 89 1234567",
       "address": "München, Germany",
       "website": "https://rechtsberatum.de",
-      "expertiseArea": ["Arbeitsrecht"],
+      "expertiseArea": [Areas.Arbeitsrecht, Areas.Vertragsrecht],
       "type": "LAW_FIRM",
       "createdAt": new Date(),
       "updatedAt": new Date(),
@@ -44,7 +45,7 @@ export default async function SearchResults({ params }: { params: { id: string }
       "phone": "+49 30 9876543",
       "address": "Berlin, Germany",
       "website": "https://legalaid-berlin.de",
-      "expertiseArea": [],
+      "expertiseArea": [Areas.Mietrecht, Areas.Sozialrecht],
       "type": "ASSOCIATION",
       "createdAt": new Date(),
       "updatedAt": new Date(),
@@ -57,7 +58,7 @@ export default async function SearchResults({ params }: { params: { id: string }
       "phone": null,
       "address": null,
       "website": "https://familylawexperts.de",
-      "expertiseArea": ["Familienrecht"],
+      "expertiseArea": [Areas.Familienrecht],
       "type": "LAW_FIRM",
       "createdAt": new Date(),
       "updatedAt": new Date(),
