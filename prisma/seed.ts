@@ -2,16 +2,17 @@ import { fakerDE as faker } from "@faker-js/faker";
 import prisma from "../src/lib/db"
 import { Areas, OrganizationType, UserType } from "../generated/prisma/enums";
 import { userAgent } from "next/server";
+import db from "../src/lib/db";
+import vectoriseData from "~/helper/vectoriseData";
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
 
 //if no environment Variable is set, default to 10 organizations
-const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AMOUNT) : 10;
+const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AMOUNT) : 20;
 const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 
 async function main() {
-    await prisma.$executeRawUnsafe(`CREATE EXTENSION IF NOT EXISTS vector;`)
     // Cleanup for each Seeding
 
     await prisma.appointment.deleteMany();
@@ -26,17 +27,26 @@ async function main() {
   const orgName = faker.company.name();
 
   // Create Organization
-  await prisma.organization.create({
+  const createdOrganization = await prisma.organization.create({
     data: {
     id: orgId,
     name: orgName,
     description: faker.company.catchPhrase(),
     email: faker.internet.email(),
-    expertiseArea: [faker.helpers.enumValue(Areas)],
+    expertiseArea: [faker.helpers.enumValue(Areas), faker.helpers.enumValue(Areas)],
     type: faker.helpers.enumValue(OrganizationType),
     },
   });
   console.log(`created "${orgName}" (${orgId})`);
+
+  const expertiseVector = await vectoriseData(createdOrganization.expertiseArea.toString())
+  await db.$executeRawUnsafe(
+      `UPDATE "Organization"
+      SET "expertiseVector" = $1::vector
+      WHERE "id" = $2`,
+      expertiseVector,
+      createdOrganization.id
+  )
 
   // Create 2 Users per Organization
   const userIds: string[] = [];
