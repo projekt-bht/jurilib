@@ -36,7 +36,7 @@ export default function ProfileCard(organization: Organization) {
                 </div>
             </ItemActions>
             <ItemFooter className="w-full text-sm text-gray-500">
-                <p>{organization.expertiseArea}</p>
+                <p>{organization.expertiseArea.join(", ")}</p>
             </ItemFooter>
         </Item>
     );
