@@ -2,18 +2,65 @@ import { NextRequest, NextResponse } from "next/server";
 
 import db from '@/lib/db';
 import { OrganizationCreateInput } from "~/generated/prisma/models";
-import { Organization } from "~/generated/prisma/client";
 
 import prisma from "@/lib/db";
+import vectoriseData from "@/../helper/vectoriseData";
 
 export async function POST(req:NextRequest){
     const body = await req.json();
     const organizationInfo: OrganizationCreateInput = body;
-    console.log(organizationInfo);
+
+    //TODO: Validierung
+    const input = `
+      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
+      Beschreibung: ${organizationInfo.description}
+      `
+    const expertiseVector = await vectoriseData(input)
 
     try{
-        db.organization.create({data:organizationInfo})
-        return NextResponse.json({status:204})
+        const createdOrganization = await db.organization.create({data:organizationInfo})
+        await db.$executeRawUnsafe(
+            `UPDATE "Organization"
+            SET "expertiseVector" = $1::vector
+            WHERE "id" = $2`,
+            expertiseVector,
+            createdOrganization.id
+        )
+        return NextResponse.json({ message: "Created" }, { status: 201 })
+    } catch(e){
+        throw e
+    }
+}
+
+export async function PATCH(req:NextRequest){
+    const body = await req.json();
+    const organizationInfo: OrganizationCreateInput = body;
+
+    //TODO: Validierung
+    if(!organizationInfo.id)
+        return NextResponse.json({status: 400})
+
+    const input = `
+      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
+      Beschreibung: ${organizationInfo.description}
+      `
+    const expertiseVector = await vectoriseData(input)
+
+    try{
+        const updatedOrganization = await db.organization.update({
+        where: { id: organizationInfo.id },
+        data: {
+            ...organizationInfo
+        },
+        })
+        await db.$executeRawUnsafe(
+            `UPDATE "Organization"
+            SET "expertiseVector" = $1::vector
+            WHERE "id" = $2`,
+            expertiseVector,
+            updatedOrganization.id
+        )
+        return NextResponse.json({ message: "Patched" }, { status: 200 })
     } catch(e){
         throw e
     }
