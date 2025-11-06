@@ -40,7 +40,7 @@ export default function SearchResults() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [params]);
 
   if(!organizations)
     return <Loading></Loading>
