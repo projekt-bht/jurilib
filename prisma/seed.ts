@@ -3,13 +3,13 @@ import prisma from "../src/lib/db"
 import { Areas, OrganizationType, UserType } from "../generated/prisma/enums";
 import { userAgent } from "next/server";
 import db from "../src/lib/db";
-import vectoriseData from "~/helper/vectoriseData";
+import { vectorizeExpertiseArea } from "@helper/vectorizer";
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
 
 //if no environment Variable is set, default to 10 organizations
-const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AMOUNT) : 20;
+const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AMOUNT) : 50;
 const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 
 async function main() {
@@ -26,27 +26,39 @@ async function main() {
   // relevant Constants for every creation
   const orgName = faker.company.name();
 
-  // Create Organization
-  const createdOrganization = await prisma.organization.create({
-    data: {
-    id: orgId,
-    name: orgName,
-    description: faker.company.catchPhrase(),
-    email: faker.internet.email(),
-    expertiseArea: [faker.helpers.enumValue(Areas), faker.helpers.enumValue(Areas)],
-    type: faker.helpers.enumValue(OrganizationType),
-    },
-  });
-  console.log(`created "${orgName}" (${orgId})`);
+  const expertiseArea = [faker.helpers.enumValue(Areas)]
+  const type = faker.helpers.enumValue(OrganizationType)
 
-  const expertiseVector = await vectoriseData(createdOrganization.expertiseArea.toString())
-  await db.$executeRawUnsafe(
-      `UPDATE "Organization"
-      SET "expertiseVector" = $1::vector
-      WHERE "id" = $2`,
-      expertiseVector,
-      createdOrganization.id
-  )
+  const expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString())
+
+  await prisma.$executeRawUnsafe(
+    `
+    INSERT INTO "Organization" (
+      "id", "name", "description", "email",
+      "phone", "address", "website",
+      "expertiseArea", "expertiseVector", "type",
+      "createdAt", "updatedAt"
+    )
+    VALUES (
+      $1, $2, $3, $4,
+      $5, $6, $7,
+      $8::"Areas"[], $9::vector, $10::"OrganizationType",
+      NOW(), NOW()
+    )
+    `,
+    orgId,
+    orgName,
+    faker.company.catchPhrase(),
+    faker.internet.email(),
+    faker.phone.number(),
+    faker.location.streetAddress(),
+    faker.internet.url(),
+    expertiseArea,
+    expertiseVector,
+    type
+  );
+
+  console.log(`created "${orgName}" (${orgId})`);
 
   // Create 2 Users per Organization
   const userIds: string[] = [];
