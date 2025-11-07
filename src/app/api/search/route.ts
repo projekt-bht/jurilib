@@ -73,49 +73,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const results = await prisma.organization.findMany({
-      where: {
-        expertiseArea: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-        // Alternative: to search in multiple fields
-        /**
-        OR: [
-            {
-                name: {
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            },
-            {
-                description: {
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            },
-            {
-                expertiseArea: {
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            }
-        ]
-         */
-      },
-      // Selection of fields that are returned in JSON response
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        expertiseArea: true,
-        type: true,
-        email: true,
-        phone: true,
-        address: true,
-        website: true,
-      },
-    });
+    // Enhanced search ranking logic
+    const results = await prisma.$queryRaw`
+      WITH search_words AS (
+        SELECT unnest(string_to_array(lower(${searchTerm}), ' ')) as word
+      )
+      SELECT DISTINCT 
+        o.id, 
+        o.name, 
+        o.description, 
+        o."expertiseArea", 
+        o.type, 
+        o.email, 
+        o.phone, 
+        o.address, 
+        o.website,
+        GREATEST(
+          CASE WHEN o."expertiseArea" ILIKE '%' || ${searchTerm} || '%' THEN 100 ELSE 0 END,
+          CASE WHEN EXISTS (SELECT 1 FROM search_words WHERE o."expertiseArea" ILIKE '%' || word || '%') THEN 90 ELSE 0 END,
+          CASE WHEN o.description ILIKE '%' || ${searchTerm} || '%' THEN 80 ELSE 0 END,
+          CASE WHEN EXISTS (SELECT 1 FROM search_words WHERE o.description ILIKE '%' || word || '%') THEN 70 ELSE 0 END
+        ) as rank
+      FROM "Organization" o
+      WHERE 
+        o.description ILIKE '%' || ${searchTerm} || '%' OR
+        o."expertiseArea" ILIKE '%' || ${searchTerm} || '%' OR
+        EXISTS (
+          SELECT 1 FROM search_words sw
+          WHERE 
+            o.description ILIKE '%' || sw.word || '%' OR
+            o."expertiseArea" ILIKE '%' || sw.word || '%'
+        )
+      ORDER BY rank DESC, name ASC
+      LIMIT 50
+    `;
 
     return NextResponse.json(results);
   } catch (error) {
