@@ -6,7 +6,7 @@ describe('Test NavBar', () => {
     render(<Navbar />);
     expect(screen.getByText(/JuriLib/i)).toBeInTheDocument();
     expect(screen.getByText(/Organisationen/i)).toBeInTheDocument();
+    expect(screen.getByText(/Registrieren/i)).toBeInTheDocument();
     expect(screen.getByText(/Einloggen/i)).toBeInTheDocument();
   })
 });
-

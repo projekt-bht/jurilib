@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { Login } from "../Login/Login"
+import { RegisterModal } from "../Register/RegisterModal"
 
 export function Navbar() {
   return (
@@ -11,6 +12,7 @@ export function Navbar() {
 
       <div className="flex items-center gap-x-5">
         <Link href="/organizations">Organisationen</Link>
+        <RegisterModal />
         <Login />
       </div>
     </nav>
