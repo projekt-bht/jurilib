@@ -5,8 +5,8 @@ import Loading from "../search/[searchID]/loading";
 
 export default async function OrganizationsPage() {
 
-    // data will be fetched every 120 seconds (2 minuts)
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`, { next: { revalidate: 120 } });
+    // by default, data will be fetched when rendered data has changed
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`);
     const organizations: Organization[] = await res.json()
 
     if (!organizations)
