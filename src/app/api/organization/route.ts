@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import db from '@/lib/db';
 import { OrganizationCreateInput } from "~/generated/prisma/models";
-
 import prisma from "@/lib/db";
-import vectoriseData from "@/../helper/vectoriseData";
+import { vectorizeExpertiseArea } from "@helper/vectorizer";
 
 export async function POST(req:NextRequest){
     const body = await req.json();
@@ -12,10 +10,9 @@ export async function POST(req:NextRequest){
 
     //TODO: Validierung
     const input = `
-      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
-      Beschreibung: ${organizationInfo.description}
+        ${organizationInfo.expertiseArea!.toString()}
       `
-    const expertiseVector = await vectoriseData(input)
+    const expertiseVector = await vectorizeExpertiseArea(input)
 
     try{
         const createdOrganization = await db.organization.create({data:organizationInfo})
@@ -41,10 +38,9 @@ export async function PATCH(req:NextRequest){
         return NextResponse.json({status: 400})
 
     const input = `
-      Fachgebiet: ${organizationInfo.expertiseArea!.toString()}
-      Beschreibung: ${organizationInfo.description}
+        ${organizationInfo.expertiseArea!.toString()}
       `
-    const expertiseVector = await vectoriseData(input)
+    const expertiseVector = await vectorizeExpertiseArea(input)
 
     try{
         const updatedOrganization = await db.organization.update({

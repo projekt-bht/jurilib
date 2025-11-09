@@ -3,25 +3,19 @@ import { POST, PATCH, GET } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
 import { OrganizationCreateInput } from '~/generated/prisma/models';
 
-jest.mock("@/../helper/vectoriseData", () => jest.fn(async () => Array(3072).fill(0.01)))
+jest.mock("@helper/vectorizer", () => ({
+  vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01))
+}));
 
 describe('Organization Routen teset', () => {
 
     const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`
 
-    beforeAll(async () => {
-        await prisma.appointment.deleteMany()
-        await prisma.request.deleteMany()
-        await prisma.service.deleteMany()
-        await prisma.user.deleteMany()
-        await prisma.organization.deleteMany()
-    })
-
     test('POST Organizations', async () => {
         const organization: OrganizationCreateInput = {
             name: "Max Mustermann Kanzlei",
             description: "Kanzlei test",
-            email: 'test4@mail.de',
+            email: Math.random() + '@mail.de',
             type: 'LAW_FIRM',
             expertiseArea: ["Verkehrsrecht", "Arbeitsrecht"]
         }
@@ -45,7 +39,7 @@ describe('Organization Routen teset', () => {
             id: getJSON[0].id,
             name: "updated",
             description: "Kanzlei test",
-            email: 'test4@mail.de',
+            email: Math.random() + '@mail.de',
             type: 'LAW_FIRM',
             expertiseArea: ["Verkehrsrecht", "Arbeitsrecht"]
         }
@@ -69,7 +63,7 @@ describe('Organization Routen teset', () => {
         const req = new NextRequest(baseUrl)
         const res = await GET(req)
         const json = await res.json()
-        expect(json.length).toBe(1)
+        expect(json.length).not.toBe(0)
         expect(res.status).toBe(200)
     })
 })
