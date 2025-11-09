@@ -1,7 +1,7 @@
 on:
   schedule:
     # Runs "at 01:00, only on Saturday" (see https://crontab.guru)
-    - cron: '0 1 * * 6'
+    - cron: '0 7 * * 6'
 
 jobs:
   move-to-next-iteration:
