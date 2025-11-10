@@ -5,7 +5,7 @@ import Loading from '../search/[searchID]/loading';
 
 export default async function OrganizationsPage() {
   // by default, data will be fetched when rendered data has changed
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`);
+  const res = await fetch(`http://localhost:3000/api/organization`);
   const organizations: Organization[] = await res.json();
 
   if (!organizations) return <Loading />;
