@@ -8,42 +8,33 @@ import { Areas, OrganizationType, UserType } from "~/generated/prisma/enums";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
+
 const sanitizeString = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
 
-const normalizeWebsite = (value: string) => {
-  if (!value) {
-    return "";
-  }
-
-  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
-};
+const normalizeWebsite = (value: string) =>
+  value ? (/^https?:\/\//i.test(value) ? value : `https://${value}`) : "";
 
 const isValidOrganizationType = (
   value: string,
 ): value is OrganizationType =>
   (Object.values(OrganizationType) as string[]).includes(value);
 
-const filterAreas = (value: unknown): Areas[] => {
-  if (!Array.isArray(value)) return [];
-
-  const validAreas = new Set<Areas>();
-
-  for (const entry of value) {
-    if (
-      typeof entry === "string" &&
-      (Object.values(Areas) as string[]).includes(entry)
-    ) {
-      validAreas.add(entry as Areas);
-    }
-  }
-
-  return Array.from(validAreas);
-};
+const filterAreas = (value: unknown): Areas[] =>
+  Array.isArray(value)
+    ? Array.from(
+        new Set(
+          value.filter((entry): entry is Areas =>
+            typeof entry === "string"
+              ? (Object.values(Areas) as string[]).includes(entry)
+              : false,
+          ),
+        ),
+      )
+    : [];
 
 export async function POST(req: NextRequest) {
   let payload: Record<string, unknown>;
-
   try {
     payload = (await req.json()) as Record<string, unknown>;
   } catch {
@@ -104,13 +95,10 @@ export async function POST(req: NextRequest) {
     ? organizationTypeInput
     : OrganizationType.LAW_FIRM;
 
-  const detailedDescription =
-    [
-      description,
-      `Kontakt: ${contactName} (${contactEmail})`,
-    ]
-      .filter(Boolean)
-      .join("\n\n") || "Keine weiteren Angaben.";
+  const details = [description, `Kontakt: ${contactName} (${contactEmail})`]
+    .filter(Boolean)
+    .join("\n\n");
+  const detailedDescription = details || "Keine weiteren Angaben.";
 
   const vectorInput = `Fachgebiet: ${expertiseArea.join(", ")}\nBeschreibung: ${detailedDescription}`;
 
