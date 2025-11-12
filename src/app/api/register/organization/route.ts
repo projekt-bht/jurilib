@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "@/lib/db";
-import vectoriseData from "@/../helper/vectoriseData";
+import vectoriseData from "@/lib/vectoriseData";
 import { hashPassword } from "@/lib/auth/password";
 import { Prisma } from "~/generated/prisma/client";
 import { Areas, OrganizationType, UserType } from "~/generated/prisma/enums";
@@ -10,6 +10,14 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
 const sanitizeString = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
+
+const normalizeWebsite = (value: string) => {
+  if (!value) {
+    return "";
+  }
+
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+};
 
 const isValidOrganizationType = (
   value: string,
@@ -123,7 +131,7 @@ export async function POST(req: NextRequest) {
           email: contactEmail,
           phone: phone || undefined,
           address: address || undefined,
-          website: website || undefined,
+          website: normalizeWebsite(website) || undefined,
           description: detailedDescription,
           type: resolvedOrganizationType,
           expertiseArea,
@@ -180,4 +188,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

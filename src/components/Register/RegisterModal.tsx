@@ -361,7 +361,8 @@ export function RegisterModal() {
               className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
             />
             <input
-              type="url"
+              type="text"
+              inputMode="url"
               placeholder="www.ihre-organisation.de"
               value={organizationFormState.website}
               onChange={(event) => setField("website")(event.target.value)}
