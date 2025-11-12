@@ -57,8 +57,6 @@ export async function POST(req: NextRequest) {
   const phone = sanitizeString(payload.phone);
   const website = sanitizeString(payload.website);
   const address = sanitizeString(payload.address);
-  const license = sanitizeString(payload.license);
-  const openingHours = sanitizeString(payload.openingHours);
   const description = sanitizeString(payload.description);
   const organizationTypeInput = sanitizeString(payload.organizationType);
   const expertiseArea = filterAreas(payload.expertiseArea);
@@ -109,8 +107,6 @@ export async function POST(req: NextRequest) {
   const detailedDescription =
     [
       description,
-      license ? `Zulassung: ${license}` : undefined,
-      openingHours ? `Öffnungszeiten: ${openingHours}` : undefined,
       `Kontakt: ${contactName} (${contactEmail})`,
     ]
       .filter(Boolean)

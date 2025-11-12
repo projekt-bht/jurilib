@@ -20,8 +20,6 @@ type OrganizationFormState = {
   phone: string;
   website: string;
   address: string;
-  license: string;
-  openingHours: string;
   description: string;
   organizationType: OrganizationType;
   expertiseArea: Areas[];
@@ -46,8 +44,6 @@ const ORGANIZATION_FORM_STATE: OrganizationFormState = {
   phone: "",
   website: "",
   address: "",
-  license: "",
-  openingHours: "",
   description: "",
   organizationType: OrganizationType.LAW_FIRM,
   expertiseArea: [],
@@ -70,16 +66,22 @@ export function RegisterModal() {
     useState<SubmissionState>({ type: "idle" });
   const [organizationSubmissionState, setOrganizationSubmissionState] =
     useState<SubmissionState>({ type: "idle" });
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const activeSubmissionState =
     activeTab === "user" ? userSubmissionState : organizationSubmissionState;
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const resetFormState = () => {
     setIsUserSubmitting(false);
     setIsOrganizationSubmitting(false);
     setUserSubmissionState({ type: "idle" });
     setOrganizationSubmissionState({ type: "idle" });
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    resetFormState();
+    setSuccessMessage(null);
   };
 
   const handleTabChange = (tab: TabType) => {
@@ -108,10 +110,11 @@ export function RegisterModal() {
         throw new Error(payload?.error ?? "Registrierung fehlgeschlagen.");
       }
 
-      setUserSubmissionState({
-        type: "success",
-        message: "Account erstellt! Du kannst dich jetzt anmelden.",
-      });
+      resetFormState();
+      setIsOpen(false);
+      setSuccessMessage(
+        "Dein Benutzerkonto wurde erfolgreich erstellt! Willkommen bei JuriLib.",
+      );
       setUserFormState(USER_FORM_STATE);
     } catch (error) {
       const message =
@@ -155,8 +158,6 @@ export function RegisterModal() {
           phone: organizationFormState.phone,
           website: organizationFormState.website,
           address: organizationFormState.address,
-          license: organizationFormState.license,
-          openingHours: organizationFormState.openingHours,
           description: organizationFormState.description,
           organizationType: organizationFormState.organizationType,
           expertiseArea: organizationFormState.expertiseArea,
@@ -171,10 +172,11 @@ export function RegisterModal() {
         );
       }
 
-      setOrganizationSubmissionState({
-        type: "success",
-        message: "Organisation und Admin-Account wurden erstellt.",
-      });
+      resetFormState();
+      setIsOpen(false);
+      setSuccessMessage(
+        "Organisation und Admin-Zugang wurden erfolgreich angelegt!",
+      );
       setOrganizationFormState(ORGANIZATION_FORM_STATE);
     } catch (error) {
       const message =
@@ -375,22 +377,6 @@ export function RegisterModal() {
               onChange={(event) => setField("address")(event.target.value)}
               className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
             />
-            <input
-              type="text"
-              placeholder="Zulassungsnummer"
-              value={organizationFormState.license}
-              onChange={(event) => setField("license")(event.target.value)}
-              className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm focus:border-black focus:outline-none"
-            />
-            <input
-              type="text"
-              placeholder="Mo-Fr: 9:00 - 18:00"
-              value={organizationFormState.openingHours}
-              onChange={(event) =>
-                setField("openingHours")(event.target.value)
-              }
-              className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm focus:border-black focus:outline-none"
-            />
           </div>
 
           <textarea
@@ -506,17 +492,27 @@ export function RegisterModal() {
 
             {activeTab === "user" ? renderUserForm() : renderOrganizationForm()}
 
-            {activeSubmissionState.type === "success" && (
-              <p className="mt-4 text-center text-sm text-green-600">
-                {activeSubmissionState.message}
-              </p>
-            )}
-
             {activeSubmissionState.type === "error" && (
               <p className="mt-4 text-center text-sm text-red-600">
                 {activeSubmissionState.message}
               </p>
             )}
+          </div>
+        </div>
+      )}
+      {successMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="w-full max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl">
+            <h3 className="text-2xl font-semibold text-gray-900">
+              Erfolgreich!
+            </h3>
+            <p className="mt-3 text-sm text-gray-600">{successMessage}</p>
+            <button
+              onClick={closeModal}
+              className="mt-6 w-full rounded-full bg-black px-4 py-2 font-semibold text-white transition hover:bg-gray-900"
+            >
+              Alles klar
+            </button>
           </div>
         </div>
       )}
