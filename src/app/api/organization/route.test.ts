@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { POST, PATCH, GET } from '@/app/api/organization/route';
+
+import { GET,PATCH, POST } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
-import { OrganizationCreateInput } from '~/generated/prisma/models';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 jest.mock('@/services/server/vectorizer', () => ({
   vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),

@@ -3,7 +3,6 @@ import { FindOrganization } from "../Organization/FindOrganization";
 export function LandingPage() {
 
   return (
-    <>
     <div className="bg-white min-h-screen flex items-center justify-center">
       <div className="text-center max-w-2xl w-full">
         
@@ -21,6 +20,5 @@ export function LandingPage() {
         </p>
       </div>
     </div>
-    </>
   )
 }

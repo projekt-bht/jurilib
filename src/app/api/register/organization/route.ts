@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
+import { hashPassword } from "@/lib/auth/password";
 import prisma from "@/lib/db";
 import vectoriseData from "@/lib/vectoriseData";
-import { hashPassword } from "@/lib/auth/password";
 import { Prisma } from "~/generated/prisma/client";
 import { Areas, OrganizationType, UserType } from "~/generated/prisma/enums";
 

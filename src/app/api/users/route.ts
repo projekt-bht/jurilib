@@ -1,7 +1,8 @@
 import { randomBytes, scrypt as scryptCallback } from "node:crypto";
 import { promisify } from "node:util";
 
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
 import prisma from "@/lib/db";
 import { Prisma } from "~/generated/prisma/client";
