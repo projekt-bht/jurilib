@@ -1,7 +1,11 @@
 import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
 import { Areas, OrganizationType, UserType } from '../generated/prisma/enums';
+<<<<<<< HEAD
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+=======
+import { userAgent } from 'next/server';
+>>>>>>> 0fb9cce (style(seed))
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
@@ -11,6 +15,10 @@ const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AM
 const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 
 async function main() {
+<<<<<<< HEAD
+=======
+  await prisma.$executeRawUnsafe(`CREATE EXTENSION IF NOT EXISTS vector;`);
+>>>>>>> 0fb9cce (style(seed))
   // Cleanup for each Seeding
 
   await prisma.appointment.deleteMany();
@@ -24,6 +32,7 @@ async function main() {
     // relevant Constants for every creation
     const orgName = faker.company.name();
 
+<<<<<<< HEAD
     const expertiseArea = [faker.helpers.enumValue(Areas)];
     const type = faker.helpers.enumValue(OrganizationType);
     let expertiseVector = null;
@@ -112,6 +121,72 @@ async function main() {
       console.log(`created Request "${requestTitle}" in Organization`);
     }
 
+=======
+    // Create Organization
+    await prisma.organization.create({
+      data: {
+        id: orgId,
+        name: orgName,
+        description: faker.company.catchPhrase(),
+        email: faker.internet.email(),
+        expertiseArea: [faker.helpers.arrayElement(Object.values(Areas))],
+        type: faker.helpers.arrayElement(Object.values(OrganizationType)),
+      },
+    });
+    console.log(`created "${orgName}" (${orgId})`);
+
+    // Create 2 Users per Organization
+    const userIds: string[] = [];
+    for (let i = 0; i < 2; i++) {
+      const userName = faker.person.fullName();
+      const user = await prisma.user.create({
+        data: {
+          name: userName,
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+          type: faker.helpers.enumValue(UserType),
+          organization: { connect: { id: orgId } },
+        },
+      });
+      userIds.push(user.id);
+      console.log(`created User ${userName} in Organization`);
+    }
+
+    // Create 3 Services per Org
+    const serviceIds: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      const serviceTitle = faker.commerce.productName();
+      const service = await prisma.service.create({
+        data: {
+          organization: { connect: { id: orgId } },
+          title: serviceTitle,
+          description: faker.commerce.productDescription(),
+          pricingModel: 'FIXED',
+        },
+      });
+      serviceIds.push(service.id);
+      console.log(`created Service "${serviceTitle}" in Organization`);
+    }
+
+    // Create 4 Requests per Org
+    const requestIds: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      const requestTitle = faker.lorem.words(3);
+      const request = await prisma.request.create({
+        data: {
+          user: { connect: { id: userIds[i % userIds.length] } },
+          organization: { connect: { id: orgId } },
+          service: { connect: { id: serviceIds[i % serviceIds.length] } },
+          title: requestTitle,
+          description: faker.lorem.sentence(),
+          status: 'OPEN',
+        },
+      });
+      requestIds.push(request.id);
+      console.log(`created Request "${requestTitle}" in Organization`);
+    }
+
+>>>>>>> 0fb9cce (style(seed))
     // Create 5 Appointments per Org
     for (let i = 0; i < 5; i++) {
       const appointment = await prisma.appointment.create({
