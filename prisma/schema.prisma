@@ -114,6 +114,8 @@ model Organization {
   services     Service[]
   appointments Appointment[]
   requests     Request[]
+
+  @@index([expertiseArea(ops: ArrayOps)], type: Gin)
 }
 
 //Evtl hier Enum für Dienstleistungstyp? Erstgespräch etc..
