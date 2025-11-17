@@ -58,19 +58,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (typeof body !== 'object' || body === null) {
-      return NextResponse.json(
-        { error: 'Invalid request: Body has to be a JSON-object' },
-        { status: 400 }
-      );
+      return invalidBodyResponse();
     }
 
     const { searchTerm }: SearchRequest = body;
 
     if (!searchTerm) {
-      return NextResponse.json(
-        { error: 'Invalid request: Search term cannot be empty' },
-        { status: 400 }
-      );
+      return missingSearchTermResponse();
     }
 
     // Enhanced search ranking logic
@@ -114,16 +108,38 @@ export async function POST(req: NextRequest) {
 
     // Check for JSON parsing errors
     if (error instanceof SyntaxError && error.message.includes('JSON')) {
-      return NextResponse.json({ error: 'Invalid JSON-format in the request' }, { status: 400 });
+      return invalidJSONResponse();
     }
 
-    return NextResponse.json(
-      {
-        error: 'Internal server error during search',
-        details: error instanceof Error ? error.message : 'unknown error',
-      },
-      { status: 500 }
-    );
+    return defaultErrorResponse(error);
   }
 >>>>>>> 8defdb7 (feat(serch): implemented first version of full text serch for field of law (#36))
+}
+
+function invalidBodyResponse() {
+  return NextResponse.json(
+    { error: 'Invalid request: Body has to be a JSON-object' },
+    { status: 400 }
+  );
+}
+
+function missingSearchTermResponse() {
+  return NextResponse.json(
+    { error: 'Invalid request: Search term cannot be empty' },
+    { status: 400 }
+  );
+}
+
+function invalidJSONResponse() {
+  return NextResponse.json({ error: 'Invalid JSON-format in the request' }, { status: 400 });
+}
+
+function defaultErrorResponse(error: unknown) {
+  return NextResponse.json(
+    {
+      error: 'Internal server error during search',
+      details: error instanceof Error ? error.message : 'unknown error',
+    },
+    { status: 500 }
+  );
 }
