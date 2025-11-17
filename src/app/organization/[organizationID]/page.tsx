@@ -1,7 +1,7 @@
 import { Clock, Mail, MapPin, Phone, Scale } from 'lucide-react';
 
-import OrganizationCalendar from '@/components/Organization/OrganizationCalendar';
-import { sectionHeading } from '@/components/Organization/OrganizationStyling';
+import OrganizationCalendar from '@/app/organization/_components/OrganizationCalendar';
+import { sectionHeading } from '@/app/organization/_components/OrganizationStyling';
 import type { Organization } from '~/generated/prisma/client';
 
 export default async function OrganizationDetailPage({

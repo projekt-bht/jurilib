@@ -1,4 +1,4 @@
-import OrganizationCard from '@/components/Organization/OrganizationCard';
+import OrganizationCard from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
 // erzwingt SSG
@@ -31,8 +31,8 @@ export default async function OrganizationsPage() {
         <>
           <p className="text-xl text-gray-800 font-semibold">Organisationsliste</p>
           <div className="h-8" />
-          {organizations.map((o) => (
-            <OrganizationCard key={'OrganizationCard_' + o.id} {...o} />
+          {organizations.map((orga) => (
+            <OrganizationCard key={'OrganizationCard_' + orga.id} {...orga} />
           ))}
           <div className="mb-8 text-gray-400 pt-6">Deine Anfrage wird vertraulich behandelt.</div>
         </>
