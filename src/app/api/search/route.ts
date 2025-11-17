@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    // validate body and searchTerm
     if (typeof body !== 'object' || body === null) {
       return invalidBodyResponse();
     }
@@ -67,12 +68,18 @@ export async function POST(req: NextRequest) {
       return missingSearchTermResponse();
     }
 
-    // Enhanced search ranking logic
+    // Full-text style search with manual ranking logic
+    // The query splits the search term into individual words
+    // and ranks matches based on where and how well they match.
     const results = await prisma.$queryRaw`
       WITH search_words AS (
+        -- Split the search term into lowercase words for partial 
+        -- matching and save them in a temporary table to simplify matching
         SELECT unnest(string_to_array(lower(${searchTerm}), ' ')) as word
       )
+      -- ensure distinct results in case of multiple word matches
       SELECT DISTINCT 
+        -- Fields to return
         o.id, 
         o.name, 
         o.description, 
@@ -82,23 +89,34 @@ export async function POST(req: NextRequest) {
         o.phone, 
         o.address, 
         o.website,
+        -- Ranking logic: saves highest applicable rank per organization
         GREATEST(
+          -- Exact expertiseArea match with full search term
           CASE WHEN o."expertiseArea" ILIKE '%' || ${searchTerm} || '%' THEN 100 ELSE 0 END,
+          -- expertiseArea matches at least one individual search word
           CASE WHEN EXISTS (SELECT 1 FROM search_words WHERE o."expertiseArea" ILIKE '%' || word || '%') THEN 90 ELSE 0 END,
+          -- Full search term match inside description
           CASE WHEN o.description ILIKE '%' || ${searchTerm} || '%' THEN 80 ELSE 0 END,
+          -- Partial match of search words inside description
           CASE WHEN EXISTS (SELECT 1 FROM search_words WHERE o.description ILIKE '%' || word || '%') THEN 70 ELSE 0 END
         ) as rank
       FROM "Organization" o
+      -- Filter to only rank relevant organizations
       WHERE 
+        -- Match full searchTerm inside description or expertiseArea
         o.description ILIKE '%' || ${searchTerm} || '%' OR
         o."expertiseArea" ILIKE '%' || ${searchTerm} || '%' OR
+        -- Match any individual search word inside either field
         EXISTS (
           SELECT 1 FROM search_words sw
           WHERE 
-            o.description ILIKE '%' || sw.word || '%' OR
+            o.description ILIKE '%' || sw.word || '%' OR 
             o."expertiseArea" ILIKE '%' || sw.word || '%'
         )
-      ORDER BY rank DESC, name ASC
+      -- order results by rank and name
+      ORDER BY 
+        rank DESC, -- Prioritize stronger matches
+        name ASC   -- Alphabetical fallback for consistent ordering
       LIMIT 50
     `;
 
@@ -115,6 +133,8 @@ export async function POST(req: NextRequest) {
   }
 >>>>>>> 8defdb7 (feat(serch): implemented first version of full text serch for field of law (#36))
 }
+
+// Helper response functions
 
 function invalidBodyResponse() {
   return NextResponse.json(
