@@ -30,7 +30,7 @@ export default function ProfileCard(organization: Organization) {
             {/* Placeholder for pricing info, adjust as needed */}
             <p>€€€</p>
           </div>
-          <Link href={`/organizations/${organization.id}`}>
+          <Link href={`/organization/${organization.id}`}>
             <Button
               className="w-full sm:w-auto bg-black text-white hover:bg-gray-500 hover:text-white"
               variant="outline"
