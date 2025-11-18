@@ -17,8 +17,7 @@ async function getOrganizations(): Promise<Organization[]> {
       return (await res.json()) as Organization[];
     }
   } catch (error) {
-    console.error('Error fetching organizations:', error);
-    return [];
+    throw new Error('Failed to fetch organizations: ' + (error as Error).message);
   }
 }
 
@@ -41,7 +40,6 @@ export default async function OrganizationsPage() {
           <p className="text-5xl font-bold text-black">
             Leider konnten wir keine passende Organisation finden.
           </p>
-          <p className="text-gray-500">Hinweis: Beim Build war die API evtl. nicht erreichbar.</p>
         </div>
       )}
     </div>
