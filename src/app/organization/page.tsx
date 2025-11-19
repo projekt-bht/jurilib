@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 // ISR mit 1h Cache
 export const revalidate = 3600;
 
-async function getOrganizations(): Promise<Organization[]> {
+async function fetchOrganizations(): Promise<Organization[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`, {
       next: { revalidate },
@@ -22,7 +22,7 @@ async function getOrganizations(): Promise<Organization[]> {
 }
 
 export default async function OrganizationsPage() {
-  const organizations: Organization[] = await getOrganizations();
+  const organizations: Organization[] = await fetchOrganizations();
 
   return (
     <div className="flex flex-col justify-start items-center h-screen pt-3">
