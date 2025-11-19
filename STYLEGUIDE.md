@@ -22,6 +22,10 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 ### 1.2 Functions & Methods
 
+- **React funtions:** `UpperCamleCase`
+  ```ts
+  function OrganizationCard(orga: Organization) {}
+  ```
 - **Normal functions:** `lowerCamelCase`
   ```ts
   function getUserName(id: string) {}
