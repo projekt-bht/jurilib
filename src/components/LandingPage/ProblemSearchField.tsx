@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function FindOrganization() {
+export function ProblemSearchField() {
   // Find filtered Organizations...
 
   const [problem, setProblem] = useState('');
@@ -13,7 +13,7 @@ export function FindOrganization() {
     try {
       router.push(`/search/${problem}`);
     } catch (err) {
-      console.log(err);
+      throw new Error('Could not load search results: ' + (err as Error).message);
     }
   }
 
