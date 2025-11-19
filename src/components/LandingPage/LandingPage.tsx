@@ -1,4 +1,4 @@
-import { FindOrganization } from '../Organization/FindOrganization';
+import { ProblemSearchField } from './ProblemSearchField';
 
 export function LandingPage() {
   return (
@@ -7,7 +7,7 @@ export function LandingPage() {
         <h1 className="text-black text-xl font-bold mb-2">Beschreibe dein Problem</h1>
         <p className="text-black mb-6">Teile uns dein rechtliches Anliegen mit</p>
 
-        <FindOrganization />
+        <ProblemSearchField />
 
         <p className="text-gray-400 text-sm mt-10">Deine Anfrage wird vertraulich behandelt</p>
       </div>
