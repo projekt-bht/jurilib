@@ -2,7 +2,6 @@
 
 export function Login() {
   //Login Logik
-  //
   return (
     <button
       onClick={() => console.log('Login')}
