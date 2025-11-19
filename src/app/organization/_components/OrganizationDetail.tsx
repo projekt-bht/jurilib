@@ -7,7 +7,7 @@ import OrganizationCalendar from './OrganizationCalendar';
 export default function OrganizationDetail(organization: Organization) {
   return (
     <div
-      id={`orgaDetailPage_${organization.id}`}
+      id={`OrganizationDetailPage_${organization.id}`}
       className="flex flex-col justify-start items-center w-full px-4 py-6"
     >
       <div className="outline-1 p-6 rounded-lg w-full max-w-5xl outline-gray-300 shadow-md">
