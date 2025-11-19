@@ -1,15 +1,12 @@
 import OrganizationCard from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
-// erzwingt SSG
-export const dynamic = 'force-static';
-// ISR mit 1h Cache
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function fetchOrganizations(): Promise<Organization[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`, {
-      next: { revalidate },
+      next: { revalidate: 3600 },
     });
     if (!res.ok) {
       return [];
@@ -17,7 +14,8 @@ async function fetchOrganizations(): Promise<Organization[]> {
       return (await res.json()) as Organization[];
     }
   } catch (error) {
-    throw new Error('Failed to fetch organizations: ' + (error as Error).message);
+    console.error('Failed to fetch organizations:', error);
+    return [];
   }
 }
 
