@@ -1,7 +1,7 @@
 import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
 import { Areas, OrganizationType, UserType } from '../generated/prisma/enums';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { vectorizeExpertiseArea } from '@/services/openRouter/vectorizer';
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
