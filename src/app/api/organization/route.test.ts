@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { GET } from '@/app/api/organization/route';
 
-jest.mock('@/services/server/vectorizer', () => ({
+jest.mock('@/services/openRouter/vectorizer', () => ({
   vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
 }));
 
