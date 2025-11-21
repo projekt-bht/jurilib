@@ -33,3 +33,45 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
         throw new Error('Database query failed: ' + (error as Error).message);
     }
 }
+
+export const updateOrganization = async (organization: Organization): Promise<Organization> => {
+    try {
+        // Hier sollte geprüft werden, ob sich das Expertise Area Feld geändert hat
+        // Wenn nicht, kann die Vektorisierung übersprungen werden
+        const input = `
+        ${organization.expertiseArea!.toString()}
+      `;
+        const expertiseVector = await vectorizeExpertiseArea(input);
+
+        const updatedOrganization = await db.organization.update({
+            where: { id: organization.id },
+            data: {
+                ...organization,
+            },
+        });
+        // await db.$executeRawUnsafe(
+        //     `UPDATE "Organization"
+        //     SET "expertiseVector" = $1::vector
+        //     WHERE "id" = $2`,
+        //     expertiseVector,
+        //     updatedOrganization.id
+        // );
+        await db.$executeRaw`UPDATE "Organization"
+          SET "expertiseVector" = ${expertiseVector}::vector
+          WHERE "id" = ${updatedOrganization.id}`;
+
+        return updatedOrganization;
+    } catch (error) {
+        // Hier muss geprüft werden, ob der Fehler von Prisma kommt oder von der Vektorisierung
+        throw new Error('Database update failed or vectorization failed: ' + (error as Error).message);
+    }
+}
+
+export const deleteOrganization = async (organizationID: string): Promise<void> => {
+    try {
+        await db.organization.delete({ where: { id: organizationID } });
+    } catch (error) {
+        throw new Error('Internal Server Error: ' + (error as Error).message);
+    }
+
+}
