@@ -4,7 +4,7 @@ import { DELETE, GET, PATCH, POST } from '@/app/api/organization/[organizationID
 import { prisma } from '@/lib/db';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
-jest.mock('@/services/server/vectorizer', () => ({
+jest.mock('@/services/openRouter/vectorizer', () => ({
     vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
 }));
 
@@ -22,13 +22,14 @@ describe('Organization Routen teset', () => {
         };
 
         const req = new NextRequest(baseUrl, {
+            headers: { 'content-type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(organization),
         });
 
         const res = await POST(req);
         expect(res.status).toBe(201);
-        createdOrgId = (await res.json()).createdOrganization.id;
+        createdOrgId = (await res.json()).id;
     });
 
     test('GET Organization', async () => {
@@ -57,6 +58,7 @@ describe('Organization Routen teset', () => {
         };
 
         const patchReq = new NextRequest(baseUrl, {
+            headers: { 'content-type': 'application/json' },
             method: 'PATCH',
             body: JSON.stringify(organization),
         });
