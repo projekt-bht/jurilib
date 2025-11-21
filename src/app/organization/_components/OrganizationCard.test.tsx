@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import type { Organization } from '~/generated/prisma/client';
 
@@ -54,6 +53,6 @@ describe('OrganizationCard', () => {
   it('calls router.push when button is clicked', async () => {
     render(<OrganizationCard {...mockOrganization} />);
     const link = screen.getByRole('link', { name: /zum profil/i });
-    expect(link).toHaveAttribute('href', `/organizations/${mockOrganization.id}`);
+    expect(link).toHaveAttribute('href', `/organization/${mockOrganization.id}`);
   });
 });

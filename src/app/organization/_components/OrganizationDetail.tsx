@@ -1,60 +1,53 @@
 import { Clock, Mail, MapPin, Phone, Scale } from 'lucide-react';
 
-import OrganizationCalendar from '@/components/Organization/OrganizationCalendar';
-import { sectionHeading } from '@/components/Organization/OrganizationStyling';
 import type { Organization } from '~/generated/prisma/client';
 
-export default async function OrganizationDetailPage({
-  params,
-}: {
-  params: { organizationID: string };
-}) {
-  const parameters = await params;
-  const organizationID = parameters.organizationID;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${organizationID}`);
-  const org: Organization = await res.json();
+import OrganizationCalendar from './OrganizationCalendar';
 
-  return org ? (
+export default function OrganizationDetail(organization: Organization) {
+  return (
     <div
-      id={`orgaDetailPage_${organizationID}`}
+      id={`OrganizationDetailPage_${organization.id}`}
       className="flex flex-col justify-start items-center w-full px-4 py-6"
     >
       <div className="outline-1 p-6 rounded-lg w-full max-w-5xl outline-gray-300 shadow-md">
-        <p className="text-2xl font-bold mb-4">{org?.name}</p>
-        <p> {org?.description}</p>
+        <p className="text-2xl font-bold mb-4">{organization.name}</p>
+        <p> {organization.description}</p>
         <div className="grid grid-cols-2 gap-x-40 gap-y-16 pt-10 justify-items-start">
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <Scale color="grey" size={25} />
-              <p className={sectionHeading()}>Fachgebiete</p>
+              <p className="flex items-center gap-2 text-xl font-bold text-gray-700">Fachgebiete</p>
             </div>
-            <p>{org?.expertiseArea}</p>
+            <p>{organization.expertiseArea}</p>
           </div>
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <MapPin color="grey" size={25} />
-              <p className={sectionHeading()}>Adresse</p>
+              <p className="flex items-center gap-2 text-xl font-bold text-gray-700">Adresse</p>
             </div>
-            <p>{org?.address}</p>
+            <p>{organization.address}</p>
           </div>
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <Phone color="grey" size={25} />
-              <p className={sectionHeading()}>Telefon</p>
+              <p className="flex items-center gap-2 text-xl font-bold text-gray-700">Telefon</p>
             </div>
-            <p>{org?.phone}</p>
+            <p>{organization.phone}</p>
           </div>
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <Mail color="grey" size={25} />
-              <p className={sectionHeading()}>E-Mail</p>
+              <p className="flex items-center gap-2 text-xl font-bold text-gray-700">E-Mail</p>
             </div>
-            <p>{org?.email}</p>
+            <p>{organization.email}</p>
           </div>
           <div className="col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <Clock color="grey" size={25} />
-              <p className={sectionHeading()}>Öffnungszeiten</p>
+              <p className="flex items-center gap-2 text-xl font-bold text-gray-700">
+                Öffnungszeiten
+              </p>
             </div>
             <p>Hier könnten Kontaktdaten stehen.</p>
           </div>
@@ -71,7 +64,5 @@ export default async function OrganizationDetailPage({
         </div>
       </div>
     </div>
-  ) : (
-    <div>is nich</div>
   );
 }
