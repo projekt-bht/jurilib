@@ -26,10 +26,11 @@ async function main() {
 
     const expertiseArea = [faker.helpers.enumValue(Areas)];
     const type = faker.helpers.enumValue(OrganizationType);
-    let expertiseVector = null;
 
+    let expertiseVector = null;
     if (process.env.OPENAI_API_KEY) {
-      expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+      const embedding = await vectorizeExpertiseArea(expertiseArea.toString());
+      expertiseVector = `[${embedding.join(',')}]`;
     }
 
     await prisma.$executeRawUnsafe(
