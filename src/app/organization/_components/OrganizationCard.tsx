@@ -41,7 +41,13 @@ export default function ProfileCard(organization: Organization) {
         </div>
       </ItemActions>
       <ItemFooter className="w-full text-sm text-gray-500">
-        <p>{organization.expertiseArea.join(', ')}</p>
+        <p>
+          {/* differentiate between results: If there are more than one expertiseArea list this with comma, elsewhen just list the single string */}
+          {Array.isArray(organization.expertiseArea)
+            ? organization.expertiseArea.join(', ')
+            : // replace curly brackets with an empty string
+              String(organization.expertiseArea).replace(/{|}/g, '')}
+        </p>
       </ItemFooter>
     </Item>
   );
