@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
   const query = decodeURIComponent(manipulatedBody.searchID);
 
   if (query) {
-    const searchInput = await vectorizeSearch(query);
+    const embedding = await vectorizeSearch(query);
+    const searchInput = `[${embedding.join(',')}]`;
+
     const matches = await prisma.$queryRawUnsafe<
       { id: string; name: string; expertiseArea: string; similarity: number }[]
     >(
@@ -39,6 +41,7 @@ export async function POST(req: NextRequest) {
     const filteredMatches = matches.filter(
       (match) => match.similarity >= highestSimilarity - threshold
     );
+    // eslint-disable-next-line no-console
     console.log(filteredMatches);
     //console.log(matches)
     return NextResponse.json(filteredMatches, { status: 200 });
