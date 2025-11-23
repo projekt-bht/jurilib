@@ -12,7 +12,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  //   extensions = [pgvector(map: "vector")]
   extensions = [vector()]
   schemas = ["public"]
 }
