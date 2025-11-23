@@ -1,9 +1,10 @@
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import db from '@/lib/db';
 import prisma from '@/lib/db';
-import { OrganizationCreateInput } from '~/generated/prisma/models';
+import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
