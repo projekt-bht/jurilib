@@ -32,12 +32,37 @@ describe('Organization Routen teset', () => {
         createdOrgId = (await res.json()).id;
     });
 
+    test('POST Organization with missing fields', async () => {
+        const organization = {
+            name: 'Max Mustermann Kanzlei',
+            // description is missing
+            email: Math.random() + '@mail.de',
+            type: 'LAW_FIRM',
+            expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+        };
+
+        const req = new NextRequest(baseUrl, {
+            headers: { 'content-type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify(organization),
+        });
+
+        const res = await POST(req);
+        expect(res.status).toBe(400);
+    });
+
     test('GET Organization', async () => {
         const req = new NextRequest(baseUrl);
         const res = await GET(req, { params: Promise.resolve({ organizationID: createdOrgId }) });
         const json = await res.json();
         expect(json.length).not.toBe(0);
         expect(res.status).toBe(200);
+    });
+
+    test('GET non-existing Organization', async () => {
+        const req = new NextRequest(baseUrl);
+        const res = await GET(req, { params: Promise.resolve({ organizationID: 'non-existing-id' }) });
+        expect(res.status).toBe(404);
     });
 
     test('PATCH Organization', async () => {
@@ -73,9 +98,29 @@ describe('Organization Routen teset', () => {
         expect(res.status).toBe(200);
     });
 
+    test('PATCH Organization with invalid data', async () => {
+        const data = {
+            id: "123456"
+        };
+        const patchReq = new NextRequest(baseUrl, {
+            headers: { 'content-type': 'application/json' },
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        });
+
+        const res = await PATCH(patchReq);
+        expect(res.status).toBe(400);
+    });
+
     test('DELETE Organization', async () => {
         const getReq = new NextRequest(baseUrl);
         const res = await DELETE(getReq, { params: Promise.resolve({ organizationID: createdOrgId }) });
         expect(res.status).toBe(200);
+    });
+
+    test('DELETE non-existing Organization', async () => {
+        const getReq = new NextRequest(baseUrl);
+        const res = await DELETE(getReq, { params: Promise.resolve({ organizationID: 'non-existing-id' }) });
+        expect(res.status).toBe(400);
     });
 });
