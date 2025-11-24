@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const createdOrganization = await createOrganization(body);
     return NextResponse.json(createdOrganization, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ message: 'Creation failed: ' + (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Creation failed: ' + (error as Error).message }, { status: 400 });
   }
 }
 
@@ -57,7 +57,7 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json(updatedOrganization, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "Failed to update organization: " + (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: "Failed to update organization: " + (error as Error).message }, { status: 400 });
   }
 }
 
@@ -75,7 +75,7 @@ export async function DELETE(
     await deleteOrganization(organizationID);
     return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "Failed to delete organization" + (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: "Failed to delete organization: " + (error as Error).message }, { status: 400 });
   }
 
 }
