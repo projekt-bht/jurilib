@@ -41,13 +41,7 @@ export const updateOrganization = async (organization: Organization): Promise<Or
                 ...organization,
             },
         });
-        // await db.$executeRawUnsafe(
-        //     `UPDATE "Organization"
-        //     SET "expertiseVector" = $1::vector
-        //     WHERE "id" = $2`,
-        //     expertiseVector,
-        //     updatedOrganization.id
-        // );
+
         await db.$executeRaw`UPDATE "Organization"
           SET "expertiseVector" = ${expertiseVector}::vector
           WHERE "id" = ${updatedOrganization.id}`;
