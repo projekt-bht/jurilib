@@ -4,18 +4,13 @@ import type { Organization } from "~/generated/prisma/client";
 import type { OrganizationCreateInput } from "~/generated/prisma/models";
 
 export const createOrganization = async (organization: Organization): Promise<Organization> => {
-    const id = organization.id;
-    const expertiseVector = await vectorizeExpertiseArea(id);
-
     try {
+        const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
+
         const createdOrganization = await db.organization.create({ data: organization as OrganizationCreateInput });
-        await db.$executeRawUnsafe(
-            `UPDATE "Organization"
-            SET "expertiseVector" = $1::vector
-            WHERE "id" = $2`,
-            expertiseVector,
-            createdOrganization.id
-        );
+        await db.$executeRaw`UPDATE "Organization"
+            SET "expertiseVector" = ${expertiseVector}::vector
+            WHERE "id" = ${createdOrganization.id}`;
         return createdOrganization;
     } catch (error) {
         throw new Error('Database insert failed: ' + (error as Error).message);
@@ -38,10 +33,7 @@ export const updateOrganization = async (organization: Organization): Promise<Or
     try {
         // Hier sollte geprüft werden, ob sich das Expertise Area Feld geändert hat
         // Wenn nicht, kann die Vektorisierung übersprungen werden
-        const input = `
-        ${organization.expertiseArea!.toString()}
-      `;
-        const expertiseVector = await vectorizeExpertiseArea(input);
+        const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
 
         const updatedOrganization = await db.organization.update({
             where: { id: organization.id },
