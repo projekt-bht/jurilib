@@ -9,7 +9,7 @@ jest.mock('@/services/openRouter/vectorizer', () => ({
 }));
 
 describe('Organization Routen teset', () => {
-    const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]/`;
+    const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
     let createdOrgId: string;
 
     test('POST Organization', async () => {
