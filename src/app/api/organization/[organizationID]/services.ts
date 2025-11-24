@@ -33,20 +33,36 @@ export const updateOrganization = async (organization: Organization): Promise<Or
     try {
         // Hier sollte geprüft werden, ob sich das Expertise Area Feld geändert hat
         // Wenn nicht, kann die Vektorisierung übersprungen werden
-        const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
 
-        const updatedOrganization = await db.organization.update({
-            where: { id: organization.id },
-            data: {
-                ...organization,
-            },
-        });
+        const existingOrg = await db.organization.findUnique({ where: { id: organization.id } });
+        if (!existingOrg) {
+            throw new Error('Organization not found for update');
+        }
 
-        await db.$executeRaw`UPDATE "Organization"
+        if (existingOrg.expertiseArea === organization.expertiseArea) {
+            const updatedOrganization = await db.organization.update({
+                where: { id: organization.id },
+                data: {
+                    ...organization,
+                },
+            });
+            return updatedOrganization;
+
+        } else {
+            const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
+
+            const updatedOrganization = await db.organization.update({
+                where: { id: organization.id },
+                data: {
+                    ...organization,
+                },
+            });
+
+            await db.$executeRaw`UPDATE "Organization"
           SET "expertiseVector" = ${expertiseVector}::vector
           WHERE "id" = ${updatedOrganization.id}`;
-
-        return updatedOrganization;
+            return updatedOrganization;
+        }
     } catch (error) {
         // Hier muss geprüft werden, ob der Fehler von Prisma kommt oder von der Vektorisierung
         throw new Error('Database update failed or vectorization failed: ' + (error as Error).message);
