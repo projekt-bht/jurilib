@@ -21,12 +21,12 @@ export function ProblemSearchField() {
     <>
       <div className="mb-6">
         <textarea
+          className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
           value={problem}
           onChange={(e) => {
             setProblem(e.target.value);
           }}
           placeholder="Beginne hier zu schreiben..."
-          className=" text-black bg-gray-100 focus:outline-none w-full p-5 border rounded-lg border-gray-100 shadow-sm"
         />
       </div>
 
@@ -34,7 +34,7 @@ export function ProblemSearchField() {
         onClick={() => {
           load();
         }}
-        className="bg-(--color-bg-button) text-black font-bold p-2 pr-3 pl-3 rounded-full"
+        className="bg-primary text-primary-foreground font-bold p-2 pr-3 pl-3 rounded-full"
       >
         Passende Lösung finden
       </button>

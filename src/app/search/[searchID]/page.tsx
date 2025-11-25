@@ -35,27 +35,29 @@ export default function SearchResults() {
   if (loading) return <Loading />;
 
   return (
-    <div className="flex flex-col justify-start items-center h-screen pt-3">
+    <div className="flex flex-col justify-start items-center pt-3 bg-card">
       {organizations.length > 0 ? (
         <>
-          <p className="text-xl text-gray-800 font-semibold">Passende Organisationen</p>
-          <p className="text-base text-gray-500 pt-2">
+          <p className="text-4xl text-foreground font-semibold">Passende Organisationen</p>
+          <p className="text-xl text-foreground pt-2">
             Hier sind die Organisationen, die zu Ihrer Suche passen:
           </p>
           <div className="h-8" />
           {organizations.map((organization) => (
             <OrganizationCard key={'OrganizationCard_' + organization.id} {...organization} />
           ))}
-          <div className="mb-8 text-gray-400 pt-6">Deine Anfrage wird vertraulich behandelt.</div>
+          <div className="mb-8 text-muted-foreground pt-6">
+            Deine Anfrage wird vertraulich behandelt.
+          </div>
         </>
       ) : (
-        <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
-          <p className="text-5xl font-bold text-black">
+        <div className="flex flex-col justify-center items-center h-full text-center gap-y-10 py-4">
+          <p className="text-2xl font-bold text-foreground">
             Leider konnten wir keine passende Organisation finden.
           </p>
           <button
             onClick={() => router.push('/')}
-            className="bg-blue-200 text-black font-bold p-5 pr-5 pl-5 rounded-full text-3xl"
+            className="bg-primary text-primary-foreground font-bold p-2 pr-3 pl-3 rounded-full"
           >
             Suche neustarten
           </button>
