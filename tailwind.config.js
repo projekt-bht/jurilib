@@ -15,6 +15,7 @@ module.exports = {
         primary: 'var(--primary)',
         'primary-foreground': 'var(--primary-foreground)',
         'primary-hover': 'var(--primary-hover)',
+        'primary-hover-foreground': 'var(--primary-hover-foreground)',
         secondary: 'var(--secondary)',
         'secondary-foreground': 'var(--secondary-foreground)',
         'muted-foreground': 'var(--muted-foreground)',
