@@ -5,6 +5,8 @@ import { useState } from 'react';
 
 export function ProblemSearchField() {
   // Find filtered Organizations...
+  // Form will be submitted on button click or Enter key press
+  // New line can be added with Shift + Enter
 
   const [problem, setProblem] = useState('');
   const router = useRouter();
