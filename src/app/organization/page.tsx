@@ -26,7 +26,7 @@ export default async function OrganizationsPage() {
     <div className="bg-card flex flex-col justify-start items-center h-screen pt-3">
       {organizations.length > 0 ? (
         <>
-          <p className="text-xl text-foreground font-semibold">Organisationsliste</p>
+          <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
           <div className="h-8" />
           {organizations.map((orga) => (
             <OrganizationCard key={'OrganizationCard_' + orga.id} {...orga} />

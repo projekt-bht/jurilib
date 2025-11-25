@@ -44,7 +44,7 @@ export function ProblemSearchField() {
 
       <button
         type="submit"
-        className="bg-(--color-bg-button) text-black font-bold p-2 pr-3 pl-3 rounded-full"
+        className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foregroundfont-bold p-2 pr-3 pl-3 rounded-full"
       >
         Passende Lösung finden
       </button>
