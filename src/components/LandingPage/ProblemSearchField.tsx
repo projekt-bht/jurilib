@@ -3,16 +3,26 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+// Find filtered Organizations...
+// Form will be submitted on button click or Enter key press
+// New line can be added with Shift + Enter
+// If the input is empty, an error message will be displayed
+// When reentering the input field, the error message will be cleared
 export function ProblemSearchField() {
-  // Find filtered Organizations...
-  // Form will be submitted on button click or Enter key press
-  // New line can be added with Shift + Enter
-
   const [problem, setProblem] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
+
+    // handle empty input
+    if (!problem.trim()) {
+      setError('Bitte beschreibe dein Problem.');
+      return;
+    }
+
     try {
       router.push(`/search/${problem}`);
     } catch (err) {
@@ -36,11 +46,15 @@ export function ProblemSearchField() {
           onChange={(e) => {
             setProblem(e.target.value);
           }}
+          onFocus={() => setError('')}
           onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
           className=" text-black bg-gray-100 focus:outline-none w-full p-5 border rounded-lg border-gray-100 shadow-sm"
         />
       </div>
+
+      {/*Display error message, if error is truthy*/}
+      {error && <p className="text-black-500 mb-4">{error}</p>}
 
       <button
         type="submit"
