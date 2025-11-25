@@ -54,7 +54,7 @@ export function ProblemSearchField() {
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {error && <p className="text-black-500 mb-4">{error}</p>}
+      {error && <p className="text-foreground mb-4">{error}</p>}
 
       <button
         type="submit"
