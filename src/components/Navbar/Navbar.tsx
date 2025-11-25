@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Building2 } from 'lucide-react';
 
 import { Login } from '@/components/Login/Login';
 import scale_logo from '~/public/scale_logo.svg';
@@ -21,7 +22,10 @@ export function Navbar() {
       </Link>
 
       <div className="flex items-center gap-x-5">
-        <Link href="/organization">Organisationen</Link>
+        <Link href="/organization" className="flex items-center gap-x-2">
+          <Building2 className="text-foreground" size={24} />
+          <p>Organisationen</p>
+        </Link>
         <Login />
       </div>
     </nav>
