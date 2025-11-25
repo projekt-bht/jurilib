@@ -9,7 +9,7 @@ export function ProblemSearchField() {
   const [problem, setProblem] = useState('');
   const router = useRouter();
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       router.push(`/search/${problem}`);
@@ -34,9 +34,7 @@ export function ProblemSearchField() {
           onChange={(e) => {
             setProblem(e.target.value);
           }}
-          onKeyDown={(e) => {
-            handleKeyDown(e);
-          }}
+          onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
           className=" text-black bg-gray-100 focus:outline-none w-full p-5 border rounded-lg border-gray-100 shadow-sm"
         />
