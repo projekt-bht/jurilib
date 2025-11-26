@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { LandingPage } from './LandingPage';
 
 jest.mock('next/navigation', () => ({
-    useRouter: jest.fn(),
+  useRouter: jest.fn(),
 }));
 
 describe('Test LandingPage', () => {
@@ -12,4 +12,3 @@ describe('Test LandingPage', () => {
     expect(screen.getByText(/Beschreibe dein Problem/i)).toBeInTheDocument();
   });
 });
-

@@ -2,12 +2,10 @@
 
 export function Login() {
   //Login Logik
-
   return (
     <button
-      // eslint-disable-next-line no-console
       onClick={() => console.log('Login')}
-      className="bg-white text-black p-2 pr-3 pl-3 rounded-full"
+      className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
     >
       Einloggen
     </button>
