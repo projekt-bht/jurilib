@@ -3,15 +3,15 @@ import { NextResponse } from "next/server";
 
 import { hashPassword } from "@/lib/auth/password";
 import prisma from "@/lib/db";
+import { ApiError, handleApiError } from "@/lib/errors";
+import {
+  MIN_PASSWORD_LENGTH,
+  isValidEmail,
+  sanitizeString,
+} from "@/lib/validation";
 import { vectoriseData } from "@/services/server/vectorizer";
 import { Prisma } from "~/generated/prisma/client";
 import { Areas, OrganizationType, UserType } from "~/generated/prisma/enums";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD_LENGTH = 8;
-
-const sanitizeString = (value: unknown) =>
-  typeof value === "string" ? value.trim() : "";
 
 const normalizeWebsite = (value: string) =>
   value ? (/^https?:\/\//i.test(value) ? value : `https://${value}`) : "";
@@ -37,10 +37,11 @@ const filterAreas = (value: unknown): Areas[] =>
 export async function POST(req: NextRequest) {
   let payload: Record<string, unknown>;
   try {
-    payload = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON payload" }, { status: 400 });
-  }
+    try {
+      payload = (await req.json()) as Record<string, unknown>;
+    } catch {
+      throw new ApiError("Invalid JSON payload", 400);
+    }
 
   const contactName = sanitizeString(payload.contactName);
   const contactEmail = sanitizeString(payload.contactEmail).toLowerCase();
@@ -53,42 +54,31 @@ export async function POST(req: NextRequest) {
   const organizationTypeInput = sanitizeString(payload.organizationType);
   const expertiseArea = filterAreas(payload.expertiseArea);
 
-  if (!contactName) {
-    return NextResponse.json(
-      { error: "Kontaktname ist erforderlich." },
-      { status: 400 },
-    );
-  }
+    if (!contactName) {
+      throw new ApiError("Kontaktname ist erforderlich.", 400);
+    }
 
-  if (!EMAIL_REGEX.test(contactEmail)) {
-    return NextResponse.json(
-      { error: "Eine gültige E-Mail-Adresse ist erforderlich." },
-      { status: 400 },
-    );
-  }
+    if (!isValidEmail(contactEmail)) {
+      throw new ApiError("Eine gültige E-Mail-Adresse ist erforderlich.", 400);
+    }
 
-  if (!password || password.length < MIN_PASSWORD_LENGTH) {
-    return NextResponse.json(
-      {
-        error: `Passwort muss mindestens ${MIN_PASSWORD_LENGTH} Zeichen enthalten.`,
-      },
-      { status: 400 },
-    );
-  }
+    if (!password || password.length < MIN_PASSWORD_LENGTH) {
+      throw new ApiError(
+        `Passwort muss mindestens ${MIN_PASSWORD_LENGTH} Zeichen enthalten.`,
+        400,
+      );
+    }
 
-  if (!organizationName) {
-    return NextResponse.json(
-      { error: "Ein Organisationsname ist erforderlich." },
-      { status: 400 },
-    );
-  }
+    if (!organizationName) {
+      throw new ApiError("Ein Organisationsname ist erforderlich.", 400);
+    }
 
-  if (!expertiseArea.length) {
-    return NextResponse.json(
-      { error: "Mindestens ein Fachgebiet muss ausgewählt werden." },
-      { status: 400 },
-    );
-  }
+    if (!expertiseArea.length) {
+      throw new ApiError(
+        "Mindestens ein Fachgebiet muss ausgewählt werden.",
+        400,
+      );
+    }
 
   const resolvedOrganizationType = isValidOrganizationType(
     organizationTypeInput,
@@ -103,7 +93,6 @@ export async function POST(req: NextRequest) {
 
   const vectorInput = `Fachgebiet: ${expertiseArea.join(", ")}\nBeschreibung: ${detailedDescription}`;
 
-  try {
     const [expertiseVector, passwordHash] = await Promise.all([
       vectoriseData(vectorInput),
       hashPassword(password),
@@ -157,19 +146,15 @@ export async function POST(req: NextRequest) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return NextResponse.json(
-        {
-          error:
-            "E-Mail ist bereits vergeben. Bitte verwenden Sie eine andere Adresse.",
-        },
-        { status: 409 },
+      return handleApiError(
+        new ApiError(
+          "E-Mail ist bereits vergeben. Bitte verwenden Sie eine andere Adresse.",
+          409,
+        ),
+        "E-Mail ist bereits vergeben. Bitte verwenden Sie eine andere Adresse.",
       );
     }
 
-    console.error("Failed to register organization", error);
-    return NextResponse.json(
-      { error: "Interner Fehler bei der Registrierung." },
-      { status: 500 },
-    );
+    return handleApiError(error, "Interner Fehler bei der Registrierung.");
   }
 }

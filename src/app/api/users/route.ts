@@ -5,15 +5,16 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/db";
+import { ApiError, handleApiError } from "@/lib/errors";
+import {
+  MIN_PASSWORD_LENGTH,
+  isValidEmail,
+  sanitizeString,
+} from "@/lib/validation";
 import { Prisma } from "~/generated/prisma/client";
 import { UserType } from "~/generated/prisma/enums";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MIN_PASSWORD_LENGTH = 8;
 const scrypt = promisify(scryptCallback);
-
-const sanitizeString = (value: unknown) =>
-  typeof value === "string" ? value.trim() : "";
 
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -27,13 +28,11 @@ export async function POST(req: NextRequest) {
   let payload: unknown;
 
   try {
-    payload = await req.json();
-  } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON payload" },
-      { status: 400 },
-    );
-  }
+    try {
+      payload = await req.json();
+    } catch {
+      throw new ApiError("Invalid JSON payload", 400);
+    }
 
   const { name, email, password } = (payload ?? {}) as Record<
     string,
@@ -44,25 +43,21 @@ export async function POST(req: NextRequest) {
   const sanitizedEmail = sanitizeString(email).toLowerCase();
   const sanitizedPassword = sanitizeString(password);
 
-  if (!sanitizedName) {
-    return NextResponse.json({ error: "Name is required" }, { status: 400 });
-  }
+    if (!sanitizedName) {
+      throw new ApiError("Name is required", 400);
+    }
 
-  if (!sanitizedEmail || !EMAIL_REGEX.test(sanitizedEmail)) {
-    return NextResponse.json(
-      { error: "Valid email is required" },
-      { status: 400 },
-    );
-  }
+    if (!sanitizedEmail || !isValidEmail(sanitizedEmail)) {
+      throw new ApiError("Valid email is required", 400);
+    }
 
-  if (!sanitizedPassword || sanitizedPassword.length < MIN_PASSWORD_LENGTH) {
-    return NextResponse.json(
-      { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters` },
-      { status: 400 },
-    );
-  }
+    if (!sanitizedPassword || sanitizedPassword.length < MIN_PASSWORD_LENGTH) {
+      throw new ApiError(
+        `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+        400,
+      );
+    }
 
-  try {
     const passwordHash = await hashPassword(sanitizedPassword);
 
     const user = await prisma.user.create({
@@ -86,17 +81,9 @@ export async function POST(req: NextRequest) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return NextResponse.json(
-        { error: "Email already registered" },
-        { status: 409 },
-      );
+      return handleApiError(new ApiError("Email already registered", 409), "Email already registered");
     }
 
-    console.error("Failed to register user", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return handleApiError(error, "Internal server error");
   }
 }
-
