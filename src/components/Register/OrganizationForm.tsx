@@ -2,8 +2,12 @@
 
 import type { ChangeEvent, FormEvent } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import type { OrganizationFormState, SubmissionState } from '@/types/registerTypes';
-import { AREA_OPTIONS, ORGANIZATION_TYPES } from '@/utils/formHelpers';
+import { AREA_OPTIONS } from '@/utils/formHelpers';
 import { Areas, OrganizationType } from '~/generated/prisma/enums';
 
 type OrganizationFormProps = {
@@ -19,18 +23,6 @@ type OrganizationFormProps = {
   onToggleArea: (area: Areas) => void;
 };
 
-const createChangeHandler =
-  <K extends keyof OrganizationFormState>(
-    field: K,
-    onFieldChange: OrganizationFormProps['onFieldChange'],
-  ) =>
-  (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    onFieldChange(field, event.target.value as OrganizationFormState[K]);
-
-/**
- * Presentational form for organization onboarding including expertise area
- * selectors and meta information.
- */
 export function OrganizationForm({
   formState,
   isSubmitting,
@@ -40,145 +32,132 @@ export function OrganizationForm({
   onCancel,
   onToggleArea,
 }: OrganizationFormProps) {
+  const update =
+    <K extends keyof OrganizationFormState>(key: K) =>
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      onFieldChange(key, event.target.value as OrganizationFormState[K]);
+
   return (
-    <form className="space-y-4" onSubmit={onSubmit}>
-      <section>
+    <form className="space-y-6" onSubmit={onSubmit}>
+      <div className="space-y-2">
         <h3 className="text-sm font-semibold text-gray-900">Grundinformationen</h3>
-        <div className="mt-3 grid gap-4 sm:grid-cols-3">
-          <input
-            type="text"
-            required
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Input
             placeholder="Ihr vollständiger Name"
             value={formState.contactName}
-            onChange={createChangeHandler('contactName', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
-          />
-          <input
-            type="email"
+            onChange={update('contactName')}
             required
+          />
+          <Input
+            type="email"
             placeholder="ihre.email@beispiel.de"
             value={formState.contactEmail}
-            onChange={createChangeHandler('contactEmail', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
-          />
-          <input
-            type="password"
+            onChange={update('contactEmail')}
             required
-            minLength={8}
+          />
+          <Input
+            type="password"
             placeholder="Mindestens 8 Zeichen"
+            minLength={8}
             value={formState.password}
-            onChange={createChangeHandler('password', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
+            onChange={update('password')}
+            required
           />
         </div>
-      </section>
+      </div>
 
-      <section className="space-y-3">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900">Organisationsdetails</h3>
-          <div className="flex gap-2 text-xs font-medium text-gray-500">
-            {ORGANIZATION_TYPES.map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => onFieldChange('organizationType', type)}
-                className={`rounded-full px-3 py-1 ${
-                  formState.organizationType === type
-                    ? 'bg-black text-white'
-                    : 'bg-gray-100 text-gray-600'
-                }`}
-              >
-                {type === OrganizationType.LAW_FIRM ? 'Kanzlei' : 'Verband'}
-              </button>
-            ))}
+
+          <div className="flex gap-2 text-xs">
+            <Button
+              type="button"
+              variant={formState.organizationType === OrganizationType.LAW_FIRM ? 'default' : 'secondary'}
+              className="rounded-full px-3"
+              onClick={() => onFieldChange('organizationType', OrganizationType.LAW_FIRM)}
+            >
+              Kanzlei
+            </Button>
+
+            <Button
+              type="button"
+              variant={
+                formState.organizationType === OrganizationType.ASSOCIATION ? 'default' : 'secondary'
+              }
+              className="rounded-full px-3"
+              onClick={() => onFieldChange('organizationType', OrganizationType.ASSOCIATION)}
+            >
+              Verband
+            </Button>
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <input
-            type="text"
-            required
+          <Input
             placeholder="Name der Organisation"
             value={formState.organizationName}
-            onChange={createChangeHandler('organizationName', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
+            onChange={update('organizationName')}
+            required
           />
-          <input
-            type="tel"
+          <Input
             placeholder="+49 89 1234567"
             value={formState.phone}
-            onChange={createChangeHandler('phone', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
+            onChange={update('phone')}
           />
-          <input
-            type="text"
-            inputMode="url"
+          <Input
             placeholder="www.ihre-organisation.de"
             value={formState.website}
-            onChange={createChangeHandler('website', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
+            onChange={update('website')}
           />
-          <input
-            type="text"
+          <Input
             placeholder="Straße Nr., PLZ Stadt"
             value={formState.address}
-            onChange={createChangeHandler('address', onFieldChange)}
-            className="rounded-xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
+            onChange={update('address')}
           />
         </div>
 
-        <textarea
+        <Textarea
           placeholder="Was macht Ihre Organisation besonders?"
+          rows={3}
           value={formState.description}
-          onChange={createChangeHandler('description', onFieldChange)}
-          className="w-full rounded-2xl border border-gray-200 bg-gray-100 p-3 text-sm text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
-          rows={4}
+          onChange={update('description')}
         />
-      </section>
+      </div>
 
-      <section>
-        <h3 className="text-sm font-semibold text-gray-900">Fachgebiete</h3>
-        <p className="mt-1 text-xs text-gray-500">
-          Wählen Sie alle relevanten Bereiche aus, in denen Ihre Organisation aktiv ist.
-        </p>
-        <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
+      <div>
+        <h3 className="mb-1 text-sm font-semibold text-gray-900">Fachgebiete</h3>
+        <p className="mb-3 text-xs text-gray-500">Wählen Sie alle relevanten Bereiche aus.</p>
+
+        <div className="grid max-h-60 gap-2 overflow-y-auto rounded-xl border p-2 sm:grid-cols-2">
           {AREA_OPTIONS.map((area) => {
             const isSelected = formState.expertiseArea.includes(area);
             return (
               <label
                 key={area}
-                className={`flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-sm ${
-                  isSelected ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'
+                className={`flex items-center space-x-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                  isSelected
+                    ? 'border-black bg-gray-100 font-semibold'
+                    : 'border-gray-300 bg-white hover:border-gray-400'
                 }`}
               >
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  onChange={() => onToggleArea(area)}
-                  className="h-4 w-4 rounded-full border-gray-300 text-black focus:ring-black"
-                />
-                {area}
+                <Checkbox checked={isSelected} onCheckedChange={() => onToggleArea(area)} />
+                <span>{area}</span>
               </label>
             );
           })}
         </div>
-      </section>
+      </div>
 
-      <div className="mt-6 flex gap-3">
-        <button
-          type="button"
-          className="w-1/2 rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-600 transition hover:bg-gray-100"
-          onClick={onCancel}
-        >
+      <div className="flex gap-3 pt-4">
+        <Button type="button" variant="outline" className="w-1/2" onClick={onCancel}>
           Abbrechen
-        </button>
-        <button
-          type="submit"
-          className="w-1/2 rounded-full bg-gradient-to-r from-gray-900 to-black px-4 py-2 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={isSubmitting}
-        >
+        </Button>
+
+        <Button type="submit" className="w-1/2" disabled={isSubmitting}>
           {isSubmitting ? 'Wird gespeichert...' : 'Registrieren'}
-        </button>
+        </Button>
       </div>
 
       {submissionState.type === 'error' && (
