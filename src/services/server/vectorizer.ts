@@ -1,16 +1,39 @@
 /* eslint-disable no-console */
 import OpenAI from "openai";
 
+const baseURL = process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1";
+const apiKey = process.env.OPENAI_API_KEY ?? "";
+
+const defaultHeaders =
+    baseURL.includes("openrouter") && process.env.OPENAI_REFERRER
+        ? {
+            "HTTP-Referer": process.env.OPENAI_REFERRER,
+            "X-Title": process.env.OPENAI_APP_TITLE ?? "JuriLib",
+        }
+        : undefined;
+
 const openai = new OpenAI({
-    baseURL: process.env.OPENAI_BASE_URL ?? "",
-    apiKey: process.env.OPENAI_API_KEY ?? "",
-    defaultHeaders: {
-        'HTTP-Referer': '<YOUR_SITE_URL>', // Optional. Site URL for rankings on openrouter.ai.
-        'X-Title': '<YOUR_SITE_NAME>', // Optional. Site title for rankings on openrouter.ai.
-    },
+    baseURL,
+    apiKey,
+    defaultHeaders,
 });
 
-export async function vectorizeSearch(query: string) {
+const embeddingModel =
+    process.env.OPENAI_EMBEDDING_MODEL ??
+    (baseURL.includes("openrouter")
+        ? "openai/text-embedding-3-large"
+        : "text-embedding-3-large");
+
+async function createEmbedding(input: string): Promise<number[]> {
+    const embeddingResponse = await openai.embeddings.create({
+        model: embeddingModel,
+        input,
+    });
+
+    return embeddingResponse.data[0].embedding;
+}
+
+export async function vectorizeSearch(query: string): Promise<number[]> {
     const expansionPrompt = `
     Versuche bitte diesen Text zu juristschen rechtlichen Fachgebieten zuzuordnen, bzw. wo das hingehören könnte.
     BEISPIEL: Strafrecht, Verkehrsrecht, Mietercht, Zivilrecht, Arbeitsrecht und so weiter ...
@@ -36,18 +59,14 @@ export async function vectorizeSearch(query: string) {
     console.log("Original:", query);
     console.log("Expanded:", expandedQuery);
 
-    const embeddingResponse = await openai.embeddings.create({
-        model: "openai/text-embedding-3-large",
-        input: expandedQuery,
-    });
-    return embeddingResponse.data[0].embedding
+    return createEmbedding(expandedQuery);
 }
 
-export async function vectorizeExpertiseArea(query: string) {
+export async function vectorizeExpertiseArea(query: string): Promise<number[]> {
     console.log(query);
-    const embeddingResponse = await openai.embeddings.create({
-        model: "openai/text-embedding-3-large",
-        input: query,
-    });
-    return embeddingResponse.data[0].embedding
+    return createEmbedding(query);
+}
+
+export async function vectoriseData(query: string): Promise<number[]> {
+    return createEmbedding(query);
 }

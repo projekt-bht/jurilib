@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { hashPassword } from "@/lib/auth/password";
 import prisma from "@/lib/db";
-import vectoriseData from "@/lib/vectoriseData";
+import { vectoriseData } from "@/services/server/vectorizer";
 import { Prisma } from "~/generated/prisma/client";
 import { Areas, OrganizationType, UserType } from "~/generated/prisma/enums";
 
