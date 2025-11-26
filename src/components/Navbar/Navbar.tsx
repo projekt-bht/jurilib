@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Building2 } from 'lucide-react';
 
 import { Login } from '@/components/Login/Login';
-import { RegisterModal } from '../Register/RegisterModal';
+import { RegisterModal } from '@/components/Register/RegisterModal';
 import scale_logo from '~/public/scale_logo.svg';
 
 export function Navbar() {
