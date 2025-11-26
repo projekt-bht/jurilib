@@ -77,7 +77,21 @@ export function RegisterModal() {
     setOrganizationSubmissionState({ type: 'idle' });
   };
 
-  const closeModal = () => {
+  const hasUnsavedChanges =
+    JSON.stringify(userFormState) !== JSON.stringify(USER_FORM_STATE) ||
+    JSON.stringify(organizationFormState) !== JSON.stringify(ORGANIZATION_FORM_STATE);
+
+  // Prevents accidental loss of entered data by asking for confirmation when closing a dirty form.
+  const requestCloseModal = () => {
+    if (hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        'Ihre Eingaben gehen verloren. Möchten Sie den Dialog wirklich schließen?'
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
     setIsOpen(false);
     resetFormState();
     setSuccessMessage(null);
@@ -180,7 +194,7 @@ export function RegisterModal() {
   };
 
   const renderUserForm = () => (
-    <form className="space-y-4" onSubmit={handleUserSubmit}>
+      <form className="space-y-4" onSubmit={handleUserSubmit}>
       <label className="block text-sm font-medium text-gray-700">
         Name
         <input
@@ -240,7 +254,7 @@ export function RegisterModal() {
         <button
           type="button"
           className="w-1/2 rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-600 transition hover:bg-gray-100"
-          onClick={closeModal}
+          onClick={requestCloseModal}
         >
           Abbrechen
         </button>
@@ -404,7 +418,7 @@ export function RegisterModal() {
           <button
             type="button"
             className="w-1/2 rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-600 transition hover:bg-gray-100"
-            onClick={closeModal}
+            onClick={requestCloseModal}
           >
             Abbrechen
           </button>
@@ -430,8 +444,14 @@ export function RegisterModal() {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl sm:p-8">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={requestCloseModal}
+        >
+          <div
+            className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl sm:p-8"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">Registrierung</h2>
@@ -441,7 +461,7 @@ export function RegisterModal() {
               </div>
               <button
                 className="text-gray-500 transition hover:text-gray-900"
-                onClick={closeModal}
+                onClick={requestCloseModal}
                 aria-label="Modal schließen"
               >
                 ×
@@ -489,7 +509,7 @@ export function RegisterModal() {
             <h3 className="text-2xl font-semibold text-gray-900">Erfolgreich!</h3>
             <p className="mt-3 text-sm text-gray-600">{successMessage}</p>
             <button
-              onClick={closeModal}
+              onClick={requestCloseModal}
               className="mt-6 w-full rounded-full bg-black px-4 py-2 font-semibold text-white transition hover:bg-gray-900"
             >
               Alles klar
