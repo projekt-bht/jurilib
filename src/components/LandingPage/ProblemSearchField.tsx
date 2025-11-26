@@ -42,6 +42,7 @@ export function ProblemSearchField() {
     <form onSubmit={handleSubmit}>
       <div className="mb-6">
         <textarea
+          className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
           value={problem}
           onChange={(e) => {
             setProblem(e.target.value);
@@ -49,16 +50,15 @@ export function ProblemSearchField() {
           onFocus={() => setError('')}
           onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
-          className=" text-black bg-gray-100 focus:outline-none w-full p-5 border rounded-lg border-gray-100 shadow-sm"
         />
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {error && <p className="text-black-500 mb-4">{error}</p>}
+      {error && <p className="text-foreground mb-4">{error}</p>}
 
       <button
         type="submit"
-        className="bg-(--color-bg-button) text-black font-bold p-2 pr-3 pl-3 rounded-full"
+        className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foregroundfont-bold p-2 pr-3 pl-3 rounded-full"
       >
         Passende Lösung finden
       </button>
