@@ -2,8 +2,10 @@
 
 import type { ChangeEvent, FormEvent } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { SubmissionState, UserFormState } from '@/types/registerTypes';
-import { Field } from '../ui/field';
 
 type UserFormProps = {
   formState: UserFormState;
@@ -26,67 +28,58 @@ export function UserForm({
   onSubmit,
   onCancel,
 }: UserFormProps) {
-  const handleChange = (field: keyof UserFormState) => (event: ChangeEvent<HTMLInputElement>) =>
-    onFieldChange(field, event.target.value);
+  const handleChange =
+    (field: keyof UserFormState) => (event: ChangeEvent<HTMLInputElement>) =>
+      onFieldChange(field, event.target.value);
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
-      <label className="block text-sm font-medium text-gray-700">
-        Name
-        <input
-          type="text"
+      <div>
+        <Label htmlFor="user-name">Name</Label>
+        <Input
+          id="user-name"
           value={formState.name}
           onChange={handleChange('name')}
           autoComplete="name"
           required
           placeholder="Ihr vollständiger Name"
-          className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-100 p-3 text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
         />
-      </label>
+      </div>
 
-      <label className="block text-sm font-medium text-gray-700">
-        E-Mail
-        <input
-          type="email"
+      <div>
+        <Label htmlFor="user-email">E-Mail</Label>
+        <Input
+          id="user-email"
           value={formState.email}
+          type="email"
           onChange={handleChange('email')}
           autoComplete="email"
           required
           placeholder="ihre.email@beispiel.de"
-          className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-100 p-3 text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
         />
-      </label>
+      </div>
 
-      <label className="block text-sm font-medium text-gray-700">
-        Passwort
-        <input
-          type="password"
+      <div>
+        <Label htmlFor="user-password">Passwort</Label>
+        <Input
+          id="user-password"
           value={formState.password}
+          type="password"
           onChange={handleChange('password')}
           autoComplete="new-password"
           required
           minLength={8}
           placeholder="Mindestens 8 Zeichen"
-          className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-100 p-3 text-gray-900 placeholder-gray-600 focus:border-black focus:outline-none"
         />
-      </label>
-      <Field> </Field>
+      </div>
 
-      <div className="mt-6 flex gap-3">
-        <button
-          type="button"
-          className="w-1/2 rounded-full border border-gray-300 px-4 py-2 font-semibold text-gray-600 transition hover:bg-gray-100"
-          onClick={onCancel}
-        >
+      <div className="flex justify-between gap-3 pt-4">
+        <Button type="button" variant="outline" className="w-1/2" onClick={onCancel}>
           Abbrechen
-        </button>
-        <button
-          type="submit"
-          className="w-1/2 rounded-full bg-black px-4 py-2 font-semibold text-white transition hover:bg-gray-900 disabled:cursor-not-allowed disabled:bg-gray-400"
-          disabled={isSubmitting}
-        >
+        </Button>
+        <Button type="submit" className="w-1/2" disabled={isSubmitting}>
           {isSubmitting ? 'Wird gespeichert...' : 'Registrieren'}
-        </button>
+        </Button>
       </div>
 
       {submissionState.type === 'error' && (
