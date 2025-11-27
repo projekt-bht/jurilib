@@ -1,29 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
-const TIME_SLOTS = [
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '14:00',
-  '14:30',
-  '15:00',
-  '16:00',
-] as const;
-
-type TimeSelection = {
-  date?: Date;
-  time?: string | null;
-};
+import { useBookingSchedule } from './useBookingSchedule';
 
 type CalendarWithTimeProps = {
-  onChange?: (selection: TimeSelection) => void;
+  onChange?: (selection: { date?: Date; time?: string | null }) => void;
 };
 
 /**
@@ -31,8 +16,17 @@ type CalendarWithTimeProps = {
  * buttons. Consumers receive the combined state through the onChange callback.
  */
 export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const {
+    selectedDate,
+    selectedTime,
+    availableSlots,
+    slotsLoading,
+    isBooking,
+    statusMessage,
+    setDate,
+    selectTime,
+    confirmBooking,
+  } = useBookingSchedule();
 
   const today = useMemo(() => new Date(), []);
 
@@ -55,9 +49,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
         mode="single"
         selected={selectedDate}
         onSelect={(date) => {
-          setSelectedDate(date);
-          // Reset the time when a new date is picked.
-          setSelectedTime(null);
+          setDate(date);
           handleChange(date, null);
         }}
         disabled={isDisabledDay}
@@ -66,10 +58,12 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
       {selectedDate && (
         <div className="space-y-3">
-          <p className="text-sm font-medium text-gray-700">Verfügbare Zeiten</p>
+          <p className="text-sm font-medium text-gray-700">
+            {slotsLoading ? 'Termine werden geladen ...' : 'Verfügbare Zeiten'}
+          </p>
 
           <div className="grid grid-cols-2 gap-2">
-            {TIME_SLOTS.map((slot) => {
+            {availableSlots.map((slot) => {
               const isSelected = selectedTime === slot;
 
               return (
@@ -78,7 +72,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                   variant={isSelected ? 'default' : 'outline'}
                   className="w-full"
                   onClick={() => {
-                    setSelectedTime(slot);
+                    selectTime(slot);
                     handleChange(undefined, slot);
                   }}
                 >
@@ -86,6 +80,19 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                 </Button>
               );
             })}
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <Button
+              className="w-full"
+              disabled={!selectedDate || !selectedTime || isBooking}
+              onClick={confirmBooking}
+            >
+              {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
+            </Button>
+            {statusMessage && (
+              <p className="text-center text-sm text-gray-600">{statusMessage}</p>
+            )}
           </div>
         </div>
       )}
