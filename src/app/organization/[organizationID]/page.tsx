@@ -1,6 +1,8 @@
 import OrganizationDetail from '@/app/organization/_components/OrganizationDetail';
 import type { Organization } from '~/generated/prisma/client';
 
+import OrganizationCalendar from '../_components/OrganizationCalendar';
+
 export default async function OrganizationDetailPage({
   params,
 }: {
@@ -12,8 +14,17 @@ export default async function OrganizationDetailPage({
   const org: Organization = await res.json();
 
   return org ? (
-    <div className="bg-card">
-      <OrganizationDetail {...org} />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* Left Column - Profile Info */}
+      <div className="lg:col-span-2 space-y-8">
+        <OrganizationDetail {...org} />
+      </div>
+      {/* Right Column - Booking Section */}
+      <div className="lg:col-span-1">
+        <div className="bg-card rounded-2xl p-8 border border-border sticky top-4 shadow-lg">
+          <OrganizationCalendar />
+        </div>
+      </div>
     </div>
   ) : (
     <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
