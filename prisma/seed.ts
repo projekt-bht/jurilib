@@ -1,6 +1,6 @@
 import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
-import { Areas, OrganizationType, UserType } from '../generated/prisma/enums';
+import { Areas, OrganizationType, PriceCategory, UserType } from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
 // code inspired by:
@@ -34,21 +34,22 @@ async function main() {
 
     await prisma.$executeRawUnsafe(
       `
-    INSERT INTO "Organization" (
-      "id", "name", "description", "email",
-      "phone", "address", "website",
-      "expertiseArea", "expertiseVector", "type",
-      "createdAt", "updatedAt"
-    )
-    VALUES (
-      $1, $2, $3, $4,
-      $5, $6, $7,
-      $8::"Areas"[], $9::vector, $10::"OrganizationType",
-      NOW(), NOW()
-    )
-    `,
+      INSERT INTO "Organization" (
+        "id", "name", "description", "shortDescription", "email",
+        "phone", "address", "website",
+        "expertiseArea", "expertiseVector", "type", "priceCategory", "password",
+        "createdAt", "updatedAt"
+      )
+      VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7, $8,
+        $9::"Areas"[], $10::vector, $11::"OrganizationType", $12::"PriceCategory", $13,
+        NOW(), NOW()
+      )
+      `,
       orgId,
       orgName,
+      faker.company.catchPhrase(),
       faker.company.catchPhrase(),
       faker.internet.email(),
       faker.phone.number(),
@@ -56,7 +57,9 @@ async function main() {
       faker.internet.url(),
       expertiseArea,
       expertiseVector,
-      type
+      type,
+      faker.helpers.enumValue(PriceCategory),
+      faker.internet.password(),
     );
 
     console.log(`created "${orgName}" (${orgId})`);
