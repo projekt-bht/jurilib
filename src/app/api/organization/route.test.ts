@@ -1,9 +1,18 @@
+import { jest } from '@jest/globals';
 import { NextRequest } from 'next/server';
-import { POST, PATCH, GET } from '@/app/api/organization/route';
-import { prisma } from '@/lib/db';
-import { OrganizationCreateInput } from '~/generated/prisma/models';
+import path from 'path';
+import { pathToFileURL } from 'url';
 
-jest.mock('@/services/server/vectorizer', () => ({
+import { GET, PATCH, POST } from '@/app/api/organization/route';
+import { prisma } from '@/lib/db';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
+
+// ECHTE Datei auflösen (weil Jest ESM keine Aliases versteht)
+const vectorizerPath = pathToFileURL(
+  path.resolve(process.cwd(), 'src/services/server/vectorizer.ts')
+).href;
+
+jest.unstable_mockModule(vectorizerPath, () => ({
   vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
 }));
 
