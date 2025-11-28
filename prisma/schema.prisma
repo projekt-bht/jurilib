@@ -45,6 +45,13 @@ enum PricingModel {
   HOURLY
 }
 
+  enum PriceCategory {
+    FREE
+    LOW
+    MEDIUM
+    HIGH
+  }
+
 enum Areas {
   Mietrecht
   Verkehrsrecht
@@ -98,14 +105,17 @@ model User {
 model Organization {
   id              String                       @id @default(uuid())
   name            String
-  description     String
+  description     String?
+  shortDescription String
   email           String                       @unique
+  password        String
   phone           String?
   address         String?
   website         String?
   expertiseArea   Areas[]
   expertiseVector Unsupported("vector(3072)")?
   type            OrganizationType
+  priceCategory   PriceCategory
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
