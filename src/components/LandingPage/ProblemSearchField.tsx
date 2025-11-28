@@ -1,7 +1,9 @@
 'use client';
 
+import { Mic } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useSpeechToText from 'react-hook-speech-to-text';
 
 // Find filtered Organizations...
 // Form will be submitted on button click or Enter key press
@@ -10,8 +12,47 @@ import { useState } from 'react';
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField() {
   const [problem, setProblem] = useState('');
-  const [error, setError] = useState('');
+  const [_error, setError] = useState('');
   const router = useRouter();
+
+  const {
+    error,
+    interimResult,
+    isRecording,
+    startSpeechToText,
+    stopSpeechToText,
+  } = useSpeechToText({
+    speechRecognitionProperties: {
+      lang: 'de-DE',
+      interimResults: true // Allows for displaying real-time speech results
+    },
+    continuous: true,
+    useLegacyResults: false
+  });
+
+  if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
+
+  /*
+  const formattedTranscript = results.map(result => result.transcript).join('');
+
+  useEffect(() => {
+    if(results.length > 0)
+      setProblem(formattedTranscript)
+  }, [results.length]);
+
+  useEffect(() => {
+    if(!isRecording) {
+      setResults([])
+    }
+  }, [isRecording])
+
+  */
+
+  useEffect(() => {
+    if (interimResult) {
+      setProblem(interimResult);
+    }
+  }, [interimResult]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +63,8 @@ export function ProblemSearchField() {
       setError('Bitte beschreibe dein Problem.');
       return;
     }
+
+    stopSpeechToText()
 
     try {
       router.push(`/search/${problem}`);
@@ -43,7 +86,7 @@ export function ProblemSearchField() {
       <div className="mb-6">
         <textarea
           className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
-          value={problem}
+          value={problem || interimResult}
           onChange={(e) => {
             setProblem(e.target.value);
           }}
@@ -54,7 +97,14 @@ export function ProblemSearchField() {
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {error && <p className="text-foreground mb-4">{error}</p>}
+      {_error && <p className="text-foreground mb-4">{_error} </p>}
+
+      <Mic 
+        onClick={isRecording ? stopSpeechToText : startSpeechToText}
+        className={isRecording ? 'bg-red-400 rounded-full size-10 p-2' : 'bg-gray-200 rounded-full size-10 p-2'}
+      >
+        {isRecording ? 'Stop Recording' : 'Start Recording'}
+      </Mic>
 
       <button
         type="submit"
