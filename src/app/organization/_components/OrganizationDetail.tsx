@@ -46,7 +46,7 @@ export default function OrganizationDetail(organization: Organization) {
         </div>
         {createProfileExpertiseAreaItem(organization.expertiseArea)}
         <div className="mb-4 pt-2 text-foreground text-lg">
-          <p>{organization.description}</p>
+          <p>{organization.shortDescription}</p>
         </div>
 
         <Separator className="my-6 h-px bg-border w-full" />
@@ -56,6 +56,13 @@ export default function OrganizationDetail(organization: Organization) {
           {createProfileInfoItem(Phone, 'Telefon', organization.phone)}
           {createProfileInfoItem(MapPin, 'Adresse', organization.address)}
           {createProfileInfoItem(Mail, 'E-Mail', organization.email)}
+        </div>
+      </div>
+
+      <div className="bg-background outline-1 p-6 mt-6 rounded-lg w-full max-w-5xl outline-border shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Über uns</h2>
+        <div className="text-foreground text-lg">
+          <p>{organization.description}</p>
         </div>
       </div>
     </div>
