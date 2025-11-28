@@ -50,5 +50,6 @@ export async function vectorizeExpertiseArea(query: string) {
     model: 'openai/text-embedding-3-large',
     input: query,
   });
-  return embeddingResponse.data[0].embedding;
+  const embedding = embeddingResponse.data[0].embedding;
+  return `[${embedding.join(',')}]`;
 }
