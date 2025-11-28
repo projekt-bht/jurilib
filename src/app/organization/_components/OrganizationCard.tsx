@@ -23,7 +23,7 @@ export default function ProfileCard(organization: Organization) {
       <ItemContent className="flex-1">
         <ItemTitle className="text-base sm:text-lg font-semibold">{organization.name}</ItemTitle>
         <ItemDescription className="text-sm text-foreground">
-          {organization.description}
+          {organization.shortDescription}
         </ItemDescription>
       </ItemContent>
       <ItemActions className="">
