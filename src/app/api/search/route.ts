@@ -18,8 +18,7 @@ export async function POST(req: NextRequest) {
   const query = decodeURIComponent(manipulatedBody.searchID);
 
   if (query) {
-    const embedding = await vectorizeSearch(query);
-    const searchInput = `[${embedding.join(',')}]`;
+    const searchInput = await vectorizeSearch(query);
 
     const matches = await prisma.$queryRawUnsafe<
       { id: string; name: string; expertiseArea: string; similarity: number }[]
