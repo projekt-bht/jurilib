@@ -1,10 +1,12 @@
 import { Separator } from '@radix-ui/react-separator';
 import { Globe, Mail, MapPin, Phone } from 'lucide-react';
 
-import type { Organization } from '~/generated/prisma/client';
+import type { Areas, Organization } from '~/generated/prisma/client';
+
+import formatPriceCategory from './organizationHelper';
 
 // Helper component for profile items
-function profileItem(
+function createProfileInfoItem(
   Icon: React.ComponentType<{ className?: string; size?: number }>,
   title: string,
   content: string | null
@@ -20,6 +22,17 @@ function profileItem(
   );
 }
 
+function createProfileExpertiseAreaItem(areas: Areas[]) {
+  return areas.map((area) => (
+    <div
+      key={area}
+      className="text-sm inline-block px-2 py-1 rounded-xl  border border-accent-amber font-semibold bg-accent-amber-light text-accent-amber mb-2 mr-2"
+    >
+      <p>{area}</p>
+    </div>
+  ));
+}
+
 export default function OrganizationDetail(organization: Organization) {
   return (
     <div
@@ -29,13 +42,9 @@ export default function OrganizationDetail(organization: Organization) {
       <div className="bg-background outline-1 p-6 rounded-lg w-full max-w-5xl outline-border shadow-md">
         <div className="flex items-center mb-4">
           <p className="text-4xl font-bold pr-4">{organization.name}</p>
-          <div className="text-base inline-block px-2 py-1 rounded-xl border border-accent-amber font-semibold bg-accent-amber-light text-accent-amber">
-            €€€
-          </div>
+          {formatPriceCategory(organization.priceCategory)}
         </div>
-        <div className="text-sm inline-block px-2 py-1 rounded-xl  border border-accent-amber font-semibold bg-accent-amber-light text-accent-amber mb-4">
-          <p>{organization.expertiseArea}</p>
-        </div>
+        {createProfileExpertiseAreaItem(organization.expertiseArea)}
         <div className="mb-4 pt-2 text-foreground text-lg">
           <p>{organization.description}</p>
         </div>
@@ -43,10 +52,10 @@ export default function OrganizationDetail(organization: Organization) {
         <Separator className="my-6 h-px bg-border w-full" />
 
         <div className="grid grid-cols-2 gap-x-10 gap-y-5 justify-items-start">
-          {profileItem(Globe, 'Webseite', organization.website)}
-          {profileItem(Phone, 'Telefon', organization.phone)}
-          {profileItem(MapPin, 'Adresse', organization.address)}
-          {profileItem(Mail, 'E-Mail', organization.email)}
+          {createProfileInfoItem(Globe, 'Webseite', organization.website)}
+          {createProfileInfoItem(Phone, 'Telefon', organization.phone)}
+          {createProfileInfoItem(MapPin, 'Adresse', organization.address)}
+          {createProfileInfoItem(Mail, 'E-Mail', organization.email)}
         </div>
       </div>
     </div>
