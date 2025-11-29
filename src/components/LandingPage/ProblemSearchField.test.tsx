@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import { ProblemSearchField } from './ProblemSearchField';
 
@@ -7,8 +7,10 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('Test LandingPage', () => {
-  it('renders the component text', () => {
-    render(<ProblemSearchField />);
-    expect(screen.getByText(/Passende Lösung finden/i)).toBeInTheDocument();
+  it('renders the component text', async () => {
+    await waitFor(async () => {
+      render(<ProblemSearchField />);
+      expect(screen.getByText(/Passende Lösung finden/i)).toBeInTheDocument();
+    })
   });
 });
