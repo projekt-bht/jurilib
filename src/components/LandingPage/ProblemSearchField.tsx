@@ -1,9 +1,12 @@
 'use client';
 
-import { Mic } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import useSpeechToText, { ResultType } from 'react-hook-speech-to-text';
+import { useState } from 'react';
+
+//https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
+//WebSpeechAPI only exits on client
+import dynamic from 'next/dynamic';
+const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 
 // Find filtered Organizations...
 // Form will be submitted on button click or Enter key press
@@ -12,42 +15,11 @@ import useSpeechToText, { ResultType } from 'react-hook-speech-to-text';
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField() {
   const [problem, setProblem] = useState('');
-  const [_error, setError] = useState('');
+  const [error, setError] = useState('');
+  const [isRecordingDone, setIsRecordingDone] = useState(false);
+
   const router = useRouter();
 
-  const {
-    error,
-    interimResult,
-    results,
-    isRecording,
-    startSpeechToText,
-    stopSpeechToText,
-    setResults
-  } = useSpeechToText({
-    speechRecognitionProperties: {
-      lang: 'de-DE',
-      interimResults: true // Allows for displaying real-time speech results
-    },
-    continuous: true,
-    useLegacyResults: false
-  });
-
-  if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
-
-
-  const formattedTranscript = (results as ResultType[])
-                                .map(result => result.transcript.trim())
-                                .join(' ') + (interimResult || '');
- useEffect(() => {
-    if(!isRecording) {
-      setResults([])
-    }
-  }, [isRecording])
-  
-  useEffect(() => {
-    if(results.length > 0)
-      setProblem(formattedTranscript)
-  }, [interimResult]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,7 +31,7 @@ export function ProblemSearchField() {
       return;
     }
 
-    stopSpeechToText()
+    setIsRecordingDone(true)
 
     try {
       router.push(`/search/${problem}`);
@@ -81,7 +53,7 @@ export function ProblemSearchField() {
       <div className="mb-6 relative">
         <textarea
           className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
-          value={problem || formattedTranscript}
+          value={problem}
           onChange={(e) => {
             setProblem(e.target.value);
           }}
@@ -89,18 +61,11 @@ export function ProblemSearchField() {
           onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
         />
-
-        <Mic 
-          onClick={isRecording ? stopSpeechToText : startSpeechToText}
-          className={`rounded-full size-10 p-2 absolute bottom-6 right-6 
-                     ${isRecording ? 'bg-red-400' : 'bg-gray-200'}`}
-          >
-          {isRecording ? 'Stop Recording' : 'Start Recording'}
-        </Mic>
+        <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {_error && <p className="text-foreground mb-4">{_error} </p>}
+      {error && <p className="text-foreground mb-4">{error} </p>}
 
       <button
         type="submit"
