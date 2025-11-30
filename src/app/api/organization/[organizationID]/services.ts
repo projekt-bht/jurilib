@@ -1,33 +1,16 @@
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
-import type { OrganizationCreateInput } from '~/generated/prisma/models';
-
-export const createOrganization = async (organization: Organization): Promise<Organization> => {
-  try {
-    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
-
-    const createdOrganization = await prisma.organization.create({
-      data: organization as OrganizationCreateInput,
-    });
-    await prisma.$executeRaw`UPDATE "Organization"
-            SET "expertiseVector" = ${expertiseVector}::vector
-            WHERE "id" = ${createdOrganization.id}`;
-    return createdOrganization;
-  } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
-  }
-};
 
 export const readOrganization = async (organizationID: string): Promise<Organization> => {
   try {
-    const matchedOrg: Organization | null = await prisma.organization.findUnique({
+    const orga: Organization | null = await prisma.organization.findUnique({
       where: { id: organizationID },
     });
-    if (!matchedOrg) {
+    if (!orga) {
       throw new Error('Organization not found');
     }
-    return matchedOrg;
+    return orga;
   } catch (error) {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
@@ -35,14 +18,12 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
 
 export const updateOrganization = async (organization: Organization): Promise<Organization> => {
   try {
-    // Hier sollte geprüft werden, ob sich das Expertise Area Feld geändert hat
-    // Wenn nicht, kann die Vektorisierung übersprungen werden
-
     const existingOrg = await prisma.organization.findUnique({ where: { id: organization.id } });
     if (!existingOrg) {
       throw new Error('Organization not found for update');
     }
 
+    // Only re-vectorize if expertiseArea has changed
     if (existingOrg.expertiseArea === organization.expertiseArea) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
