@@ -51,6 +51,8 @@ enum AppointmentStatus {
 enum PricingModel {
   FIXED
   HOURLY
+
+  @@schema("public")
 }
 
   enum PriceCategory {
