@@ -1,14 +1,18 @@
 import { jest } from '@jest/globals';
 
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
+
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
 }));
 
 import { NextRequest } from 'next/server';
 
 import { GET, PATCH, POST } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
-import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
