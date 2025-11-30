@@ -9,10 +9,12 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   }),
 }));
 
-import { NextRequest } from 'next/server';
+// Alle Imports per await:
+const { NextRequest } = await import('next/server');
+const { prisma } = await import('@/lib/db');
 
-import { GET, PATCH, POST } from '@/app/api/organization/route';
-import { prisma } from '@/lib/db';
+// Dynamisch die API-Funktionen importieren
+const { GET, PATCH, POST } = await import('@/app/api/organization/route');
 
 describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
