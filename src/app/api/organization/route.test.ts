@@ -16,8 +16,11 @@ describe('Organization Routen teset', () => {
     const organization: OrganizationCreateInput = {
       name: 'Max Mustermann Kanzlei',
       description: 'Kanzlei test',
+      shortDescription: "Kanzlei shortTest",
       email: Math.random() + '@mail.de',
+      password: "testpasswort",
       type: 'LAW_FIRM',
+      priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
     };
 
@@ -39,8 +42,11 @@ describe('Organization Routen teset', () => {
       id: getJSON[0].id,
       name: 'updated',
       description: 'Kanzlei test',
+      shortDescription: "Kanzlei shortTest",
       email: Math.random() + '@mail.de',
+      password: "testpasswort",
       type: 'LAW_FIRM',
+      priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
     };
 

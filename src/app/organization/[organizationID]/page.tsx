@@ -12,10 +12,12 @@ export default async function OrganizationDetailPage({
   const org: Organization = await res.json();
 
   return org ? (
-    <OrganizationDetail {...org} />
+    <div className="bg-card">
+      <OrganizationDetail {...org} />
+    </div>
   ) : (
     <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
-      <p className="text-5xl font-bold text-black">
+      <p className="text-5xl font-bold text-foreground">
         Leider konnten wir keine passende Organisation finden.
       </p>
     </div>

@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
     const searchInput = await vectorizeSearch(query);
 
     const matches = await prisma.$queryRawUnsafe<
-      { id: string; name: string; expertiseArea: string; similarity: number }[]
+      { id: string; name: string; expertiseArea: string; description: string; similarity: number }[]
     >(
       `
-        SELECT id, name, "expertiseArea",
+        SELECT id, name, "expertiseArea", "description",
             1 - ("expertiseVector" <=> $1::vector) AS similarity
         FROM "Organization"
         WHERE 
