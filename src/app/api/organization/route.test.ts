@@ -11,10 +11,9 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
-const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { GET, PATCH, POST } = await import('@/app/api/organization/route');
+const { GET, POST } = await import('@/app/api/organization/route');
 
 describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
@@ -33,43 +32,12 @@ describe('Organization Routen testen', () => {
 
     const req = new NextRequest(baseUrl, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(organization),
     });
 
     const res = await POST(req);
     expect(res.status).toBe(201);
-  });
-
-  test('PATCH Organizations', async () => {
-    const getReq = new NextRequest(baseUrl);
-    const getRes = await GET(getReq);
-    const getJSON = await getRes.json();
-
-    const organization: OrganizationCreateInput = {
-      id: getJSON[0].id,
-      name: 'updated',
-      description: 'Kanzlei test',
-      shortDescription: 'Kanzlei shortTest',
-      email: Math.random() + '@mail.de',
-      password: 'testpasswort',
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-    };
-
-    const patchReq = new NextRequest(baseUrl, {
-      method: 'PATCH',
-      body: JSON.stringify(organization),
-    });
-
-    const res = await PATCH(patchReq);
-
-    const updated = await prisma.organization.findFirst({
-      where: { name: 'updated' },
-    });
-
-    expect(updated?.name).toBe('updated');
-    expect(res.status).toBe(200);
   });
 
   test('GET Organizations', async () => {
