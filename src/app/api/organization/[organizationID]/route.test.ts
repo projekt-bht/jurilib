@@ -19,6 +19,9 @@ describe('Organization Routen teset', () => {
             email: Math.random() + '@mail.de',
             type: 'LAW_FIRM',
             expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+            shortDescription: '',
+            password: '',
+            priceCategory: 'FREE'
         };
 
         const req = new NextRequest(baseUrl, {
@@ -80,6 +83,9 @@ describe('Organization Routen teset', () => {
             email: Math.random() + '@mail.de',
             type: 'LAW_FIRM',
             expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+            shortDescription: '',
+            password: '',
+            priceCategory: 'FREE'
         };
 
         const patchReq = new NextRequest(baseUrl, {
