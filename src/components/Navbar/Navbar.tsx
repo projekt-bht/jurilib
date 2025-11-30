@@ -1,6 +1,6 @@
+import { Building2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Building2 } from 'lucide-react';
 
 import { Login } from '@/components/Login/Login';
 import scale_logo from '~/public/scale_logo.svg';
