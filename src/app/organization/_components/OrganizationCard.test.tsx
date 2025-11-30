@@ -6,15 +6,18 @@ import type { Organization } from '~/generated/prisma/client';
 import OrganizationCard from './OrganizationCard';
 
 const mockOrganization: Organization = {
-  id: '1',
   name: 'Rechtsberatum München',
+  id: '1',
   description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
+  shortDescription: 'test.',
   email: 'contact@rechtsberatum.de',
+  password: '2334',
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
   expertiseArea: ['Arbeitsrecht'],
   type: 'LAW_FIRM',
+  priceCategory: 'MEDIUM',
   createdAt: new Date(),
   updatedAt: new Date(),
 };
