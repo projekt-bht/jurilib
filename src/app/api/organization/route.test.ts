@@ -10,7 +10,7 @@ import { GET, PATCH, POST } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
-describe('Organization Routen teset', () => {
+describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
 
   test('POST Organizations', async () => {
