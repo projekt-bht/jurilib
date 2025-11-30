@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
