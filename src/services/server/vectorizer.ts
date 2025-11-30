@@ -41,7 +41,8 @@ export async function vectorizeSearch(query: string) {
     input: expandedQuery,
   });
 
-  return embeddingResponse.data[0].embedding;
+  const embedding = embeddingResponse.data[0].embedding;
+  return `[${embedding.join(',')}]`;
 }
 
 export async function vectorizeExpertiseArea(query: string) {
