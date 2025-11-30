@@ -1,13 +1,14 @@
 import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
+}));
+
 import { NextRequest } from 'next/server';
 
 import { GET, PATCH, POST } from '@/app/api/organization/route';
 import { prisma } from '@/lib/db';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
-
-jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
-}));
 
 describe('Organization Routen teset', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
@@ -16,9 +17,9 @@ describe('Organization Routen teset', () => {
     const organization: OrganizationCreateInput = {
       name: 'Max Mustermann Kanzlei',
       description: 'Kanzlei test',
-      shortDescription: "Kanzlei shortTest",
+      shortDescription: 'Kanzlei shortTest',
       email: Math.random() + '@mail.de',
-      password: "testpasswort",
+      password: 'testpasswort',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
@@ -42,9 +43,9 @@ describe('Organization Routen teset', () => {
       id: getJSON[0].id,
       name: 'updated',
       description: 'Kanzlei test',
-      shortDescription: "Kanzlei shortTest",
+      shortDescription: 'Kanzlei shortTest',
       email: Math.random() + '@mail.de',
-      password: "testpasswort",
+      password: 'testpasswort',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
