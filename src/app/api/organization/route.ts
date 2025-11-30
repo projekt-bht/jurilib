@@ -1,72 +1,44 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { vectorizeExpertiseArea } from 'src/services/server/vectorizer';
 
-import prisma from '@/lib/db';
-import type { OrganizationCreateInput } from '~/generated/prisma/models';
+import { createOrganization, readOrganizations } from './services';
 
+/*
+TODO:
+- Errorhandling implementieren
+- Authentifizierung hinzufügen
+*/
+
+// POST /api/organization/
+// Create a new organization
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const organizationInfo: OrganizationCreateInput = body;
-
-  //TODO: Validierung
-  const input = `
-        ${organizationInfo.expertiseArea!.toString()}
-      `;
-  const expertiseVector = await vectorizeExpertiseArea(input);
-
   try {
-    const createdOrganization = await prisma.organization.create({ data: organizationInfo });
-    await prisma.$executeRawUnsafe(
-      `UPDATE "Organization"
-            SET "expertiseVector" = $1::vector
-            WHERE "id" = $2`,
-      expertiseVector,
-      createdOrganization.id
+    if (!req.headers.get('content-type')?.includes('application/json')) {
+      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
+    }
+
+    const body = await req.json();
+    if (!body || Object.keys(body).length === 0) {
+      return NextResponse.json({ message: 'Request body is required' }, { status: 400 });
+    }
+
+    const createdOrganization = await createOrganization(body);
+    return NextResponse.json(createdOrganization, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Creation failed: ' + (error as Error).message },
+      { status: 400 }
     );
-    return NextResponse.json({ message: 'Created' }, { status: 201 });
-  } catch (e) {
-    throw e;
   }
 }
 
-export async function PATCH(req: NextRequest) {
-  const body = await req.json();
-  const organizationInfo: OrganizationCreateInput = body;
-
-  //TODO: Validierung
-  if (!organizationInfo.id) return NextResponse.json({ status: 400 });
-
-  const input = `
-        ${organizationInfo.expertiseArea!.toString()}
-      `;
-  const expertiseVector = await vectorizeExpertiseArea(input);
-
-  try {
-    const updatedOrganization = await prisma.organization.update({
-      where: { id: organizationInfo.id },
-      data: {
-        ...organizationInfo,
-      },
-    });
-    await prisma.$executeRawUnsafe(
-      `UPDATE "Organization"
-            SET "expertiseVector" = $1::vector
-            WHERE "id" = $2`,
-      expertiseVector,
-      updatedOrganization.id
-    );
-    return NextResponse.json({ message: 'Patched' }, { status: 200 });
-  } catch (e) {
-    throw e;
-  }
-}
-
+// GET /api/organization/
+// Retrieve all organizations
 export async function GET(_req: NextRequest) {
   try {
-    const organizations = await prisma.organization.findMany();
-    return NextResponse.json(organizations);
+    const organization = await readOrganizations();
+    return NextResponse.json(organization, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
   }
 }
