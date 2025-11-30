@@ -1,20 +1,23 @@
+import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 import type { Organization } from '~/generated/prisma/client';
 
 import OrganizationCard from './OrganizationCard';
 
 const mockOrganization: Organization = {
-  id: '1',
   name: 'Rechtsberatum München',
+  id: '1',
   description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
+  shortDescription: 'test.',
   email: 'contact@rechtsberatum.de',
+  password: '2334',
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
   expertiseArea: ['Arbeitsrecht'],
   type: 'LAW_FIRM',
+  priceCategory: 'MEDIUM',
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -54,6 +57,6 @@ describe('OrganizationCard', () => {
   it('calls router.push when button is clicked', async () => {
     render(<OrganizationCard {...mockOrganization} />);
     const link = screen.getByRole('link', { name: /zum profil/i });
-    expect(link).toHaveAttribute('href', `/organizations/${mockOrganization.id}`);
+    expect(link).toHaveAttribute('href', `/organization/${mockOrganization.id}`);
   });
 });

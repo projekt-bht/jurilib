@@ -6,12 +6,13 @@ jest.unstable_mockModule('next/navigation', () => ({
   }),
 }));
 
+// wichtige Regel für ESM: alle Imports NACH den Mocks als Konstanten!
 const { render, screen } = await import('@testing-library/react');
-const { LandingPage } = await import('./LandingPage');
+const { ProblemSearchField } = await import('./ProblemSearchField');
 
 describe('Test LandingPage', () => {
   it('renders the component text', () => {
-    render(<LandingPage />);
-    expect(screen.getByText(/Beschreibe dein Problem/i)).toBeInTheDocument();
+    render(<ProblemSearchField />);
+    expect(screen.getByText(/Passende Lösung finden/i)).toBeInTheDocument();
   });
 });

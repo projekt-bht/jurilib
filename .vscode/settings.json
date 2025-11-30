@@ -1,0 +1,8 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "jest.jestCommandLine": "NODE_OPTIONS=--experimental-vm-modules node_modules/.bin/jest"
+}

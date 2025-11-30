@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
 import prisma from '@/lib/db';
 import { vectorizeSearch } from '@/services/openRouter/vectorizer';
 
@@ -18,11 +19,12 @@ export async function POST(req: NextRequest) {
 
   if (query) {
     const searchInput = await vectorizeSearch(query);
+
     const matches = await prisma.$queryRawUnsafe<
-      { id: string; name: string; expertiseArea: string; similarity: number }[]
+      { id: string; name: string; expertiseArea: string; description: string; similarity: number }[]
     >(
       `
-        SELECT id, name, "expertiseArea",
+        SELECT id, name, "expertiseArea", "description",
             1 - ("expertiseVector" <=> $1::vector) AS similarity
         FROM "Organization"
         WHERE 
@@ -38,6 +40,7 @@ export async function POST(req: NextRequest) {
     const filteredMatches = matches.filter(
       (match) => match.similarity >= highestSimilarity - threshold
     );
+    // eslint-disable-next-line no-console
     console.log(filteredMatches);
     //console.log(matches)
     return NextResponse.json(filteredMatches, { status: 200 });
