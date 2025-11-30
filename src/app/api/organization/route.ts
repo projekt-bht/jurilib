@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { vectorizeExpertiseArea } from 'src/services/server/vectorizer';
 
 import prisma from '@/lib/db';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 export async function POST(req: NextRequest) {
@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
   const expertiseVector = await vectorizeExpertiseArea(input);
 
   try {
-    const createdOrganization = await db.organization.create({ data: organizationInfo });
-    await db.$executeRawUnsafe(
+    const createdOrganization = await prisma.organization.create({ data: organizationInfo });
+    await prisma.$executeRawUnsafe(
       `UPDATE "Organization"
             SET "expertiseVector" = $1::vector
             WHERE "id" = $2`,
@@ -43,13 +43,13 @@ export async function PATCH(req: NextRequest) {
   const expertiseVector = await vectorizeExpertiseArea(input);
 
   try {
-    const updatedOrganization = await db.organization.update({
+    const updatedOrganization = await prisma.organization.update({
       where: { id: organizationInfo.id },
       data: {
         ...organizationInfo,
       },
     });
-    await db.$executeRawUnsafe(
+    await prisma.$executeRawUnsafe(
       `UPDATE "Organization"
             SET "expertiseVector" = $1::vector
             WHERE "id" = $2`,
