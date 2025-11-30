@@ -1,4 +1,4 @@
-const nextJest = require('next/jest.js');
+import nextJest from 'next/jest.js';
 
 // Build Next-aware configs per project so TS/TSX + JSX transform works
 const createJestConfig = nextJest({ dir: './' });
@@ -21,14 +21,10 @@ const shared = {
   clearMocks: true,
   // collectCoverage: true,
   // coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/.next/',
-    'jest.config.ts',
-    'next.config.ts',
-  ],
+  coveragePathIgnorePatterns: ['/node_modules/', '/.next/', 'jest.config.ts', 'next.config.ts'],
   testPathIgnorePatterns: testPathIgnore,
   moduleDirectories: ['node_modules', '<rootDir>/'],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
 };
 
 const frontendCustom = {
@@ -43,7 +39,7 @@ const frontendCustom = {
   // exclude API routes from FE project to avoid double-running
   testPathIgnorePatterns: [...testPathIgnore, '<rootDir>/src/app/api/'],
   moduleNameMapper: baseMappers,
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 const backendCustom = {
@@ -60,9 +56,10 @@ const backendCustom = {
     '^~/(.*)$': '<rootDir>/$1',
     '^@helper/(.*)$': '<rootDir>/helper/$1',
   },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
-module.exports = async () => {
+export default async () => {
   const frontend = await createJestConfig(frontendCustom)();
   const backend = await createJestConfig(backendCustom)();
   return { projects: [frontend, backend] };
