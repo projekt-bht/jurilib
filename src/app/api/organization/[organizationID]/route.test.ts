@@ -2,6 +2,8 @@ import { jest } from '@jest/globals';
 
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
+import { POST } from '../route';
+
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   vectorizeExpertiseArea: jest.fn(async () => {
     const arr = Array(3072).fill(0.01);
@@ -14,12 +16,13 @@ const { NextRequest } = await import('next/server');
 const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { DELETE, GET, PATCH, POST } = await import('@/app/api/organization/[organizationID]/route');
+const { DELETE, GET, PATCH } = await import('@/app/api/organization/[organizationID]/route');
 
 describe('Organization Routen teset', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
   let createdOrgId: string;
 
+  // Usage of POST from organization/route.ts to create an organization for further tests
   test('POST Organization', async () => {
     const organization: OrganizationCreateInput = {
       name: 'Max Mustermann Kanzlei',
@@ -41,25 +44,6 @@ describe('Organization Routen teset', () => {
     const res = await POST(req);
     expect(res.status).toBe(201);
     createdOrgId = (await res.json()).id;
-  });
-
-  test('POST Organization with missing fields', async () => {
-    const organization = {
-      name: 'Max Mustermann Kanzlei',
-      // description is missing
-      email: Math.random() + '@mail.de',
-      type: 'LAW_FIRM',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-    };
-
-    const req = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
-      method: 'POST',
-      body: JSON.stringify(organization),
-    });
-
-    const res = await POST(req);
-    expect(res.status).toBe(400);
   });
 
   test('GET Organization', async () => {
