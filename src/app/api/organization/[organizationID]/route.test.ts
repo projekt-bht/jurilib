@@ -48,7 +48,7 @@ describe('Organization Routen testen', () => {
 
   test('GET Organization', async () => {
     const req = new NextRequest(baseUrl);
-    const res = await GET(req, { params: Promise.resolve({ organizationID: createdOrgId }) });
+    const res = await GET(req, { params: { organizationID: createdOrgId } });
     const json = await res.json();
     expect(json.length).not.toBe(0);
     expect(res.status).toBe(200);
@@ -56,13 +56,13 @@ describe('Organization Routen testen', () => {
 
   test('GET non-existing Organization', async () => {
     const req = new NextRequest(baseUrl);
-    const res = await GET(req, { params: Promise.resolve({ organizationID: 'non-existing-id' }) });
+    const res = await GET(req, { params: { organizationID: 'non-existing-id' } });
     expect(res.status).toBe(404);
   });
 
   test('PATCH Organization', async () => {
     const getReq = new NextRequest(baseUrl);
-    const getRes = await GET(getReq, { params: Promise.resolve({ organizationID: createdOrgId }) });
+    const getRes = await GET(getReq, { params: { organizationID: createdOrgId } });
     const getJSON = await getRes.json();
 
     expect(getJSON.length).not.toBe(0);
@@ -86,7 +86,7 @@ describe('Organization Routen testen', () => {
       body: JSON.stringify(organization),
     });
 
-    const res = await PATCH(patchReq);
+    const res = await PATCH(patchReq, { params: { organizationID: createdOrgId } });
 
     const updated = await prisma.organization.findFirst({
       where: { name: 'updated' },
@@ -106,21 +106,19 @@ describe('Organization Routen testen', () => {
       body: JSON.stringify(data),
     });
 
-    const res = await PATCH(patchReq);
+    const res = await PATCH(patchReq, { params: { organizationID: createdOrgId } });
     expect(res.status).toBe(400);
   });
 
   test('DELETE Organization', async () => {
     const getReq = new NextRequest(baseUrl);
-    const res = await DELETE(getReq, { params: Promise.resolve({ organizationID: createdOrgId }) });
+    const res = await DELETE(getReq, { params: { organizationID: createdOrgId } });
     expect(res.status).toBe(200);
   });
 
-  // test('DELETE non-existing Organization', async () => {
-  //   const getReq = new NextRequest(baseUrl);
-  //   const res = await DELETE(getReq, {
-  //     params: Promise.resolve({ organizationID: 'non-existing-id' }),
-  //   });
-  //   expect(res.status).toBe(404);
-  // });
+  test('DELETE non-existing Organization', async () => {
+    const getReq = new NextRequest(baseUrl);
+    const res = await DELETE(getReq, { params: { organizationID: 'non-existing-id' } });
+    expect(res.status).toBe(400);
+  });
 });

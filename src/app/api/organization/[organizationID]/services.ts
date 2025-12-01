@@ -16,9 +16,12 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
   }
 };
 
-export const updateOrganization = async (organization: Organization): Promise<Organization> => {
+export const updateOrganization = async (
+  organization: Organization,
+  organizationID: string
+): Promise<Organization> => {
   try {
-    const existingOrg = await prisma.organization.findUnique({ where: { id: organization.id } });
+    const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
       throw new Error('Organization not found for update');
     }
