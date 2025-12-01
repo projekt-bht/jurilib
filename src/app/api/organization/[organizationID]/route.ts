@@ -4,9 +4,12 @@ import { NextResponse } from 'next/server';
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
 
 // GET /api/organization/:organizationID
-export async function GET(_req: NextRequest, { params }: { params: { organizationID: string } }) {
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ organizationID: string }> }
+) {
   try {
-    const { organizationID } = params;
+    const { organizationID } = await params;
     if (!organizationID) {
       return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
     }
@@ -19,22 +22,26 @@ export async function GET(_req: NextRequest, { params }: { params: { organizatio
 }
 
 // PATCH /api/organization/:organizationID
-export async function PATCH(req: NextRequest, { params }: { params: { organizationID: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ organizationID: string }> }
+) {
   // TODO: Authentifizierung
   try {
     if (!req.headers.get('content-type')?.includes('application/json')) {
       return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
     }
 
-    const { organizationID } = params;
-    if (!organizationID) {
-      return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-    }
-
     const body = await req.json();
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json({ message: 'Update data is required' }, { status: 400 });
     }
+
+    const { organizationID } = await params;
+    if (!organizationID) {
+      return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
+    }
+
     const updatedOrganization = await updateOrganization(body, organizationID);
 
     return NextResponse.json(updatedOrganization, { status: 200 });
@@ -47,10 +54,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { organizati
 }
 
 // DELETE /api/organization/:organizationID
-export async function DELETE(req: NextRequest, { params }: { params: { organizationID: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ organizationID: string }> }
+) {
   // TODO: Authentifizierung
   try {
-    const { organizationID } = params;
+    const { organizationID } = await params;
     if (!organizationID) {
       return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
     }
