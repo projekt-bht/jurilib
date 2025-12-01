@@ -18,7 +18,7 @@ const { prisma } = await import('@/lib/db');
 // Dynamisch die API-Funktionen importieren
 const { DELETE, GET, PATCH } = await import('@/app/api/organization/[organizationID]/route');
 
-describe('Organization Routen teset', () => {
+describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
   let createdOrgId: string;
 
