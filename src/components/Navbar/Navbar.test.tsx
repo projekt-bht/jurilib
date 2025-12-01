@@ -12,6 +12,17 @@ jest.unstable_mockModule('next/image', () => ({
   default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
+jest.unstable_mockModule('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+  }),
+}));
+
 // top-level await
 const { render, screen } = await import('@testing-library/react');
 const { Navbar } = await import('./Navbar');
@@ -21,6 +32,6 @@ describe('Test NavBar', () => {
     render(<Navbar />);
     expect(screen.getByText(/JuriLib/i)).toBeInTheDocument();
     expect(screen.getByText(/Organisationen/i)).toBeInTheDocument();
-    expect(screen.getByText(/Einloggen/i)).toBeInTheDocument();
+    expect(screen.getByText(/Registrieren/i)).toBeInTheDocument();
   });
 });

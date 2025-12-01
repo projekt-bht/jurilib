@@ -19,6 +19,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
   // Fehlertext, der über den Formularen angezeigt wird
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Zeigt an, ob gerade eine API-Anfrage läuft
   const [loading, setLoading] = useState(false);
@@ -66,7 +67,11 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   };
 
   // Aktualisiert Organisationsformular-Felder
-  const handleOrgChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  type OrgChangeEvent =
+    | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    | { target: { name: string; value: string } };
+
+  const handleOrgChange = (e: OrgChangeEvent) => {
     setOrgForm({
       ...orgForm,
       [e.target.name]: e.target.value,
@@ -87,6 +92,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Verhindert Seitenreload des Standardformulars
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -111,6 +117,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         return;
       }
 
+      setSuccess('Sie haben sich erfolgreich registriert.');
       // Bei Erfolg könnte man hier Modal schließen oder weiterleiten
     } catch (err) {
       // Netzwerkfehler oder unerwartete Probleme
@@ -137,6 +144,11 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         {error && (
           <div className="mt-2 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {error}
+          </div>
+        )}
+        {success && (
+          <div className="mt-2 mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+            {success}
           </div>
         )}
 
