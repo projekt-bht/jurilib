@@ -33,6 +33,12 @@
   --color-accent-amber: var(--accent-amber);
   --color-accent-amber-light: var(--accent-amber-light);
   --color-accent-amber-soft: var(--accent-amber-soft);
+  --color-accent-gray: var(--accent-gray);
+  --color-accent-gray-light: var(--accent-gray-light);
+  --color-accent-gray-soft: var(--accent-gray-soft);
+  --color-accent-black: var(--accent-black);
+  --color-accent-black-light: var(--accent-black-light);
+  --color-accent-white: var(--accent-white);
   --radius-sm: calc(var(--radius) - 4px); /* Rundung für Badges oder kleine Elemente */
   --radius-md: calc(
     var(--radius) - 2px
@@ -69,6 +75,12 @@
   --accent-amber: rgb(225 113 0);
   --accent-amber-light: rgb(254 243 198);
   --accent-amber-soft: rgb(255 251 235);
+  --accent-gray: rgb(115 115 115);
+  --accent-gray-light: rgb(228 228 228);
+  --accent-gray-soft: rgb(248 248 248);
+  --accent-black: rgb(48 48 48);
+  --accent-black-light: rgb(64 64 64);
+  --accent-white: rgb(255 255 255);
 }
 
 .dark {
@@ -99,6 +111,12 @@
   --accent-amber: rgb(225 113 0);
   --accent-amber-light: rgb(254 243 198);
   --accent-amber-soft: rgb(255 251 235);
+  --accent-gray: rgb(115 115 115);
+  --accent-gray-light: rgb(228 228 228);
+  --accent-gray-soft: rgb(248 248 248);
+  --accent-black: rgb(48 48 48);
+  --accent-black-light: rgb(64 64 64);
+  --accent-white: rgb(255 255 255);
 }
 
 @layer base {
