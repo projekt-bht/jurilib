@@ -1,6 +1,7 @@
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
+import { Areas } from '~/generated/prisma/client';
 
 export const readOrganization = async (organizationID: string): Promise<Organization> => {
   try {
@@ -26,7 +27,19 @@ export const updateOrganization = async (
       throw new Error('Organization not found for update');
     }
 
+    if (!organization.expertiseArea) {
+      throw new Error('Expertise area is required');
+    }
+
+    // Iterate through expertiseArea and validate each area
+    organization.expertiseArea.forEach((area) => {
+      if (!Object.values(Areas).includes(area)) {
+        throw new Error(`Invalid expertise ${area} found!`);
+      }
+    });
+
     // Only re-vectorize if expertiseArea has changed
+    // Spread operator "...organization" is used to copy all other fields of the organization
     if (existingOrg.expertiseArea === organization.expertiseArea) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
@@ -36,7 +49,7 @@ export const updateOrganization = async (
       });
       return updatedOrganization;
     } else {
-      const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
+      const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
 
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
