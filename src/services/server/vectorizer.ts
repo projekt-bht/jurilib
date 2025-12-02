@@ -42,6 +42,9 @@ export async function vectorizeSearch(query: string) {
   });
 
   const embedding = embeddingResponse.data[0].embedding;
+
+  // Tranform the embedding Object into a Postgres vector representation: "[0.123,0.134,...]"
+  // necessary, beacause basic format of "const embedding" is {"0.01385710202157497","-0.02136754989624023","-0.009353725239634514",...}
   return `[${embedding.join(',')}]`;
 }
 
@@ -51,6 +54,9 @@ export async function vectorizeExpertiseArea(query: string) {
     model: 'openai/text-embedding-3-large',
     input: query,
   });
+
+  // Tranform the embedding Object into a Postgres vector representation: "[0.123,0.134,...]"
+  // necessary, beacause basic format of "const embedding" is {"0.01385710202157497","-0.02136754989624023","-0.009353725239634514",...}
   const embedding = embeddingResponse.data[0].embedding;
   return `[${embedding.join(',')}]`;
 }
