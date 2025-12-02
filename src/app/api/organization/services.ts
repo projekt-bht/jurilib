@@ -1,12 +1,23 @@
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import type { Organization } from '~/generated/prisma/client';
+import { Areas, type Organization } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
 export const createOrganization = async (organization: Organization): Promise<Organization> => {
   try {
-    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
+    if (!organization.expertiseArea) {
+      throw new Error('Expertise area is required');
+    }
+
+    // Iterate through expertiseArea and validate each area
+    organization.expertiseArea.forEach((area) => {
+      if (!Object.values(Areas).includes(area)) {
+        throw new Error(`Invalid expertise ${area} found!`);
+      }
+    });
+
+    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
 
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
