@@ -1,6 +1,12 @@
 import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
-import { Areas, OrganizationType, PriceCategory, UserType } from '../generated/prisma/enums';
+import {
+  Areas,
+  OrganizationType,
+  PriceCategory,
+  UserType,
+  ServiceType,
+} from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
 // code inspired by:
@@ -90,6 +96,7 @@ async function main() {
           organization: { connect: { id: orgId } },
           title: serviceTitle,
           description: faker.commerce.productDescription(),
+          type: faker.helpers.enumValue(ServiceType),
           pricingModel: 'FIXED',
         },
       });
