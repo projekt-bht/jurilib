@@ -157,6 +157,7 @@ model Service {
 
     organization Organization @relation(fields: [organizationId], references: [id])
     cases        Case[]
+    appointments Appointment[]
 
     @@schema("public")
 }
@@ -202,6 +203,7 @@ model Appointment {
     case         Case?      @relation(fields: [caseId], references: [id])
     user         User?         @relation(fields: [userId], references: [id])
     organization Organization? @relation(fields: [organizationId], references: [id])
+    service      Service?      @relation(fields: [serviceId], references: [id])
 
     @@schema("public")
 }
