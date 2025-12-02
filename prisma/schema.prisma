@@ -11,9 +11,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  extensions = [vector()]
-  schemas = ["public"]
+    provider = "postgresql"
+    extensions = [vector()]
+    schemas = ["public"]
 }
 
 enum UserType {
@@ -49,20 +49,20 @@ enum AppointmentStatus {
 }
 
 enum PricingModel {
-  FIXED
-  HOURLY
-
-  @@schema("public")
+    FIXED
+    HOURLY
+  
+    @@schema("public")
 }
 
-  enum PriceCategory {
+enum PriceCategory {
     FREE
     LOW
     MEDIUM
     HIGH
 
     @@schema("public")
-  }
+}
 
 enum Areas {
     Mietrecht
@@ -119,28 +119,28 @@ model User {
 }
 
 model Organization {
-  id              String                       @id @default(uuid())
-  name            String
-  description     String?
-  shortDescription String
-  email           String                       @unique
-  password        String
-  phone           String?
-  address         String?
-  website         String?
-  expertiseArea   Areas[]
-  expertiseVector Unsupported("vector(3072)")?
-  type            OrganizationType
-  priceCategory   PriceCategory
-
+    id                 String                       @id @default(uuid())
+    name               String
+    description        String?
+    shortDescription   String
+    email              String                       @unique
+    password           String
+    phone              String?
+    address            String?
+    website            String?
+    expertiseArea      Areas[]
+    expertiseVector    Unsupported("vector(3072)")?
+    type               OrganizationType
+    priceCategory      PriceCategory
+  
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
+  
     users        User[]
     services     Service[]
     appointments Appointment[]
     cases        Case[]
-
+  
     @@index([expertiseArea(ops: ArrayOps)], type: Gin)
     @@schema("public")
 }
@@ -155,7 +155,7 @@ model Service {
     createdAt      DateTime     @default(now())
     updatedAt      DateTime     @updatedAt
 
-    organization Organization @relation(fields: [organizationId], references: [id])
+    organization Organization   @relation(fields: [organizationId], references: [id])
     cases        Case[]
     appointments Appointment[]
 
@@ -200,7 +200,7 @@ model Appointment {
     timeZone       String?
     notes          String?
 
-    case         Case?      @relation(fields: [caseId], references: [id])
+    case         Case?         @relation(fields: [caseId], references: [id])
     user         User?         @relation(fields: [userId], references: [id])
     organization Organization? @relation(fields: [organizationId], references: [id])
     service      Service?      @relation(fields: [serviceId], references: [id])
