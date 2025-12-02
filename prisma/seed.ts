@@ -14,7 +14,7 @@ async function main() {
   // Cleanup for each Seeding
 
   await prisma.appointment.deleteMany();
-  await prisma.request.deleteMany();
+  await prisma.case.deleteMany();
   await prisma.service.deleteMany();
   await prisma.user.deleteMany();
   await prisma.organization.deleteMany();
@@ -97,34 +97,38 @@ async function main() {
       console.log(`created Service "${serviceTitle}" in Organization`);
     }
 
-    // Create 4 Requests per Org
-    const requestIds: string[] = [];
+    // Create 4 Cases per Org
+    const caseIds: string[] = [];
     for (let i = 0; i < 4; i++) {
-      const requestTitle = faker.lorem.words(3);
-      const request = await prisma.request.create({
+      const caseTitle = faker.lorem.words(3);
+      const caseItem = await prisma.case.create({
         data: {
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
           service: { connect: { id: serviceIds[i % serviceIds.length] } },
-          title: requestTitle,
+          title: caseTitle,
           description: faker.lorem.sentence(),
           status: 'OPEN',
         },
       });
-      requestIds.push(request.id);
-      console.log(`created Request "${requestTitle}" in Organization`);
+      caseIds.push(caseItem.id);
+      console.log(`created Case "${caseTitle}" in Organization`);
     }
 
     // Create 5 Appointments per Org
     for (let i = 0; i < 5; i++) {
       const appointment = await prisma.appointment.create({
         data: {
-          request: { connect: { id: requestIds[i % requestIds.length] } },
+          case: { connect: { id: caseIds[i % caseIds.length] } },
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
+          service: { connect: { id: serviceIds[i % serviceIds.length] } },
           duration: faker.number.int({ min: 30, max: 120 }),
           status: 'OPEN',
           meetingLink: faker.internet.url(),
+          dateTime: faker.date.future(),
+          timeZone: faker.location.timeZone(),
+          notes: faker.lorem.sentence(),
         },
       });
       console.log(`created Appointment (${appointment.id}) in Organization`);
