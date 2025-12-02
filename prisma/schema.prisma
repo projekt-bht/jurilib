@@ -44,6 +44,7 @@ enum AppointmentStatus {
     CONFIRMED
     CANCELED
     OPEN
+    COMPLETED
 
     @@schema("public")
 }
@@ -145,7 +146,7 @@ model Organization {
     @@schema("public")
 }
 
-//Evtl hier Enum für Dienstleistungstyp? Erstgespräch etc..
+//Evtl hier Enum für Dienstleistungstyp (Erstgespräch etc.) und duration als Attribut, sodass Termintypen default Dauer haben?
 model Service {
     id             String       @id @default(uuid())
     organizationId String
@@ -186,13 +187,19 @@ model Request {
 model Appointment {
     id             String            @id @default(uuid())
     requestId      String?
-    userId         String?
-    organizationId String?
+    userId         String
+    organizationId String
+    //employeeId?
+    serviceId      String
     duration       Int?
     status         AppointmentStatus @default(OPEN)
-    meetingLink    String?
     createdAt      DateTime          @default(now())
     updatedAt      DateTime          @updatedAt
+    location       String
+    meetingLink    String?
+    dateTime       DateTime
+    timeZone       String?
+    notes          String?
 
     request      Request?      @relation(fields: [requestId], references: [id])
     user         User?         @relation(fields: [userId], references: [id])
