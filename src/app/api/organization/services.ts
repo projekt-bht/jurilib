@@ -1,6 +1,7 @@
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import { Areas, type Organization } from '~/generated/prisma/client';
+import type { Organization } from '~/generated/prisma/client';
+import { Areas } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
