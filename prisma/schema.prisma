@@ -181,7 +181,7 @@ model Case {
     id             String        @id @default(uuid())
     userId         String
     organizationId String
-    employeeId     String?
+    employeeId     String
     serviceId      String
     title          String
     description    String
@@ -205,7 +205,7 @@ model Appointment {
     caseId         String?
     userId         String
     organizationId String
-    employeeId     String?
+    employeeId     String
     //serviceID oder reicht ServiceType?
     serviceId      String
     duration       Int?
