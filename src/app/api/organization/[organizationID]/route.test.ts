@@ -2,8 +2,6 @@ import { jest } from '@jest/globals';
 
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
-import { POST } from '../route';
-
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   vectorizeExpertiseArea: jest.fn(async () => {
     const arr = Array(3072).fill(0.01);
@@ -17,6 +15,7 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { DELETE, GET, PATCH } = await import('@/app/api/organization/[organizationID]/route');
+const { POST } = await import('@/app/api/organization/route');
 
 describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
