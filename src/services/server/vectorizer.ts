@@ -41,9 +41,10 @@ export async function vectorizeSearch(query: string) {
     input: expandedQuery,
   });
 
-  // Fromat numeric embedding array as string
   const embedding = embeddingResponse.data[0].embedding;
+  // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.
+  return `[${embedding.join(',')}]`;
 }
 
 export async function vectorizeExpertiseArea(query: string) {
@@ -53,7 +54,7 @@ export async function vectorizeExpertiseArea(query: string) {
     input: query,
   });
 
-  // Fromat numeric embedding array as string
+  // Format numeric embedding array as string
   const embedding = embeddingResponse.data[0].embedding;
   return `[${embedding.join(',')}]`;
 }
