@@ -20,21 +20,17 @@ export async function POST(req: NextRequest) {
   if (query) {
     const searchInput = await vectorizeSearch(query);
 
-    const matches = await prisma.$queryRawUnsafe<
+    const matches = await prisma.$queryRaw<
       { id: string; name: string; expertiseArea: string; description: string; similarity: number }[]
-    >(
-      `
+    >`
         SELECT id, name, "expertiseArea", "description",
-            1 - ("expertiseVector" <=> $1::vector) AS similarity
+            1 - ("expertiseVector" <=> ${searchInput}::vector) AS similarity
         FROM "Organization"
         WHERE 
             "expertiseVector" IS NOT NULL
-            AND (1 - ("expertiseVector" <=> $1::vector)) >= $2
+            AND (1 - ("expertiseVector" <=> ${searchInput}::vector)) >= ${similarityOffset}
         ORDER BY similarity DESC
-        `,
-      searchInput,
-      similarityOffset
-    );
+        `;
 
     const highestSimilarity = matches[0]?.similarity;
     const filteredMatches = matches.filter(

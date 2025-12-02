@@ -29,7 +29,7 @@ async function main() {
 
     let expertiseVector = null;
     if (process.env.OPENAI_API_KEY) {
-      const expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+      expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
     }
 
     await prisma.$executeRawUnsafe(
