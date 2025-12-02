@@ -25,6 +25,23 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.organization.deleteMany();
 
+  // Create 20 Users
+  const userIds: string[] = [];
+  for (let i = 0; i < 20; i++) {
+    const userName = faker.person.fullName();
+    const user = await prisma.user.create({
+      data: {
+        name: userName,
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        type: faker.helpers.enumValue(UserType),
+      },
+    });
+    userIds.push(user.id);
+    console.log(`created User ${userName}`);
+  }
+
+  // Create Organizations with related Data
   for (const [i, orgId] of orgIds.entries()) {
     console.log(`ITERATION ${i + 1}/${orgIds.length}`);
     // relevant Constants for every creation
@@ -70,21 +87,21 @@ async function main() {
 
     console.log(`created "${orgName}" (${orgId})`);
 
-    // Create 2 Users per Organization
-    const userIds: string[] = [];
-    for (let i = 0; i < 2; i++) {
-      const userName = faker.person.fullName();
-      const user = await prisma.user.create({
+    // Create 5 Employees per Org
+    const employeeId: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const employeeName = faker.person.fullName();
+      const employee = await prisma.employee.create({
         data: {
-          name: userName,
-          email: faker.internet.email(),
-          password: faker.internet.password(),
-          type: faker.helpers.enumValue(UserType),
+          name: employeeName,
           organization: { connect: { id: orgId } },
+          email: faker.internet.email(),
+          phone: faker.phone.number(),
+          position: faker.person.jobTitle(),
         },
       });
-      userIds.push(user.id);
-      console.log(`created User ${userName} in Organization`);
+      employeeId.push(employee.id);
+      console.log(`created Employee ${employeeName} in Organization`);
     }
 
     // Create 3 Services per Org
@@ -112,6 +129,7 @@ async function main() {
         data: {
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
+          employee: { connect: { id: employeeId[i % employeeId.length] } },
           service: { connect: { id: serviceIds[i % serviceIds.length] } },
           title: caseTitle,
           description: faker.lorem.sentence(),
@@ -129,6 +147,7 @@ async function main() {
           case: { connect: { id: caseIds[i % caseIds.length] } },
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
+          employee: { connect: { id: employeeId[i % employeeId.length] } },
           service: { connect: { id: serviceIds[i % serviceIds.length] } },
           duration: faker.number.int({ min: 30, max: 120 }),
           status: 'OPEN',
