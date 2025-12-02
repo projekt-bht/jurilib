@@ -194,7 +194,7 @@ model Appointment {
     status         AppointmentStatus @default(OPEN)
     createdAt      DateTime          @default(now())
     updatedAt      DateTime          @updatedAt
-    location       String
+    location       String?
     meetingLink    String?
     dateTime       DateTime
     timeZone       String?
