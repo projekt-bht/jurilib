@@ -96,12 +96,17 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     setLoading(true);
 
     try {
-      // Je nach aktiver Registerkarte unterschiedliche Payload zusammenstellen
-      const payload =
-        activeTab === 'user' ? { type: 'user', ...userForm } : { type: 'organization', ...orgForm };
+      // Je nach aktiver Registerkarte unterschiedliche Payload und Endpoint
+      const isUser = activeTab === 'user';
+      const endpoint = isUser ? '/api/user' : '/api/organization';
+      const payload = isUser
+        ? userForm
+        : {
+            ...orgForm,
+            type: orgForm.organizationType,
+          };
 
-      // Anfrage an das Registrierungs-API
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +118,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
       // Fehlerfall vom Server
       if (!response.ok) {
-        setError(data.error || 'Fehler bei der Registrierung');
+        setError(data.error || data.message || 'Fehler bei der Registrierung');
         return;
       }
 
