@@ -24,7 +24,17 @@ export async function POST(req: NextRequest) {
     }
 
     const createdOrganization = await createOrganization(body);
-    return NextResponse.json(createdOrganization, { status: 201 });
+    return NextResponse.json(
+      {
+        message: 'Organisation erfolgreich registriert',
+        organization: {
+          id: createdOrganization.id,
+          name: createdOrganization.name,
+          email: createdOrganization.email,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof ValidationError) {
       return NextResponse.json(

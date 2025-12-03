@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
@@ -11,10 +12,11 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
       where: { id: organizationID },
     });
     if (!orga) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organizationID', organizationID, 404);
     }
     return orga;
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
@@ -26,17 +28,17 @@ export const updateOrganization = async (
   try {
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
-      throw new Error('Organization not found for update');
+      throw new ValidationError('notFound', 'organizationID', organizationID, 404);
     }
 
     if (!organization.expertiseArea) {
-      throw new Error('Expertise area is required');
+      throw new ValidationError('invalidInput', 'expertiseArea', organization.expertiseArea, 400);
     }
 
     // Iterate through expertiseArea and validate each area
     organization.expertiseArea.forEach((area) => {
       if (!Object.values(Areas).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+        throw new ValidationError('invalidInput', 'expertiseArea', area, 400);
       }
     });
 
@@ -72,15 +74,21 @@ export const updateOrganization = async (
       return updatedOrganization;
     }
   } catch (error) {
-    // Hier muss geprüft werden, ob der Fehler von Prisma kommt oder von der Vektorisierung
+    if (error instanceof ValidationError) throw error;
     throw new Error('Database update failed or vectorization failed: ' + (error as Error).message);
   }
 };
 
 export const deleteOrganization = async (organizationID: string): Promise<void> => {
   try {
+    const existing = await prisma.organization.findUnique({ where: { id: organizationID } });
+    if (!existing) {
+      throw new ValidationError('notFound', 'organizationID', organizationID, 404);
+    }
+
     await prisma.organization.delete({ where: { id: organizationID } });
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     throw new Error('Internal Server Error: ' + (error as Error).message);
   }
 };
