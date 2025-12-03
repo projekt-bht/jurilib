@@ -131,10 +131,10 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
       const payload = isUser
         ? { ...userForm, type: 'USER' }
-        : {
-            ...orgForm,
-            type: orgForm.organizationType,
-          };
+        : (() => {
+            const { organizationType, ...orgPayload } = orgForm;
+            return { ...orgPayload, type: organizationType };
+          })();
 
       const response = await fetch(endpoint, {
         method: 'POST',

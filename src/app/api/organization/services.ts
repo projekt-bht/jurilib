@@ -61,7 +61,13 @@ export const createOrganization = async (
     throw new ValidationError('duplicate', 'email', organization.email, 400);
   }
 
-  const expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+  let expertiseVector: string | null = null;
+  try {
+    expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+  } catch (error) {
+    // Allow creation even if embedding service is unavailable (e.g., missing API key)
+    console.warn('Vectorization skipped:', (error as Error).message);
+  }
   const hashedPassword = await bcrypt.hash(organization.password, 10);
 
   const createdOrganization = await prisma.organization.create({
@@ -72,9 +78,11 @@ export const createOrganization = async (
     },
   });
 
-  await prisma.$executeRaw`UPDATE "Organization"
-          SET "expertiseVector" = ${expertiseVector}::vector
-          WHERE "id" = ${createdOrganization.id}`;
+  if (expertiseVector) {
+    await prisma.$executeRaw`UPDATE "Organization"
+            SET "expertiseVector" = ${expertiseVector}::vector
+            WHERE "id" = ${createdOrganization.id}`;
+  }
 
   return createdOrganization;
 };
