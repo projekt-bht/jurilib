@@ -45,31 +45,32 @@ describe('organization services', () => {
 
     await expect(createOrganization(input)).rejects.toBeInstanceOf(ValidationError);
   });
+});
 
-  test('throws on short password', async () => {
-    const input: OrganizationCreateInput = {
-      name: 'Org',
-      shortDescription: 'Short',
-      email: 'org@example.com',
-      password: 'short',
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseArea: ['Arbeitsrecht'],
-    };
+test('throws on short password', async () => {
+  const input: OrganizationCreateInput = {
+    name: 'Org',
+    shortDescription: 'Short',
+    email: 'org@example.com',
+    password: 'short',
+    type: 'LAW_FIRM',
+    priceCategory: 'FREE',
+    expertiseArea: ['Arbeitsrecht'],
+  };
 
-    await expect(createOrganization(input)).rejects.toBeInstanceOf(ValidationError);
-  });
+  await expect(createOrganization(input)).rejects.toBeInstanceOf(ValidationError);
+});
 
-  test('throws on invalid expertise area', async () => {
-    const input: OrganizationCreateInput = {
-      name: 'Org',
-      shortDescription: 'Short',
-      email: 'org@example.com',
-      password: 'supersecret',
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseArea: ['InvalidArea' as any],
-    };
+test('throws on invalid expertise area', async () => {
+  const input: OrganizationCreateInput = {
+    name: 'Org',
+    shortDescription: 'Short',
+    email: 'org@example.com',
+    password: 'supersecret',
+    type: 'LAW_FIRM',
+    priceCategory: 'FREE',
+    expertiseArea: ['InvalidArea' as any],
+  };
 
-    await expect(createOrganization(input)).rejects.toBeInstanceOf(ValidationError);
-  });
+  await expect(createOrganization(input)).rejects.toBeInstanceOf(ValidationError);
+});
