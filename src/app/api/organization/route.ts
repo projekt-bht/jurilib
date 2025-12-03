@@ -15,12 +15,12 @@ TODO:
 export async function POST(req: NextRequest) {
   try {
     if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
+      throw new ValidationError('invalidInput', 'content-type', undefined, 415);
     }
 
     const body = await req.json();
     if (!body || Object.keys(body).length === 0) {
-      return NextResponse.json({ message: 'Request body is required' }, { status: 400 });
+      throw new ValidationError('invalidInput', 'body', undefined, 400);
     }
 
     const createdOrganization = await createOrganization(body);
