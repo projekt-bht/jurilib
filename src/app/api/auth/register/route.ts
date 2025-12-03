@@ -7,10 +7,11 @@ export async function POST(request: NextRequest) {
   try {
     // Request-Body auslesen (JSON-Daten aus der Anfrage extrahieren)
     const body = await request.json();
-    const { type, name, email, password } = body;
+    const { type, name, email, password, priceCategory } = body;
 
     // Grundvalidierung: Prüfen ob alle Pflichtfelder vorhanden sind
-    if (!type || !name || !email || !password) {
+    // hannes bringen
+    if (!type || !name || !email || !password || !priceCategory) {
       return NextResponse.json(
         { error: 'Alle Pflichtfelder müssen ausgefüllt werden' },
         { status: 400 }
@@ -18,6 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Passwortlänge prüfen (einfache Sicherheitsmaßnahme)
+    // hannes bringen
     if (password.length < 8) {
       return NextResponse.json(
         { error: 'Passwort muss mindestens 8 Zeichen lang sein' },
@@ -26,6 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Passwort sicher hashen bevor es in der Datenbank gespeichert wird
+    // hannes bringen
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // ---------------------------------------------
@@ -82,6 +85,7 @@ export async function POST(request: NextRequest) {
       } = body;
 
       // Prüfen ob eine Organisation mit dieser Email bereits existiert
+      // hannes bringen in servie layer fehlermedlung auch dort statt return  mit catch oder try catch
       const existingOrg = await prisma.organization.findUnique({
         where: { email },
         select: { id: true }, // only fetch existing column to avoid schema mismatches
@@ -96,6 +100,7 @@ export async function POST(request: NextRequest) {
       const resolvedExpertiseArea = Array.isArray(expertiseArea) ? expertiseArea : [];
 
       // Neue Organisation in der Datenbank erstellen
+      // kann von hannes übernommen werden
       const organization = await prisma.organization.create({
         data: {
           name,
@@ -113,6 +118,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Erfolgsantwort zurückgeben (ohne Passwort!)
+      //zeile 26 von hannes ersetzten mit diese teil , else teil weglöschen
       return NextResponse.json(
         {
           message: 'Organisation erfolgreich registriert',
@@ -129,6 +135,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Ungültiger Registrierungstyp' }, { status: 400 });
     }
   } catch (error) {
+    //auch von hannes übernommen
     // Allgemeiner Fehlerfall – alles, was schiefgeht, landet hier
     console.error('Registration error:', error);
     return NextResponse.json({ error: 'Interner Serverfehler' }, { status: 500 });
