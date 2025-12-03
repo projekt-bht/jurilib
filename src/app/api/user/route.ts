@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser, UserServiceError } from './services';
+import { ValidationError } from '@/error/validationErrors';
+import { createUser } from './services';
 
 //nur post für user
 export async function POST(request: NextRequest) {
@@ -20,8 +21,8 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: unknown) {
-    if (error instanceof UserServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
+    if (error instanceof ValidationError) {
+      return NextResponse.json({ error: error.getErrorMessage() }, { status: error.statusCode });
     }
 
     console.error('User registration error:', error);

@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 import { OrganizationType, PriceCategory } from '~/generated/prisma/enums';
-
+/*
+  in services
+   //hashing password
+  // validierungscheck
+  // datenbankcall für create user */
+//schau bei Hannes ob er organizationCreateInput nutzt wenn nicht korregiere
 export async function POST(request: NextRequest) {
   try {
     // Request-Body auslesen (JSON-Daten aus der Anfrage extrahieren)
