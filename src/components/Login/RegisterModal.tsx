@@ -14,24 +14,24 @@ interface RegisterModalProps {
 type TabType = 'user' | 'organization';
 
 export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
-  // Aktive Registerkarte: Benutzer oder Organisation
+  // Active tab: user or organization
   const [activeTab, setActiveTab] = useState<TabType>('user');
 
-  // Fehlertext, der über den Formularen angezeigt wird
+  // Error text shown above forms
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Zeigt an, ob gerade eine API-Anfrage läuft
+  // Indicates if an API request is pending
   const [loading, setLoading] = useState(false);
 
-  // State für das Benutzer-Registrierungsformular
+  // User form state
   const [userForm, setUserForm] = useState({
     name: '',
     email: '',
     password: '',
   });
 
-  // State für das Organisations-Registrierungsformular
+  // Organization form state
   const [orgForm, setOrgForm] = useState<{
     name: string;
     email: string;
@@ -58,7 +58,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     priceCategory: PriceCategory.MEDIUM,
   });
 
-  // Aktualisiert Benutzerformular-Felder dynamisch anhand des Input-Namens
+  // Update user form fields dynamically
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserForm({
       ...userForm,
@@ -66,11 +66,11 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     });
   };
 
-  // Aktualisiert Organisationsformular-Felder
   type OrgChangeEvent =
     | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     | { target: { name: string; value: string } };
 
+  // Update organization form fields
   const handleOrgChange = (e: OrgChangeEvent) => {
     setOrgForm({
       ...orgForm,
@@ -78,7 +78,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     });
   };
 
-  // Fügt ein Fachgebiet hinzu oder entfernt es, wenn es schon ausgewählt ist
+  // Toggle expertise area selection
   const handleExpertiseAreaToggle = (area: Areas) => {
     setOrgForm((prev) => ({
       ...prev,
@@ -88,9 +88,24 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     }));
   };
 
+  const translateError = (err?: string) => {
+    switch (err) {
+      case 'The given input is invalid.':
+        return 'Die Eingabe ist ungültig.';
+      case 'There is already an entry with these attributes.':
+        return 'Es existiert bereits ein Eintrag mit diesen Daten.';
+      case 'The entry could not be found.':
+        return 'Der Eintrag wurde nicht gefunden.';
+      case 'The reference is invalid.':
+        return 'Die Referenz ist ungültig.';
+      default:
+        return err || 'Fehler bei der Registrierung';
+    }
+  };
+
   // Daten an das Backend schicken → Registrierung durchführen
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Verhindert Seitenreload des Standardformulars
+    e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
@@ -118,7 +133,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
       // Fehlerfall vom Server
       if (!response.ok) {
-        setError(data.error || data.message || 'Fehler bei der Registrierung');
+        setError(translateError(data.error || data.message));
         return;
       }
 
