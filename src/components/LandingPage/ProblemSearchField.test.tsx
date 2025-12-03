@@ -1,10 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { jest } from '@jest/globals';
 
-import { ProblemSearchField } from './ProblemSearchField';
-
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
+jest.unstable_mockModule('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
 }));
+
+// wichtige Regel für ESM: alle Imports NACH den Mocks als Konstanten!
+const { render, screen } = await import('@testing-library/react');
+const { ProblemSearchField } = await import('./ProblemSearchField');
 
 describe('Test LandingPage', () => {
   it('renders the component text', async () => {

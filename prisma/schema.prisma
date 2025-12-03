@@ -5,175 +5,241 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client"
-  output          = "../generated/prisma"
-  previewFeatures = ["postgresqlExtensions"]
+    provider        = "prisma-client"
+    output          = "../generated/prisma"
+    previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  extensions = [vector()]
+    provider = "postgresql"
+    extensions = [vector()]
+    schemas = ["public"]
 }
 
 enum UserType {
-  USER
-  EMPLOYEE
-  ADMIN
+    USER
+    EMPLOYEE
+    ADMIN
+
+    @@schema("public")
 }
 
 enum OrganizationType {
-  LAW_FIRM
-  ASSOCIATION
+    LAW_FIRM
+    ASSOCIATION
+    
+    @@schema("public")
 }
 
-//Maybe rename to CaseStatus? 
-enum RequestStatus {
-  OPEN
-  IN_PROGRESS
-  COMPLETED
+enum ServiceType {
+    INITIAL_CONSULTATION
+    FOLLOW_UP_CONSULTATION
+    DOCUMENT_REVIEW
+    CASE_EVALUATION
+    CORT_APPEARANCE
+    MEDIATION_SESSION
+    CLIENT_INTAKE
+    LEAGAL_ADVICE
+    STRATEGY_SESSION
+    CASE_PROGRESSION
+    REMOTE_CONSULTATION
+
+    @@schema("public")
+}
+ 
+enum CaseStatus {
+    OPEN
+    IN_PROGRESS
+    COMPLETED
+    
+    @@schema("public")
 }
 
 enum AppointmentStatus {
-  CONFIRMED
-  CANCELED
-  OPEN
+    CONFIRMED
+    CANCELED
+    OPEN
+    COMPLETED
+
+    @@schema("public")
 }
 
 enum PricingModel {
-  FIXED
-  HOURLY
+    FIXED
+    HOURLY
+  
+    @@schema("public")
 }
 
-  enum PriceCategory {
+enum PriceCategory {
     FREE
     LOW
     MEDIUM
     HIGH
-  }
+
+    @@schema("public")
+}
 
 enum Areas {
-  Mietrecht
-  Verkehrsrecht
-  Arbeitsrecht
-  Familienrecht
-  Erbrecht
-  Strafrecht
-  Zivilrecht
-  Verwaltungsrecht
-  Steuerrecht
-  Sozialrecht
-  Vertragsrecht
-  Handelsrecht
-  Gesellschaftsrecht
-  Wettbewerbsrecht
-  Urheberrecht
-  Markenrecht
-  Patentrecht
-  Medizinrecht
-  Versicherungsrecht
-  Baurecht
-  Umweltrecht
-  Asylrecht
-  Itrecht
-  Datenschutzrecht
-  Energierecht
-  Agrarrecht
-  Wirtschaftsrecht
-  Bankrecht
-  Insolvenzrecht
-  Prozessrecht
+    Mietrecht
+    Verkehrsrecht
+    Arbeitsrecht
+    Familienrecht
+    Erbrecht
+    Strafrecht
+    Zivilrecht
+    Verwaltungsrecht
+    Steuerrecht
+    Sozialrecht
+    Vertragsrecht
+    Handelsrecht
+    Gesellschaftsrecht
+    Wettbewerbsrecht
+    Urheberrecht
+    Markenrecht
+    Patentrecht
+    Medizinrecht
+    Versicherungsrecht
+    Baurecht
+    Umweltrecht
+    Asylrecht
+    Itrecht
+    Datenschutzrecht
+    Energierecht
+    Agrarrecht
+    Wirtschaftsrecht
+    Bankrecht
+    Insolvenzrecht
+    Prozessrecht
+
+    @@schema("public")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  phone     String?
-  address   String?
-  type      UserType
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id        String   @id @default(uuid())
+    name      String
+    email     String   @unique
+    password  String
+    phone     String?
+    address   String?
+    type      UserType
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
-  requests       Request[]
-  appointments   Appointment[]
+    cases          Case[]
+    appointments   Appointment[]
+
+    @@schema("public")
 }
 
 model Organization {
-  id              String                       @id @default(uuid())
-  name            String
-  description     String?
-  shortDescription String
-  email           String                       @unique
-  password        String
-  phone           String?
-  address         String?
-  website         String?
-  expertiseArea   Areas[]
-  expertiseVector Unsupported("vector(3072)")?
-  type            OrganizationType
-  priceCategory   PriceCategory
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users        User[]
-  services     Service[]
-  appointments Appointment[]
-  requests     Request[]
-
-  @@index([expertiseArea(ops: ArrayOps)], type: Gin)
+    id                 String                       @id @default(uuid())
+    name               String
+    description        String?
+    shortDescription   String
+    email              String                       @unique
+    password           String
+    phone              String?
+    address            String?
+    website            String?
+    expertiseArea      Areas[]
+    expertiseVector    Unsupported("vector(3072)")?
+    type               OrganizationType
+    priceCategory      PriceCategory
+  
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+  
+    services     Service[]
+    appointments Appointment[]
+    cases        Case[] // nur dem Employee der Org zugeordnet?
+    employees    Employee[]
+  
+    @@index([expertiseArea(ops: ArrayOps)], type: Gin)
+    @@schema("public")
 }
 
-//Evtl hier Enum für Dienstleistungstyp? Erstgespräch etc..
+//Evtl hier Enum für Dienstleistungstyp (Erstgespräch etc.) und duration als Attribut, sodass Termintypen default Dauer haben?
 model Service {
-  id             String       @id @default(uuid())
-  organizationId String
-  title          String
-  description    String
-  pricingModel   PricingModel @default(FIXED)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+    id             String       @id @default(uuid())
+    organizationId String
+    title          String
+    description    String
+    type           ServiceType
+    pricingModel   PricingModel @default(FIXED)
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  requests     Request[]
+    organization Organization   @relation(fields: [organizationId], references: [id])
+    cases        Case[]
+    appointments Appointment[]
+
+    @@schema("public")
 }
 
-//Maybe rename to Case?
-model Request {
-  id             String        @id @default(uuid())
-  userId         String
-  organizationId String
-  serviceId      String
-  title          String
-  description    String
-  documents      String?
-  status         RequestStatus @default(OPEN)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+model Case {
+    id             String        @id @default(uuid())
+    userId         String
+    organizationId String
+    employeeId     String
+    serviceId      String
+    title          String
+    description    String
+    documents      String?
+    status         CaseStatus    @default(OPEN)
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id])
-  //maybe multiple services? 
-  organization Organization? @relation(fields: [organizationId], references: [id])
-  service      Service?      @relation(fields: [serviceId], references: [id])
-  appointments Appointment[]
+    user         User          @relation(fields: [userId], references: [id])
+    //maybe multiple services? 
+    organization Organization? @relation(fields: [organizationId], references: [id])
+    service      Service?      @relation(fields: [serviceId], references: [id])
+    employee     Employee?     @relation(fields: [employeeId], references: [id])
+    appointments Appointment[]
+
+    @@schema("public")
 }
 
 model Appointment {
-  id             String            @id @default(uuid())
-  requestId      String?
-  userId         String?
-  organizationId String?
-  duration       Int?
-  status         AppointmentStatus @default(OPEN)
-  meetingLink    String?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+    id             String            @id @default(uuid())
+    caseId         String?
+    userId         String
+    organizationId String
+    employeeId     String
+    //serviceID oder reicht ServiceType?
+    serviceId      String
+    duration       Int?
+    status         AppointmentStatus @default(OPEN)
+    createdAt      DateTime          @default(now())
+    updatedAt      DateTime          @updatedAt
+    location       String?
+    meetingLink    String?
+    dateTime       DateTime
+    timeZone       String?
+    notes          String?
 
-  request      Request?      @relation(fields: [requestId], references: [id])
-  user         User?         @relation(fields: [userId], references: [id])
-  organization Organization? @relation(fields: [organizationId], references: [id])
+    case         Case?         @relation(fields: [caseId], references: [id])
+    user         User?         @relation(fields: [userId], references: [id])
+    organization Organization? @relation(fields: [organizationId], references: [id])
+    service      Service?      @relation(fields: [serviceId], references: [id])
+    employee     Employee?     @relation(fields: [employeeId], references: [id])
+
+    @@schema("public")
+}
+
+model Employee {
+    id             String       @id @default(uuid())
+    organizationId String
+    name           String
+    email          String       @unique
+    phone          String?
+    position       String?
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+
+    organization Organization @relation(fields: [organizationId], references: [id])
+    appointments Appointment[]
+    cases        Case[]
+
+    @@schema("public")
 }

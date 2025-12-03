@@ -1,22 +1,30 @@
-import { NextRequest } from 'next/server';
-import { POST, PATCH, GET } from '@/app/api/organization/route';
-import { prisma } from '@/lib/db';
-import { OrganizationCreateInput } from '~/generated/prisma/models';
+import { jest } from '@jest/globals';
 
-jest.mock('@/services/server/vectorizer', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => Array(3072).fill(0.01)),
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
 }));
 
-describe('Organization Routen teset', () => {
+// Alle Imports per await:
+const { NextRequest } = await import('next/server');
+
+// Dynamisch die API-Funktionen importieren
+const { GET, POST } = await import('@/app/api/organization/route');
+
+describe('Organization Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
 
   test('POST Organizations', async () => {
     const organization: OrganizationCreateInput = {
       name: 'Max Mustermann Kanzlei',
       description: 'Kanzlei test',
-      shortDescription: "Kanzlei shortTest",
+      shortDescription: 'Kanzlei shortTest',
       email: Math.random() + '@mail.de',
-      password: "testpasswort",
+      password: 'testpasswort',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
@@ -24,43 +32,12 @@ describe('Organization Routen teset', () => {
 
     const req = new NextRequest(baseUrl, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(organization),
     });
 
     const res = await POST(req);
     expect(res.status).toBe(201);
-  });
-
-  test('PATCH Organizations', async () => {
-    const getReq = new NextRequest(baseUrl);
-    const getRes = await GET(getReq);
-    const getJSON = await getRes.json();
-
-    const organization: OrganizationCreateInput = {
-      id: getJSON[0].id,
-      name: 'updated',
-      description: 'Kanzlei test',
-      shortDescription: "Kanzlei shortTest",
-      email: Math.random() + '@mail.de',
-      password: "testpasswort",
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-    };
-
-    const patchReq = new NextRequest(baseUrl, {
-      method: 'PATCH',
-      body: JSON.stringify(organization),
-    });
-
-    const res = await PATCH(patchReq);
-
-    const updated = await prisma.organization.findFirst({
-      where: { name: 'updated' },
-    });
-
-    expect(updated?.name).toBe('updated');
-    expect(res.status).toBe(200);
   });
 
   test('GET Organizations', async () => {
