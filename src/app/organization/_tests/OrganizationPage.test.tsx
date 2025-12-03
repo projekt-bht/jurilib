@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
 
-import OrganizationCard from './OrganizationCard';
+import OrganizationCard from '../_components/OrganizationCard';
 
 const mockOrganization: Organization = {
   id: '1',

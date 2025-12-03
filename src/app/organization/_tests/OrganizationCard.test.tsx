@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
 
-import OrganizationDetail from './OrganizationDetail';
+import OrganizationDetail from '../[organizationID]/OrganizationPage';
 
 const mockOrganization: Organization = {
   name: 'Rechtsberatum München',
