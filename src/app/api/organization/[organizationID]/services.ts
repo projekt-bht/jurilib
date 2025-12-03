@@ -5,6 +5,7 @@ import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
 import { Areas } from '~/generated/prisma/client';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 export const readOrganization = async (organizationID: string): Promise<Organization> => {
   try {
@@ -22,7 +23,7 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
 };
 
 export const updateOrganization = async (
-  organization: Organization,
+  organization: OrganizationCreateInput,
   organizationID: string
 ): Promise<Organization> => {
   try {
@@ -31,12 +32,16 @@ export const updateOrganization = async (
       throw new ValidationError('notFound', 'organizationID', organizationID, 404);
     }
 
-    if (!organization.expertiseArea) {
+    const expertiseArea = Array.isArray(organization.expertiseArea)
+      ? organization.expertiseArea
+      : undefined;
+
+    if (!expertiseArea) {
       throw new ValidationError('invalidInput', 'expertiseArea', organization.expertiseArea, 400);
     }
 
     // Iterate through expertiseArea and validate each area
-    organization.expertiseArea.forEach((area) => {
+    expertiseArea.forEach((area) => {
       if (!Object.values(Areas).includes(area)) {
         throw new ValidationError('invalidInput', 'expertiseArea', area, 400);
       }
@@ -44,7 +49,7 @@ export const updateOrganization = async (
 
     // Only re-vectorize if expertiseArea has changed
     // Spread operator "...organization" is used to copy all other fields of the organization
-    const data = { ...organization };
+    const data = { ...organization, expertiseArea };
     if (organization.password) {
       // Rehash incoming password when it is being changed
       data.password = await bcrypt.hash(organization.password, 10);

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { ValidationError } from '@/error/validationErrors';
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // GET /api/organization/:organizationID
 export async function GET(
@@ -40,7 +41,7 @@ export async function PATCH(
       throw new ValidationError('invalidInput', 'content-type', undefined, 415);
     }
 
-    const body = await req.json();
+    const body: OrganizationCreateInput = await req.json();
     if (!body || Object.keys(body).length === 0) {
       throw new ValidationError('invalidInput', 'body', undefined, 400);
     }
