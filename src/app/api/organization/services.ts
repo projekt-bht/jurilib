@@ -44,6 +44,14 @@ export const createOrganization = async (
     throw new ValidationError('invalidInput', 'password', organization.password, 400);
   }
 
+  const existingOrg = await prisma.organization.findUnique({
+    where: { email: organization.email },
+    select: { id: true },
+  });
+  if (existingOrg) {
+    throw new ValidationError('duplicate', 'email', organization.email, 400);
+  }
+
   const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea!.toString());
   const hashedPassword = await bcrypt.hash(organization.password, 10);
 
