@@ -11,6 +11,7 @@ const ensureRequiredFields = (organization: OrganizationCreateInput) => {
   const requiredFields: Array<keyof OrganizationCreateInput | 'priceCategory'> = [
     'type',
     'name',
+    'shortDescription',
     'email',
     'password',
     'priceCategory',
