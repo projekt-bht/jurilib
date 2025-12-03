@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { ValidationError } from '@/error/validationErrors';
 import { createOrganization, readOrganizations } from './services';
 
 /*
@@ -25,6 +26,12 @@ export async function POST(req: NextRequest) {
     const createdOrganization = await createOrganization(body);
     return NextResponse.json(createdOrganization, { status: 201 });
   } catch (error) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json(
+        { message: error.getErrorMessage(), field: error.field, value: error.value },
+        { status: error.statusCode }
+      );
+    }
     return NextResponse.json(
       { message: 'Creation failed: ' + (error as Error).message },
       { status: 400 }
@@ -39,6 +46,12 @@ export async function GET(_req: NextRequest) {
     const organization = await readOrganizations();
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json(
+        { message: error.getErrorMessage(), field: error.field, value: error.value },
+        { status: error.statusCode }
+      );
+    }
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });
   }
 }
