@@ -22,8 +22,8 @@ interface RegisterOrganizationFormProps {
     phone: string;
     website: string;
     address: string;
-    organizationType: OrganizationType; // Prisma Enum → zwingt gültigen Organisations-Typ
-    expertiseArea: Areas[]; // Prisma Enum-Liste → ausgewählte Fachgebiete
+    organizationType: OrganizationType;
+    expertiseArea: Areas[];
     description: string;
     shortDescription: string;
     priceCategory: PriceCategory;
@@ -47,10 +47,10 @@ export default function RegisterOrganizationForm({
   onSelectOrgType,
   onSubmit,
 }: RegisterOrganizationFormProps) {
-  // Alle verfügbaren Prisma-Fachgebiete ("Areas") aus dem Enum extrahieren.
+  // Extract all available Prisma expertise areas from enum
   const displayedAreas = Object.values(Areas) as Areas[];
 
-  // Labels für die Organisationstypen, die aus Prisma Enum "OrganizationType" kommen.
+  // Labels for organization types from Prisma enum
   const orgTypeLabels: Partial<Record<OrganizationType, string>> = {
     [OrganizationType.LAW_FIRM]: 'Kanzlei',
     [OrganizationType.ASSOCIATION]: 'Verband',
@@ -68,7 +68,7 @@ export default function RegisterOrganizationForm({
     label: priceLabels[value] ?? value,
   }));
 
-  // Prisma Enum → UI-Optionen generieren.
+  // Generate UI options from Prisma enum
   const orgTypeOptions = (Object.values(OrganizationType) as OrganizationType[]).map((value) => ({
     value,
     label: orgTypeLabels[value] ?? value.replace(/_/g, ' '), // Fallback: Enum-Wert lesbar machen
@@ -156,9 +156,7 @@ export default function RegisterOrganizationForm({
             <Label htmlFor="priceCategory">Preisniveau</Label>
             <Select
               value={orgForm.priceCategory}
-              onValueChange={(val) =>
-                onChange({ target: { name: 'priceCategory', value: val } })
-              }
+              onValueChange={(val) => onChange({ target: { name: 'priceCategory', value: val } })}
             >
               <SelectTrigger className="w-full h-10">
                 <SelectValue placeholder="Preis auswählen" />
@@ -188,9 +186,7 @@ export default function RegisterOrganizationForm({
       <section className="space-y-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground">Fachgebiete</h3>
-          <p className="text-xs text-muted-foreground">
-            Wählen Sie alle relevanten Bereiche aus.
-          </p>
+          <p className="text-xs text-muted-foreground">Wählen Sie alle relevanten Bereiche aus.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-xl p-4">
           {displayedAreas.map((area) => (
