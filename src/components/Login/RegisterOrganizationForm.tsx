@@ -106,6 +106,17 @@ export default function RegisterOrganizationForm({
             minLength={8}
             required
           />
+          <div className="md:col-span-3 space-y-1">
+            <Label htmlFor="org-shortDescription">Kurzbeschreibung</Label>
+            <Input
+              id="org-shortDescription"
+              name="shortDescription"
+              value={orgForm.shortDescription}
+              onChange={onChange}
+              placeholder="z. B. Fachkanzlei für Arbeitsrecht"
+              required
+            />
+          </div>
         </div>
       </section>
 

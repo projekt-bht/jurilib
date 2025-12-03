@@ -113,9 +113,24 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     try {
       // Choose payload and endpoint based on active tab
       const isUser = activeTab === 'user';
-      const endpoint = isUser ? '/api/user' : '/api/organization';
+      const apiBase = (process.env.NEXT_PUBLIC_BACKEND_ROOT ?? '/api').replace(/\/$/, '');
+      const endpoint = `${apiBase}/${isUser ? 'user' : 'organization'}`;
+
+      if (!isUser) {
+        if (!orgForm.shortDescription.trim()) {
+          setError('Bitte geben Sie eine Kurzbeschreibung an.');
+          setLoading(false);
+          return;
+        }
+        if (!orgForm.expertiseArea.length) {
+          setError('Wählen Sie mindestens ein Fachgebiet aus.');
+          setLoading(false);
+          return;
+        }
+      }
+
       const payload = isUser
-        ? userForm
+        ? { ...userForm, type: 'USER' }
         : {
             ...orgForm,
             type: orgForm.organizationType,
