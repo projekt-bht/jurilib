@@ -3,6 +3,11 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+//https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
+//WebSpeechAPI only exits on client
+import dynamic from 'next/dynamic';
+const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
+
 // Find filtered Organizations...
 // Form will be submitted on button click or Enter key press
 // New line can be added with Shift + Enter
@@ -11,7 +16,10 @@ import { useState } from 'react';
 export function ProblemSearchField() {
   const [problem, setProblem] = useState('');
   const [error, setError] = useState('');
+  const [isRecordingDone, setIsRecordingDone] = useState(false);
+
   const router = useRouter();
+
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +30,8 @@ export function ProblemSearchField() {
       setError('Bitte beschreibe dein Problem.');
       return;
     }
+
+    setIsRecordingDone(true)
 
     try {
       router.push(`/search/${problem}`);
@@ -40,7 +50,7 @@ export function ProblemSearchField() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-6">
+      <div className="mb-6 relative">
         <textarea
           className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
           value={problem}
@@ -51,10 +61,11 @@ export function ProblemSearchField() {
           onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
         />
+        <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {error && <p className="text-foreground mb-4">{error}</p>}
+      {error && <p className="text-foreground mb-4">{error} </p>}
 
       <button
         type="submit"
