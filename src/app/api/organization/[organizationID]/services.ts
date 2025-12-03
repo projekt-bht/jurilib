@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
@@ -40,11 +42,17 @@ export const updateOrganization = async (
 
     // Only re-vectorize if expertiseArea has changed
     // Spread operator "...organization" is used to copy all other fields of the organization
+    const data = { ...organization };
+    if (organization.password) {
+      // Rehash incoming password when it is being changed
+      data.password = await bcrypt.hash(organization.password, 10);
+    }
+
     if (existingOrg.expertiseArea === organization.expertiseArea) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
         data: {
-          ...organization,
+          ...data,
         },
       });
       return updatedOrganization;
@@ -54,7 +62,7 @@ export const updateOrganization = async (
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
         data: {
-          ...organization,
+          ...data,
         },
       });
 
