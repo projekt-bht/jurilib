@@ -16,7 +16,8 @@ export async function GET(
     }
 
     const organization = await readOrganization(organizationID);
-    return NextResponse.json(organization, { status: 200 });
+    const { password, ...safeOrganization } = organization;
+    return NextResponse.json(safeOrganization, { status: 200 });
   } catch (error) {
     if (error instanceof ValidationError) {
       return NextResponse.json(
@@ -50,8 +51,9 @@ export async function PATCH(
     }
 
     const updatedOrganization = await updateOrganization(body, organizationID);
+    const { password, ...safeOrganization } = updatedOrganization;
 
-    return NextResponse.json(updatedOrganization, { status: 200 });
+    return NextResponse.json(safeOrganization, { status: 200 });
   } catch (error) {
     if (error instanceof ValidationError) {
       return NextResponse.json(
