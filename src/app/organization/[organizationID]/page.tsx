@@ -1,4 +1,4 @@
-import OrganizationDetail from '@/app/organization/_components/OrganizationDetail';
+import OrganizationDetail from '@/app/organization/[organizationID]/OrganizationPage';
 import type { Organization } from '~/generated/prisma/client';
 
 // import OrganizationCalendar from '../_components/OrganizationCalendar';
