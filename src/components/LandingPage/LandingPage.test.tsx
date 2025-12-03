@@ -6,7 +6,7 @@ jest.unstable_mockModule('next/navigation', () => ({
   }),
 }));
 
-const { render, screen } = await import('@testing-library/react');
+const { render, screen, waitFor } = await import('@testing-library/react');
 const { LandingPage } = await import('./LandingPage');
 
 describe('Test LandingPage', () => {
