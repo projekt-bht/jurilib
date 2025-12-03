@@ -111,7 +111,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     setLoading(true);
 
     try {
-      // Je nach aktiver Registerkarte unterschiedliche Payload und Endpoint
+      // Choose payload and endpoint based on active tab
       const isUser = activeTab === 'user';
       const endpoint = isUser ? '/api/user' : '/api/organization';
       const payload = isUser
@@ -131,36 +131,31 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
       const data = await response.json();
 
-      // Fehlerfall vom Server
+      // Handle server-side errors
       if (!response.ok) {
         setError(translateError(data.error || data.message));
         return;
       }
 
       setSuccess('Sie haben sich erfolgreich registriert.');
-      // Bei Erfolg könnte man hier Modal schließen oder weiterleiten
     } catch (err) {
-      // Netzwerkfehler oder unerwartete Probleme
       setError('Fehler bei der Verbindung zum Server');
       console.error(err);
     } finally {
-      // Ladeanimation wieder deaktivieren
       setLoading(false);
     }
   };
 
-  // Wenn Modal nicht geöffnet ist → nichts rendern
   if (!isOpen) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      {/* Modal-Inhalt */}
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Registrierung</DialogTitle>
         </DialogHeader>
 
-        {/* Fehleranzeige über den Tabs */}
+        {/* Error/success banners */}
         {error && (
           <div className="mt-2 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {error}
@@ -172,7 +167,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
           </div>
         )}
 
-        {/* Umschaltbare Tabs: Benutzer | Organisation */}
+        {/* Switchable tabs: user | organization */}
         <Tabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as TabType)}
@@ -183,7 +178,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             <TabsTrigger value="organization">Organisation</TabsTrigger>
           </TabsList>
 
-          {/* Inhalt der Benutzer-Registrierung */}
+          {/* User registration content */}
           <TabsContent value="user">
             <RegisterUserForm
               userForm={userForm}
@@ -193,7 +188,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             />
           </TabsContent>
 
-          {/* Inhalt der Organisations-Registrierung */}
+          {/* Organization registration content */}
           <TabsContent value="organization">
             <RegisterOrganizationForm
               orgForm={orgForm}
