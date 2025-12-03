@@ -4,7 +4,7 @@ import { Globe, Mail, MapPin, Phone } from 'lucide-react';
 
 import type { Areas, Organization } from '~/generated/prisma/client';
 
-import { PricingInfo } from '../_components/PricingDropDown';
+import { PricingInfo } from './PricingDropDown';
 
 // Function to create and formate the Profile Info Items with icon, title and content
 // Used to create items like Website, Phone, Address, Email
@@ -40,7 +40,7 @@ function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
   ));
 }
 
-export default function OrganizationDetail(organization: Organization) {
+export function Profile(organization: Organization) {
   return (
     <div
       id={`OrganizationDetailPage_${organization.id}`}
