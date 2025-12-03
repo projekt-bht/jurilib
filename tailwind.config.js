@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -34,6 +34,12 @@ module.exports = {
         'accent-amber': 'var(--accent-amber)',
         'accent-amber-light': 'var(--accent-amber-light)',
         'accent-amber-soft': 'var(--accent-amber-soft)',
+        'accent-gray': 'var(--accent-gray)',
+        'accent-gray-light': 'var(--accent-gray-light)',
+        'accent-gray-soft': 'var(--accent-gray-soft)',
+        'accent-black': 'var(--accent-black)',
+        'accent-black-light': 'var(--accent-black-light)',
+        'accent-white': 'var(--accent-white)',
       },
       borderRadius: {
         sm: 'var(--radius-sm)',

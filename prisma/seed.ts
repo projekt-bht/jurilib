@@ -1,6 +1,12 @@
 import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
-import { Areas, OrganizationType, PriceCategory, UserType } from '../generated/prisma/enums';
+import {
+  Areas,
+  OrganizationType,
+  PriceCategory,
+  UserType,
+  ServiceType,
+} from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
 // code inspired by:
@@ -14,11 +20,28 @@ async function main() {
   // Cleanup for each Seeding
 
   await prisma.appointment.deleteMany();
-  await prisma.request.deleteMany();
+  await prisma.case.deleteMany();
   await prisma.service.deleteMany();
   await prisma.user.deleteMany();
   await prisma.organization.deleteMany();
 
+  // Create 20 Users
+  const userIds: string[] = [];
+  for (let i = 0; i < 20; i++) {
+    const userName = faker.person.fullName();
+    const user = await prisma.user.create({
+      data: {
+        name: userName,
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        type: faker.helpers.enumValue(UserType),
+      },
+    });
+    userIds.push(user.id);
+    console.log(`created User ${userName}`);
+  }
+
+  // Create Organizations with related Data
   for (const [i, orgId] of orgIds.entries()) {
     console.log(`ITERATION ${i + 1}/${orgIds.length}`);
     // relevant Constants for every creation
@@ -26,8 +49,8 @@ async function main() {
 
     const expertiseArea = [faker.helpers.enumValue(Areas)];
     const type = faker.helpers.enumValue(OrganizationType);
-    let expertiseVector = null;
 
+    let expertiseVector = null;
     if (process.env.OPENAI_API_KEY) {
       expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
     }
@@ -59,26 +82,26 @@ async function main() {
       expertiseVector,
       type,
       faker.helpers.enumValue(PriceCategory),
-      faker.internet.password(),
+      faker.internet.password()
     );
 
     console.log(`created "${orgName}" (${orgId})`);
 
-    // Create 2 Users per Organization
-    const userIds: string[] = [];
-    for (let i = 0; i < 2; i++) {
-      const userName = faker.person.fullName();
-      const user = await prisma.user.create({
+    // Create 5 Employees per Org
+    const employeeId: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const employeeName = faker.person.fullName();
+      const employee = await prisma.employee.create({
         data: {
-          name: userName,
-          email: faker.internet.email(),
-          password: faker.internet.password(),
-          type: faker.helpers.enumValue(UserType),
+          name: employeeName,
           organization: { connect: { id: orgId } },
+          email: faker.internet.email(),
+          phone: faker.phone.number(),
+          position: faker.person.jobTitle(),
         },
       });
-      userIds.push(user.id);
-      console.log(`created User ${userName} in Organization`);
+      employeeId.push(employee.id);
+      console.log(`created Employee ${employeeName} in Organization`);
     }
 
     // Create 3 Services per Org
@@ -90,6 +113,7 @@ async function main() {
           organization: { connect: { id: orgId } },
           title: serviceTitle,
           description: faker.commerce.productDescription(),
+          type: faker.helpers.enumValue(ServiceType),
           pricingModel: 'FIXED',
         },
       });
@@ -97,34 +121,40 @@ async function main() {
       console.log(`created Service "${serviceTitle}" in Organization`);
     }
 
-    // Create 4 Requests per Org
-    const requestIds: string[] = [];
+    // Create 4 Cases per Org
+    const caseIds: string[] = [];
     for (let i = 0; i < 4; i++) {
-      const requestTitle = faker.lorem.words(3);
-      const request = await prisma.request.create({
+      const caseTitle = faker.lorem.words(3);
+      const caseItem = await prisma.case.create({
         data: {
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
+          employee: { connect: { id: employeeId[i % employeeId.length] } },
           service: { connect: { id: serviceIds[i % serviceIds.length] } },
-          title: requestTitle,
+          title: caseTitle,
           description: faker.lorem.sentence(),
           status: 'OPEN',
         },
       });
-      requestIds.push(request.id);
-      console.log(`created Request "${requestTitle}" in Organization`);
+      caseIds.push(caseItem.id);
+      console.log(`created Case "${caseTitle}" in Organization`);
     }
 
     // Create 5 Appointments per Org
     for (let i = 0; i < 5; i++) {
       const appointment = await prisma.appointment.create({
         data: {
-          request: { connect: { id: requestIds[i % requestIds.length] } },
+          case: { connect: { id: caseIds[i % caseIds.length] } },
           user: { connect: { id: userIds[i % userIds.length] } },
           organization: { connect: { id: orgId } },
+          employee: { connect: { id: employeeId[i % employeeId.length] } },
+          service: { connect: { id: serviceIds[i % serviceIds.length] } },
           duration: faker.number.int({ min: 30, max: 120 }),
           status: 'OPEN',
           meetingLink: faker.internet.url(),
+          dateTime: faker.date.future(),
+          timeZone: faker.location.timeZone(),
+          notes: faker.lorem.sentence(),
         },
       });
       console.log(`created Appointment (${appointment.id}) in Organization`);
