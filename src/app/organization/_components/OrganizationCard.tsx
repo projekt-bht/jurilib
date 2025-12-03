@@ -12,8 +12,6 @@ import {
 } from '@/components/ui/item';
 import type { Organization } from '~/generated/prisma/client';
 
-import formatPriceCategory from './organizationHelper';
-
 export default function ProfileCard(organization: Organization) {
   return (
     <Item
@@ -28,8 +26,6 @@ export default function ProfileCard(organization: Organization) {
       </ItemContent>
       <ItemActions className="">
         <div className="flex flex-col justify-start items-center sm:items-center gap-2">
-          {formatPriceCategory(organization.priceCategory)}
-
           <Link href={`/organization/${organization.id}`}>
             <Button
               className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground"
