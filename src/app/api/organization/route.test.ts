@@ -1,50 +1,98 @@
 import { jest } from '@jest/globals';
 
+import { ValidationError } from '@/error/validationErrors';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
-jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => {
-    const arr = Array(3072).fill(0.01);
-    return `[${arr.join(',')}]`;
-  }),
+const mockCreateOrganization = jest.fn();
+const mockReadOrganizations = jest.fn();
+
+jest.unstable_mockModule('./services', () => ({
+  createOrganization: mockCreateOrganization,
+  readOrganizations: mockReadOrganizations,
 }));
 
-// Alle Imports per await:
-const { NextRequest } = await import('next/server');
+const { POST, GET } = await import('./route');
 
-// Dynamisch die API-Funktionen importieren
-const { GET, POST } = await import('@/app/api/organization/route');
+describe('Organization route', () => {
+  const baseUrl = 'http://localhost/api/organization';
 
-describe('Organization Routen testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
-
-  test('POST Organizations', async () => {
-    const organization: OrganizationCreateInput = {
-      name: 'Max Mustermann Kanzlei',
-      description: 'Kanzlei test',
-      shortDescription: 'Kanzlei shortTest',
-      email: Math.random() + '@mail.de',
-      password: 'testpasswort',
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-    };
-
-    const req = new NextRequest(baseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(organization),
-    });
-
-    const res = await POST(req);
-    expect(res.status).toBe(201);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('GET Organizations', async () => {
-    const req = new NextRequest(baseUrl);
+  test('POST returns 201 and trims password from response', async () => {
+    const organization: OrganizationCreateInput = {
+      name: 'Org',
+      shortDescription: 'Short',
+      email: 'org@example.com',
+      password: 'supersecret',
+      type: 'LAW_FIRM',
+      priceCategory: 'FREE',
+      expertiseArea: ['Arbeitsrecht'],
+    };
+
+    mockCreateOrganization.mockResolvedValue({
+      ...organization,
+      id: 'org-1',
+      password: 'hashed',
+    });
+
+    const req = {
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => organization,
+      url: baseUrl,
+    } as any;
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(201);
+    expect(json.organization).toEqual({
+      id: 'org-1',
+      name: 'Org',
+      email: 'org@example.com',
+    });
+  });
+
+  test('POST maps ValidationError to status code', async () => {
+    mockCreateOrganization.mockRejectedValue(
+      new ValidationError('invalidInput', 'email', 'bad', 400)
+    );
+
+    const req = {
+      headers: new Headers({ 'content-type': 'application/json' }),
+      json: async () => ({}),
+      url: baseUrl,
+    } as any;
+
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.field).toBe('email');
+  });
+
+  test('GET returns organizations', async () => {
+    mockReadOrganizations.mockResolvedValue([
+      { id: '1', name: 'Org', email: 'o@example.com', password: 'hashed' },
+    ]);
+
+    const req = { url: baseUrl } as any;
     const res = await GET(req);
     const json = await res.json();
-    expect(json.length).not.toBe(0);
+
     expect(res.status).toBe(200);
+    expect(json).toHaveLength(1);
+  });
+
+  test('GET maps ValidationError to status code', async () => {
+    mockReadOrganizations.mockRejectedValue(
+      new ValidationError('notFound', 'organization', '', 404)
+    );
+
+    const req = { url: baseUrl } as any;
+    const res = await GET(req);
+
+    expect(res.status).toBe(404);
   });
 });
