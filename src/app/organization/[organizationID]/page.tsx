@@ -1,4 +1,4 @@
-import OrganizationDetail from '@/app/organization/[organizationID]/OrganizationPage';
+import { Profile } from '@/app/organization/_components/Profile';
 import type { Organization } from '~/generated/prisma/client';
 
 // import OrganizationCalendar from '../_components/OrganizationCalendar';
@@ -17,7 +17,7 @@ export default async function OrganizationDetailPage({
     <div className="bg-card grid grid-cols-1 lg:grid-cols-3 gap-5">
       {/* Left Column - Profile Info */}
       <div className="lg:col-span-2 space-y-8">
-        <OrganizationDetail {...org} />
+        <Profile {...org} />
       </div>
       {/* Right Column - Booking Section */}
       <div className="lg:col-span-1 space-y-8">{/*<OrganizationCalendar />*/}</div>
