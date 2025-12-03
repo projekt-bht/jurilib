@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { ValidationError } from '@/error/validationErrors';
 import { createOrganization, readOrganizations } from './services';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 /*
 TODO:
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
       throw new ValidationError('invalidInput', 'content-type', undefined, 415);
     }
 
-    const body = await req.json();
+    const body: OrganizationCreateInput = await req.json();
     if (!body || Object.keys(body).length === 0) {
       throw new ValidationError('invalidInput', 'body', undefined, 400);
     }
