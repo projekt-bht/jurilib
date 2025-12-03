@@ -1,9 +1,8 @@
 import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
+import { Profile } from '@/app/organization/_components/Profile';
 import type { Organization } from '~/generated/prisma/client';
-
-import OrganizationDetail from '../[organizationID]/OrganizationPage';
 
 const mockOrganization: Organization = {
   name: 'Rechtsberatum München',
@@ -28,24 +27,24 @@ describe('OrganizationCard', () => {
   });
 
   it('renders organization name', () => {
-    render(<OrganizationDetail {...mockOrganization} />);
+    render(<Profile {...mockOrganization} />);
     expect(screen.getByText('Rechtsberatum München')).toBeInTheDocument();
   });
 
   it('renders organization description', () => {
-    render(<OrganizationDetail {...mockOrganization} />);
+    render(<Profile {...mockOrganization} />);
     expect(
       screen.getByText('In Ansprechpartner für Arbeitsrecht und Vertragsrecht.')
     ).toBeInTheDocument();
   });
 
   it('renders organization short description', () => {
-    render(<OrganizationDetail {...mockOrganization} />);
+    render(<Profile {...mockOrganization} />);
     expect(screen.getByText('test.')).toBeInTheDocument();
   });
 
   it('renders expertise area', () => {
-    render(<OrganizationDetail {...mockOrganization} />);
+    render(<Profile {...mockOrganization} />);
     expect(screen.getByText('Arbeitsrecht')).toBeInTheDocument();
   });
 });
