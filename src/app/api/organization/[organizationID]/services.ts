@@ -55,7 +55,7 @@ export const updateOrganization = async (
       data.password = await bcrypt.hash(organization.password, 10);
     }
 
-    if (existingOrg.expertiseArea === organization.expertiseArea) {
+    if (existingOrg.expertiseArea === expertiseArea) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
         data: {
@@ -64,7 +64,7 @@ export const updateOrganization = async (
       });
       return updatedOrganization;
     } else {
-      const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
+      const expertiseVector = await vectorizeExpertiseArea(expertiseArea.join(', '));
 
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
