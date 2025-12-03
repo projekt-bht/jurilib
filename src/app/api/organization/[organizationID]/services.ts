@@ -7,6 +7,7 @@ import type { Organization } from '~/generated/prisma/client';
 import { Areas } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
+// Fetch a single organization by ID with explicit not-found handling.
 export const readOrganization = async (organizationID: string): Promise<Organization> => {
   try {
     const orga: Organization | null = await prisma.organization.findUnique({
@@ -22,16 +23,19 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
   }
 };
 
+// Update an organization while validating inputs, optional password hashing, and vector regeneration when needed.
 export const updateOrganization = async (
   organization: OrganizationCreateInput,
   organizationID: string
 ): Promise<Organization> => {
   try {
+    // Ensure the target organization exists before attempting an update.
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
       throw new ValidationError('notFound', 'organizationID', organizationID, 404);
     }
 
+    // Normalize incoming expertiseArea to a plain array.
     const expertiseArea = Array.isArray(organization.expertiseArea)
       ? organization.expertiseArea
       : undefined;
@@ -40,21 +44,20 @@ export const updateOrganization = async (
       throw new ValidationError('invalidInput', 'expertiseArea', organization.expertiseArea, 400);
     }
 
-    // Iterate through expertiseArea and validate each area
+    // Validate each provided area against the enum.
     expertiseArea.forEach((area) => {
       if (!Object.values(Areas).includes(area)) {
         throw new ValidationError('invalidInput', 'expertiseArea', area, 400);
       }
     });
 
-    // Only re-vectorize if expertiseArea has changed
-    // Spread operator "...organization" is used to copy all other fields of the organization
+    // Prepare data payload; copy other fields and hash password if it is being changed.
     const data = { ...organization, expertiseArea };
     if (organization.password) {
-      // Rehash incoming password when it is being changed
       data.password = await bcrypt.hash(organization.password, 10);
     }
 
+    // Only re-vectorize if expertiseArea has changed; simple reference check used here.
     if (existingOrg.expertiseArea === expertiseArea) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
@@ -84,6 +87,7 @@ export const updateOrganization = async (
   }
 };
 
+// Delete an organization if it exists; surface not-found with a clear error.
 export const deleteOrganization = async (organizationID: string): Promise<void> => {
   try {
     const existing = await prisma.organization.findUnique({ where: { id: organizationID } });

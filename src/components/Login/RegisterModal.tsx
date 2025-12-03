@@ -103,7 +103,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     }
   };
 
-  // Daten an das Backend schicken → Registrierung durchführen
+  // Submit handler for both user and organization registration flows.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -116,6 +116,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
       const apiBase = (process.env.NEXT_PUBLIC_BACKEND_ROOT ?? '/api').replace(/\/$/, '');
       const endpoint = `${apiBase}/${isUser ? 'user' : 'organization'}`;
 
+      // Frontend guardrails for organization fields so we fail fast before calling the API.
       if (!isUser) {
         if (!orgForm.shortDescription.trim()) {
           setError('Bitte geben Sie eine Kurzbeschreibung an.');
@@ -132,6 +133,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
       const payload = isUser
         ? { ...userForm, type: 'USER' }
         : (() => {
+            // API expects "type" only; drop the UI-only "organizationType" field
             const { organizationType, ...orgPayload } = orgForm;
             return { ...orgPayload, type: organizationType };
           })();

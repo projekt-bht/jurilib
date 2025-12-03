@@ -7,6 +7,7 @@ import type { Organization } from '~/generated/prisma/client';
 import { Areas } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
+// Validate that all mandatory properties exist before we hit the database.
 const ensureRequiredFields = (organization: OrganizationCreateInput) => {
   const requiredFields: Array<keyof OrganizationCreateInput | 'priceCategory'> = [
     'type',
@@ -23,6 +24,7 @@ const ensureRequiredFields = (organization: OrganizationCreateInput) => {
   }
 };
 
+// Normalize the expertise area payload into a plain array and fail fast on bad input.
 const normalizeExpertiseArea = (expertiseArea?: OrganizationCreateInput['expertiseArea']) => {
   const arr = Array.isArray(expertiseArea)
     ? expertiseArea
@@ -43,16 +45,19 @@ const normalizeExpertiseArea = (expertiseArea?: OrganizationCreateInput['experti
 };
 
 // Create a new organization
+// Main creation flow for organizations. Handles validation, deduping, hashing, optional vectorization and persistence.
 export const createOrganization = async (
   organization: OrganizationCreateInput
 ): Promise<Organization> => {
   ensureRequiredFields(organization);
   const expertiseArea = normalizeExpertiseArea(organization.expertiseArea);
 
+  // Enforce password strength on the API level.
   if (!organization.password || organization.password.length < 8) {
     throw new ValidationError('invalidInput', 'password', organization.password, 400);
   }
 
+  // Prevent duplicate signups by e-mail.
   const existingOrg = await prisma.organization.findUnique({
     where: { email: organization.email },
     select: { id: true },
@@ -61,15 +66,19 @@ export const createOrganization = async (
     throw new ValidationError('duplicate', 'email', organization.email, 400);
   }
 
+  // Best-effort embedding generation: do not block creation if OpenAI credentials are missing.
   let expertiseVector: string | null = null;
   try {
+    // Still create the organization even if embeddings fail (e.g., no API key) to avoid blocking signups
     expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
   } catch (error) {
-    // Allow creation even if embedding service is unavailable (e.g., missing API key)
     console.warn('Vectorization skipped:', (error as Error).message);
   }
+
+  // Hash password before storing.
   const hashedPassword = await bcrypt.hash(organization.password, 10);
 
+  // Persist the core organization record with normalized expertise array.
   const createdOrganization = await prisma.organization.create({
     data: {
       ...organization,
@@ -78,6 +87,7 @@ export const createOrganization = async (
     },
   });
 
+  // Populate the vector column only when we have an embedding.
   if (expertiseVector) {
     await prisma.$executeRaw`UPDATE "Organization"
             SET "expertiseVector" = ${expertiseVector}::vector
@@ -89,6 +99,7 @@ export const createOrganization = async (
 
 // Read all organizations
 export const readOrganizations = async (): Promise<Organization[]> => {
+  // Simple read with 404-style error if none exist.
   const orgas: Organization[] = await prisma.organization.findMany();
   if (!orgas || orgas.length === 0) {
     throw new ValidationError('notFound', 'organization', undefined, 404);
