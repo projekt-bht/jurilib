@@ -44,18 +44,24 @@ export function Profile(organization: Organization) {
   return (
     <div
       id={`OrganizationDetailPage_${organization.id}`}
-      className="flex flex-col justify-start items-center w-full px-10 py-8"
+      className="flex flex-col justify-start items-start w-full px-10 py-8"
     >
       {/* Profile Info Section */}
       <div className="bg-background outline-1 p-6 rounded-lg w-full max-w-5xl outline-border shadow-md">
-        <div className="flex items-center mb-4">
-          <p className="text-4xl font-bold pr-4">{organization.name}</p>
-        </div>
-
-        <ExpertiseAreaItem areas={organization.expertiseArea} />
-
-        <div className="mb-4 pt-2 text-foreground text-lg">
-          <p>{organization.shortDescription}</p>
+        <div className="flex flex-col lg:flex-row  items-start gap-8">
+          {/* Organization logo */}
+          <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            {organization.name.charAt(0)}
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-4xl font-bold">{organization.name}</p>
+            <div className="flex flex-wrap items-start gap-2">
+              <ExpertiseAreaItem areas={organization.expertiseArea} />
+            </div>
+            <div className="mb-4 pt-2 text-foreground text-lg">
+              <p>{organization.shortDescription}</p>
+            </div>
+          </div>
         </div>
 
         <PricingInfo priceCategory={organization.priceCategory} />
