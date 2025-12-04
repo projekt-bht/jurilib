@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import RegisterModal from './RegisterModal';
 
 export default function AuthButtons() {
-  const router = useRouter();
-
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   return (

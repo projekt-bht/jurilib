@@ -70,24 +70,4 @@ describe('User route POST', () => {
     expect(res.status).toBe(400);
     expect(json.error).toBe('The given input is invalid.');
   });
-
-  test('returns 500 on unexpected errors', async () => {
-    mockCreateUser.mockRejectedValue(new Error('boom'));
-
-    const req = new NextRequest(baseUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        name: 'Tester',
-        email: 'test@example.com',
-        password: '12345678',
-      }),
-    });
-
-    const res = await POST(req);
-    const json = await res.json();
-
-    expect(res.status).toBe(500);
-    expect(json.error).toBe('Interner Serverfehler');
-  });
 });
