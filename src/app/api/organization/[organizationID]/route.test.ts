@@ -18,7 +18,10 @@ const { DELETE, GET, PATCH } = await import('@/app/api/organization/[organizatio
 const { POST } = await import('@/app/api/organization/route');
 
 describe('Organization Routen testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
+  const backendRoot = process.env.NEXT_PUBLIC_BACKEND_ROOT ?? 'http://localhost:3000/api';
+  const baseUrl = `${backendRoot}/organization/[organizationID]`;
+  const createUrl = `${backendRoot}/organization`;
+  const jsonHeaders = { 'content-type': 'application/json' };
   let createdOrgId: string;
 
   // Usage of POST from organization/route.ts to create an organization for further tests
@@ -29,27 +32,28 @@ describe('Organization Routen testen', () => {
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-      shortDescription: '',
-      password: '',
+      shortDescription: 'Kurzbeschreibung',
+      password: 'supersecret1',
       priceCategory: 'FREE',
     };
 
-    const req = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+    const req = new NextRequest(createUrl, {
+      headers: jsonHeaders,
       method: 'POST',
       body: JSON.stringify(organization),
     });
 
     const res = await POST(req);
     expect(res.status).toBe(201);
-    createdOrgId = (await res.json()).id;
+    const resBody = await res.json();
+    createdOrgId = resBody.organization.id;
   });
 
   test('GET Organization', async () => {
     const req = new NextRequest(baseUrl);
     const res = await GET(req, { params: Promise.resolve({ organizationID: createdOrgId }) });
     const json = await res.json();
-    expect(json.length).not.toBe(0);
+    expect(json.id).toBe(createdOrgId);
     expect(res.status).toBe(200);
   });
 
@@ -64,7 +68,6 @@ describe('Organization Routen testen', () => {
     const getRes = await GET(getReq, { params: Promise.resolve({ organizationID: createdOrgId }) });
     const getJSON = await getRes.json();
 
-    expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
     const organization: OrganizationCreateInput = {
@@ -74,13 +77,13 @@ describe('Organization Routen testen', () => {
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
-      shortDescription: '',
-      password: '',
+      shortDescription: 'Kurzbeschreibung',
+      password: 'supersecret1',
       priceCategory: 'FREE',
     };
 
     const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+      headers: jsonHeaders,
       method: 'PATCH',
       body: JSON.stringify(organization),
     });
@@ -102,7 +105,7 @@ describe('Organization Routen testen', () => {
       id: '123456',
     };
     const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+      headers: jsonHeaders,
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -124,6 +127,6 @@ describe('Organization Routen testen', () => {
     const res = await DELETE(getReq, {
       params: Promise.resolve({ organizationID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 });
