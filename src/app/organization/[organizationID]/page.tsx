@@ -10,8 +10,17 @@ export default async function OrganizationDetailPage({
 }) {
   const parameters = await params;
   const organizationID = parameters.organizationID;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${organizationID}`);
-  const org: Organization = await res.json();
+  const resOrga = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${organizationID}`
+  );
+
+  // Wenn Employee Endpunkt fertig ist, wieder entkommentieren
+  // const resEmployee = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/organization/${organizationID}`);
+  // const employees: Employee[] = await resEmployee.json();
+
+  // TODO: Error Handling einbauen
+
+  const org: Organization = await resOrga.json();
 
   return org ? (
     <div className="bg-card grid grid-cols-1 lg:grid-cols-3 gap-5">
