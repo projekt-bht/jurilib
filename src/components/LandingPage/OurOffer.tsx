@@ -3,29 +3,33 @@ import { Calendar, FileText, MessageSquare, Scale } from 'lucide-react';
 const features = [
   {
     icon: MessageSquare,
-    title: 'Kostenlose Erstberatung',
-    description: 'Schildern Sie uns Ihr rechtliches Anliegen - unverbindlich und kostenfrei',
+    title: 'Vielfältige Auswahl an Expert*innen',
+    description:
+      'Bei uns findest du spezialisierte Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist',
     color: 'bg-blue-100',
     iconColor: 'text-blue-600',
   },
   {
     icon: Scale,
-    title: 'Passende Rechtsberatung finden',
-    description: 'Wir vermitteln Sie an spezialisierte Anwält*innen und Beratungsstellen',
+    title: 'Demokratisierung des Rechts',
+    description:
+      'Der Zugang zum Recht ist ein menschenrechtliches Gebot und Grundlage für ein selbstbestimmtes Leben. Unsere Kernphilosophie ist es daher, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
     color: 'bg-emerald-100',
     iconColor: 'text-emerald-600',
   },
   {
     icon: FileText,
     title: 'Transparente Preise',
-    description: 'Alle Kosten werden vorab klar kommuniziert - keine versteckten Gebühren',
+    description:
+      'Entstehende Kosten werden Dir vorab klar kommuniziert - keine versteckten Gebühren',
     color: 'bg-purple-100',
     iconColor: 'text-purple-600',
   },
   {
     icon: Calendar,
-    title: 'Flexible Termine',
-    description: 'Buchen Sie Ihre Beratungstermine einfach und flexibel online',
+    title: 'Wenige Klicks bis zum Termin',
+    description:
+      'Jurilib ist eine digitale Plattform, die dich in wenigen Minuten mit der zu Dir passenden Rechtsberatung verbindet',
     color: 'bg-amber-100',
     iconColor: 'text-amber-600',
   },
