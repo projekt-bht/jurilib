@@ -1,8 +1,9 @@
 import { Scale } from 'lucide-react';
+import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-card border-t border-border">
+    <footer className="bg-background border-t border-border">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -12,66 +13,68 @@ export function Footer() {
               </div>
               <span className="font-semibold text-foreground">JuriLib</span>
             </div>
-            <p className="text-muted-foreground text-sm">Connecting people with legal expertise</p>
+            <p className="text-muted-foreground text-sm">
+              Wir demokratisieren den Zugang zum Recht!
+            </p>
           </div>
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Platform</h4>
+            <h4 className="font-semibold text-foreground mb-4">Plattform</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  For Individuals
-                </a>
+                <Link href="/" className="hover:text-foreground transition">
+                  Für Nutzer*innen
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  For Organisations
-                </a>
+                <Link href="/lawyers" className="hover:text-foreground transition">
+                  Für Jurist*innen
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  For Lawyers
-                </a>
+                <Link href="/team" className="hover:text-foreground transition">
+                  Für Uns
+                </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
+            <h4 className="font-semibold text-foreground mb-4">Rechtliches</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  Privacy Policy
-                </a>
+                <Link href="/impressum" className="hover:text-foreground transition">
+                  Impressum
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  Terms of Service
-                </a>
+                <Link href="#" className="hover:text-foreground transition">
+                  Nutzungsbedingungen
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition">
-                  Contact
-                </a>
+                <Link href="/contact" className="hover:text-foreground transition">
+                  Kontakt
+                </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Contact</h4>
+            <h4 className="font-semibold text-foreground mb-4">Kontakt</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="mailto:support@jurimatch.com" className="hover:text-foreground transition">
-                  support@jurimatch.com
-                </a>
+                <Link href="mailto:support@jurilib.de" className="hover:text-foreground transition">
+                  support@jurilib.de
+                </Link>
               </li>
               <li>
-                <a href="tel:+1234567890" className="hover:text-foreground transition">
-                  +1 (234) 567-890
-                </a>
+                <Link href="tel:+491234567890" className="hover:text-foreground transition">
+                  +49 1234567890
+                </Link>
               </li>
             </ul>
           </div>
         </div>
         <div className="border-t border-border pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; 2025 JuriLib. All rights reserved.</p>
+          <p>&copy; 2025 JuriLib</p>
         </div>
       </div>
     </footer>
