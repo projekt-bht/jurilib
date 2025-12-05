@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { createAppointment } from './services';
+import { createAppointment, readAllAppointmentsByEmployee } from './services';
 
 /**
  * Validate the 'content-type' of the request header is 'application/json'
@@ -11,6 +11,13 @@ const headerSchema = z.object({
   'content-type': z.string().refine((val) => val.includes('application/json'), {
     message: 'Invalid content type, must be application/json',
   }),
+});
+
+/**
+ * Validate parameter employeeID
+ */
+const paramsSchema = z.object({
+  employeeID: z.string().min(1, 'Employee ID is required'),
 });
 
 /**
@@ -40,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(createdAppointment, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ message: 'Validation error', errors: error }, { status: 400 });
+      return handleValidationError(error);
     } else {
       return NextResponse.json(
         { message: 'Creation failed: ' + (error as Error).message },
@@ -52,6 +59,28 @@ export async function POST(req: NextRequest) {
 
 // GET /api/appointment/[employeeID]
 // Retrieve all appointments of employee (to be implemented)
-export async function GET(_req: NextRequest) {
-  // TODO: To be implemented
+export async function GET(req: NextRequest) {
+  try {
+    // extract employeeID from params
+    const pathname = new URL(req.url).pathname;
+    const employeeID = pathname.split('/appointment/')[1];
+
+    // validate employeeID
+    paramsSchema.parse({ employeeID });
+    const appointments = await readAllAppointmentsByEmployee(employeeID);
+    return NextResponse.json(appointments, { status: 200 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    } else {
+      return NextResponse.json(
+        { message: 'Read failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
+  }
+}
+
+function handleValidationError(error: z.ZodError) {
+  return NextResponse.json({ message: 'Validation error', errors: error }, { status: 400 });
 }
