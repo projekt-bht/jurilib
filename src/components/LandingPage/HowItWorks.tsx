@@ -5,29 +5,29 @@ const steps = [
     icon: FileText,
     title: 'Beschreibe Dein Problem',
     description: 'Erzähle uns mit eigenen Worten von Deinem rechtlichen Anliegen',
-    iconBgColor: 'bg-blue-50',
-    iconColor: 'text-blue-600',
+    iconBgColor: 'bg-accent-blue-soft',
+    iconColor: 'text-accent-blue',
   },
   {
     icon: Scale,
     title: 'Finde Dein Match',
     description: 'Unser Algorithmus findet die besten Anwält*innen für Dein Anliegen',
-    iconBgColor: 'bg-purple-50',
-    iconColor: 'text-purple-600',
+    iconBgColor: 'bg-accent-purple-light',
+    iconColor: 'text-accent-purple',
   },
   {
     icon: Users,
     title: 'Buche Deinen Termin',
     description: 'Vereinbare einen Beratungstermin, der zu Dir passt',
-    iconBgColor: 'bg-emerald-50',
-    iconColor: 'text-emerald-600',
+    iconBgColor: 'bg-accent-emerald-light',
+    iconColor: 'text-accent-emerald',
   },
   {
     icon: CheckCircle2,
     title: 'Match!',
     description: 'Dein rechtliches Problem ist nun in guten Händen',
-    iconBgColor: 'bg-amber-50',
-    iconColor: 'text-amber-600',
+    iconBgColor: 'bg-accent-amber-light',
+    iconColor: 'text-accent-amber',
   },
 ];
 
@@ -49,7 +49,7 @@ export default function HowItWorks() {
             const Icon = step.icon;
             return (
               <div key={index} className="flex flex-col items-center text-center">
-                <div className={`${step.iconBgColor} rounded-full p-4 mb-4 border border-border`}>
+                <div className={`${step.iconBgColor} rounded-full p-4 mb-4 border-border`}>
                   <Icon className={`w-8 h-8 ${step.iconColor}`} />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>

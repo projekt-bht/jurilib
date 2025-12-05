@@ -6,32 +6,32 @@ const features = [
     title: 'Vielfältige Auswahl an Expert*innen',
     description:
       'Bei uns findest du spezialisierte Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist',
-    color: 'bg-blue-100',
-    iconColor: 'text-blue-600',
+    color: 'bg-accent-blue-soft',
+    iconColor: 'text-accent-blue',
   },
   {
     icon: Scale,
     title: 'Demokratisierung des Rechts',
     description:
       'Der Zugang zum Recht ist ein menschenrechtliches Gebot und Grundlage für ein selbstbestimmtes Leben. Unsere Kernphilosophie ist es daher, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
-    color: 'bg-emerald-100',
-    iconColor: 'text-emerald-600',
+    color: 'bg-accent-emerald-soft',
+    iconColor: 'text-accent-emerald',
   },
   {
     icon: FileText,
     title: 'Transparente Preise',
     description:
       'Entstehende Kosten werden Dir vorab klar kommuniziert - keine versteckten Gebühren',
-    color: 'bg-purple-100',
-    iconColor: 'text-purple-600',
+    color: 'bg-accent-purple-light',
+    iconColor: 'text-accent-purple',
   },
   {
     icon: Calendar,
     title: 'Wenige Klicks bis zum Termin',
     description:
       'Jurilib ist eine digitale Plattform, die dich in wenigen Minuten mit der zu Dir passenden Rechtsberatung verbindet',
-    color: 'bg-amber-100',
-    iconColor: 'text-amber-600',
+    color: 'bg-accent-amber-light',
+    iconColor: 'text-accent-amber',
   },
 ];
 
