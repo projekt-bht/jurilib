@@ -21,7 +21,7 @@ export async function createAppointment(appointment: ZodCreateAppointment): Prom
   const endTime = new Date(startTime.getTime() + (appointment.duration ?? 30) * 60000);
   await validateNotOverlapping(startTime, endTime, appointment.employeeId);
 
-  await validateReference(appointment.organizationId, appointment.employeeId);
+  await validateReference(appointment.employeeId, appointment.organizationId);
 
   try {
     const createdAppointment = await prisma.appointment.create({
@@ -40,7 +40,18 @@ export async function createAppointment(appointment: ZodCreateAppointment): Prom
 }
 
 // Read all appointments of an employee
-// TODO: implement
+export async function readAllAppointmentsByEmployee(employeeID: string): Promise<Appointment[]> {
+  await validateReference(employeeID);
+
+  try {
+    const appointments = await prisma.appointment.findMany({
+      where: { employeeId: employeeID },
+    });
+    return appointments;
+  } catch (error) {
+    throw new Error('Database read failed: ' + (error as Error).message);
+  }
+}
 
 /**
  * ####################################################
@@ -48,7 +59,7 @@ export async function createAppointment(appointment: ZodCreateAppointment): Prom
  * ####################################################
  */
 
-async function validateReference(orgID: string, employeeID: string) {
+async function validateReference(employeeID: string, orgID?: string) {
   // check if organization exists
   if (!(await prisma.organization.findUnique({ where: { id: orgID } }))) {
     throw new ValidationError('notFound', 'organizationId', orgID);
