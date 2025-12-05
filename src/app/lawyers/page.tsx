@@ -3,7 +3,6 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import { Footer } from '@/components/Footer/Footer';
 import { Users, Zap, TrendingUp, Shield, Star, Clock, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -300,8 +299,6 @@ export default function LawyersPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }
