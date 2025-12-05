@@ -24,11 +24,11 @@ export async function createSearch(query: string) {
     const filteredMatches = matches.filter(
       (match) => match.similarity >= highestSimilarity - threshold
     );
+
     // eslint-disable-next-line no-console
     console.log(filteredMatches);
-    //console.log(matches)
+
     return filteredMatches;
-    // return NextResponse.json(filteredMatches, { status: 200 });
   } else {
     return null;
   }
