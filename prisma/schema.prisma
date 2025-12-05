@@ -208,13 +208,14 @@ model Appointment {
     employeeId     String
     //serviceID oder reicht ServiceType?
     serviceId      String?
-    duration       Int?
+    duration       Int
     status         AppointmentStatus @default(OPEN)
     createdAt      DateTime          @default(now())
     updatedAt      DateTime          @updatedAt
     location       String?
     meetingLink    String?
-    dateTime       DateTime
+    dateTimeStart  DateTime
+    dateTimeEnd    DateTime
     timeZone       String?
     notes          String?
 
