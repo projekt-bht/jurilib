@@ -6,7 +6,12 @@
 
 export class ValidationError extends Error {
   constructor(
-    public details: 'duplicate' | 'notFound' | 'invalidInput' | 'invalidReference',
+    public details:
+      | 'duplicate'
+      | 'notFound'
+      | 'invalidInput'
+      | 'invalidReference'
+      | 'overlappingAppointment',
     public field?: string,
     public value?: unknown,
     public statusCode: number = 400
@@ -24,6 +29,8 @@ export class ValidationError extends Error {
         return 'The given input is invalid.';
       case 'invalidReference':
         return 'The reference is invalid.';
+      case 'overlappingAppointment':
+        return 'The appointment overlaps with an existing appointment.';
     }
   }
 }
