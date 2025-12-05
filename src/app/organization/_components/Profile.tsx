@@ -76,7 +76,7 @@ export function Profile(organization: Organization) {
       <div className="bg-background border p-6 rounded-lg w-full max-w-5xl border-border shadow-md">
         <div className="flex flex-col lg:flex-row  items-start gap-8">
           {/* Organization logo */}
-          <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shrink-0">
+          <div className="w-24 h-24 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-3xl font-bold shadow-lg shrink-0">
             {organization.name.charAt(0)}
           </div>
           <div className="flex flex-col gap-2 flex-1">
@@ -85,7 +85,7 @@ export function Profile(organization: Organization) {
               <OrganisationTypeBadge type={organization.type} />
             </div>
 
-            <div className="mb-4text-foreground text-lg pb-2">{organization.shortDescription}</div>
+            <div className="mb-4 text-foreground text-lg pb-2">{organization.shortDescription}</div>
             <div>
               <PricingInfo priceCategory={organization.priceCategory} />
             </div>
