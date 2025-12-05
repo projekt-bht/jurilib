@@ -42,15 +42,6 @@ export async function createAppointment(appointment: ZodCreateAppointment): Prom
 // Read all appointments of an employee
 // TODO: implement
 
-// Read a specific appointment by ID
-// TODO: implement
-
-// Update an appointment by ID
-// TODO: implement
-
-// Delete an appointment by ID
-// TODO: implement
-
 /**
  * ####################################################
  * ################# helper functions #################
