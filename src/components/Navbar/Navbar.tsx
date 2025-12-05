@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import { Building2, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -22,6 +22,10 @@ export function Navbar() {
       </Link>
 
       <div className="flex items-center gap-x-5">
+        <Link href="/team" className="flex items-center gap-x-2">
+          <User className="text-forground" size={24} />
+          <p>Das Team</p>
+        </Link>
         <Link href="/organization" className="flex items-center gap-x-2">
           <Building2 className="text-foreground" size={24} />
           <p>Organisationen</p>
