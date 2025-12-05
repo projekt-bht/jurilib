@@ -240,8 +240,6 @@ export default function Team() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }
