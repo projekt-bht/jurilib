@@ -2,7 +2,8 @@
 
 import { Mic } from 'lucide-react';
 import { useEffect } from 'react';
-import useSpeechToText, { ResultType } from 'react-hook-speech-to-text';
+import type { ResultType } from 'react-hook-speech-to-text';
+import useSpeechToText from 'react-hook-speech-to-text';
 
 type SpeechToTextProps = {
   setText: (text: string) => void;
