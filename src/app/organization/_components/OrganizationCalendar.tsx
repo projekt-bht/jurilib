@@ -57,7 +57,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           handleChange(date, null);
         }}
         disabled={isDisabledDay}
-        className="rounded-md border shadow-sm [--cell-size:--spacing(11)]"
+        className="rounded-md border shadow-sm bg-accent-gray-soft"
         classNames={{
           months: '',
           month: '',
@@ -72,7 +72,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           head_cell: '',
           row: '',
           cell: '',
-          day: '',
+          day: 'bg-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-gray-400',
           day_selected: '',
           today: 'border-2 border-gray-400 bg-white font-bold rounded',
           day_outside: '',
