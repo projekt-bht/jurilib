@@ -114,7 +114,6 @@ async function main() {
           accountId: account.id,
           name: employeeName,
           organization: { connect: { id: orgId } },
-          email: faker.internet.email(),
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
         },
