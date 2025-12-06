@@ -29,11 +29,12 @@ export default async function OrganizationDetailPage({
 
   // Parse die Organisationsdaten
   // Auftretende Fehler werden ebenfalls vom Error Boundary behandelt
-
   const OrgaResponse = await fetchBackendData('organization', organizationID);
   const organization: Organization = await OrgaResponse.json();
 
   // Wenn Employee Endpunkt fertig ist, wieder entkommentieren
+  // Parse die Mitarbeiterdaten der Organisation
+  // Auftretende Fehler werden ebenfalls vom Error Boundary behandelt
   // const resEmployee = await fetchBackendData('employee', organizationID);
   // const employees: Employee[] = await resEmployee.json();
 
