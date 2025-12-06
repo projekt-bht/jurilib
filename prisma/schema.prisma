@@ -148,8 +148,6 @@ model Employee {
     accountId      String  
     organizationId String
     name           String
-    //Private Email for contacting purposes (not for Authentication)
-    email          String       @unique
     phone          String?
     position       String?
     createdAt      DateTime     @default(now())
