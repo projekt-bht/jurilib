@@ -4,7 +4,7 @@ import * as z from 'zod';
 
 import { Role } from '~/generated/prisma/enums';
 
-import { createAccount } from './services';
+import { createAccount, readAccounts } from './services';
 
 const CreateSchema = z.object({
   email: z.string(),
@@ -34,5 +34,14 @@ export async function POST(req: NextRequest) {
       { message: 'Creation failed: ' + (error as Error).message },
       { status: 400 }
     );
+  }
+}
+
+export async function GET(_req: NextRequest) {
+  try {
+    const accounts = await readAccounts();
+    return NextResponse.json(accounts, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
   }
 }
