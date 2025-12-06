@@ -1,0 +1,79 @@
+import { Globe, Mail, MapPin, Phone } from 'lucide-react';
+
+import type { Organization } from '~/generated/prisma/client';
+
+export function ProfileInfos({ organization }: { organization: Organization }) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-60 gap-y-5 place-items-center">
+      <div className="col-span-1 w-full flex flex-col items-start text-center">
+        <div className="flex items-center gap-2 mb-2">
+          <Globe className="text-accent-gray" size={25} aria-label="Globe icon" />
+          <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Webseite</h3>
+        </div>
+        <address className="not-italic">
+          {organization.website ? (
+            <a
+              href={organization.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {organization.website}
+            </a>
+          ) : (
+            <span>Keine Angabe.</span>
+          )}
+        </address>
+      </div>
+
+      <div className="col-span-1 w-full flex flex-col items-start text-center">
+        <div className="flex items-center gap-2 mb-2">
+          <Phone className="text-accent-gray" size={25} aria-label="Phone icon" />
+          <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Telefon</h3>
+        </div>
+        <address className="not-italic">
+          {organization.phone ? <p>{organization.phone}</p> : <span>Keine Angabe.</span>}
+        </address>
+      </div>
+
+      <div className="col-span-1 w-full flex flex-col items-start text-center">
+        <div className="flex items-center gap-2 mb-2">
+          <MapPin className="text-accent-gray" size={25} aria-label="Map Pin Icon" />
+          <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Adresse</h3>
+        </div>
+        <address className="not-italic">
+          {organization.address ? (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                organization.address
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {organization.address}
+            </a>
+          ) : (
+            <span>Keine Angabe.</span>
+          )}
+        </address>
+      </div>
+
+      <div className="col-span-1 w-full flex flex-col items-start text-center">
+        <div className="flex items-center gap-2 mb-2">
+          <Mail className="text-accent-gray" size={25} aria-label="Mail icon" />
+          <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">E-Mail</h3>
+        </div>
+        <address className="not-italic">
+          {organization.email ? (
+            <a href={`mailto:${organization.email}`} className="hover:underline">
+              {organization.email}
+            </a>
+          ) : (
+            <span>Keine Angabe.</span>
+          )}
+        </address>
+      </div>
+    </div>
+  );
+}
