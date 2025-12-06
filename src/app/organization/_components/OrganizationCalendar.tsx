@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
-import { useBookingSchedule } from '../useBookingSchedule';
+import { useBookingSchedule } from './useBookingSchedule';
 
 type CalendarWithTimeProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;

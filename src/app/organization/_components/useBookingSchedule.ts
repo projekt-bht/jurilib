@@ -2,11 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import {
-  bookAppointment,
-  fetchAvailableSlots,
-  getFallbackSlots,
-} from './_components/bookingService';
+import { bookAppointment, fetchAvailableSlots, getFallbackSlots } from './bookingService';
 
 type BookingState = {
   selectedDate?: Date;
