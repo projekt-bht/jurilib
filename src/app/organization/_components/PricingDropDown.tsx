@@ -7,13 +7,13 @@ import { useState } from 'react';
 export function getPricingInfo(priceCategory: string) {
   switch (priceCategory) {
     case 'FREE':
-      return { label: 'Niedrige Preisklasse', range: '50-100€/Std', color: 'text-accent-emerald' };
+      return { label: 'Niedrige Preisklasse', range: 'Kostenfrei', color: 'text-accent-emerald' };
     case 'LOW':
-      return { label: 'Mittlere Preisklasse', range: '100-200€/Std', color: 'text-accent-amber' };
+      return { label: 'Mittlere Preisklasse', range: '50-100€/Std', color: 'text-accent-amber' };
     case 'MEDIUM':
-      return { label: 'Hohe Preisklasse', range: '200+€/Std', color: 'text-accent-blue' };
+      return { label: 'Hohe Preisklasse', range: '100-200€/Std', color: 'text-accent-blue' };
     case 'HIGH':
-      return { label: 'Premium Preisklasse', range: '300+€/Std', color: 'text-accent-purple' };
+      return { label: 'Premium Preisklasse', range: '200+€/Std', color: 'text-accent-purple' };
     default:
       return { label: 'Preis auf Anfrage', range: '', color: 'text-foreground' };
   }
@@ -57,7 +57,15 @@ export function PricingInfo({ priceCategory }: { priceCategory: string }) {
             <div className="bg-background rounded-lg p-3 border border-border">
               <p className="text-xs font-medium text-accent-gray mb-1">Erstberatung</p>
               <p className="text-lg font-semibold text-foreground">
-                {priceCategory === 'FREE' ? 'Kostenlos' : priceCategory === 'LOW' ? '50€' : '100€'}
+                {priceCategory === 'FREE'
+                  ? 'Kostenlos'
+                  : priceCategory === 'LOW'
+                  ? '50€'
+                  : priceCategory === 'MEDIUM'
+                  ? '100€'
+                  : priceCategory === 'HIGH'
+                  ? '200€'
+                  : 'Auf Anfrage'}
               </p>
             </div>
             <div className="bg-background rounded-lg p-3 border border-border">
