@@ -4,7 +4,10 @@ import type { Organization } from '~/generated/prisma/client';
 
 export function ProfileInfos({ organization }: { organization: Organization }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-60 gap-y-5 place-items-center">
+    <div
+      id={`${organization.id}_ProfileInfos`}
+      className="grid grid-cols-1 lg:grid-cols-2 gap-x-60 gap-y-5 place-items-center"
+    >
       <div className="col-span-1 w-full flex flex-col items-start text-center">
         <div className="flex items-center gap-2 mb-2">
           <Globe className="text-accent-gray" size={25} aria-label="Globe icon" />
