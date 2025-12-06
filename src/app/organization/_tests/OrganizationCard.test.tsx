@@ -1,22 +1,23 @@
 import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
-import { Profile } from '@/app/organization/_components/Profile';
 import type { Organization } from '~/generated/prisma/client';
 
+import OrganizationCard from '../_components/OrganizationCard';
+
 const mockOrganization: Organization = {
-  name: 'Rechtsberatum München',
   id: '1',
-  description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
-  shortDescription: 'test.',
+  name: 'Rechtsberatum München',
+  password: 'securepassword',
+  shortDescription: 'Ihr Partner für Arbeitsrecht.',
+  description: 'Ihr aller bester Partner für Arbeitsrecht.',
+  priceCategory: 'FREE',
   email: 'contact@rechtsberatum.de',
-  password: '2334',
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
   expertiseArea: ['Arbeitsrecht'],
   type: 'LAW_FIRM',
-  priceCategory: 'MEDIUM', // Medium pricing is represented by '€€'
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -27,24 +28,28 @@ describe('OrganizationCard', () => {
   });
 
   it('renders organization name', () => {
-    render(<Profile {...mockOrganization} />);
+    render(<OrganizationCard {...mockOrganization} />);
     expect(screen.getByText('Rechtsberatum München')).toBeInTheDocument();
   });
 
-  it('renders organization description', () => {
-    render(<Profile {...mockOrganization} />);
-    expect(
-      screen.getByText('In Ansprechpartner für Arbeitsrecht und Vertragsrecht.')
-    ).toBeInTheDocument();
-  });
-
   it('renders organization short description', () => {
-    render(<Profile {...mockOrganization} />);
-    expect(screen.getByText('test.')).toBeInTheDocument();
+    render(<OrganizationCard {...mockOrganization} />);
+    expect(screen.getByText('Ihr Partner für Arbeitsrecht.')).toBeInTheDocument();
   });
 
   it('renders expertise area', () => {
-    render(<Profile {...mockOrganization} />);
+    render(<OrganizationCard {...mockOrganization} />);
     expect(screen.getByText('Arbeitsrecht')).toBeInTheDocument();
+  });
+
+  it('renders profile button with correct text', () => {
+    render(<OrganizationCard {...mockOrganization} />);
+    expect(screen.getByRole('button', { name: /zum profil/i })).toBeInTheDocument();
+  });
+
+  it('calls router.push when button is clicked', async () => {
+    render(<OrganizationCard {...mockOrganization} />);
+    const link = screen.getByRole('link', { name: /zum profil/i });
+    expect(link).toHaveAttribute('href', `/organization/${mockOrganization.id}`);
   });
 });
