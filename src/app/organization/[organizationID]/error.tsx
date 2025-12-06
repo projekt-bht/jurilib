@@ -6,15 +6,9 @@ import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
-    console.error('[v0] Organization profile error:', error);
+    console.error('Organization profile error:', error);
   }, [error]);
 
   return (
