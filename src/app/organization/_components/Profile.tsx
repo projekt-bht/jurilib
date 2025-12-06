@@ -62,7 +62,9 @@ export function Profile(organization: Organization) {
               <OrganisationTypeBadge type={organization.type} />
             </div>
 
-            <div className="mb-4 text-foreground text-lg pb-2">{organization.shortDescription}</div>
+            <span className="mb-4 text-foreground text-lg pb-2">
+              {organization.shortDescription}
+            </span>
             <div>
               <PricingInfo priceCategory={organization.priceCategory} />
             </div>
@@ -87,11 +89,10 @@ export function Profile(organization: Organization) {
           <Info className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Über uns
         </h2>
-        <div className="text-foreground text-lg">{organization.description}</div>
+        <span className="text-foreground text-lg">{organization.description}</span>
       </div>
 
       {/* Employees Section */}
-      {/* Hier noch prüfen, ob Employees vorhanden sind */}
       <div
         id={`${organization.id}_Employees`}
         className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
@@ -100,9 +101,7 @@ export function Profile(organization: Organization) {
           <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Unser Team
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Kommt wenn der Endpoint implementiert ist*/}
-        </div>
+        {/* Mapping der Employees kommt wenn der Endpoint implementiert ist*/}
       </div>
     </div>
   );
