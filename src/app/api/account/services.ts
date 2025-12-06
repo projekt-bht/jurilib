@@ -18,3 +18,16 @@ export const createAccount = async (account: AccountCreateInput): Promise<Accoun
     throw new Error('Database insert failed: ' + (error as Error).message);
   }
 };
+
+// Read all Accounts
+export const readAccounts = async (): Promise<Account[]> => {
+  try {
+    const accounts: Account[] = await prisma.account.findMany();
+    if (!accounts) {
+      throw new Error('Accounts not found');
+    }
+    return accounts;
+  } catch (error) {
+    throw new Error('Database query failed: ' + (error as Error).message);
+  }
+};
