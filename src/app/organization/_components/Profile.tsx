@@ -1,4 +1,3 @@
-'use client';
 import { Separator } from '@radix-ui/react-separator';
 import { Building, Building2, Info, Users } from 'lucide-react';
 
@@ -47,7 +46,7 @@ function OrganisationTypeBadge({ type }: { type: string }) {
 export function Profile(organization: Organization) {
   return (
     <div
-      id={`OrganizationDetailPage_${organization.id}`}
+      id={`${organization.id}_Profile`}
       className="flex flex-col justify-start items-start w-full px-10 py-8"
     >
       {/* Profile Info Section */}
@@ -80,7 +79,10 @@ export function Profile(organization: Organization) {
       </div>
 
       {/* Description Section */}
-      <div className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md">
+      <div
+        id={`${organization.id}_Description`}
+        className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
+      >
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
           <Info className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Über uns
@@ -90,7 +92,10 @@ export function Profile(organization: Organization) {
 
       {/* Employees Section */}
       {/* Hier noch prüfen, ob Employees vorhanden sind */}
-      <div className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md">
+      <div
+        id={`${organization.id}_Employees`}
+        className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
+      >
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
           <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Unser Team
