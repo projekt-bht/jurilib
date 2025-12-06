@@ -6,12 +6,12 @@ jest.unstable_mockModule('next/navigation', () => ({
   }),
 }));
 
-const { render, screen } = await import('@testing-library/react');
+const { render, screen, waitFor } = await import('@testing-library/react');
 const { LandingPage } = await import('./LandingPage');
 
 describe('Test LandingPage', () => {
-  it('renders the component text', () => {
+  it('renders the component text', async () => {
     render(<LandingPage />);
-    expect(screen.getByText(/Beschreibe dein Problem/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Beschreibe dein Problem/i)[0]).toBeInTheDocument();
   });
 });

@@ -1,7 +1,13 @@
 'use client';
 
+//https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
+//WebSpeechAPI only exits on client
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+import { Button } from '../ui/button';
+const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 
 // Find filtered Organizations...
 // Form will be submitted on button click or Enter key press
@@ -11,7 +17,21 @@ import { useState } from 'react';
 export function ProblemSearchField() {
   const [problem, setProblem] = useState('');
   const [error, setError] = useState('');
+  const [isRecordingDone, setIsRecordingDone] = useState(false);
+
   const router = useRouter();
+
+  const exampleSearches = [
+    'Ich habe Probleme mit meinem Vermieter wegen Mieterhöhung',
+    'Mein Arbeitgeber hat mir gekündigt, ich brauche rechtliche Beratung',
+    'Ich benötige Hilfe bei einem Verkehrsunfall',
+    'Fragen zum Erbrecht und Testament',
+    'Probleme mit einem Kaufvertrag',
+  ];
+
+  function handleExampleClick(example: string) {
+    setProblem(example);
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +42,8 @@ export function ProblemSearchField() {
       setError('Bitte beschreibe dein Problem.');
       return;
     }
+
+    setIsRecordingDone(true);
 
     try {
       router.push(`/search/${problem}`);
@@ -40,7 +62,7 @@ export function ProblemSearchField() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-6">
+      <div className="mb-6 relative">
         <textarea
           className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
           value={problem}
@@ -51,10 +73,11 @@ export function ProblemSearchField() {
           onKeyDown={handleKeyDown}
           placeholder="Beginne hier zu schreiben..."
         />
+        <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
       </div>
 
       {/*Display error message, if error is truthy*/}
-      {error && <p className="text-foreground mb-4">{error}</p>}
+      {error && <p className="text-foreground mb-4">{error} </p>}
 
       <button
         type="submit"
@@ -62,6 +85,26 @@ export function ProblemSearchField() {
       >
         Passende Lösung finden
       </button>
+
+      <p className="text-muted-foreground text-sm mt-2 mb-8">
+        Deine Anfrage wird vertraulich behandelt
+      </p>
+
+      <p className="text-sm text-muted-foreground text-center mb-4">Oder wähle ein Beispiel:</p>
+      <div className="flex flex-wrap gap-2 justify-center mb-8">
+        {exampleSearches.map((example, index) => (
+          <Button
+            key={index}
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleExampleClick(example)}
+            className="text-xs hover:bg-accent-gray-light hover:text-foreground cursor-pointer transition-all hover:scale-105"
+          >
+            {example}
+          </Button>
+        ))}
+      </div>
     </form>
   );
 }

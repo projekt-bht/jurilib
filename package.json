@@ -27,11 +27,12 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "lucide-react": "^0.552.0",
-    "next": "16.0.0",
+    "next": "^16.0.7",
     "openai": "^6.8.0",
     "react": "19.2.0",
     "react-day-picker": "^9.11.1",
     "react-dom": "19.2.0",
+    "react-hook-speech-to-text": "^0.8.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {

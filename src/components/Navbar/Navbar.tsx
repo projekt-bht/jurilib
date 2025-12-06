@@ -1,4 +1,4 @@
-import { Building2 } from 'lucide-react';
+import { Building2, ShieldUser, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -22,6 +22,14 @@ export function Navbar() {
       </Link>
 
       <div className="flex items-center gap-x-5">
+        <Link href="/lawyers" className="flex items-center gap-x-2">
+          <ShieldUser className="text-forground" size={24} />
+          <p>Du bist Jurist*in?</p>
+        </Link>
+        <Link href="/team" className="flex items-center gap-x-2">
+          <User className="text-forground" size={24} />
+          <p>Das Team</p>
+        </Link>
         <Link href="/organization" className="flex items-center gap-x-2">
           <Building2 className="text-foreground" size={24} />
           <p>Organisationen</p>
