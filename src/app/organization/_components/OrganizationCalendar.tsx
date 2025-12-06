@@ -58,7 +58,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
       {selectedDate && (
         <div className="space-y-3">
-          <p className="text-sm font-medium text-gray-700">
+          <p className="text-sm font-medium text-foreground">
             {slotsLoading ? 'Termine werden geladen ...' : 'Verfügbare Zeiten'}
           </p>
 
@@ -90,7 +90,9 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             >
               {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
             </Button>
-            {statusMessage && <p className="text-center text-sm text-gray-600">{statusMessage}</p>}
+            {statusMessage && (
+              <p className="text-center text-sm text-muted-foreground">{statusMessage}</p>
+            )}
           </div>
         </div>
       )}
