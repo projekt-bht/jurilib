@@ -15,6 +15,9 @@ export async function GET(
     }
 
     const organization = await readOrganization(organizationID);
+    if (!organization) {
+      return NextResponse.json({ message: 'Organization not found' }, { status: 404 });
+    }
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });
