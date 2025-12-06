@@ -19,12 +19,12 @@ const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 async function main() {
   // Cleanup for each Seeding
 
-  await prisma.account.deleteMany();
   await prisma.appointment.deleteMany();
   await prisma.case.deleteMany();
   await prisma.service.deleteMany();
   await prisma.user.deleteMany();
   await prisma.employee.deleteMany();
+  await prisma.account.deleteMany();
   await prisma.organization.deleteMany();
 
   // Create 20 Users with accounts
@@ -111,11 +111,11 @@ async function main() {
       const employeeName = faker.person.fullName();
       const employee = await prisma.employee.create({
         data: {
-          accountId: account.id,
           name: employeeName,
           organization: { connect: { id: orgId } },
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
+          account: { connect: { id: account.id } },
         },
       });
       employeeId.push(employee.id);
