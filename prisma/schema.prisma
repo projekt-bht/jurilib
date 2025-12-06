@@ -115,30 +115,66 @@ enum Areas {
     @@schema("public")
 }
 
-model User {
+enum Role {
+    USER
+    EMPLOYEE
+    @@schema("public")
+}
+
+model Account {
     id        String   @id @default(uuid())
-    name      String
     email     String   @unique
     password  String
-    phone     String?
-    address   String?
-    type      UserType
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    cases          Case[]
-    appointments   Appointment[]
+    role      Role
+    
+    user     User?
+    employee  Employee?
 
     @@schema("public")
 }
+
+model User {
+    id        String   @id @default(uuid())
+    accountId String   @unique
+    name      String
+    phone     String?
+    address   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    cases          Case[]
+    appointments   Appointment[]
+
+    account Account @relation(fields: [accountId], references: [id])
+
+    @@schema("public")
+}
+
+model Employee {
+    id             String       @id @default(uuid())
+    accountId      String       @unique
+    organizationId String
+    name           String
+    phone          String?
+    position       String?
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+
+    account      Account @relation(fields: [accountId], references: [id])
+    organization Organization @relation(fields: [organizationId], references: [id])
+    appointments Appointment[]
+    cases        Case[]
+
+    @@schema("public")
+}
+
 
 model Organization {
     id                 String                       @id @default(uuid())
     name               String
     description        String?
     shortDescription   String
+    //Orga Email for contacting purposes (not for Authentication)
     email              String                       @unique
-    password           String
     phone              String?
     address            String?
     website            String?
@@ -227,19 +263,3 @@ model Appointment {
     @@schema("public")
 }
 
-model Employee {
-    id             String       @id @default(uuid())
-    organizationId String
-    name           String
-    email          String       @unique
-    phone          String?
-    position       String?
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
-
-    organization Organization @relation(fields: [organizationId], references: [id])
-    appointments Appointment[]
-    cases        Case[]
-
-    @@schema("public")
-}
