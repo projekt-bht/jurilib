@@ -30,7 +30,6 @@ describe('Organization Routen testen', () => {
       type: 'LAW_FIRM',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
       shortDescription: '',
-      password: '',
       priceCategory: 'FREE',
     };
 
@@ -75,7 +74,6 @@ describe('Organization Routen testen', () => {
       type: 'LAW_FIRM',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
       shortDescription: '',
-      password: '',
       priceCategory: 'FREE',
     };
 

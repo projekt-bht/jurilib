@@ -24,7 +24,6 @@ describe('Organization Routen testen', () => {
       description: 'Kanzlei test',
       shortDescription: 'Kanzlei shortTest',
       email: Math.random() + '@mail.de',
-      password: 'testpasswort',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
       expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
