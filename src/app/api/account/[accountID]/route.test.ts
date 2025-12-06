@@ -9,7 +9,7 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET, PATCH, DELETE } = await import('@/app/api/account/[accountID]/route');
-const { POST } = await import('@/app/api/account/register/route');
+const { POST } = await import('@/app/api/account/route');
 
 describe('Account Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
