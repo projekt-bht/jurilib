@@ -1,10 +1,11 @@
 'use client';
 import { Separator } from '@radix-ui/react-separator';
-import { Building, Building2, Globe, Info, Mail, MapPin, Phone, Users } from 'lucide-react';
+import { Building, Building2, Info, Users } from 'lucide-react';
 
 import type { Areas, Organization } from '~/generated/prisma/client';
 
 import { PricingInfo } from './PricingDropDown';
+import { ProfileInfos } from './ProfileInfos';
 
 // Function to create and format the Expertise Area items to badges
 function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
@@ -57,7 +58,7 @@ export function Profile(organization: Organization) {
             {organization.name.charAt(0)}
           </div>
           <div className="flex flex-col gap-2 flex-1">
-            <h2 className="text-4xl font-bold">{organization.name}</h2>
+            <h2 className="text-3xl font-bold">{organization.name}</h2>
             <div className="pb-2">
               <OrganisationTypeBadge type={organization.type} />
             </div>
@@ -73,77 +74,8 @@ export function Profile(organization: Organization) {
         </div>
 
         <Separator className="my-6 h-px bg-border w-full" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-5">
-          <div className="col-span-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Globe className="text-foreground" size={25} />
-              <p className="flex items-center gap-2 text-xl font-bold text-foreground">Webseite</p>
-            </div>
-
-            {/* href={organization.website}: 
-            target="_blank": ensures the link opens in a new tab
-            rel="noopener noreferrer": for security reasons when using target="_blank" 
-              - prevents the new page from accessing the window.opener property and protects against tabnabbing attacks
-            */}
-            {organization.website ? (
-              <a
-                href={organization.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                {organization.website}
-              </a>
-            ) : (
-              <p>Keine Angabe.</p>
-            )}
-          </div>
-
-          <div className="col-span-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Phone className="text-foreground" size={25} />
-              <p className="flex items-center gap-2 text-xl font-bold text-foreground">Telefon</p>
-            </div>
-            {organization.phone ? <p>{organization.phone}</p> : <p>Keine Angabe.</p>}
-          </div>
-
-          <div className="col-span-1">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="text-foreground" size={25} />
-              <p className="flex items-center gap-2 text-xl font-bold text-foreground">Adresse</p>
-            </div>
-
-            {organization.address ? (
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                  organization.address
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                {organization.address}
-              </a>
-            ) : (
-              <p>Keine Angabe.</p>
-            )}
-          </div>
-
-          <div className="col-span-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Mail className="text-foreground" size={25} />
-              <p className="flex items-center gap-2 text-xl font-bold text-foreground">E-Mail</p>
-            </div>
-
-            {organization.address ? (
-              <a href={`mailto:${organization.email}`} className="hover:underline">
-                {organization.email}
-              </a>
-            ) : (
-              <p>Keine Angabe.</p>
-            )}
-          </div>
+        <div className="flex justify-center w-full">
+          <ProfileInfos organization={{ ...organization }} />
         </div>
       </div>
 
