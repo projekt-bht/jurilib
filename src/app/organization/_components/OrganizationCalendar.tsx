@@ -2,11 +2,19 @@
 
 import { useMemo } from 'react';
 import { de } from 'date-fns/locale';
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  User,
+  Zap,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
 import { useBookingSchedule } from './useBookingSchedule';
-/*import { Calendar, Clock, User, Zap, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"*/
 
 type CalendarWithTimeProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -52,6 +60,10 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        <CalendarIcon className="h-5 w-5" />
+        <span className="text-lg font-semibold">Wählen Sie ein Datum</span>
+      </div>
       <Calendar
         mode="single"
         today={today}
