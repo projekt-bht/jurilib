@@ -11,7 +11,10 @@ type ZodCreateAppointment = {
 };
 
 // Create a new appointment
-export async function createAppointment(appointment: ZodCreateAppointment): Promise<Appointment> {
+export async function createAppointment(
+  employeeID: string,
+  appointment: ZodCreateAppointment
+): Promise<Appointment> {
   /**
    * determine appointment end time based on start time and duration
    * end time ALWAYS has to be calculated, to avoid overlapping appointments
@@ -21,7 +24,7 @@ export async function createAppointment(appointment: ZodCreateAppointment): Prom
   const endTime = new Date(startTime.getTime() + (appointment.duration ?? 30) * 60000);
   await validateNotOverlapping(startTime, endTime, appointment.employeeId);
 
-  await validateReference(appointment.employeeId, appointment.organizationId);
+  await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
 
   try {
     const createdAppointment = await prisma.appointment.create({
@@ -59,13 +62,18 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
  * ####################################################
  */
 
-async function validateReference(employeeID: string, orgID?: string) {
+async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
+  // check if employee exists
+  if (!(await prisma.employee.findUnique({ where: { id: bodyEmployeeID } }))) {
+    throw new ValidationError('notFound', 'employeeId', bodyEmployeeID);
+  }
+  // check if param employeeID matches body employeeID
+  else if (paramEmployeeID !== bodyEmployeeID) {
+    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
+  }
   // check if organization exists
-  if (!(await prisma.organization.findUnique({ where: { id: orgID } }))) {
+  else if (!(await prisma.organization.findUnique({ where: { id: orgID } }))) {
     throw new ValidationError('notFound', 'organizationId', orgID);
-  } // check if employee exists
-  else if (!(await prisma.employee.findUnique({ where: { id: employeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', employeeID);
   }
 }
 

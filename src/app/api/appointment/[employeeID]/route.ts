@@ -34,16 +34,22 @@ const appointmentCreateSchema = z.object({
   duration: z.number().min(1, 'Duration must be at least 1 minute'),
 });
 
-// POST /api/appointment/[employeeID]
+// POST /api/appointment/:employeeID
 // Create a new appointment
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ employeeID: string }> }
+) {
   try {
     // validate header
     headerSchema.parse(req.headers);
+    // validate params
+    const { employeeID } = await params;
+    paramsSchema.parse({ employeeID });
     // validate body
     const body = appointmentCreateSchema.parse(await req.json());
 
-    const createdAppointment = await createAppointment(body);
+    const createdAppointment = await createAppointment(employeeID, body);
     return NextResponse.json(createdAppointment, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -57,15 +63,15 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/appointment/[employeeID]
+// GET /api/appointment/:employeeID
 // Retrieve all appointments of employee (to be implemented)
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ employeeID: string }> }
+) {
   try {
-    // extract employeeID from params
-    const pathname = new URL(req.url).pathname;
-    const employeeID = pathname.split('/appointment/')[1];
-
     // validate employeeID
+    const { employeeID } = await params;
     paramsSchema.parse({ employeeID });
     const appointments = await readAllAppointmentsByEmployee(employeeID);
     return NextResponse.json(appointments, { status: 200 });

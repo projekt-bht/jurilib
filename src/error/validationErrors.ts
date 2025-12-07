@@ -10,6 +10,7 @@ export class ValidationError extends Error {
       | 'duplicate'
       | 'notFound'
       | 'invalidInput'
+      | 'mismatch'
       | 'invalidReference'
       | 'overlappingAppointment',
     public field?: string,
@@ -27,6 +28,8 @@ export class ValidationError extends Error {
         return 'The entry could not be found.';
       case 'invalidInput':
         return 'The given input is invalid.';
+      case 'mismatch':
+        return 'The given ID in the parameter does not match the ID in the body.';
       case 'invalidReference':
         return 'The reference is invalid.';
       case 'overlappingAppointment':
