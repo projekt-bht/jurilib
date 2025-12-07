@@ -7,42 +7,41 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 
+import type { Employee } from '~/generated/prisma/client';
+
 import BookingSelector from './BookingSelector';
 import { useBookingSchedule } from './useBookingSchedule';
 
 type CalendarWithTimeProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
 };
-/* employee data model holen */
-type Staff = {
-  id: string;
-  name: string;
-  title: string;
+// Placeholder employee data
+type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
   specialties: string[];
   avatar?: string | null;
 };
 /* TODO:
     use database model after implementation
 */
-const mockStaff: Staff[] = [
+const mockStaff: EmployeeCard[] = [
   {
     id: '1',
     name: 'Anna Schmidt',
-    title: 'Rechtsanwältin',
+    position: 'Rechtsanwältin',
     specialties: ['Familienrecht', 'Arbeitsrecht'],
     avatar: null,
   },
   {
     id: '2',
     name: 'Lukas Meyer',
-    title: 'Jurist',
+    position: 'Jurist',
     specialties: ['Vertragsrecht', 'Gesellschaftsrecht'],
     avatar: null,
   },
   {
     id: '3',
     name: 'Sofia Keller',
-    title: 'Beraterin',
+    position: 'Beraterin',
     specialties: ['Compliance', 'Datenschutz'],
     avatar: null,
   },
@@ -69,7 +68,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   } = useBookingSchedule();
 
   const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick');
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<EmployeeCard | null>(null);
 
   const today = useMemo(() => new Date(), []);
   const germanLocale = useMemo(() => de, []);
@@ -132,7 +131,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground mb-1">{staff.name}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{staff.title}</p>
+                    <p className="text-sm text-muted-foreground mb-2">{staff.position}</p>
                     <div className="flex flex-wrap gap-1">
                       {staff.specialties.map((specialty) => (
                         <span
