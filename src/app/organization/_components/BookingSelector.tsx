@@ -81,7 +81,7 @@ export function BookingSelector({
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-4">
               <ItemMedia
                 className={cn(
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
@@ -92,7 +92,7 @@ export function BookingSelector({
               >
                 <Zap className="h-6 w-6" />
               </ItemMedia>
-              <ItemContent className="gap-2">
+              <ItemContent className="gap-2 min-w-0">
                 <ItemTitle className="text-xl font-bold text-foreground leading-tight">
                   Schnellbuchung
                 </ItemTitle>
@@ -112,7 +112,7 @@ export function BookingSelector({
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-4">
               <ItemMedia
                 className={cn(
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
