@@ -13,7 +13,13 @@ const { ProblemSearchField } = await import('../ProblemSearchField');
 describe('Test LandingPage', () => {
   it('renders the component text', async () => {
     await waitFor(async () => {
-      render(<ProblemSearchField />);
+      render(
+        <ProblemSearchField
+          onSubmit={function (text: string): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
+      );
       expect(screen.getByText(/Passende Lösung finden/i)).toBeInTheDocument();
     });
   });
