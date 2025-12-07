@@ -1,10 +1,12 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { User } from '~/generated/prisma/client';
 import type { UserCreateInput } from '~/generated/prisma/models';
 
 export const createUser = async (user: UserCreateInput, accountID: string): Promise<User> => {
   try {
-    if (!user || !accountID) throw new Error('Cannot Create user because of missing Data');
+    if (!user) throw new ValidationError('invalidInput', 'user', user);
+    if (!accountID) throw new ValidationError('invalidInput', 'account', accountID);
 
     const createdUser = await prisma.user.create({
       data: {
@@ -25,7 +27,7 @@ export const readUsers = async (): Promise<User[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
     if (!users) {
-      throw new Error('Users not found');
+      throw new ValidationError('notFound', 'users', users);
     }
 
     return users;
