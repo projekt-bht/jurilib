@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { Role } from '~/generated/prisma/enums';
+
 import { createAccount } from '../../account/services';
 import { createUser } from '../../user/services';
 
@@ -15,10 +17,10 @@ export async function POST(req: NextRequest) {
     const createdAccount = await createAccount(body.account);
 
     switch (createdAccount.role) {
-      case 'USER':
-        const createdUser = await createUser(body.entity, createdAccount.id);
+      case Role.USER:
+        const createdUser = await createUser(body.entity, createdAccount.id!);
         return NextResponse.json(createdUser, { status: 201 });
-      case 'EMPLOYEE':
+      case Role.EMPLOYEE:
         //TODO
         break;
       default:
