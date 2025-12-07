@@ -18,7 +18,7 @@ type BookingSelectorProps = {
   selectedStaff?: { name: string } | null;
   bookingMode?: 'quick' | 'staff';
   onBookingModeChange?: (mode: 'quick' | 'staff') => void;
-};
+}; // props allow external control of layout, mode, and selected staff
 
 /**
  * Accordion-style selector:
