@@ -15,6 +15,8 @@ export async function createAppointment(
   employeeID: string,
   appointment: ZodCreateAppointment
 ): Promise<Appointment> {
+  await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
+
   /**
    * determine appointment end time based on start time and duration
    * end time ALWAYS has to be calculated, to avoid overlapping appointments
@@ -23,8 +25,6 @@ export async function createAppointment(
   const startTime = new Date(appointment.dateTimeStart);
   const endTime = new Date(startTime.getTime() + (appointment.duration ?? 30) * 60000);
   await validateNotOverlapping(startTime, endTime, appointment.employeeId);
-
-  await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
 
   try {
     const createdAppointment = await prisma.appointment.create({
@@ -64,15 +64,15 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
 
 async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
   // check if employee exists
-  if (!(await prisma.employee.findUnique({ where: { id: bodyEmployeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', bodyEmployeeID);
+  if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
+    throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
   }
   // check if param employeeID matches body employeeID
-  else if (paramEmployeeID !== bodyEmployeeID) {
+  else if (bodyEmployeeID && paramEmployeeID !== bodyEmployeeID) {
     throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
   }
   // check if organization exists
-  else if (!(await prisma.organization.findUnique({ where: { id: orgID } }))) {
+  else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
     throw new ValidationError('notFound', 'organizationId', orgID);
   }
 }
@@ -98,7 +98,12 @@ async function validateReference(paramEmployeeID: string, bodyEmployeeID?: strin
  * Using AND (not OR) is essential because both conditions must be true
  * for the intervals to intersect.
  */
-async function validateNotOverlapping(startTime: Date, endTime: Date, employeeId: string) {
+export async function validateNotOverlapping(
+  startTime: Date,
+  endTime: Date,
+  employeeId: string,
+  appointmentID?: string
+) {
   const overlappingAppointments = await prisma.appointment.findMany({
     where: {
       employeeId: employeeId,
@@ -113,7 +118,12 @@ async function validateNotOverlapping(startTime: Date, endTime: Date, employeeId
     },
   });
 
-  if (overlappingAppointments.length > 0) {
+  if (overlappingAppointments.length === 1 && appointmentID) {
+    // Appointment might be overlapping with itself
+    if (overlappingAppointments[0].id !== appointmentID) {
+      throw new ValidationError('overlappingAppointment', 'dateTimeStart', startTime, 400);
+    }
+  } else if (overlappingAppointments.length > 0) {
     throw new ValidationError('overlappingAppointment', 'dateTimeStart', startTime, 400);
   }
 }

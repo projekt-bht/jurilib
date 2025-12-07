@@ -7,7 +7,7 @@ import { createAppointment, readAllAppointmentsByEmployee } from './services';
 /**
  * Validate the 'content-type' of the request header is 'application/json'
  */
-const headerSchema = z.object({
+export const headerSchema = z.object({
   'content-type': z.string().refine((val) => val.includes('application/json'), {
     message: 'Invalid content type, must be application/json',
   }),
@@ -87,6 +87,6 @@ export async function GET(
   }
 }
 
-function handleValidationError(error: z.ZodError) {
+export function handleValidationError(error: z.ZodError) {
   return NextResponse.json({ message: 'Validation error', errors: error }, { status: 400 });
 }
