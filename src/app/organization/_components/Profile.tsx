@@ -3,7 +3,7 @@ import { Building, Building2, Info, Users } from 'lucide-react';
 
 import type { Areas, Organization } from '~/generated/prisma/client';
 
-import { PricingInfo } from './PricingDropDown';
+import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
 
 // Function to create and format the Expertise Area items to badges
