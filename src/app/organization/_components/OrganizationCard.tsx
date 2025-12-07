@@ -16,7 +16,7 @@ export default function ProfileCard(organization: Organization) {
   return (
     <Item
       variant="outline"
-      className="bg-background flex flex-col sm:flex-row items-start sm:items-center justify-between w-full max-w-2xl px-4 py-3 mt-4 mx-auto gap-2 shadow-md hover:shadow-lg transition-shadow"
+      className="bg-background flex flex-col sm:flex-row items-start sm:items-center justify-between w-full max-w-2xl px-4 py-3 mt-4 mx-auto gap-2 shadow-md hover:shadow-lg transition-shadow text-left"
     >
       <ItemContent className="flex-1">
         <ItemTitle className="text-base sm:text-lg font-semibold">{organization.name}</ItemTitle>
