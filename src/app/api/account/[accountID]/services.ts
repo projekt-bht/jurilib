@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import prisma from '@/lib/db';
 import type { Account } from '~/generated/prisma/client';
+import { ValidationError } from '@/error/validationErrors';
 
 export const readAccount = async (accountID: string): Promise<Account> => {
   try {
@@ -9,7 +10,7 @@ export const readAccount = async (accountID: string): Promise<Account> => {
       where: { id: accountID },
     });
     if (!account) {
-      throw new Error('Account not found');
+      throw new ValidationError('notFound', 'accounts', accountID);
     }
     return account;
   } catch (error) {
@@ -21,7 +22,7 @@ export const updateAccount = async (account: Account, accountId: string): Promis
   try {
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
     if (!existingAccount) {
-      throw new Error('Account not found for update');
+      throw new ValidationError('notFound', 'accounts', accountId);
     }
 
     if (account.password) account.password = await bcrypt.hash(account.password, 10);

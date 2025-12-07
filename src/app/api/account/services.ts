@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 import type { Account } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
+import { ValidationError } from '@/error/validationErrors';
 
 // Create a new Account
 export const createAccount = async (account: AccountCreateInput): Promise<Account> => {
@@ -24,7 +25,7 @@ export const readAccounts = async (): Promise<Account[]> => {
   try {
     const accounts: Account[] = await prisma.account.findMany();
     if (!accounts) {
-      throw new Error('Accounts not found');
+      throw new ValidationError('notFound', 'accounts', accounts);
     }
     return accounts;
   } catch (error) {
