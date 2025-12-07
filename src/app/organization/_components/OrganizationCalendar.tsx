@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { de } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
@@ -32,11 +33,14 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   } = useBookingSchedule();
 
   const today = useMemo(() => new Date(), []);
+  const germanLocale = useMemo(() => de, []);
 
   const isDisabledDay = (date: Date) => {
     const midnight = new Date(today);
     midnight.setHours(0, 0, 0, 0);
-    return date < midnight;
+    const weekday = date.getDay();
+    const isWeekend = weekday === 0 || weekday === 6;
+    return date < midnight || isWeekend;
   };
 
   const handleChange = (date?: Date, time?: string | null) => {
@@ -51,6 +55,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       <Calendar
         mode="single"
         today={today}
+        locale={germanLocale}
         selected={selectedDate}
         onSelect={(date) => {
           setDate(date);
