@@ -6,20 +6,20 @@ import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/mod
 const { NextRequest } = await import('next/server');
 
 // Dynamisch die API-Funktionen importieren
-const { POST } = await import('@/app/api/register/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('Account Routen testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/register`;
+  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
 
   test('POST Register User', async () => {
     const account: AccountCreateInput = {
-      email: 'PETER_USER' + Math.random() + '@mail.de',
+      email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
       password: '123456',
       role: 'USER',
     };
 
     const user: UserCreateInput = {
-      name: 'PETER_USER',
+      name: 'PETER_USER_REGISTER',
       account: {
         connect: undefined, // Wird später gesetzt (user Service),
       },

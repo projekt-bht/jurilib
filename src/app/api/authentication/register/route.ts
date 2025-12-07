@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { createAccount } from '../account/services';
-import { createUser } from '../user/services';
+import { createAccount } from '../../account/services';
+import { createUser } from '../../user/services';
 
 export async function POST(req: NextRequest) {
   try {
