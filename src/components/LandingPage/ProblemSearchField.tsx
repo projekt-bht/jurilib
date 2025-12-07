@@ -3,7 +3,6 @@
 //https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
 //WebSpeechAPI only exits on client
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '../ui/button';
@@ -14,12 +13,10 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // New line can be added with Shift + Enter
 // If the input is empty, an error message will be displayed
 // When reentering the input field, the error message will be cleared
-export function ProblemSearchField() {
+export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
   const [problem, setProblem] = useState('');
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
-
-  const router = useRouter();
 
   const exampleSearches = [
     'Ich habe Probleme mit meinem Vermieter wegen Mieterhöhung',
@@ -29,13 +26,8 @@ export function ProblemSearchField() {
     'Probleme mit einem Kaufvertrag',
   ];
 
-  function handleExampleClick(example: string) {
-    setProblem(example);
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
 
     // handle empty input
     if (!problem.trim()) {
@@ -44,12 +36,8 @@ export function ProblemSearchField() {
     }
 
     setIsRecordingDone(true);
-
-    try {
-      router.push(`/search/${problem}`);
-    } catch (err) {
-      throw new Error('Could not load search results: ' + (err as Error).message);
-    }
+    setError('');
+    onSubmit(problem);
   }
 
   // Handle Enter key for submission
@@ -92,14 +80,15 @@ export function ProblemSearchField() {
 
       <p className="text-sm text-muted-foreground text-center mb-4">Oder wähle ein Beispiel:</p>
       <div className="flex flex-wrap gap-2 justify-center mb-8">
-        {exampleSearches.map((example, index) => (
+        {exampleSearches.map((example) => (
           <Button
-            key={index}
+            key={example}
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handleExampleClick(example)}
-            className="text-xs hover:bg-accent-gray-light hover:text-foreground cursor-pointer transition-all hover:scale-105"
+            onClick={() => {
+              setProblem(example);
+            }}
           >
             {example}
           </Button>
