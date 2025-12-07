@@ -1,10 +1,11 @@
 import bcrypt from 'bcryptjs';
 
-import prisma from '@/lib/db';
-import type { Account } from '~/generated/prisma/client';
 import { ValidationError } from '@/error/validationErrors';
+import prisma from '@/lib/db';
+import type { AccountResource } from '@/services/Resources';
+import type { Account } from '~/generated/prisma/client';
 
-export const readAccount = async (accountID: string): Promise<Account> => {
+export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
     const account: Account | null = await prisma.account.findUnique({
       where: { id: accountID },
@@ -12,13 +13,23 @@ export const readAccount = async (accountID: string): Promise<Account> => {
     if (!account) {
       throw new ValidationError('notFound', 'accounts', accountID);
     }
-    return account;
+
+    const accountRes = {
+      id: account.id,
+      email: account.email,
+      role: account.role,
+    };
+
+    return accountRes;
   } catch (error) {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
-export const updateAccount = async (account: Account, accountId: string): Promise<Account> => {
+export const updateAccount = async (
+  account: Account,
+  accountId: string
+): Promise<AccountResource> => {
   try {
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
     if (!existingAccount) {
@@ -34,7 +45,13 @@ export const updateAccount = async (account: Account, accountId: string): Promis
       },
     });
 
-    return updatedAccount;
+    const accountRes = {
+      id: updatedAccount.id,
+      email: updatedAccount.email,
+      role: updatedAccount.role,
+    };
+
+    return accountRes;
   } catch (error) {
     throw new Error('Database update failed' + (error as Error).message);
   }
