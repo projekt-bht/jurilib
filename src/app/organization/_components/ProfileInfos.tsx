@@ -1,8 +1,18 @@
 import { Globe, Mail, MapPin, Phone } from 'lucide-react';
 
-import type { Organization } from '~/generated/prisma/client';
-
-export function ProfileInfos({ organization }: { organization: Organization }) {
+export function ProfileInfos({
+  id,
+  website,
+  phone,
+  address,
+  email,
+}: {
+  id: string;
+  website: string | null;
+  phone: string | null;
+  address: string | null;
+  email: string | null;
+}) {
   return (
     <div
       id={`${organization.id}_ProfileInfos`}
