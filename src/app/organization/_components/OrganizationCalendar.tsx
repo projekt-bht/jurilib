@@ -175,41 +175,34 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             nav: 'flex items-center justify-between w-full px-2',
             /* TODO: schau wieso hover nicht funktioniert */
             nav_button:
-              'rounded-full border border-gray-300 w-9 h-9 p-0 hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
-
-            /*
-            nav_button: 'rounded-full border border-gray-300 w-9 h-9 p-0',
-
-            nav_button_previous: 'hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
-            nav_button_next: 'hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
-            */
+              'rounded-full border border-accent-gray w-9 h-9 p-0 hover:bg-accent-gray-soft hover:border-accent-gray-light hover:cursor-pointer',
             table: 'w-full',
             head_row: '',
             head_cell: '',
             row: '',
             cell: '',
-            day: 'bg-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-gray-400',
+            day: 'bg-accent-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             day_selected: '',
-            today: 'border-2 border-accent-gray/10 bg-accent-white font-bold rounded',
+            today: '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded',
             day_outside: '',
             disabled:
-              '!bg-transparent !border-none !shadow-none !outline-none text-gray-300 hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:cursor-not-allowed',
+              '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:cursor-not-allowed',
             day_range_middle: '',
             day_hidden: '',
           }}
         />
 
         <div className="flex items-center gap-6 px-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-gray-400" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-gray" />
             <span>Heute</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="inline-flex h-5 w-5 rounded bg-black" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex h-5 w-5 rounded bg-accent-black" />
             <span>Ausgewählt</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="inline-flex h-5 w-5 rounded bg-gray-300" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
             <span>Nicht verfügbar</span>
           </div>
         </div>
