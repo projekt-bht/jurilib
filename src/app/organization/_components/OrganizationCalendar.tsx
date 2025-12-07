@@ -20,9 +20,7 @@ type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
   specialties: string[];
   avatar?: string | null;
 };
-/* TODO:
-    use database model after implementation
-*/
+/* TODO: replace mockStaff with real employee data once the backend API is ready */
 const mockStaff: EmployeeCard[] = [
   {
     id: '1',
@@ -48,13 +46,10 @@ const mockStaff: EmployeeCard[] = [
 ];
 
 /**
- * Reusable calendar widget that pairs a single-day picker with predefined slot
- * buttons. Consumers receive the combined state through the onChange callback.
+ * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
  */
 export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
-  /* TODO:
-      use database model after implementation
-  */
+  /* TODO: wire this to the real backend data model once the API is ready */
   const {
     selectedDate,
     selectedTime,
@@ -67,11 +62,11 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
     confirmBooking,
   } = useBookingSchedule();
 
-  const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick');
-  const [selectedStaff, setSelectedStaff] = useState<EmployeeCard | null>(null);
+  const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick'); // track current booking mode (quick/staff)
+  const [selectedStaff, setSelectedStaff] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
 
-  const today = useMemo(() => new Date(), []);
-  const germanLocale = useMemo(() => de, []);
+  const today = useMemo(() => new Date(), []); // cache today's date so it doesn't change across renders; useMemo avoids new Date() on every render
+  const germanLocale = useMemo(() => de, []); // reuse locale object instead of recreating per render; useMemo keeps it stable for DayPicker
 
   const isDisabledDay = (date: Date) => {
     const midnight = new Date(today);
@@ -116,9 +111,8 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                 onClick={() => {
                   setSelectedStaff(staff);
                 }}
-                /* TODO  kommi was cn macht*/
                 className={cn(
-                  // cn merges base styles with the active/inactive variants; keeps the card markup clean while toggling on selection
+                  // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
                   'p-4 rounded-xl border-2 transition-all duration-200 text-left',
                   selectedStaff?.id === staff.id
                     ? 'border-accent-black bg-accent-gray-soft shadow-md'
