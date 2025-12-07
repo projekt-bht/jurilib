@@ -15,7 +15,7 @@ export function ProfileInfos({
 }) {
   return (
     <div
-      id={`${organization.id}_ProfileInfos`}
+      id={`${id}_ProfileInfos`}
       className="grid grid-cols-1 lg:grid-cols-2 gap-x-60 gap-y-5 place-items-center"
     >
       <div className="col-span-1 w-full flex flex-col items-start text-center">
@@ -24,14 +24,9 @@ export function ProfileInfos({
           <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Webseite</h3>
         </div>
         <address className="not-italic">
-          {organization.website ? (
-            <a
-              href={organization.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              {organization.website}
+          {website ? (
+            <a href={website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {website}
             </a>
           ) : (
             <span>Keine Angabe.</span>
@@ -45,7 +40,7 @@ export function ProfileInfos({
           <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Telefon</h3>
         </div>
         <address className="not-italic">
-          {organization.phone ? <p>{organization.phone}</p> : <span>Keine Angabe.</span>}
+          {phone ? <span>{phone}</span> : <span>Keine Angabe.</span>}
         </address>
       </div>
 
@@ -55,16 +50,16 @@ export function ProfileInfos({
           <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">Adresse</h3>
         </div>
         <address className="not-italic">
-          {organization.address ? (
+          {address ? (
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                organization.address
+                address
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:underline"
             >
-              {organization.address}
+              {address}
             </a>
           ) : (
             <span>Keine Angabe.</span>
@@ -78,9 +73,9 @@ export function ProfileInfos({
           <h3 className="flex items-center gap-2 text-xl font-bold text-foreground">E-Mail</h3>
         </div>
         <address className="not-italic">
-          {organization.email ? (
-            <a href={`mailto:${organization.email}`} className="hover:underline">
-              {organization.email}
+          {email ? (
+            <a href={`mailto:${email}`} className="hover:underline">
+              {email}
             </a>
           ) : (
             <span>Keine Angabe.</span>
