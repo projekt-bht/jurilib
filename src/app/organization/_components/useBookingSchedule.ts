@@ -85,7 +85,8 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
     setSelectedTime(slot);
   }, []);
 
-  /* was useMemo*/
+  // useMemo returns a stable object so consumers don't re-render unnecessarily when callbacks/values are unchanged.
+  // selectedDate/selectedTime: current selection; availableSlots: times for selected day; slotsLoading/isBooking/statusMessage: UI state; setDate/selectTime/confirmBooking: update and submit actions.
   return useMemo(
     () => ({
       selectedDate,

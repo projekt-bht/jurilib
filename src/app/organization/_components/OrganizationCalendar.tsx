@@ -117,8 +117,9 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                 onClick={() => {
                   setSelectedStaff(staff);
                 }}
-                /* kommi was cn macht*/
+                /* TODO  kommi was cn macht*/
                 className={cn(
+                  // cn merges base styles with the active/inactive variants; keeps the card markup clean while toggling on selection
                   'p-4 rounded-xl border-2 transition-all duration-200 text-left',
                   selectedStaff?.id === staff.id
                     ? 'border-accent-black bg-accent-gray-soft shadow-md'
