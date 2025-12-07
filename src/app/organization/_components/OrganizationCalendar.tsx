@@ -2,18 +2,11 @@
 
 import { useMemo } from 'react';
 import { de } from 'date-fns/locale';
-import {
-  Calendar as CalendarIcon,
-  Clock,
-  User,
-  Zap,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-} from 'lucide-react';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 
+import BookingSelector from './BookingSelector';
 import { useBookingSchedule } from './useBookingSchedule';
 
 type CalendarWithTimeProps = {
@@ -66,6 +59,9 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           Wählen Sie einen passenden Termin für Ihre Beratung
         </p>
       </div>
+
+      <BookingSelector />
+
       <div className="flex items-center gap-2">
         <CalendarIcon className="h-5 w-5" />
         <span className="text-lg font-semibold">Wählen Sie ein Datum</span>

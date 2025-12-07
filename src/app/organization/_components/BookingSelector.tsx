@@ -39,22 +39,22 @@ export function BookingSelector({ className, selectedStaff = null }: BookingSele
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full rounded-xl border border-border bg-accent-white px-4 py-2.5 shadow-sm flex items-center justify-between"
+        className="w-full rounded-xl border border-border bg-accent-white px-4 py-3 shadow-sm flex items-center justify-between"
       >
         <div className="flex items-center gap-3 text-left">
           <div className="p-1.5 rounded-lg bg-primary text-primary-foreground">
             {bookingMode === 'quick' ? <Zap className="w-4 h-4" /> : <User className="w-4 h-4" />}
           </div>
           <div className="text-left">
-            <h3 className="text-base font-semibold text-foreground leading-tight">
+            <h3 className="text-lg font-bold text-foreground">
               {bookingMode === 'quick' ? 'Schnellbuchung' : 'Mitarbeiter wählen'}
             </h3>
-            <p className="text-xs text-muted-foreground">{subtitle}</p>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
           </div>
         </div>
         <ChevronDown
           className={cn(
-            'h-4 w-4 text-muted-foreground transition-transform',
+            'h-5 w-5 text-muted-foreground transition-transform',
             isOpen ? 'rotate-180' : 'rotate-0'
           )}
         />
@@ -65,22 +65,29 @@ export function BookingSelector({ className, selectedStaff = null }: BookingSele
           <Item
             onClick={() => setBookingMode('quick')}
             className={cn(
-              'rounded-3xl border-2 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.12)] cursor-pointer',
+              'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
               bookingMode === 'quick'
                 ? 'border-accent-black bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
-            <div className="flex items-center gap-5">
-              <ItemMedia className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-black text-accent-white">
-                <Zap className="h-8 w-8" />
+            <div className="flex items-center gap-4">
+              <ItemMedia
+                className={cn(
+                  'flex h-12 w-12 items-center justify-center rounded-2xl',
+                  bookingMode === 'quick'
+                    ? 'bg-accent-black text-accent-white'
+                    : 'bg-muted text-muted-foreground'
+                )}
+              >
+                <Zap className="h-6 w-6" />
               </ItemMedia>
               <ItemContent className="gap-2">
                 <ItemTitle className="text-xl font-bold text-foreground leading-tight">
                   Schnellbuchung
                 </ItemTitle>
-                <ItemDescription className="text-m leading-8 text-muted-foreground">
-                  Buchen Sie den nächsten verfügbaren Termin bei unserer Organisation
+                <ItemDescription className="text-[11px] leading-4 text-muted-foreground">
+                  Nächsten freien Termin bei unserer Organisation buchen
                 </ItemDescription>
               </ItemContent>
             </div>
@@ -89,22 +96,29 @@ export function BookingSelector({ className, selectedStaff = null }: BookingSele
           <Item
             onClick={() => setBookingMode('staff')}
             className={cn(
-              'rounded-3xl border-2 p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)] cursor-pointer',
+              'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] cursor-pointer',
               bookingMode === 'staff'
                 ? 'border-accent-black bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
-            <div className="flex items-center gap-5">
-              <ItemMedia className="flex h-18 w-18 items-center justify-center rounded-2xl bg-accent-gray-soft text-muted-foreground">
-                <User className="h-8 w-8" />
+            <div className="flex items-center gap-4">
+              <ItemMedia
+                className={cn(
+                  'flex h-12 w-12 items-center justify-center rounded-2xl',
+                  bookingMode === 'staff'
+                    ? 'bg-accent-black text-accent-white'
+                    : 'bg-muted text-muted-foreground'
+                )}
+              >
+                <User className="h-6 w-6" />
               </ItemMedia>
-              <ItemContent className="gap-3">
-                <ItemTitle className="text-3xl font-bold text-foreground leading-tight">
+              <ItemContent className="gap-2">
+                <ItemTitle className="text-xl font-bold text-foreground leading-tight">
                   Mitarbeiter wählen
                 </ItemTitle>
-                <ItemDescription className="text-xl leading-8 text-muted-foreground">
-                  Wählen Sie eine bestimmte Person für Ihren Termin aus
+                <ItemDescription className="text-[11px] leading-4 text-muted-foreground">
+                  Wählen Sie die gewünschte Person aus
                 </ItemDescription>
               </ItemContent>
             </div>
