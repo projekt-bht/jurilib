@@ -60,6 +60,12 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
   return (
     <div className="space-y-6">
+      <div className="space-y-1">
+        <h2 className="text-3xl font-bold">Termin buchen</h2>
+        <p className="text-base text-muted-foreground">
+          Wählen Sie einen passenden Termin für Ihre Beratung
+        </p>
+      </div>
       <div className="flex items-center gap-2">
         <CalendarIcon className="h-5 w-5" />
         <span className="text-lg font-semibold">Wählen Sie ein Datum</span>

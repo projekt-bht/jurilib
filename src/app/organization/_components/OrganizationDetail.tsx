@@ -57,7 +57,6 @@ export default function OrganizationDetail(organization: Organization) {
       </div>
 
       <div className="bg-background outline-1 p-6 rounded-lg w-full max-w-5xl outline-border shadow-md mt-6">
-        <p className="text-base font-bold mb-4">Termin vereinbaren</p>
         <div className="grid grid-cols-2 gap-x-40 gap-y-16 pt-10 justify-items-start">
           <div className="col-span-1 justify-center items-left flex flex-col gap-4">
             <OrganizationCalendar />
