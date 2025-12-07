@@ -23,8 +23,8 @@ export async function GET(
       return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
     }
 
-    const organization = await readAccount(accountID);
-    return NextResponse.json(organization, { status: 200 });
+    const account = await readAccount(accountID);
+    return NextResponse.json(account, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });
   }
@@ -49,6 +49,12 @@ export async function PATCH(
     const updatedAccount = await updateAccount(data, accountID);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { message: 'Validation Problem: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { message: 'Failed to update account: ' + (error as Error).message },
       { status: 400 }
