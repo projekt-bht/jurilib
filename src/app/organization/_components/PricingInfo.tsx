@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { PriceCategory } from '~/generated/prisma/enums';
 
 // Function to format pricing information based on price category
-export function getPricingInfo(priceCategory: PriceCategory) {
+export function getPricingInfo({ priceCategory }: { priceCategory: PriceCategory }) {
   switch (priceCategory) {
     case PriceCategory.FREE:
       return { label: 'Niedrige Preisklasse', range: 'Kostenfrei', color: 'text-accent-emerald' };
@@ -21,12 +21,12 @@ export function getPricingInfo(priceCategory: PriceCategory) {
   }
 }
 
-export function PricingInfo({ priceCategory }: { priceCategory: PriceCategory }) {
+export function PricingInfo({ id, priceCategory }: { id: string; priceCategory: PriceCategory }) {
   const [isPricingExpanded, setIsPricingExpanded] = useState(false);
-  const pricingInfo = getPricingInfo(priceCategory);
+  const pricingInfo = getPricingInfo({ priceCategory });
 
   return (
-    <div className="bg-card rounded-lg border border-border mb-6">
+    <div id={`${id}_PricingInfo`} className="bg-card rounded-lg border border-border mb-6">
       <button
         onClick={() => setIsPricingExpanded(!isPricingExpanded)}
         className={`w-full flex items-center rounded-lg justify-between p-4 transition-colors ${
