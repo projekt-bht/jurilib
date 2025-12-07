@@ -217,7 +217,6 @@ model Appointment {
     meetingLink    String?
     dateTimeStart  DateTime
     dateTimeEnd    DateTime
-    timeZone       String?
     notes          String?
 
     case         Case?         @relation(fields: [caseId], references: [id])
