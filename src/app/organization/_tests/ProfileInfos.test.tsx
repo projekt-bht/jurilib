@@ -11,7 +11,6 @@ const mockOrganization: Organization = {
   description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
   shortDescription: 'test.',
   email: 'contact@rechtsberatum.de',
-  password: '2334',
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
@@ -22,28 +21,60 @@ const mockOrganization: Organization = {
   updatedAt: new Date(),
 };
 
-describe('ProfileInfos', () => {
+describe('Organization ProfileInfos Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders organization profile infos component by id', () => {
-    render(<ProfileInfos organization={mockOrganization} />);
+    render(
+      <ProfileInfos
+        id={mockOrganization.id}
+        website={mockOrganization.website}
+        phone={mockOrganization.phone}
+        address={mockOrganization.address}
+        email={mockOrganization.email}
+      />
+    );
     expect(document.getElementById(`${mockOrganization.id}_ProfileInfos`)).toBeInTheDocument();
   });
 
   it('renders organization website', () => {
-    render(<ProfileInfos organization={mockOrganization} />);
+    render(
+      <ProfileInfos
+        id={mockOrganization.id}
+        website={mockOrganization.website}
+        phone={mockOrganization.phone}
+        address={mockOrganization.address}
+        email={mockOrganization.email}
+      />
+    );
     expect(screen.getByText('https://rechtsberatum.de')).toBeInTheDocument();
   });
 
   it('renders organization phone', () => {
-    render(<ProfileInfos organization={mockOrganization} />);
+    render(
+      <ProfileInfos
+        id={mockOrganization.id}
+        website={mockOrganization.website}
+        phone={mockOrganization.phone}
+        address={mockOrganization.address}
+        email={mockOrganization.email}
+      />
+    );
     expect(screen.getByText('+49 89 1234567')).toBeInTheDocument();
   });
 
   it('renders organization address', () => {
-    render(<ProfileInfos organization={mockOrganization} />);
+    render(
+      <ProfileInfos
+        id={mockOrganization.id}
+        website={mockOrganization.website}
+        phone={mockOrganization.phone}
+        address={mockOrganization.address}
+        email={mockOrganization.email}
+      />
+    );
     expect(screen.getByText('München, Germany')).toBeInTheDocument();
   });
 });
