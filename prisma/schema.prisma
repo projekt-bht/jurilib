@@ -56,9 +56,10 @@ enum CaseStatus {
 }
 
 enum AppointmentStatus {
+    OPEN
+    PENDING
     CONFIRMED
     CANCELED
-    OPEN
     COMPLETED
 
     @@schema("public")
