@@ -8,7 +8,6 @@ import OrganizationCard from '../_components/OrganizationCard';
 const mockOrganization: Organization = {
   id: '1',
   name: 'Rechtsberatum München',
-  password: 'securepassword',
   shortDescription: 'Ihr Partner für Arbeitsrecht.',
   description: 'Ihr aller bester Partner für Arbeitsrecht.',
   priceCategory: 'FREE',
