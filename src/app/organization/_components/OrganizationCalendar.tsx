@@ -81,16 +81,23 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
         }}
         disabled={isDisabledDay}
         className="rounded-md border shadow-sm bg-accent-gray-soft"
+        /* https://daypicker.dev/docs/styling */
         classNames={{
-          months: 'w-full',
+          months: '',
           month: 'w-full',
           caption: 'flex items-center justify-center mb-2',
           caption_label: 'text-xl font-semibold',
           nav: 'flex items-center justify-between w-full px-2',
+          /* TODO: schau wieso hover nicht funktioniert */
           nav_button:
-            'rounded-full border border-gray-300 w-9 h-9 p-0 hover:bg-accent-gray-400 active:bg-accent-gray-400 transition-colors',
-          nav_button_previous: '',
-          nav_button_next: '',
+            'rounded-full border border-gray-300 w-9 h-9 p-0 hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
+
+          /*
+          nav_button: 'rounded-full border border-gray-300 w-9 h-9 p-0',
+
+          nav_button_previous: 'hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
+          nav_button_next: 'hover:bg-gray-200 hover:border-gray-400 hover:cursor-pointer',
+          */
           table: 'w-full',
           head_row: '',
           head_cell: '',
@@ -125,7 +132,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                 <Button
                   key={slot}
                   variant={isSelected ? 'default' : 'outline'}
-                  className="w-full"
+                  className="w-full m-2 rounded-lg p-3"
                   onClick={() => {
                     selectTime(slot);
                     handleChange(undefined, slot);
