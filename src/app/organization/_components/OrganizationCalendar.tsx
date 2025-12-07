@@ -187,7 +187,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
               '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded ring-1 ring-accent-gray ring-offset-1 ring-offset-transparent data-[selected=true]:ring-0',
             day_outside: '',
             disabled:
-              '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:cursor-not-allowed',
+              '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
             day_range_middle: '',
             day_hidden: '',
           }}
