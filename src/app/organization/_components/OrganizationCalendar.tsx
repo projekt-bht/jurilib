@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 import BookingSelector from './BookingSelector';
 import { useBookingSchedule } from './useBookingSchedule';
@@ -12,6 +13,40 @@ import { useBookingSchedule } from './useBookingSchedule';
 type CalendarWithTimeProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
 };
+/* employee data model holen */
+type Staff = {
+  id: string;
+  name: string;
+  title: string;
+  specialties: string[];
+  avatar?: string | null;
+};
+/* TODO:
+    use database model after implementation
+*/
+const mockStaff: Staff[] = [
+  {
+    id: '1',
+    name: 'Anna Schmidt',
+    title: 'Rechtsanwältin',
+    specialties: ['Familienrecht', 'Arbeitsrecht'],
+    avatar: null,
+  },
+  {
+    id: '2',
+    name: 'Lukas Meyer',
+    title: 'Jurist',
+    specialties: ['Vertragsrecht', 'Gesellschaftsrecht'],
+    avatar: null,
+  },
+  {
+    id: '3',
+    name: 'Sofia Keller',
+    title: 'Beraterin',
+    specialties: ['Compliance', 'Datenschutz'],
+    avatar: null,
+  },
+];
 
 /**
  * Reusable calendar widget that pairs a single-day picker with predefined slot
@@ -32,6 +67,9 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
     selectTime,
     confirmBooking,
   } = useBookingSchedule();
+
+  const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick');
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
 
   const today = useMemo(() => new Date(), []);
   const germanLocale = useMemo(() => de, []);
@@ -60,7 +98,57 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
         </p>
       </div>
 
-      <BookingSelector />
+      <BookingSelector
+        bookingMode={bookingMode}
+        onBookingModeChange={(mode) => setBookingMode(mode)}
+        selectedStaff={selectedStaff}
+      />
+
+      {bookingMode === 'staff' && (
+        <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
+          <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+            <User className="w-5 h-5" />
+            Wählen Sie einen Mitarbeiter
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {mockStaff.map((staff) => (
+              <button
+                key={staff.id}
+                onClick={() => {
+                  setSelectedStaff(staff);
+                }}
+                /* kommi was cn macht*/
+                className={cn(
+                  'p-4 rounded-xl border-2 transition-all duration-200 text-left',
+                  selectedStaff?.id === staff.id
+                    ? 'border-accent-black bg-accent-gray-soft shadow-md'
+                    : 'border-border hover:border-primary/50 bg-accent-white'
+                )}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
+                    <User className="w-7 h-7" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-foreground mb-1">{staff.name}</h4>
+                    <p className="text-sm text-muted-foreground mb-2">{staff.title}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {staff.specialties.map((specialty) => (
+                        <span
+                          key={specialty}
+                          className="px-2 py-1 bg-accent-gray-soft text-muted-foreground text-[11px] rounded-full border border-accent-gray-light"
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-2">
         <CalendarIcon className="h-5 w-5" />
@@ -102,7 +190,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             cell: '',
             day: 'bg-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-gray-400',
             day_selected: '',
-            today: 'border-2 border-gray-400 bg-white font-bold rounded',
+            today: 'border-2 border-accent-gray/10 bg-accent-white font-bold rounded',
             day_outside: '',
             disabled:
               '!bg-transparent !border-none !shadow-none !outline-none text-gray-300 hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:cursor-not-allowed',

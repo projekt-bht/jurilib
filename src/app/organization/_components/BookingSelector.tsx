@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Calendar as CalendarIcon, Clock, User, Zap, ChevronDown } from 'lucide-react';
 
 import {
@@ -16,6 +16,8 @@ import { cn } from '@/lib/utils';
 type BookingSelectorProps = {
   className?: string;
   selectedStaff?: { name: string } | null;
+  bookingMode?: 'quick' | 'staff';
+  onBookingModeChange?: (mode: 'quick' | 'staff') => void;
 };
 
 /**
@@ -23,9 +25,17 @@ type BookingSelectorProps = {
  * - Collapsed: shows current booking mode (quick / staff) with icon + subtitle.
  * - Expanded: shows two choice cards like in the reference.
  */
-export function BookingSelector({ className, selectedStaff = null }: BookingSelectorProps) {
+export function BookingSelector({
+  className,
+  selectedStaff = null,
+  bookingMode: bookingModeProp,
+  onBookingModeChange,
+}: BookingSelectorProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick');
+  const [bookingModeState, setBookingModeState] = useState<'quick' | 'staff'>('quick');
+
+  const bookingMode = bookingModeProp ?? bookingModeState;
+  const setBookingMode = useMemo(() => onBookingModeChange ?? setBookingModeState, [onBookingModeChange]);
 
   const subtitle =
     bookingMode === 'quick'

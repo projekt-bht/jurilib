@@ -85,6 +85,7 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
     setSelectedTime(slot);
   }, []);
 
+  /* was useMemo*/
   return useMemo(
     () => ({
       selectedDate,
