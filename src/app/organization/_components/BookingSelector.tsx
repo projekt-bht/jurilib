@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Calendar as CalendarIcon, Clock, User, Zap, ChevronDown } from 'lucide-react';
+import { User, Zap, ChevronDown } from 'lucide-react';
 
 import {
   Item,
@@ -35,7 +35,10 @@ export function BookingSelector({
   const [bookingModeState, setBookingModeState] = useState<'quick' | 'staff'>('quick');
 
   const bookingMode = bookingModeProp ?? bookingModeState;
-  const setBookingMode = useMemo(() => onBookingModeChange ?? setBookingModeState, [onBookingModeChange]);
+  const setBookingMode = useMemo(
+    () => onBookingModeChange ?? setBookingModeState,
+    [onBookingModeChange]
+  );
 
   const subtitle =
     bookingMode === 'quick'

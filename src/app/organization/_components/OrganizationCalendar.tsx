@@ -183,7 +183,8 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             cell: '',
             day: 'bg-accent-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             day_selected: '',
-            today: '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded',
+            today:
+              '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded ring-1 ring-accent-gray ring-offset-1 ring-offset-transparent data-[selected=true]:ring-0',
             day_outside: '',
             disabled:
               '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:cursor-not-allowed',
