@@ -76,7 +76,8 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           day_selected: '',
           today: 'border-2 border-gray-400 bg-white font-bold rounded',
           day_outside: '',
-          disabled: '',
+          disabled:
+            'text-gray-400 border border-gray-300 shadow-none opacity-100 hover:bg-gray-100 hover:border-gray-300 hover:cursor-not-allowed',
           day_range_middle: '',
           day_hidden: '',
         }}
