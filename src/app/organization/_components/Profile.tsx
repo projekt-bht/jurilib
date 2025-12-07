@@ -2,6 +2,7 @@ import { Separator } from '@radix-ui/react-separator';
 import { Building, Building2, Info, Users } from 'lucide-react';
 
 import type { Areas, Organization } from '~/generated/prisma/client';
+import { OrganizationType } from '~/generated/prisma/client';
 
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
@@ -19,15 +20,15 @@ function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
 }
 
 // Function to create and format the Organisation Type Badge
-function OrganisationTypeBadge({ type }: { type: string }) {
+function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   let displayType = '';
   let icon = null;
   switch (type) {
-    case 'LAW_FIRM':
+    case OrganizationType.LAW_FIRM:
       displayType = 'Kanzlei';
       icon = <Building className="w-4 h-4 text-accent-gray" />;
       break;
-    case 'ASSOCIATION':
+    case OrganizationType.ASSOCIATION:
       displayType = 'Verein';
       icon = <Building2 className="w-4 h-4 text-accent-gray" />;
       break;
@@ -43,14 +44,17 @@ function OrganisationTypeBadge({ type }: { type: string }) {
   );
 }
 
-export function Profile(organization: Organization) {
+export function Profile({ organization }: { organization: Organization }) {
   return (
     <div
       id={`${organization.id}_Profile`}
       className="flex flex-col justify-start items-start w-full px-10 py-8"
     >
       {/* Profile Info Section */}
-      <div className="bg-background border p-6 rounded-lg w-full max-w-5xl border-border shadow-md">
+      <div
+        id={`${organization.id}_ProfileInfo`}
+        className="bg-background border p-6 rounded-lg w-full max-w-5xl border-border shadow-md"
+      >
         <div className="flex flex-col lg:flex-row  items-start gap-8">
           {/* Organization logo */}
           <div className="w-24 h-24 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-3xl font-bold shadow-lg shrink-0">
@@ -66,7 +70,7 @@ export function Profile(organization: Organization) {
               {organization.shortDescription}
             </span>
             <div>
-              <PricingInfo priceCategory={organization.priceCategory} />
+              <PricingInfo id={organization.id} priceCategory={organization.priceCategory} />
             </div>
             <div className="flex flex-wrap items-start gap-2">
               <ExpertiseAreaItem areas={organization.expertiseArea} />
@@ -76,7 +80,13 @@ export function Profile(organization: Organization) {
 
         <Separator className="my-6 h-px bg-border w-full" />
         <div className="flex justify-center w-full">
-          <ProfileInfos organization={{ ...organization }} />
+          <ProfileInfos
+            id={organization.id}
+            website={organization.website}
+            phone={organization.phone}
+            address={organization.address}
+            email={organization.email}
+          />
         </div>
       </div>
 
