@@ -62,8 +62,8 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
     confirmBooking,
   } = useBookingSchedule();
 
-  const [bookingMode, setBookingMode] = useState<'quick' | 'staff'>('quick'); // track current booking mode (quick/staff)
-  const [selectedStaff, setSelectedStaff] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
+  const [bookingMode, setBookingMode] = useState<'quick' | 'employee'>('quick'); // track current booking mode (quick/employee)
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
 
   const today = useMemo(() => new Date(), []); // cache today's date so it doesn't change across renders; useMemo avoids new Date() on every render
   const germanLocale = useMemo(() => de, []); // reuse locale object instead of recreating per render; useMemo keeps it stable for DayPicker
@@ -95,26 +95,26 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       <BookingSelector
         bookingMode={bookingMode}
         onBookingModeChange={(mode) => setBookingMode(mode)}
-        selectedStaff={selectedStaff}
+        selectedEmployee={selectedEmployee}
       />
 
-      {bookingMode === 'staff' && (
+      {bookingMode === 'employee' && (
         <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
           <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
             <User className="w-5 h-5" />
             Wählen Sie einen Mitarbeiter
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
-            {mockStaff.map((staff) => (
+            {mockStaff.map((employee) => (
               <button
-                key={staff.id}
+                key={employee.id}
                 onClick={() => {
-                  setSelectedStaff(staff);
+                  setSelectedEmployee(employee);
                 }}
                 className={cn(
                   // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
                   'p-4 rounded-xl border-2 transition-all duration-200 text-left',
-                  selectedStaff?.id === staff.id
+                  selectedEmployee?.id === employee.id
                     ? 'border-accent-black bg-accent-gray-soft shadow-md'
                     : 'border-border hover:border-primary/50 bg-accent-white'
                 )}
@@ -124,10 +124,10 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                     <User className="w-7 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-foreground mb-1">{staff.name}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{staff.position}</p>
+                    <h4 className="font-semibold text-foreground mb-1">{employee.name}</h4>
+                    <p className="text-sm text-muted-foreground mb-2">{employee.position}</p>
                     <div className="flex flex-wrap gap-1">
-                      {staff.specialties.map((specialty) => (
+                      {employee.specialties.map((specialty) => (
                         <span
                           key={specialty}
                           className="px-2 py-1 bg-accent-gray-soft text-muted-foreground text-[11px] rounded-full border border-accent-gray-light"

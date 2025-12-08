@@ -12,12 +12,18 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { cn } from '@/lib/utils';
+import type { Employee } from '~/generated/prisma/client';
+
+type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
+  specialties?: string[];
+  avatar?: string | null;
+};
 
 type BookingSelectorProps = {
   className?: string;
-  selectedStaff?: { name: string } | null;
-  bookingMode?: 'quick' | 'staff';
-  onBookingModeChange?: (mode: 'quick' | 'staff') => void;
+  selectedEmployee?: EmployeeCard | null;
+  bookingMode?: 'quick' | 'employee';
+  onBookingModeChange?: (mode: 'quick' | 'employee') => void;
 }; // props allow external control of layout, mode, and selected staff
 
 /**
@@ -27,12 +33,12 @@ type BookingSelectorProps = {
  */
 export function BookingSelector({
   className,
-  selectedStaff = null,
+  selectedEmployee = null,
   bookingMode: bookingModeProp,
   onBookingModeChange,
 }: BookingSelectorProps) {
   const [isOpen, setIsOpen] = useState(true); // controls accordion open/closed state
-  const [bookingModeState, setBookingModeState] = useState<'quick' | 'staff'>('quick'); // local booking mode fallback when parent doesn't control it
+  const [bookingModeState, setBookingModeState] = useState<'quick' | 'employee'>('quick'); // local booking mode fallback when parent doesn't control it
 
   const bookingMode = bookingModeProp ?? bookingModeState;
   const setBookingMode = useMemo(
@@ -43,8 +49,8 @@ export function BookingSelector({
   const subtitle =
     bookingMode === 'quick'
       ? 'Nächster verfügbarer Termin'
-      : selectedStaff
-      ? selectedStaff.name
+      : selectedEmployee
+      ? selectedEmployee.name
       : 'Person auswählen';
 
   return (
@@ -107,10 +113,10 @@ export function BookingSelector({
           </Item>
 
           <Item
-            onClick={() => setBookingMode('staff')}
+            onClick={() => setBookingMode('employee')}
             className={cn(
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] cursor-pointer',
-              bookingMode === 'staff'
+              bookingMode === 'employee'
                 ? 'border-accent-black bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
             )}
@@ -119,7 +125,7 @@ export function BookingSelector({
               <ItemMedia
                 className={cn(
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
-                  bookingMode === 'staff'
+                  bookingMode === 'employee'
                     ? 'bg-accent-black text-accent-white'
                     : 'bg-muted text-muted-foreground'
                 )}
