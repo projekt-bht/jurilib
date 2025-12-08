@@ -67,7 +67,7 @@ export function LandingPage() {
         {!loading &&
           showResults &&
           (results.length > 0 ? (
-            <section className="py-16 bg-card scroll-mt-32">
+            <section className="py-16 px-4 bg-card scroll-mt-32">
               <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
                   <h2
