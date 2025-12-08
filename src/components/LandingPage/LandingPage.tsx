@@ -49,34 +49,48 @@ export function LandingPage() {
     <div className="bg-card min-h-screen flex items-start justify-start">
       <div className="text-center w-full mt-10">
         <h1 className="text-foreground text-5xl font-bold mb-2">Beschreibe dein Problem</h1>
-        <p className="text-foreground text-xl mb-3 py-6 pt-4 pb-2">
+        <h2 className="text-accent-gray text-2xl mb-3 py-6 pt-4 pb-2">
           Teile uns dein rechtliches Anliegen mit
-        </p>
+        </h2>
         <div className="min-w-sm mx-auto max-w-lg">
           <ProblemSearchField onSubmit={(text) => search(text)} />
         </div>
-        {loading && <p className="mt-10">Lade Ergebnisse...</p>}
-        {results && showResults && (
-          <div className="flex flex-col justify-start items-center bg-card">
-            {results.length > 0 && (
-              <>
-                <h2 ref={resultsRef} className="text-4xl text-foreground font-semibold">
-                  Passende Organisationen
-                </h2>
-                <h3 className="text-xl text-foreground pt-2">
-                  Hier sind die Organisationen, die zu Deiner Suche passen:
-                </h3>
-                <div className="h-8" />
-                {results.map((organization) => (
-                  <OrganizationCard key={'OrganizationCard_' + organization.id} {...organization} />
-                ))}
-                <div className="mb-8 text-muted-foreground pt-6">
-                  <span>Deine Anfrage wird vertraulich behandelt.</span>
-                </div>
-              </>
-            )}
+
+        {loading && (
+          <div className="mt-8 mb-8 flex justify-center">
+            <div className="p-4 bg-secondary border border-border rounded-lg text-center text-foreground animate-fade-in inline-block">
+              Vielen Dank! Wir verarbeiten deine Anfrage.
+            </div>
           </div>
         )}
+
+        {!loading &&
+          showResults &&
+          (results.length > 0 ? (
+            <div className="flex flex-col pt-8 pb-8 justify-start items-center bg-card">
+              <h2 ref={resultsRef} className="text-4xl text-foreground font-bold">
+                Passende Organisationen
+              </h2>
+              <h3 className="text-xl text-accent-gray pt-2">
+                Folgende Organisationen passen zu deinem Anliegen:
+              </h3>
+              <div className="h-8" />
+              {results.map((organization) => (
+                <OrganizationCard key={'OrganizationCard_' + organization.id} {...organization} />
+              ))}
+            </div>
+          ) : (
+            <div>
+              <h2 ref={resultsRef} className="text-3xl text-foreground font-bold mt-10">
+                Keine passenden Organisationen gefunden
+              </h2>
+              <div className="mt-4 mb-8 p-4 rounded-lg text-center inline-block max-w-md mx-auto text-xl text-accent-gray">
+                Leider konnten wir keine passende Organisationen zu deinem Anliegen finden. Bitte
+                überarbeite deine Beschreibung und versuche es erneut.
+              </div>
+            </div>
+          ))}
+
         <HowItWorks />
         <OurOffer />
       </div>
