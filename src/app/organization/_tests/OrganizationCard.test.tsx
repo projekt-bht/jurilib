@@ -3,21 +3,20 @@ import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
 
-import OrganizationCard from './OrganizationCard';
+import OrganizationCard from '../_components/OrganizationCard';
 
 const mockOrganization: Organization = {
-  name: 'Rechtsberatum München',
   id: '1',
-  description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
-  shortDescription: 'test.',
+  name: 'Rechtsberatum München',
+  shortDescription: 'Ihr Partner für Arbeitsrecht.',
+  description: 'Ihr aller bester Partner für Arbeitsrecht.',
+  priceCategory: 'FREE',
   email: 'contact@rechtsberatum.de',
-  password: '2334',
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
   expertiseArea: ['Arbeitsrecht'],
   type: 'LAW_FIRM',
-  priceCategory: 'MEDIUM',
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -32,21 +31,14 @@ describe('OrganizationCard', () => {
     expect(screen.getByText('Rechtsberatum München')).toBeInTheDocument();
   });
 
-  it('renders organization description', () => {
+  it('renders organization short description', () => {
     render(<OrganizationCard {...mockOrganization} />);
-    expect(
-      screen.getByText('In Ansprechpartner für Arbeitsrecht und Vertragsrecht.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Ihr Partner für Arbeitsrecht.')).toBeInTheDocument();
   });
 
   it('renders expertise area', () => {
     render(<OrganizationCard {...mockOrganization} />);
     expect(screen.getByText('Arbeitsrecht')).toBeInTheDocument();
-  });
-
-  it('renders pricing placeholder', () => {
-    render(<OrganizationCard {...mockOrganization} />);
-    expect(screen.getByText('€€€')).toBeInTheDocument();
   });
 
   it('renders profile button with correct text', () => {
