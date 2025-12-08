@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-import OrganizationCard from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/browser';
 
 import HowItWorks from './HowItWorks';
 import OurOffer from './OurOffer';
 import { ProblemSearchField } from './ProblemSearchField';
+import { ResultCarousel } from './ResultCarusel';
 
 export function LandingPage() {
   const [results, setResults] = useState<Organization[]>([]);
@@ -67,18 +67,22 @@ export function LandingPage() {
         {!loading &&
           showResults &&
           (results.length > 0 ? (
-            <div className="flex flex-col pt-8 pb-8 justify-start items-center bg-card">
-              <h2 ref={resultsRef} className="text-4xl text-foreground font-bold">
-                Passende Organisationen
-              </h2>
-              <h3 className="text-xl text-accent-gray pt-2">
-                Folgende Organisationen passen zu deinem Anliegen:
-              </h3>
-              <div className="h-8" />
-              {results.map((organization) => (
-                <OrganizationCard key={'OrganizationCard_' + organization.id} {...organization} />
-              ))}
-            </div>
+            <section className="py-16 bg-card scroll-mt-32">
+              <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                  <h2
+                    ref={resultsRef}
+                    className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance"
+                  >
+                    Passende Organisationen
+                  </h2>
+                  <p className="text-lg text-muted-foreground text-balance">
+                    Wir haben folgende Organisationen für Ihr Anliegen gefunden
+                  </p>
+                </div>
+                <ResultCarousel organizations={results} />
+              </div>
+            </section>
           ) : (
             <div>
               <h2 ref={resultsRef} className="text-3xl text-foreground font-bold mt-10">
