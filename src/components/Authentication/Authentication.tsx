@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { RegisterRessource } from '@/services/Resources';
 
 //TODO Validate with customError
 
@@ -22,122 +23,165 @@ export function Authentication() {
   const [isRegister, setIsRegister] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
+  const [successDialog, setSuccessDialog] = useState(false);
+  const [error, setError] = useState('');
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const data = Object.fromEntries(form);
 
-    const registerStruct = {
-      account: { email: data.email, password: data.password, role: 'USER' },
-      entity: { name: data.name, address: data.address, phone: data.phone },
+    const registerData: RegisterRessource = {
+      account: {
+        email: data.email.toString(),
+        password: data.password.toString(),
+        role: 'USER',
+      },
+      entity: {
+        name: data.name.toString(),
+        address: data.address.toString(),
+        phone: data.phone.toString(),
+      },
     };
-    console.log(registerStruct);
 
-    if (isRegister) {
-      await fetch('/api/authentication/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerStruct),
-      });
+    try {
+      if (isRegister) {
+        const res = await fetch('/api/authentication/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerData),
+        });
+
+        if (!res.ok) {
+          const body = await res.json();
+          setError(body.message);
+        } else {
+          setError('');
+          setShowDialog(false);
+          setSuccessDialog(true);
+        }
+      }
+    } catch (error) {
+      setError(String(error));
     }
 
     setShowDialog(false);
   }
 
   return (
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogTrigger asChild>
-        <Button
-          className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
-          variant="outline"
-        >
-          Einloggen
-        </Button>
-      </DialogTrigger>
+    <>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogTrigger asChild>
+          <Button
+            className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
+            variant="outline"
+          >
+            Einloggen
+          </Button>
+        </DialogTrigger>
 
-      <DialogOverlay className=" backdrop-blur-sm" />
+        <DialogOverlay className=" backdrop-blur-sm" />
 
-      <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
+            <DialogHeader>
+              <DialogTitle className="text-center text-lg font-semibold">
+                {isRegister ? 'Registrieren' : 'Login'}
+              </DialogTitle>
+              <DialogDescription className="text-center text-sm mt-3 mb-5">
+                {isRegister
+                  ? 'Erstelle ein neues Konto mit deinen Daten.'
+                  : 'Melde dich mit deinen Daten an.'}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-7">
+              {isRegister && (
+                <>
+                  <div className="grid gap-3">
+                    <Label htmlFor="name">Name *</Label>
+                    <Input id="name" name="name" required minLength={3} />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="address">Adresse</Label>
+                    <Input id="address" name="address" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="phone">Telefon</Label>
+                    <Input id="phone" name="phone" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="email">Email-Adresse *</Label>
+                    <Input id="email" name="email" type="email" required minLength={3} />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="password">Passwort * </Label>
+                    <Input id="password" name="password" type="password" required minLength={5} />
+                    <p>{error}</p>
+                  </div>
+                </>
+              )}
+
+              {!isRegister && (
+                <>
+                  <div className="grid gap-3">
+                    <Label htmlFor="loginEmail">Email-Adresse</Label>
+                    <Input id="loginEmail" name="email" type="email" required minLength={3} />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="loginPassword">Passwort</Label>
+                    <Input
+                      id="loginPassword"
+                      name="password"
+                      type="password"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <DialogFooter className="mt-6">
+              <Button type="submit">{isRegister ? 'Registrieren' : 'Anmelden'}</Button>
+            </DialogFooter>
+
+            <DialogFooter className="mt-6">
+              {!isRegister ? (
+                <Button type="button" variant="link" onClick={() => setIsRegister(true)}>
+                  Noch kein Konto? Jetzt registrieren
+                </Button>
+              ) : (
+                <Button type="button" variant="link" onClick={() => setIsRegister(false)}>
+                  Zurück zum Login
+                </Button>
+              )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={successDialog} onOpenChange={setSuccessDialog}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-semibold">
-              {isRegister ? 'Registrieren' : 'Login'}
+              Registrierung erfolgreich!
             </DialogTitle>
             <DialogDescription className="text-center text-sm mt-3 mb-5">
-              {isRegister
-                ? 'Erstelle ein neues Konto mit deinen Daten.'
-                : 'Melde dich mit deinen Daten an.'}
+              Du kannst dich nun mit deinen Zugangsdaten anmelden.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-7">
-            {isRegister && (
-              <>
-                <div className="grid gap-3">
-                  <Label htmlFor="name">Name *</Label>
-                  <Input id="name" name="name" required minLength={3} />
-                </div>
-
-                <div className="grid gap-3">
-                  <Label htmlFor="address">Adresse</Label>
-                  <Input id="address" name="address" />
-                </div>
-
-                <div className="grid gap-3">
-                  <Label htmlFor="phone">Telefon</Label>
-                  <Input id="phone" name="phone" />
-                </div>
-
-                <div className="grid gap-3">
-                  <Label htmlFor="email">Email-Adresse *</Label>
-                  <Input id="email" name="email" type="email" required minLength={3} />
-                </div>
-
-                <div className="grid gap-3">
-                  <Label htmlFor="password">Passwort * </Label>
-                  <Input id="password" name="password" type="password" required minLength={6} />
-                </div>
-              </>
-            )}
-
-            {!isRegister && (
-              <>
-                <div className="grid gap-3">
-                  <Label htmlFor="loginEmail">Email-Adresse</Label>
-                  <Input id="loginEmail" name="email" type="email" required minLength={3} />
-                </div>
-
-                <div className="grid gap-3">
-                  <Label htmlFor="loginPassword">Passwort</Label>
-                  <Input
-                    id="loginPassword"
-                    name="password"
-                    type="password"
-                    required
-                    minLength={6}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-
-          <DialogFooter className="mt-6">
-            <Button type="submit">{isRegister ? 'Registrieren' : 'Anmelden'}</Button>
+          <DialogFooter>
+            <Button onClick={() => setSuccessDialog(false)}>OK</Button>
           </DialogFooter>
-
-          <DialogFooter className="mt-6">
-            {!isRegister ? (
-              <Button type="button" variant="link" onClick={() => setIsRegister(true)}>
-                Noch kein Konto? Jetzt registrieren
-              </Button>
-            ) : (
-              <Button type="button" variant="link" onClick={() => setIsRegister(false)}>
-                Zurück zum Login
-              </Button>
-            )}
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
