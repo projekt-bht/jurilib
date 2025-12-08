@@ -1,4 +1,4 @@
-'use client';
+'use client'; // Pure service utilities (no JSX), so this remains .ts instead of .tsx
 
 /**
  * Service helpers that mock the booking API. We keep them in this folder so the

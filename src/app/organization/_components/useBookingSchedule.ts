@@ -1,4 +1,4 @@
-'use client';
+'use client'; // Logic-only hook (no JSX), so this file stays .ts rather than .tsx
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
