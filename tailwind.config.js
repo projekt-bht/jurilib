@@ -40,6 +40,7 @@ export default {
         'accent-black': 'var(--accent-black)',
         'accent-black-light': 'var(--accent-black-light)',
         'accent-white': 'var(--accent-white)',
+        'accent-red': 'var(--accent-red)',
       },
       borderRadius: {
         sm: 'var(--radius-sm)',
