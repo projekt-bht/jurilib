@@ -4,9 +4,14 @@ import type { Organization } from '~/generated/prisma/client';
 
 import { ExpertiseAreaItem, OrganisationTypeBadge } from './OrganizaionHelper';
 
+// TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
+
 export function OrganizationCard({ organization }: { organization: Organization }) {
   return (
-    <div className="relative bg-white rounded-3xl border border-border hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden">
+    <div
+      id={`OrganizationCard_${organization.id}`}
+      className="relative bg-background rounded-3xl border border-border hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden"
+    >
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative p-4 flex flex-col min-h-[250px]">
@@ -39,7 +44,7 @@ export function OrganizationCard({ organization }: { organization: Organization 
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
-                <span className="text-emerald-600 font-medium">Termine verfügbar</span>
+                <span className="text-accent-emerald font-medium">Termine verfügbar</span>
               </div>
             </div>
 
