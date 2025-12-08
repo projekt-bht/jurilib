@@ -31,8 +31,8 @@ export function BookingSelector({
   bookingMode: bookingModeProp,
   onBookingModeChange,
 }: BookingSelectorProps) {
-  const [isOpen, setIsOpen] = useState(true);
-  const [bookingModeState, setBookingModeState] = useState<'quick' | 'staff'>('quick');
+  const [isOpen, setIsOpen] = useState(true); // controls accordion open/closed state
+  const [bookingModeState, setBookingModeState] = useState<'quick' | 'staff'>('quick'); // local booking mode fallback when parent doesn't control it
 
   const bookingMode = bookingModeProp ?? bookingModeState;
   const setBookingMode = useMemo(

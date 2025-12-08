@@ -34,6 +34,7 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
   const resetStatus = useCallback(() => setStatusMessage(null), []);
 
   useEffect(() => {
+    // useEffect reacts to date changes: refetches slots, resets time/status, and toggles loading state
     if (!selectedDate) {
       setAvailableSlots(getFallbackSlots());
       setSelectedTime(null);
