@@ -1,23 +1,12 @@
 import { Separator } from '@radix-ui/react-separator';
 import { Info, Users } from 'lucide-react';
 
-import type { Areas, Organization } from '~/generated/prisma/client';
+import type { Organization } from '~/generated/prisma/client';
 
+import { ExpertiseAreaItem } from './OrganizaionHelper';
 import { OrganisationTypeBadge } from './OrganizaionHelper';
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
-
-// Function to create and format the Expertise Area items to badges
-function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
-  return areas.map((area) => (
-    <div
-      key={area}
-      className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
-    >
-      {area}
-    </div>
-  ));
-}
 
 export function Profile({ organization }: { organization: Organization }) {
   return (
