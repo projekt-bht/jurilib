@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { Organization } from '~/generated/prisma/browser';
 
+import { Spinner } from '../ui/spinner';
 import HowItWorks from './HowItWorks';
 import OurOffer from './OurOffer';
 import { ProblemSearchField } from './ProblemSearchField';
 import { ResultCarousel } from './ResultCarusel';
-import { Spinner } from '../ui/spinner';
 
 export function LandingPage() {
   const [results, setResults] = useState<Organization[]>([]);
