@@ -164,11 +164,11 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           classNames={{
             months: '',
             month: 'w-full',
-            caption: 'flex items-center justify-center mb-2',
-            caption_label: 'text-xl font-semibold',
-            nav: '',
-            /* TODO: schau wieso hover nicht funktioniert */
-            nav_button: '',
+            caption: '',
+            caption_label: 'mb-14',
+            nav: 'flex justify-between ',
+            button_previous: 'border border-accent-blue-soft rounded-lg p-2',
+            button_next: 'border border-accent-blue-soft rounded-lg p-2',
             table: 'w-full',
             head_row: '',
             head_cell: '',
