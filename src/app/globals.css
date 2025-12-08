@@ -58,8 +58,8 @@
   --primary-foreground: rgb(255 255 255);
   --primary-hover: rgb(64 64 64);
   --primary-hover-foreground: rgb(255 255 255);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
   --muted-foreground: rgb(115 155 155);
   --destructive: rgb(239, 37, 27);
   --border: rgb(228 228 228);
@@ -95,8 +95,8 @@
   --primary-foreground: rgb(255 255 255);
   --primary-hover: rgb(64 64 64);
   --primary-hover-foreground: rgb(255 255 255);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
   --muted-foreground: rgb(115 155 155);
   --destructive: rgb(239, 37, 27);
   --border: rgb(228 228 228);

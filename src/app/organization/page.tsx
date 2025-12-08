@@ -1,13 +1,11 @@
 import OrganizationCard from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
-export const dynamic = 'force-dynamic';
+//export const dynamic = 'force-dynamic';
 
 async function fetchOrganizations(): Promise<Organization[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`, {
-      next: { revalidate: 3600 },
-    });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`);
     if (!res.ok) {
       return [];
     } else {
