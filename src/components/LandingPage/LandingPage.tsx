@@ -7,6 +7,7 @@ import HowItWorks from './HowItWorks';
 import OurOffer from './OurOffer';
 import { ProblemSearchField } from './ProblemSearchField';
 import { ResultCarousel } from './ResultCarusel';
+import { Spinner } from '../ui/spinner';
 
 export function LandingPage() {
   const [results, setResults] = useState<Organization[]>([]);
@@ -43,7 +44,7 @@ export function LandingPage() {
         }
       }, 100);
     }
-  }, [showResults]);
+  }, [showResults, results]);
 
   return (
     <div className="bg-card min-h-screen flex items-start justify-start">
@@ -58,8 +59,9 @@ export function LandingPage() {
 
         {loading && (
           <div className="mt-8 mb-8 flex justify-center">
-            <div className="p-4 bg-secondary border border-border rounded-lg text-center text-foreground animate-fade-in inline-block">
-              Vielen Dank! Wir verarbeiten deine Anfrage.
+            <div className="p-4 rounded-lg text-center text-muted-foreground text-lg animate-fade-in inline-block">
+              <Spinner className="w-6 h-6 mr-2 inline-block animate-spin" />
+              Wir verarbeiten deine Anfrage.
             </div>
           </div>
         )}
