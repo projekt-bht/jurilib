@@ -160,28 +160,23 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           }}
           disabled={isDisabledDay}
           className="bg-transparent"
+          // classNames customized to mirror the reference design: centered/bold caption, spaced nav, roomy day cells, visible today ring, muted disabled days, and hover affordances
           /* https://daypicker.dev/docs/styling */
           classNames={{
-            months: '',
+            months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
             month: 'w-full',
             caption: '',
-            caption_label: 'mb-14',
+            caption_label: 'mb-14 font-bold text-2xl',
             nav: 'flex justify-between ',
-            button_previous: 'border border-accent-blue-soft rounded-lg p-2',
-            button_next: 'border border-accent-blue-soft rounded-lg p-2',
+            button_previous: ' hover:bg-accent-white rounded-lg p-2',
+            button_next: ' hover:bg-accent-white rounded-lg p-2',
             table: 'w-full',
-            head_row: '',
-            head_cell: '',
-            row: '',
-            cell: '',
             day: 'bg-accent-white m-2 rounded-lg w-15 h-16 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             today:
               '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded ring-1 ring-accent-gray ring-offset-1 ring-offset-transparent data-[selected=true]:ring-0',
-            day_outside: '',
+
             disabled:
               '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-            day_range_middle: '',
-            day_hidden: '',
           }}
         />
 
