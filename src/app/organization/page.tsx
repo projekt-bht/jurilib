@@ -1,4 +1,4 @@
-import OrganizationCard from '@/app/organization/_components/OrganizationCard';
+import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
 //export const dynamic = 'force-dynamic';
@@ -27,7 +27,7 @@ export default async function OrganizationsPage() {
           <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
           <div className="h-8" />
           {organizations.map((orga) => (
-            <OrganizationCard key={'OrganizationCard_' + orga.id} {...orga} />
+            <OrganizationCard organization={orga} key={'OrganizationCard_' + orga.id} />
           ))}
           <div className="mb-8 text-muted-foreground pt-6">
             Deine Anfrage wird vertraulich behandelt.
