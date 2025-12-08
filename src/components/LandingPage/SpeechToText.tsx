@@ -1,9 +1,11 @@
 'use client';
 
-import { Mic } from 'lucide-react';
+import { Mic, MicOff } from 'lucide-react';
 import { useEffect } from 'react';
 import type { ResultType } from 'react-hook-speech-to-text';
 import useSpeechToText from 'react-hook-speech-to-text';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { Button } from '../ui/button';
 
 type SpeechToTextProps = {
   setText: (text: string) => void;
@@ -49,19 +51,22 @@ export default function SpeechToText({ setText, isRecordingDone }: SpeechToTextP
     if (results.length > 0) setText(formattedTranscript);
   }, [interimResult]);
 
-  return (
-    <>
-      {!error ? (
-        <Mic
-          onClick={isRecording ? stopSpeechToText : startSpeechToText}
-          className={`rounded-full size-10 p-2 absolute bottom-6 right-6 
-                      ${isRecording ? 'bg-red-400' : 'bg-gray-200'}`}
-        >
-          {isRecording ? 'Stop Recording' : 'Start Recording'}
-        </Mic>
-      ) : (
-        <p>Web Speech API is not available in this browser</p>
-      )}
-    </>
+  return !error ? (
+    <Mic
+      onClick={isRecording ? stopSpeechToText : startSpeechToText}
+      className={`rounded-full size-10 p-2 absolute bottom-6 right-6 
+                  ${isRecording ? 'bg-accent-red' : 'bg-accent-gray-light'}`}
+    >
+      {isRecording ? 'Stop Recording' : 'Start Recording'}
+    </Mic>
+  ) : (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <MicOff className="rounded-full size-10 p-2 absolute bottom-6 right-6 bg-accent-gray-soft border border-accent-gray-light text-accent-red" />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Nicht verfügbar in diesem Browser</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
