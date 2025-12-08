@@ -48,7 +48,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
         <CarouselContent>
           {Array.from({ length: totalPages }).map((_, pageIndex) => (
             <CarouselItem key={pageIndex}>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="flex flex-wrap justify-center gap-6">
                 {organizations
                   .slice(pageIndex * 4, pageIndex * 4 + 4)
                   .map((organization: Organization) => {
@@ -56,7 +56,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
                       <Link
                         key={organization.id}
                         href={`/organization/${organization.id}`}
-                        className="group block"
+                        className="group block w-full lg:w-[calc(50%-0.75rem)]" // Copilot: Berechnung der Bereite für die Cards
                       >
                         <OrganizationCard organization={organization} />
                       </Link>
@@ -89,7 +89,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
         </h3>
         <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
           Kein Problem! Beschreibe uns dein Problem einfach noch genauer oder durchsuche
-          eigenständig die Vielzahl an Organisationen.
+          eigenständig die Vielzahl unserer vertretenen Organisationen.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
