@@ -166,17 +166,15 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             month: 'w-full',
             caption: 'flex items-center justify-center mb-2',
             caption_label: 'text-xl font-semibold',
-            nav: 'flex items-center justify-between w-full px-2',
+            nav: '',
             /* TODO: schau wieso hover nicht funktioniert */
-            nav_button:
-              'rounded-full border border-accent-gray w-9 h-9 p-0 hover:bg-accent-gray-soft hover:border-accent-gray-light hover:cursor-pointer',
+            nav_button: '',
             table: 'w-full',
             head_row: '',
             head_cell: '',
             row: '',
             cell: '',
-            day: 'bg-accent-white m-2 rounded-lg p-2 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
-            day_selected: '',
+            day: 'bg-accent-white m-2 rounded-lg w-15 h-16 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             today:
               '!bg-accent-white !border-2 !border-accent-gray !text-foreground font-bold rounded ring-1 ring-accent-gray ring-offset-1 ring-offset-transparent data-[selected=true]:ring-0',
             day_outside: '',
