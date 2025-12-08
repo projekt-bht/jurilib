@@ -1,12 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock, User } from 'lucide-react';
+import { useMemo, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-
 import type { Employee } from '~/generated/prisma/client';
 
 import BookingSelector from './BookingSelector';
@@ -49,7 +49,7 @@ const mockStaff: EmployeeCard[] = [
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
  */
 export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
-  /* TODO: wire this to the real backend data model once the API is ready */
+  /* TODO: adjust colors, icons, and calendar positioning after Hannes' PR */
   const {
     selectedDate,
     selectedTime,

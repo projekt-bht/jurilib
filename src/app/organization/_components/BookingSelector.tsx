@@ -1,7 +1,7 @@
 'use client';
 
+import { ChevronDown, User, Zap } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { User, Zap, ChevronDown } from 'lucide-react';
 
 import {
   Item,

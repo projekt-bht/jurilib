@@ -34,7 +34,7 @@ export async function fetchAvailableSlots(date: Date): Promise<string[]> {
 
 export async function bookAppointment({ date, time }: BookingRequest) {
   await wait(300);
-  console.info('Booked appointment', { date, time });
+  console.warn('Booked appointment (mock)', { date, time });
 }
 
 export function getFallbackSlots() {
