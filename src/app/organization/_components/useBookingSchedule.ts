@@ -8,7 +8,7 @@ type BookingState = {
   selectedDate?: Date;
   selectedTime: string | null;
   availableSlots: string[];
-  slotsLoading: boolean;
+  isSlotsLoading: boolean;
   isBooking: boolean;
   statusMessage: string | null;
 };
@@ -27,7 +27,7 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableSlots, setAvailableSlots] = useState<string[]>(getFallbackSlots());
-  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [isSlotsLoading, setSlotsLoading] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
@@ -87,13 +87,13 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
   }, []);
 
   // useMemo returns a stable object so consumers don't re-render unnecessarily when callbacks/values are unchanged.
-  // selectedDate/selectedTime: current selection; availableSlots: times for selected day; slotsLoading/isBooking/statusMessage: UI state; setDate/selectTime/confirmBooking: update and submit actions.
+  // selectedDate/selectedTime: current selection; availableSlots: times for selected day; isSlotsLoading/isBooking/statusMessage: UI state; setDate/selectTime/confirmBooking: update and submit actions.
   return useMemo(
     () => ({
       selectedDate,
       selectedTime,
       availableSlots,
-      slotsLoading,
+      isSlotsLoading,
       isBooking,
       statusMessage,
       setDate,
@@ -108,7 +108,7 @@ export function useBookingSchedule(): UseBookingScheduleReturn {
       selectedTime,
       selectTime,
       setDate,
-      slotsLoading,
+      isSlotsLoading,
       statusMessage,
     ]
   );
