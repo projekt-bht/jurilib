@@ -101,7 +101,7 @@ export function BookingSelector({
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
                   bookingMode === 'quick'
                     ? 'bg-accent-black text-accent-white'
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-accent-gray-soft text-muted-foreground'
                 )}
               >
                 <Zap className="h-6 w-6" />
@@ -134,7 +134,7 @@ export function BookingSelector({
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
                   bookingMode === 'employee'
                     ? 'bg-accent-black text-accent-white'
-                    : 'bg-muted text-muted-foreground'
+                    : 'bg-accent-gray-soft text-muted-foreground'
                 )}
               >
                 <User className="h-6 w-6" />
