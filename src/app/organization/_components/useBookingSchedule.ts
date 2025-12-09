@@ -22,6 +22,8 @@ type UseBookingScheduleReturn = BookingState & {
 /**
  * Hook that manages booking state: it fetches available slots for a date, keeps
  * the selection in sync and handles mock booking submissions.
+ *
+ * TODO: wire fetch/book calls to backend services and align status handling with API errors.
  */
 export function useBookingSchedule(): UseBookingScheduleReturn {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();

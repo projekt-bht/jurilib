@@ -4,6 +4,8 @@
  * Service helpers that mock the booking API. We keep them in this folder so the
  * calendar feature stays encapsulated and avoids merge conflicts with other
  * teams.
+ *
+ * TODO: swap mocks for real backend endpoints once booking API is available.
  */
 const DEFAULT_TIME_SLOTS = [
   '09:00',

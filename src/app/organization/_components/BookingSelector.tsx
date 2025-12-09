@@ -41,6 +41,7 @@ export function BookingSelector({
   const [bookingModeState, handleSetBookingModeState] = useState<'quick' | 'employee'>('quick'); // local booking mode fallback when parent doesn't control it
 
   const bookingMode = bookingModeProp ?? bookingModeState;
+  // TODO: replace local state with server-driven defaults once booking preferences come from backend.
   const handleSetBookingMode = useMemo(
     () => onBookingModeChange ?? handleSetBookingModeState,
     [onBookingModeChange]
@@ -89,7 +90,7 @@ export function BookingSelector({
               // base card styles + variant for active/inactive quick mode
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
               bookingMode === 'quick'
-                ? 'border-accent-black bg-accent-gray-soft'
+                ? 'border-accent-blue-light bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
@@ -122,7 +123,7 @@ export function BookingSelector({
               // base card styles + variant for active/inactive employee mode
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] cursor-pointer',
               bookingMode === 'employee'
-                ? 'border-accent-black bg-accent-gray-soft'
+                ? 'border-accent-blue-light bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
             )}
           >
