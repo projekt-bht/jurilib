@@ -145,7 +145,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       )}
 
       <div className="flex items-center gap-2">
-        <CalendarIcon className="h-5 w-5" />
+        <CalendarIcon className="h-5 w-5 text-accent-blue" />
         <span className="text-lg font-semibold">Wählen Sie ein Datum</span>
       </div>
       <div className="rounded-md shadow-sm bg-accent-gray-soft p-4 space-y-4">
@@ -199,7 +199,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       {selectedDate && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
+            <Clock className="h-5 w-5 text-accent-blue" />
             <span className="text-lg font-semibold">Wählen Sie eine Uhrzeit</span>
           </div>
           <p className="text-sm font-medium text-foreground">
