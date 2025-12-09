@@ -54,7 +54,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
     selectedDate,
     selectedTime,
     availableSlots,
-    slotsLoading,
+    isSlotsLoading,
     isBooking,
     statusMessage,
     setDate,
@@ -84,7 +84,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6">
       <div className="space-y-1">
         <h2 className="text-3xl font-bold">Termin buchen</h2>
         <p className="text-base text-muted-foreground">
@@ -203,7 +203,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             <span className="text-lg font-semibold">Wählen Sie eine Uhrzeit</span>
           </div>
           <p className="text-sm font-medium text-foreground">
-            {slotsLoading ? 'Termine werden geladen ...' : 'Verfügbare Zeiten'}
+            {isSlotsLoading ? 'Termine werden geladen ...' : 'Verfügbare Zeiten'}
           </p>
 
           <div className="grid grid-cols-4 gap-2">
