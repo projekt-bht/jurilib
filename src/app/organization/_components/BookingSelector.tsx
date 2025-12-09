@@ -38,11 +38,11 @@ export function BookingSelector({
   onBookingModeChange,
 }: BookingSelectorProps) {
   const [isOpen, setIsOpen] = useState(true); // controls accordion open/closed state
-  const [bookingModeState, setBookingModeState] = useState<'quick' | 'employee'>('quick'); // local booking mode fallback when parent doesn't control it
+  const [bookingModeState, handleSetBookingModeState] = useState<'quick' | 'employee'>('quick'); // local booking mode fallback when parent doesn't control it
 
   const bookingMode = bookingModeProp ?? bookingModeState;
-  const setBookingMode = useMemo(
-    () => onBookingModeChange ?? setBookingModeState,
+  const handleSetBookingMode = useMemo(
+    () => onBookingModeChange ?? handleSetBookingModeState,
     [onBookingModeChange]
   );
 
@@ -54,6 +54,7 @@ export function BookingSelector({
       : 'Person auswählen';
 
   return (
+    // cn merges our default spacing with any external className passed in
     <div className={cn('space-y-4', className)}>
       <button
         type="button"
@@ -73,6 +74,7 @@ export function BookingSelector({
         </div>
         <ChevronDown
           className={cn(
+            // cn combines the base icon styles with rotation when open/closed
             'h-5 w-5 text-muted-foreground transition-transform',
             isOpen ? 'rotate-180' : 'rotate-0'
           )}
@@ -82,8 +84,9 @@ export function BookingSelector({
       {isOpen && (
         <ItemGroup className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Item
-            onClick={() => setBookingMode('quick')}
+            onClick={() => handleSetBookingMode('quick')}
             className={cn(
+              // base card styles + variant for active/inactive quick mode
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
               bookingMode === 'quick'
                 ? 'border-accent-black bg-accent-gray-soft'
@@ -93,6 +96,7 @@ export function BookingSelector({
             <div className="flex items-start gap-4">
               <ItemMedia
                 className={cn(
+                  // icon pill switches between active black and muted gray
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
                   bookingMode === 'quick'
                     ? 'bg-accent-black text-accent-white'
@@ -113,8 +117,9 @@ export function BookingSelector({
           </Item>
 
           <Item
-            onClick={() => setBookingMode('employee')}
+            onClick={() => handleSetBookingMode('employee')}
             className={cn(
+              // base card styles + variant for active/inactive employee mode
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] cursor-pointer',
               bookingMode === 'employee'
                 ? 'border-accent-black bg-accent-gray-soft'
@@ -124,6 +129,7 @@ export function BookingSelector({
             <div className="flex items-start gap-4">
               <ItemMedia
                 className={cn(
+                  // icon pill switches between active black and muted gray
                   'flex h-12 w-12 items-center justify-center rounded-2xl',
                   bookingMode === 'employee'
                     ? 'bg-accent-black text-accent-white'
