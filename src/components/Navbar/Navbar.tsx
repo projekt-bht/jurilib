@@ -2,7 +2,7 @@ import { Building2, ShieldUser, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Login } from '@/components/Login/Login';
+import { Authentication } from '@/components/Authentication/Authentication';
 import scale_logo from '~/public/scale_logo.svg';
 
 export function Navbar() {
@@ -34,7 +34,7 @@ export function Navbar() {
           <Building2 className="text-foreground" size={24} />
           <p>Organisationen</p>
         </Link>
-        <Login />
+        <Authentication />
       </div>
     </nav>
   );
