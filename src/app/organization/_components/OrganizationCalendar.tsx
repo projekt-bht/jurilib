@@ -251,7 +251,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
           <div className="space-y-2 pt-2">
             <Button
-              className="w-full bg-accent-black text-accent-white hover:bg-accent-black-light border border-accent-black hover:border-accent-black-light disabled:opacity-60 text-lg font-semibold"
+              className="w-full bg-accent-black text-accent-white hover:bg-accent-black-light border border-accent-black hover:border-accent-black-light disabled:opacity-60 text-2xl font-bold py-4 whitespace-nowrap"
               disabled={!selectedDate || !selectedTime || isBooking}
               onClick={confirmBooking}
             >
