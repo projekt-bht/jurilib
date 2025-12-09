@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { Authentication } from './Authentication';
 
-import { Login } from './Login';
+const { render, screen } = await import('@testing-library/react');
 
 describe('Test NavBar', () => {
   it('renders the component text', () => {
-    render(<Login />);
+    render(<Authentication />);
     expect(screen.getByText(/Einloggen/i)).toBeInTheDocument();
   });
 });
