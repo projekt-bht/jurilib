@@ -174,7 +174,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             table: 'w-full',
             day: 'bg-accent-white m-2 rounded-lg w-15 h-16 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             today:
-              '!bg-accent-white !border-2 !border-accent-blue-light !text-foreground font-bold rounded ring-1 ring-accent-blue-light ring-offset-1 ring-offset-transparent data-[selected=true]:ring-0',
+              '!bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold rounded ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0',
 
             disabled:
               '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
