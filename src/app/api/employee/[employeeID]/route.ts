@@ -5,7 +5,7 @@ import z from 'zod';
 import type { Employee } from '~/generated/prisma/client';
 import { Areas } from '~/generated/prisma/enums';
 
-import { deleteEmployee, readEmployee, updateEmployee } from './services';
+import { deleteEmployee, readEmployeeByEmployeeID, updateEmployee } from './services';
 
 const UpdateSchemaEmployee = z.object({
   id: z.string().min(36),
@@ -26,7 +26,7 @@ export async function GET(
       return NextResponse.json({ message: 'Employee ID is required' }, { status: 400 });
     }
 
-    const employee = await readEmployee(employeeID);
+    const employee = await readEmployeeByEmployeeID(employeeID);
     return NextResponse.json(employee, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });

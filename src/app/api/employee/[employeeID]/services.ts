@@ -3,7 +3,7 @@ import prisma from '@/lib/db';
 import type { Employee } from '~/generated/prisma/client';
 
 // Read a single employee from the database by employeeID
-export const readEmployee = async (employeeID: string): Promise<Employee> => {
+export const readEmployeeByEmployeeID = async (employeeID: string): Promise<Employee> => {
   try {
     const employee: Employee | null = await prisma.employee.findUnique({
       where: { id: employeeID },

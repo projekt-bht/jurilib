@@ -28,7 +28,7 @@ export const createEmployee = async (
 };
 
 // Read all employees from the database
-export const readEmployees = async (): Promise<Employee[]> => {
+export const readAllEmployees = async (): Promise<Employee[]> => {
   try {
     const employees: Employee[] = await prisma.employee.findMany();
     if (!employees) {
