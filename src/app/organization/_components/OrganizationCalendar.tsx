@@ -85,7 +85,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   };
 
   return (
-    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6">
+    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10">
       <div className="space-y-1">
         <h2 className="text-3xl font-bold">Termin buchen</h2>
         <p className="text-base text-muted-foreground">
@@ -165,14 +165,14 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           /* https://daypicker.dev/docs/styling */
           classNames={{
             months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-            month: 'w-full',
+            month: '',
             caption: '',
             caption_label: 'mb-14 font-bold text-2xl',
             nav: 'flex justify-between ',
             button_previous: ' hover:bg-accent-white rounded-lg p-2',
             button_next: ' hover:bg-accent-white rounded-lg p-2',
-            table: 'w-full',
-            day: 'bg-accent-white m-2 rounded-lg w-15 h-16 hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
+            table: '',
+            day: 'bg-accent-white m-2 rounded-lg hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
             today:
               '!bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold rounded ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0',
 
