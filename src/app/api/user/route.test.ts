@@ -12,11 +12,6 @@ const { NextRequest } = await import('next/server');
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/user/route');
 
-beforeAll(async () => {
-  await prisma.user.deleteMany();
-  await prisma.account.deleteMany();
-});
-
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/user`;
 
