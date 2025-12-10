@@ -8,13 +8,19 @@ jest.unstable_mockModule('next/navigation', () => ({
 
 // wichtige Regel für ESM: alle Imports NACH den Mocks als Konstanten!
 const { render, screen, waitFor } = await import('@testing-library/react');
-const { ProblemSearchField } = await import('./ProblemSearchField');
+const { ProblemSearchField } = await import('../ProblemSearchField');
 
 describe('Test LandingPage', () => {
   it('renders the component text', async () => {
     await waitFor(async () => {
-      render(<ProblemSearchField />);
+      render(
+        <ProblemSearchField
+          onSubmit={function (text: string): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
+      );
       expect(screen.getByText(/Passende Lösung finden/i)).toBeInTheDocument();
-    })
+    });
   });
 });

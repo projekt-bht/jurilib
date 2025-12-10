@@ -1,48 +1,12 @@
 import { Separator } from '@radix-ui/react-separator';
-import { Building, Building2, Info, Users } from 'lucide-react';
+import { Info, Users } from 'lucide-react';
 
-import type { Areas, Organization } from '~/generated/prisma/client';
-import { OrganizationType } from '~/generated/prisma/client';
+import type { Organization } from '~/generated/prisma/client';
 
+import { ExpertiseAreaItem } from './OrganizaionHelper';
+import { OrganisationTypeBadge } from './OrganizaionHelper';
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
-
-// Function to create and format the Expertise Area items to badges
-function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
-  return areas.map((area) => (
-    <div
-      key={area}
-      className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
-    >
-      {area}
-    </div>
-  ));
-}
-
-// Function to create and format the Organisation Type Badge
-function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
-  let displayType = '';
-  let icon = null;
-  switch (type) {
-    case OrganizationType.LAW_FIRM:
-      displayType = 'Kanzlei';
-      icon = <Building className="w-4 h-4 text-accent-gray" />;
-      break;
-    case OrganizationType.ASSOCIATION:
-      displayType = 'Verein';
-      icon = <Building2 className="w-4 h-4 text-accent-gray" />;
-      break;
-    default:
-      displayType = 'Keine Angabe';
-      icon = <Info className="w-4 h-4 text-accent-gray" />;
-  }
-  return (
-    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground inline-flex items-center gap-1">
-      {icon}
-      {displayType}
-    </span>
-  );
-}
 
 export function Profile({ organization }: { organization: Organization }) {
   return (

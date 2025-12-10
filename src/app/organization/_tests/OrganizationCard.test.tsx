@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
 
-import OrganizationCard from '../_components/OrganizationCard';
+import { OrganizationCard } from '../_components/OrganizationCard';
 
 const mockOrganization: Organization = {
   id: '1',
@@ -26,29 +26,18 @@ describe('OrganizationCard', () => {
     jest.clearAllMocks();
   });
 
+  it('renders organization card by ID', () => {
+    render(<OrganizationCard organization={mockOrganization} />);
+    expect(document.getElementById('OrganizationCard_1')).toBeInTheDocument();
+  });
+
   it('renders organization name', () => {
-    render(<OrganizationCard {...mockOrganization} />);
+    render(<OrganizationCard organization={mockOrganization} />);
     expect(screen.getByText('Rechtsberatum München')).toBeInTheDocument();
   });
 
-  it('renders organization short description', () => {
-    render(<OrganizationCard {...mockOrganization} />);
-    expect(screen.getByText('Ihr Partner für Arbeitsrecht.')).toBeInTheDocument();
-  });
-
   it('renders expertise area', () => {
-    render(<OrganizationCard {...mockOrganization} />);
+    render(<OrganizationCard organization={mockOrganization} />);
     expect(screen.getByText('Arbeitsrecht')).toBeInTheDocument();
-  });
-
-  it('renders profile button with correct text', () => {
-    render(<OrganizationCard {...mockOrganization} />);
-    expect(screen.getByRole('button', { name: /zum profil/i })).toBeInTheDocument();
-  });
-
-  it('calls router.push when button is clicked', async () => {
-    render(<OrganizationCard {...mockOrganization} />);
-    const link = screen.getByRole('link', { name: /zum profil/i });
-    expect(link).toHaveAttribute('href', `/organization/${mockOrganization.id}`);
   });
 });

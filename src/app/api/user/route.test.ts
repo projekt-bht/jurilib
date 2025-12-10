@@ -31,7 +31,7 @@ describe('User Routen testen', () => {
       },
     };
 
-    const createdUser = await createUser(user, createdAccount.id);
+    const createdUser = await createUser(user, createdAccount.id!);
     expect(createdAccount.id).toBe(createdUser.accountId);
   });
 
