@@ -40,20 +40,8 @@ export async function POST(req: NextRequest) {
         similarity: number;
       }>
     >`
-      SELECT 
-      id,
-      name,
-      description,
-      "shortDescription",
-      email,
-      phone,
-      address,
-      website,
-      "expertiseArea",
-      type,
-      "priceCategory",
-      "createdAt",
-      "updatedAt",
+      SELECT
+      *, 
       1 - ("expertiseVector" <=> ${searchInput}::vector) AS similarity
       FROM "Organization"
       WHERE 
