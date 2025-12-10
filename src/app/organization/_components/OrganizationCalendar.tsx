@@ -16,7 +16,7 @@ type CalendarWithTimeProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
 };
 // Placeholder employee data
-type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
+export type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
   specialties: string[];
   avatar?: string | null;
 };
