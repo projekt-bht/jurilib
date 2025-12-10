@@ -125,7 +125,7 @@ export function Authentication() {
                       name="password"
                       type="password"
                       required
-                      minLength={Number(process.env.PASSWORD_LENGTH!)}
+                      minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
                     <p>{error}</p>
                   </div>
@@ -146,7 +146,7 @@ export function Authentication() {
                       name="password"
                       type="password"
                       required
-                      minLength={Number(process.env.PASSWORD_LENGTH!)}
+                      minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
                   </div>
                 </>
