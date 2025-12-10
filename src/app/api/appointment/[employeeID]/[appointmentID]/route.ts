@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import { handleValidationError, headerSchema } from '../route';
-import { deleteAppointment, updateAppointment } from './service';
+import { deleteAppointment, readAppointment, updateAppointment } from './service';
 
 /**
  * Validate parameter employeeID and appointmentID
@@ -36,7 +36,31 @@ export const appointmentUpdateSchema = z.object({
 
 // GET /api/appointment/:employeeID/:appointmentID
 // Retrieve a specific appointment (to be implemented)
-export async function GET(_req: NextRequest) {}
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
+) {
+  try {
+    //validate header
+    headerSchema.parse(req.headers);
+    // validate params
+    const { employeeID, appointmentID } = await params;
+    paramsSchema.parse({ employeeID, appointmentID });
+
+    //read appointment
+    const appointment = await readAppointment(employeeID, appointmentID);
+    return NextResponse.json(appointment, { status: 200 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    } else {
+      return NextResponse.json(
+        { message: 'Read failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
+  }
+}
 
 // PATCH /api/appointment/:employeeID/:appointmentID
 // Update an appointment (to be implemented)

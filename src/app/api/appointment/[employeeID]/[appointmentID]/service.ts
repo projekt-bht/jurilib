@@ -16,7 +16,17 @@ type ZodUpdateAppointment = {
 };
 
 // Read a specific appointment by ID
-// TODO: implement
+export async function readAppointment(
+  employeeID: string,
+  appointmentID: string
+): Promise<Appointment> {
+  try {
+    const appointment = await validateReference(employeeID, appointmentID);
+    return appointment;
+  } catch (error) {
+    throw new Error('Database query failed: ' + (error as Error).message);
+  }
+}
 
 // Update an appointment by ID
 export async function updateAppointment(
