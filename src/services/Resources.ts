@@ -19,3 +19,10 @@ export type RegisterRessource = {
     phone: string;
   };
 };
+
+export type LoginResource = {
+  id: string;
+  role: Role;
+  /** Expiration time in seconds since 1.1.1970 */
+  exp: number;
+};

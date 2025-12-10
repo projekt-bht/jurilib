@@ -10,7 +10,7 @@ type SearchRequest = {
   searchID: string;
 };
 
-const similarityOffset = 0.4;
+const similarityOffset = 0.9;
 const threshold = 0.12;
 
 export async function POST(req: NextRequest) {
