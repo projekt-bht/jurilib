@@ -10,7 +10,7 @@ const { GET, PATCH, DELETE } = await import('@/app/api/employee/[employeeID]/rou
 
 // !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
 
-describe('User Routen testen', () => {
+describe('Employee Endpoint /employee/[employeeID] testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee/[employeeID]`;
   let cEmployee: Employee;
 

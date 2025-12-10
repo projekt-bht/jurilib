@@ -59,7 +59,7 @@ export async function PATCH(
       );
     }
     return NextResponse.json(
-      { message: 'Failed to update User: ' + (error as Error).message },
+      { message: 'Failed to update Employee: ' + (error as Error).message },
       { status: 400 }
     );
   }
