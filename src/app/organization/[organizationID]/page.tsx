@@ -42,11 +42,11 @@ export default async function OrganizationDetailPage({
   return (
     <div className="bg-card grid grid-cols-1 xl:grid-cols-3 gap-5">
       {/* Left Column - Profile Info */}
-      <div className="xl:col-span-2 space-y-8">
+      <div className="xl:col-span-2 space-y-8 bg-red-500">
         <Profile organization={organization} />
       </div>
       {/* Right Column - Booking Section */}
-      <div className="xl:col-span-1 space-y-8">{<OrganizationCalendar />}</div>
+      <div className="xl:col-span-1 space-y-8 bg-blue-500">{<OrganizationCalendar />}</div>
     </div>
   );
 }
