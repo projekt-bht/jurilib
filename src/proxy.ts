@@ -17,6 +17,10 @@ export function proxy(request: NextRequest, response: NextResponse) {
   return NextResponse.next();
 }
 
+/**
+ * https://dev.to/leapcell/implementing-jwt-middleware-in-nextjs-a-complete-guide-to-auth-1b2d
+ * Configure the scope of the middleware (example: everything expect -> _next/Static, _next/image etc.)
+ */
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
