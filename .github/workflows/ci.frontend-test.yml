@@ -12,9 +12,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      JWT_TTL: ${{ secrets.JWT_TTL }}
 
     # Angabe von mehreren Node Versionen erstellt verschiedene Instanzen, die alle das Projekt testen
     # Festgelegt auf 20.x, da unsere Projekt rein in dieser Version entwickelt wird.
