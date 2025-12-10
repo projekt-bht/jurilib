@@ -1,6 +1,4 @@
-import { jest } from '@jest/globals';
-
-import prisma from '@/lib/db';
+//import prisma from '@/lib/db';
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 import { createAccount } from '../account/services';
@@ -11,11 +9,6 @@ const { NextRequest } = await import('next/server');
 
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/user/route');
-
-beforeAll(async () => {
-  await prisma.user.deleteMany();
-  await prisma.account.deleteMany();
-});
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/user`;
