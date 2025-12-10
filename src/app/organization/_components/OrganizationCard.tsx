@@ -1,50 +1,62 @@
-'use client';
-import Link from 'next/link';
+import { ArrowRight, Clock, MapPin } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemFooter,
-  ItemTitle,
-} from '@/components/ui/item';
 import type { Organization } from '~/generated/prisma/client';
 
-export default function ProfileCard(organization: Organization) {
+import { ExpertiseAreaItem, OrganisationTypeBadge } from './OrganizaionHelper';
+
+// TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
+
+export function OrganizationCard({ organization }: { organization: Organization }) {
   return (
-    <Item
-      variant="outline"
-      className="bg-background flex flex-col sm:flex-row items-start sm:items-center justify-between w-full max-w-2xl px-4 py-3 mt-4 mx-auto gap-2 shadow-md hover:shadow-lg transition-shadow"
+    <div
+      id={`OrganizationCard_${organization.id}`}
+      className="relative bg-background rounded-3xl border border-border hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden"
     >
-      <ItemContent className="flex-1">
-        <ItemTitle className="text-base sm:text-lg font-semibold">{organization.name}</ItemTitle>
-        <ItemDescription className="text-sm text-foreground">
-          {organization.shortDescription}
-        </ItemDescription>
-      </ItemContent>
-      <ItemActions className="">
-        <div className="flex flex-col justify-start items-center sm:items-center gap-2">
-          <Link href={`/organization/${organization.id}`}>
-            <Button
-              className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground"
-              variant="outline"
-            >
-              Zum Profil
-            </Button>
-          </Link>
+      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative p-4 flex flex-col min-h-[250px]">
+        <div className="flex items-start gap-6 mb-4">
+          <div className="w-24 h-24 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-3xl font-bold shadow-lg shrink-0">
+            {organization.name.charAt(0)}
+          </div>
+          <div className="flex-1 min-w-0 text-left">
+            <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2">
+              {organization.name}
+            </h3>
+          </div>
+          <OrganisationTypeBadge type={organization.type} />
         </div>
-      </ItemActions>
-      <ItemFooter className="w-full text-sm text-muted-foreground">
-        <p>
-          {/* differentiate between results: If there are more than one expertiseArea list this with comma, elsewhen just list the single string */}
-          {Array.isArray(organization.expertiseArea)
-            ? organization.expertiseArea.join(', ')
-            : // replace curly brackets with an empty string
-              String(organization.expertiseArea).replace(/{|}/g, '')}
+
+        <p className="text-muted-foreground leading-relaxed text-[15px] mb-6 text-left">
+          {organization.description}
         </p>
-      </ItemFooter>
-    </Item>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          <ExpertiseAreaItem areas={organization.expertiseArea} />
+        </div>
+
+        <div className="mt-auto pt-6 border-t border-border/50">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4" />
+                <span>{organization.address}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                <span className="text-accent-emerald font-medium">Termine verfügbar</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all duration-300">
+              <span>Profil ansehen</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary via-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    </div>
   );
 }

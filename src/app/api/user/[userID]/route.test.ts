@@ -15,7 +15,7 @@ const { GET, PATCH, DELETE } = await import('@/app/api/user/[userID]/route');
 const { POST } = await import('@/app/api/account/route');
 
 describe('User Routen testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
+  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/[userID]`;
   let cUser: User;
 
   test('POST User', async () => {
@@ -34,7 +34,7 @@ describe('User Routen testen', () => {
       },
     };
 
-    const createdUser = await createUser(user, createdAccount.id);
+    const createdUser = await createUser(user, createdAccount.id!);
     cUser = createdUser;
     expect(createdAccount.id).toBe(createdUser.accountId);
   });

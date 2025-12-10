@@ -1,6 +1,4 @@
-import { jest } from '@jest/globals';
-
-import prisma from '@/lib/db';
+//import prisma from '@/lib/db';
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 import { createAccount } from '../account/services';
@@ -31,7 +29,7 @@ describe('User Routen testen', () => {
       },
     };
 
-    const createdUser = await createUser(user, createdAccount.id);
+    const createdUser = await createUser(user, createdAccount.id!);
     expect(createdAccount.id).toBe(createdUser.accountId);
   });
 

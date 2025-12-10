@@ -1,4 +1,6 @@
-import OrganizationCard from '@/app/organization/_components/OrganizationCard';
+import Link from 'next/link';
+
+import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
 //export const dynamic = 'force-dynamic';
@@ -21,14 +23,18 @@ export default async function OrganizationsPage() {
   const organizations: Organization[] = await fetchOrganizations();
 
   return (
-    <div className="bg-card flex flex-col justify-start items-center h-screen pt-3">
+    <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
       {organizations.length > 0 ? (
         <>
           <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
           <div className="h-8" />
-          {organizations.map((orga) => (
-            <OrganizationCard key={'OrganizationCard_' + orga.id} {...orga} />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
+            {organizations.map((orga) => (
+              <Link href={`/organization/${orga.id}`} key={'OrganizationCard_' + orga.id}>
+                <OrganizationCard organization={orga} />
+              </Link>
+            ))}
+          </div>
           <div className="mb-8 text-muted-foreground pt-6">
             Deine Anfrage wird vertraulich behandelt.
           </div>
