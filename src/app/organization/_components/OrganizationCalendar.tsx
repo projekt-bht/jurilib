@@ -33,7 +33,7 @@ const mockStaff: EmployeeCard[] = [
     id: '2',
     name: 'Lukas Meyer',
     position: 'Jurist',
-    specialties: ['Vertragsrecht', 'Gesellschaftsrecht'],
+    specialties: ['Vertragsrecht', 'Mietrecht'],
     avatar: null,
   },
   {
@@ -85,7 +85,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   };
 
   return (
-    <div className="bg-accent-white p-6 xl:px-2 shadow-lg rounded-xl space-y-6 mt-8 mb-10 max-w-5xl xl:max-w-2xl flex flex-col px-10 flex-start mx-10">
+    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 flex flex-col px-10 flex-start mx-10">
       <div className="space-y-1">
         <h2 className="text-3xl font-bold">Termin buchen</h2>
         <p className="text-base text-muted-foreground">
@@ -105,7 +105,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             <User className="w-5 h-5 text-accent-blue" />
             Wählen Sie einen Mitarbeiter
           </h3>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
             {mockStaff.map((employee) => (
               <button
                 key={employee.id}

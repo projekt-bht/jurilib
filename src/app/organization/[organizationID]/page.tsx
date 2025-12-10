@@ -41,13 +41,13 @@ export default async function OrganizationDetailPage({
 
   return (
     <div className="container mx-auto">
-      <div className="bg-card flex justify-center gap-5 xl:flex-row flex-col">
+      <div className="bg-card flex justify-center xl:flex-row flex-col">
         {/* Left Column - Profile Info */}
-        <div className=" space-y-8 w-full xl:w-3/5">
+        <div className=" space-y-8 w-full xl:w-[55%]">
           <Profile organization={organization} />
         </div>
         {/* Right Column - Booking Section */}
-        <div className=" space-y-8 w-full xl:w-2/5 ">{<OrganizationCalendar />}</div>
+        <div className=" space-y-8 w-full xl:w-[45%] ">{<OrganizationCalendar />}</div>
       </div>
     </div>
   );
