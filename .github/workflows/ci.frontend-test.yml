@@ -5,21 +5,21 @@ name: Frontend Jest CI
 
 on:
   push:
-    branches: ['dev', 'main']
+    branches: [ "dev", "main" ]
   pull_request:
-    branches: ['dev', 'main']
+    branches: [ "dev", "main" ]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
 
+    runs-on: ubuntu-latest
     # Angabe von mehreren Node Versionen erstellt verschiedene Instanzen, die alle das Projekt testen
     # Festgelegt auf 20.x, da unsere Projekt rein in dieser Version entwickelt wird.
     strategy:
       matrix:
         node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    
     services:
       postgres:
         image: pgvector/pgvector:pg18-trixie
@@ -36,27 +36,30 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Cache Node modules and Next.js build
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+    - uses: actions/checkout@v4
+    - name: Cache Node modules and Next.js build
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          ${{ github.workspace }}/.next/cache
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+        restore-keys: |
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+          
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - run: npm ci
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+    - name: Set DATABASE_URL
+      run: echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
 
-      - run: npm ci
-
-      - name: Set DATABASE_URL
-        run: echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+    - name: Generate Prisma Client
+      run: npx prisma generate
 
     - name: Migrate Prisma Data
       run: npx prisma db push --accept-data-loss
