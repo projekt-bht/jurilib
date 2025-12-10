@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { Profile } from '@/app/organization/_components/Profile';
 import type { Organization } from '~/generated/prisma/client';
+
 import OrganizationCalendar from '../_components/OrganizationCalendar';
 
 async function fetchBackendData(endpoint: string, organizationID: string): Promise<Response> {
@@ -47,7 +48,9 @@ export default async function OrganizationDetailPage({
           <Profile organization={organization} />
         </div>
         {/* Right Column - Booking Section */}
-        <div className=" space-y-8 w-full xl:w-[45%] ">{<OrganizationCalendar />}</div>
+        <div className=" space-y-8 w-full xl:w-[45%] ">
+          <OrganizationCalendar />
+        </div>
       </div>
     </div>
   );

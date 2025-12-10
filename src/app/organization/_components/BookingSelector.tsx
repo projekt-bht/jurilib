@@ -12,7 +12,8 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { cn } from '@/lib/utils';
-import { EmployeeCard } from './OrganizationCalendar';
+
+import type { EmployeeCard } from './OrganizationCalendar';
 
 type BookingSelectorProps = {
   className?: string;
