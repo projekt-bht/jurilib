@@ -14,9 +14,6 @@ export async function POST(req: NextRequest) {
     const email = body.email;
     const password = body.password;
 
-    //Check if User exists
-    await login(email, password);
-
     //Create JWT for USER
     const jwtTokenString = await verifyPasswordAndCreateJWT(email, password);
     const loginRes = verifyJWT(jwtTokenString);
