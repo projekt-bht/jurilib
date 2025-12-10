@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, headerSchema } from '../route';
+import { handleValidationError, headerSchema } from '../../helper';
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
 
 /**
@@ -112,9 +112,13 @@ export async function DELETE(
     await deleteAppointment(employeeID, appointmentID);
     return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Delete failed: ' + (error as Error).message },
-      { status: 400 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    } else {
+      return NextResponse.json(
+        { message: 'Delete failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
   }
 }
