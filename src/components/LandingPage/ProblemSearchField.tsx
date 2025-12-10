@@ -50,64 +50,62 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-6 relative">
-          <textarea
-            className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
-            value={problem}
-            onChange={(e) => {
-              setProblem(e.target.value);
-            }}
-            onFocus={() => setError('')}
-            onKeyDown={handleKeyDown}
-            placeholder="Beginne hier zu schreiben..."
-          />
-          <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
+    <form onSubmit={handleSubmit}>
+      <div className="mb-6 relative">
+        <textarea
+          className=" text-foreground bg-input focus:outline-none w-full p-4 border border-border rounded-lg shadow-sm min-h-15 h-60 resize-none"
+          value={problem}
+          onChange={(e) => {
+            setProblem(e.target.value);
+          }}
+          onFocus={() => setError('')}
+          onKeyDown={handleKeyDown}
+          placeholder="Beginne hier zu schreiben..."
+        />
+        <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
+      </div>
+
+      {/*Display error message, if error is truthy*/}
+      {error && <p className="text-foreground mb-4">{error} </p>}
+
+      <button
+        type="submit"
+        className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full"
+      >
+        Passende Lösung finden
+      </button>
+
+      <p className="text-accent-gray text-base mt-2 mb-8">
+        Deine Anfrage wird vertraulich behandelt
+      </p>
+
+      <div
+        className={`mt-6 w-full transition-all duration-500 ease-in-out ${
+          isSubmitted
+            ? 'opacity-0 scale-95 max-h-0 overflow-hidden'
+            : 'opacity-100 scale-100 max-h-96'
+        }`}
+      >
+        <span className="text-base text-accent-gray text-center mt-4 mb-4">
+          Oder wähle ein Beispiel:
+        </span>
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {exampleSearches.map((example) => (
+            <Button
+              key={example}
+              type="button"
+              variant="outline"
+              size="sm"
+              className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray"
+              onClick={() => {
+                setProblem(example);
+              }}
+            >
+              {example}
+            </Button>
+          ))}
         </div>
-
-        {/*Display error message, if error is truthy*/}
-        {error && <p className="text-foreground mb-4">{error} </p>}
-
-        <button
-          type="submit"
-          className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full"
-        >
-          Passende Lösung finden
-        </button>
-
-        <p className="text-accent-gray text-base mt-2 mb-8">
-          Deine Anfrage wird vertraulich behandelt
-        </p>
-
-        <div
-          className={`mt-6 w-full transition-all duration-500 ease-in-out ${
-            isSubmitted
-              ? 'opacity-0 scale-95 max-h-0 overflow-hidden'
-              : 'opacity-100 scale-100 max-h-96'
-          }`}
-        >
-          <span className="text-base text-accent-gray text-center mt-4 mb-4">
-            Oder wähle ein Beispiel:
-          </span>
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
-            {exampleSearches.map((example) => (
-              <Button
-                key={example}
-                type="button"
-                variant="outline"
-                size="sm"
-                className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray"
-                onClick={() => {
-                  setProblem(example);
-                }}
-              >
-                {example}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }
