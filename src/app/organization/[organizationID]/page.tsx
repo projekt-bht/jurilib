@@ -40,7 +40,7 @@ export default async function OrganizationDetailPage({
   // const employees: Employee[] = await resEmployee.json();
 
   return (
-    <div className="bg-card flex justify-center gap-5">
+    <div className="bg-card flex justify-center gap-5 xl:flex-row flex-col">
       {/* Left Column - Profile Info */}
       <div className=" space-y-8">
         <Profile organization={organization} />
