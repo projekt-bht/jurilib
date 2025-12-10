@@ -64,6 +64,9 @@ jobs:
     - name: Migrate Prisma Data
       run: npx prisma db push --accept-data-loss
       # npx prisma migrate deploy 
+
+    - name: Seed DB
+      run: npm run db:seed
         
     - run: npm run build --if-present
     - name: Test frontend
