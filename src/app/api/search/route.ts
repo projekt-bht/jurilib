@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
         address: string | null;
         website: string | null;
         expertiseArea: Areas[];
+        expertiseVector: string;
         type: OrganizationType;
         priceCategory: PriceCategory;
         createdAt: Date;
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Transformiere expertiseArea zu einem String und entferne similarity
     const transformedMatches: Organization[] = filteredMatches.map((match) => {
-      const { similarity, ...rest } = match;
+      const { similarity, expertiseVector, ...rest } = match;
       return {
         ...rest,
         expertiseArea: Array.isArray(match.expertiseArea)
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
     });
 
     // eslint-disable-next-line no-console
-    console.log(transformedMatches);
+    console.log('Return Value ', transformedMatches);
     //console.log(matches)
     return NextResponse.json(transformedMatches, { status: 200 });
   }
