@@ -56,7 +56,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
                       <Link
                         key={organization.id}
                         href={`/organization/${organization.id}`}
-                        className="group block w-full lg:w-[calc(50%-0.75rem)]" // Copilot: Berechnung der Bereite für die Cards
+                        className="group block w-full lg:w-[calc(50%-0.75rem)]" // Copilot: Calculating width for 2 items per row with gap
                       >
                         <OrganizationCard organization={organization} />
                       </Link>
@@ -83,6 +83,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
         ))}
       </div>
 
+      {/*Info Message */}
       <div className="mt-12 bg-background rounded-3xl border border-primary/20 p-8 md:p-12 text-center">
         <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
           Nichts Passendes dabei?
