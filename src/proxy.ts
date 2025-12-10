@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server';
 
 import { verifyJWT } from './app/api/authentication/login/JWTService';
 
-const requiresAuthRoutes = ['/dashboard'];
-const optionalAuthRoutes = ['/organization', '/team', '/lawyers'];
+const requiresAuthRoutes = ['/api/dashboard'];
+const optionalAuthRoutes = ['/api/authentication/login'];
 
-export async function proxy(request: NextRequest, response: NextResponse) {
+export function proxy(request: NextRequest, response: NextResponse) {
   const pathname = request.nextUrl.pathname;
   if (requiresAuthRoutes.includes(pathname)) {
     return requiresAuthentication(request, response);
@@ -18,9 +18,7 @@ export async function proxy(request: NextRequest, response: NextResponse) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)', // alle Seiten außer Next.js Assets
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
 
 export function requiresAuthentication(req: NextRequest, res: NextResponse) {
@@ -33,11 +31,8 @@ export function requiresAuthentication(req: NextRequest, res: NextResponse) {
       response.headers.set('role', loginRes.role);
     }
 
-    console.log('HEADERS:', response.headers);
-
     return response;
   } catch (err) {
-    console.log(err);
     return NextResponse.next({ status: 401 });
   }
 }
@@ -52,14 +47,12 @@ export function optionalAuthentication(req: NextRequest, res: NextResponse) {
     const loginRes = verifyJWT(jwtString);
     const response = NextResponse.next();
 
-    //This shit does not work ?
     if (loginRes) {
       response.headers.set('userID', loginRes.id);
       response.headers.set('role', loginRes.role);
     }
     return response;
   } catch (err) {
-    //res.status(401);
+    return NextResponse.next({ status: 401 });
   }
-  return NextResponse.next();
 }
