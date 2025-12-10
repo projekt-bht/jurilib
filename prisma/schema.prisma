@@ -156,6 +156,7 @@ model Employee {
     name           String
     phone          String?
     position       String?
+    expertiseArea  Areas[]
     createdAt      DateTime     @default(now())
     updatedAt      DateTime     @updatedAt
 
