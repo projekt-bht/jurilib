@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import { handleValidationError, headerSchema } from '../route';
-import { updateAppointment } from './service';
+import { deleteAppointment, updateAppointment } from './service';
 
 /**
  * Validate parameter employeeID and appointmentID
@@ -73,6 +73,24 @@ export async function PATCH(
 
 // DELETE /api/appointment/:employeeID/:appointmentID
 // Delete an appointment (to be implemented)
-export async function DELETE(_req: NextRequest) {
-  // TODO: To be implemented
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
+) {
+  try {
+    //validate header
+    headerSchema.parse(req.headers);
+    // validate params
+    const { employeeID, appointmentID } = await params;
+    paramsSchema.parse({ employeeID, appointmentID });
+
+    // delete appointment
+    await deleteAppointment(employeeID, appointmentID);
+    return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Delete failed: ' + (error as Error).message },
+      { status: 400 }
+    );
+  }
 }

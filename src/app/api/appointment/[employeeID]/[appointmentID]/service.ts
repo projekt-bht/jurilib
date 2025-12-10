@@ -63,7 +63,15 @@ export async function updateAppointment(
 }
 
 // Delete an appointment by ID
-// TODO: implement
+export async function deleteAppointment(employeeID: string, appointmentID: string) {
+  // TODO: hier später noch prüfen, welchen Status der Termin haben darf, um gelöscht zu werden
+  // und ggf. Benachrichtigungen verschicken
+  try {
+    await prisma.appointment.delete({ where: { id: appointmentID, employeeId: employeeID } });
+  } catch (error) {
+    throw new Error('Database delete failed: ' + (error as Error).message);
+  }
+}
 
 export async function validateReference(paramEmployeeID: string, paramAppointmentID: string) {
   //check if employee exists
