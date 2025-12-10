@@ -56,7 +56,7 @@ export async function POST(
 }
 
 // GET /api/appointment/:employeeID
-// Retrieve all appointments of employee (to be implemented)
+// Retrieve all appointments of employee
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ employeeID: string }> }
