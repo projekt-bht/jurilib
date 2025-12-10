@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     });
 
     // eslint-disable-next-line no-console
-    console.log('Return Value ', transformedMatches);
+    console.log(transformedMatches);
     //console.log(matches)
     return NextResponse.json(transformedMatches, { status: 200 });
   }
