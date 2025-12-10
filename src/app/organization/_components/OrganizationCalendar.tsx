@@ -85,7 +85,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   };
 
   return (
-    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 max-w-xl">
+    <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 max-w-5xl xl:max-w-xl flex flex-col px-10 flex-start mx-10">
       <div className="space-y-1">
         <h2 className="text-3xl font-bold">Termin buchen</h2>
         <p className="text-base text-muted-foreground">
