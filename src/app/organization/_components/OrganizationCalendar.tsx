@@ -160,7 +160,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             handleChange(date, null);
           }}
           disabled={isDisabledDay}
-          className="bg-transparent"
+          className="bg-transparent w-full flex justify-center items-center"
           // classNames customized to mirror the reference design: centered/bold caption, spaced nav, roomy day cells, visible today ring, muted disabled days, and hover affordances
           /* https://daypicker.dev/docs/styling */
           classNames={{
@@ -172,6 +172,7 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
             button_previous: ' hover:bg-accent-white rounded-lg p-2',
             button_next: ' hover:bg-accent-white rounded-lg p-2',
             table: 'w-full max-w-full',
+            row: 'w-full flex justify-between',
             day: 'm-1 h-12 w-12 rounded-lg bg-accent-white text-sm hover:border hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 md:text-base xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
             today:
               'm-1 h-12 w-12 rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0 sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
