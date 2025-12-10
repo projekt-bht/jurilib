@@ -165,16 +165,16 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
           /* https://daypicker.dev/docs/styling */
           classNames={{
             months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-            month: '',
+            month: 'w-full',
             caption: '',
             caption_label: 'mb-14 font-bold text-2xl',
-            nav: 'flex justify-between ',
+            nav: 'w-full flex justify-between ',
             button_previous: ' hover:bg-accent-white rounded-lg p-2',
             button_next: ' hover:bg-accent-white rounded-lg p-2',
-            table: '',
-            day: 'bg-accent-white m-2 rounded-lg hover:bg-accent-gray-light hover:cursor-pointer hover:border hover:border-accent-gray-light',
+            table: 'w-full max-w-full',
+            day: 'm-1 h-12 w-12 rounded-lg bg-accent-white text-sm hover:border hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 md:text-base xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
             today:
-              '!bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold rounded ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0',
+              'm-1 h-12 w-12 rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0 sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
 
             disabled:
               '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
@@ -234,9 +234,9 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
 
           {selectedDate && selectedTime && (
             <div className="mb-6">
-              <div className="rounded-2xl border border-accent-blue/30 bg-accent-blue-soft p-6">
-                <p className="text-sm text-muted-foreground mb-2">Ihr Termin</p>
-                <p className="text-xl font-bold text-foreground mb-1">
+              <div className="rounded-2xl border border-accent-gray-light bg-accent-gray-soft/70 p-6 shadow-md">
+                <p className="mb-3 text-base font-semibold text-muted-foreground">Ihr Termin</p>
+                <p className="mb-1 text-xl font-bold text-foreground">
                   {selectedDate.toLocaleDateString('de-DE', {
                     weekday: 'long',
                     day: 'numeric',
