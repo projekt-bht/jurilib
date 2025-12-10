@@ -120,7 +120,13 @@ export function Authentication() {
 
                   <div className="grid gap-3">
                     <Label htmlFor="password">Passwort * </Label>
-                    <Input id="password" name="password" type="password" required minLength={5} />
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      minLength={Number(process.env.PASSWORD_LENGTH!)}
+                    />
                     <p>{error}</p>
                   </div>
                 </>
@@ -140,7 +146,7 @@ export function Authentication() {
                       name="password"
                       type="password"
                       required
-                      minLength={6}
+                      minLength={Number(process.env.PASSWORD_LENGTH!)}
                     />
                   </div>
                 </>
