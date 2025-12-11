@@ -3,7 +3,7 @@ import { vectorizeSearch } from '@/services/server/vectorizer';
 import type { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 import type { Organization } from '~/generated/prisma/client';
 
-const similarityOffset = 0.4;
+const similarityOffset = 0.9;
 const threshold = 0.12;
 
 export async function createSearch(query: string) {
