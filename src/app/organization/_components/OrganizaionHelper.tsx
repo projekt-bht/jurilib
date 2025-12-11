@@ -50,7 +50,7 @@ export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
 }
 
 // Function to create and format an Employee Card
-export function EmplyeeCard({ employee }: { employee: Employee }) {
+export function EmployeeCard({ employee }: { employee: Employee }) {
   return (
     <div
       key={employee.name}

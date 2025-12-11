@@ -3,7 +3,7 @@ import { Info, Users } from 'lucide-react';
 
 import type { Employee, Organization } from '~/generated/prisma/client';
 
-import { EmplyeeCard, ExpertiseAreaBadge } from './OrganizaionHelper';
+import { EmployeeCard, ExpertiseAreaBadge } from './OrganizaionHelper';
 import { OrganisationTypeBadge } from './OrganizaionHelper';
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
@@ -85,7 +85,7 @@ export function Profile({
           {/* TODO implement pagination */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {employees.map((e) => (
-              <EmplyeeCard key={e.id} employee={e} />
+              <EmployeeCard key={e.id} employee={e} />
             ))}
           </div>
         </div>
