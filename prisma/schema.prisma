@@ -16,6 +16,19 @@ datasource db {
     schemas = ["public"]
 }
 
+// -------- Playtest ------
+
+model SearchLog {
+    id        String   @id @default(uuid())
+    searchString     String
+    searchStringExpanded String
+    searchStringExpandedVector  Unsupported("vector(3072)")?
+
+    createdAt      DateTime     @default(now())
+
+    @@schema("public")
+}
+
 // -------- Models --------
 
 model Account {
