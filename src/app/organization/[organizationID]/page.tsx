@@ -8,12 +8,12 @@ async function fetchBackendData(endpoint: string, organizationID: string): Promi
     cache: 'no-store',
   });
 
-  // Rufe NotFound-Seite auf, wenn Endpoint oder Inhalt nicht gefunden wurde
+  // Call not-found.tsx page if resource is not found
   if (res.status === 404) {
     notFound();
   }
 
-  // Treten andere Fehler auf, werfe einen Fehler, der vom Error Boundary in der error.tsx behandelt wird
+  // If other errors occur, throw an error that is handled by the Error Boundary in error.tsx
   if (!res.ok) {
     throw new Error(`Failed to fetch organization: ${res.statusText}`);
   }
@@ -27,8 +27,8 @@ export default async function OrganizationDetailPage({
 }) {
   const { organizationID } = await params;
 
-  // Parse die Organisationsdaten
-  // Auftretende Fehler werden ebenfalls vom Error Boundary behandelt
+  // Parse organization data
+  // Upcomming errors are also handled by the Error Boundary
   const OrgaResponse = await fetchBackendData('organization', organizationID);
   const organization: Organization = await OrgaResponse.json();
 
