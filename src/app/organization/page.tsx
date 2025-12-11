@@ -1,6 +1,4 @@
-import Link from 'next/link';
-
-import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
+import { OrganizationExplorer } from '@/app/organization/_components/OrganizationExplorer';
 import type { Organization } from '~/generated/prisma/client';
 
 //export const dynamic = 'force-dynamic';
@@ -23,29 +21,22 @@ export default async function OrganizationsPage() {
   const organizations: Organization[] = await fetchOrganizations();
 
   return (
-    <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
-      {organizations.length > 0 ? (
-        <>
+    <div className="bg-card flex flex-col items-center min-h-screen px-4">
+      <div className="w-full max-w-6xl py-6 space-y-6">
+        <div className="space-y-2">
           <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
-          <div className="h-8" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
-            {organizations.map((orga) => (
-              <Link href={`/organization/${orga.id}`} key={'OrganizationCard_' + orga.id}>
-                <OrganizationCard organization={orga} />
-              </Link>
-            ))}
-          </div>
-          <div className="mb-8 text-muted-foreground pt-6">
-            Deine Anfrage wird vertraulich behandelt.
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
-          <p className="text-5xl font-bold text-foreground">
-            Leider konnten wir keine passende Organisation finden.
+          <p className="text-muted-foreground text-sm">
+            Nutze die Filter, um passende Kanzleien oder Vereine nach Preisniveau und Fachgebiet zu
+            finden.
           </p>
         </div>
-      )}
+
+        <OrganizationExplorer organizations={organizations} />
+
+        <div className="mb-4 text-muted-foreground pt-2 text-sm">
+          Deine Anfrage wird vertraulich behandelt.
+        </div>
+      </div>
     </div>
   );
 }

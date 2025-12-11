@@ -1,3 +1,5 @@
+'use client';
+
 import { ArrowRight, Clock, MapPin } from 'lucide-react';
 
 import type { Organization } from '~/generated/prisma/client';
