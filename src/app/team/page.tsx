@@ -112,7 +112,8 @@ export default function Team() {
     },
   ];
 
-  const github = 'https://github.com/devicons/devicon/blob/master/icons/github/github-original.svg';
+  const github =
+    'https://raw.githubusercontent.com/devicons/devicon/refs/heads/master/icons/github/github-original.svg';
   // const processSteps = [
   //   {
   //     title: 'Anfrage analysieren',
@@ -251,7 +252,7 @@ export default function Team() {
         </section>
 
         {/* Process Section */}
-        {/* <section className="py-16 px-4 bg-muted/30">
+        <section className="py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
               <div className="bg-linear-to-br from-accent-emerald/80 to-accent-emerald/60 p-4 rounded-xl shrink-0 shadow-sm">
@@ -264,8 +265,8 @@ export default function Team() {
                 <p className="text-lg text-muted-foreground mb-8">
                   Open Source, denn gute Software sollte für alle zugänglich sein.
                 </p>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* {processSteps.map((step, index) => (
+
+                {/* {processSteps.map((step, index) => (
                     <div
                       key={index}
                       className="flex items-start gap-4 p-6 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
@@ -280,18 +281,36 @@ export default function Team() {
                     </div>
                   ))} */}
 
-        {/* <Image
+                <div className="flex items-center gap-6">
+                  <Image
                     src={github}
                     alt="GitHub Repository Screenshot"
-                    width={600}
-                    height={400}
-                    className="rounded-xl shadow-lg border border-border"
+                    width={200}
+                    height={200}
+                    className="rounded-xl"
                   />
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground mb-2">
+                      JuriLib ist Open Source!
+                    </h2>
+                    <p className="text-muted-foreground">
+                      Schaut gerne in unserem{' '}
+                      <a
+                        href="https://github.com/projekt-bht/jurilib"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline hover:text-primary/80"
+                      >
+                        GitHub Repository
+                      </a>{' '}
+                      vorbei, um den Code einzusehen.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        // </section> */}
+        </section>
       </main>
     </div>
   );
