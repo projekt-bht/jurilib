@@ -5,7 +5,7 @@ const features = [
     icon: MessageSquare,
     title: 'Vielfältige Auswahl an Expert*innen',
     description:
-      'Bei uns findest du spezialisierte Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist oder wonach Du suchst.',
+      'Bei uns findest du gezielt Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist oder wonach du suchst.',
     color: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
@@ -13,7 +13,7 @@ const features = [
     icon: Users,
     title: 'Demokratisierung des Rechts',
     description:
-      'Der Zugang zum Recht ist ein menschenrechtliches Gebot und Grundlage für ein selbstbestimmtes Leben. Unsere Kernphilosophie ist es daher, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
+      'Der Zugang zum Recht ist ein fundamentales Menschenrecht und die Grundlage für ein selbstbestimmtes Leben. Deshalb ist es unsere Philosophie, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
     color: 'bg-accent-emerald-light shadow-sm',
     iconColor: 'text-accent-emerald',
   },
@@ -21,7 +21,7 @@ const features = [
     icon: FileText,
     title: 'Transparente Preise',
     description:
-      'Entstehende Kosten werden Dir vorab klar kommuniziert - keine versteckten Gebühren',
+      'Entstehende Kosten werden dir transparent mitgeteilt – es gibt keine versteckten Gebühren.',
     color: 'bg-accent-purple-light shadow-sm',
     iconColor: 'text-accent-purple',
   },
@@ -29,7 +29,7 @@ const features = [
     icon: Calendar,
     title: 'Wenige Klicks bis zum Termin',
     description:
-      'Jurilib ist eine digitale Plattform, die dich in wenigen Minuten mit der zu Dir passenden Rechtsberatung verbindet',
+      'Mit JuriLib findest du in wenigen Minuten die Rechtsberatung, die genau zu dir passt – schnell, einfach und digital.',
     color: 'bg-accent-amber-light shadow-sm',
     iconColor: 'text-accent-amber',
   },
