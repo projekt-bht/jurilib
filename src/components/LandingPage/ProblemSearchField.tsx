@@ -24,23 +24,26 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     {
       icon: ReceiptText,
       title: 'Erbrecht',
-      description: 'Fragen zum Erbrecht und Testament',
+      description:
+        'Ich habe eine Erbschaft erhalten und bin unsicher, wie ich das Testament richtig auslege und meine Rechte wahrnehme.',
     },
     {
       icon: Building2,
       title: 'Mietrecht',
-      description: 'Ich habe Probleme mit meinem Vermieter wegen Mieterhöhung',
+      description:
+        'Mein Vermieter hat mir eine Mieterhöhung geschickt, die ich für unfair halte, und ich möchte wissen, welche Optionen ich habe.',
     },
-
     {
       icon: CarFront,
       title: 'Verkehrsrecht',
-      description: 'Ich benötige Hilfe bei einem Verkehrsunfall',
+      description:
+        'Ich hatte einen Auffahrunfall und möchte wissen, wer haftet und welche Schritte ich rechtlich einleiten kann.',
     },
     {
       icon: BriefcaseBusiness,
       title: 'Arbeitsrecht',
-      description: 'Mein Arbeitgeber hat mir gekündigt, ich brauche rechtliche Beratung',
+      description:
+        'Mein Arbeitgeber hat mir ohne Vorwarnung gekündigt, und ich möchte prüfen, ob die Kündigung rechtens ist.',
     },
   ];
 
