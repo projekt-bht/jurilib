@@ -1,20 +1,20 @@
-import { Calendar, FileText, MessageSquare, Scale } from 'lucide-react';
+import { Calendar, FileText, MessageSquare, Scale, Users } from 'lucide-react';
 
 const features = [
   {
     icon: MessageSquare,
     title: 'Vielfältige Auswahl an Expert*innen',
     description:
-      'Bei uns findest du spezialisierte Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist',
-    color: 'bg-accent-blue-soft',
+      'Bei uns findest du spezialisierte Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist oder wonach Du suchst.',
+    color: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
   {
-    icon: Scale,
+    icon: Users,
     title: 'Demokratisierung des Rechts',
     description:
       'Der Zugang zum Recht ist ein menschenrechtliches Gebot und Grundlage für ein selbstbestimmtes Leben. Unsere Kernphilosophie ist es daher, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
-    color: 'bg-accent-emerald-soft',
+    color: 'bg-accent-emerald-light shadow-sm',
     iconColor: 'text-accent-emerald',
   },
   {
@@ -22,7 +22,7 @@ const features = [
     title: 'Transparente Preise',
     description:
       'Entstehende Kosten werden Dir vorab klar kommuniziert - keine versteckten Gebühren',
-    color: 'bg-accent-purple-light',
+    color: 'bg-accent-purple-light shadow-sm',
     iconColor: 'text-accent-purple',
   },
   {
@@ -30,7 +30,7 @@ const features = [
     title: 'Wenige Klicks bis zum Termin',
     description:
       'Jurilib ist eine digitale Plattform, die dich in wenigen Minuten mit der zu Dir passenden Rechtsberatung verbindet',
-    color: 'bg-accent-amber-light',
+    color: 'bg-accent-amber-light shadow-sm',
     iconColor: 'text-accent-amber',
   },
 ];
@@ -41,10 +41,10 @@ export default function FeaturesGrid() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Unser Angebot an Dich
+            Unser Versprechen an Dich
           </h2>
           <p className="text-muted-foreground text-lg">
-            Rechtliche Unterstützung, die genau zu Dir passt
+            Rechtliche Unterstützung, die genau zu Dir passt!
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export default function FeaturesGrid() {
             return (
               <div
                 key={index}
-                className="bg-background border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+                className="bg-background flex flex-col items-center text-center shadow-lg rounded-lg p-6 border border-border hover:shadow-xl transition-all duration-300"
               >
                 <div className={`${feature.color} rounded-lg p-3 w-fit mb-4`}>
                   <Icon className={`w-6 h-6 ${feature.iconColor}`} />

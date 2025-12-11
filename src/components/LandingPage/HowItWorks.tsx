@@ -1,32 +1,41 @@
-import { CheckCircle2, FileText, Scale, Users } from 'lucide-react';
+import {
+  CheckCircle2,
+  FileText,
+  MessageSquare,
+  Scale,
+  Users,
+  FileSearchCorner,
+  ClipboardClock,
+  Search,
+} from 'lucide-react';
 
 const steps = [
   {
-    icon: FileText,
+    icon: MessageSquare,
     title: 'Beschreibe Dein Problem',
     description: 'Erzähle uns mit eigenen Worten von Deinem rechtlichen Anliegen',
-    iconBgColor: 'bg-accent-blue-soft',
+    iconBgColor: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
   {
-    icon: Scale,
+    icon: Search,
     title: 'Finde Dein Match',
-    description: 'Unser Algorithmus findet die besten Anwält*innen für Dein Anliegen',
-    iconBgColor: 'bg-accent-purple-light',
-    iconColor: 'text-accent-purple',
+    description: 'Unser Algorithmus findet die besten Angebote für Dein Anliegen',
+    iconBgColor: 'bg-accent-emerald-light shadow-sm',
+    iconColor: 'text-accent-emerald',
   },
   {
-    icon: Users,
+    icon: ClipboardClock,
     title: 'Buche Deinen Termin',
     description: 'Vereinbare einen Beratungstermin, der zu Dir passt',
-    iconBgColor: 'bg-accent-emerald-light',
-    iconColor: 'text-accent-emerald',
+    iconBgColor: 'bg-accent-purple-light shadow-sm',
+    iconColor: 'text-accent-purple',
   },
   {
     icon: CheckCircle2,
     title: 'Match!',
     description: 'Dein rechtliches Problem ist nun in guten Händen',
-    iconBgColor: 'bg-accent-amber-light',
+    iconBgColor: 'bg-accent-amber-light shadow-sm',
     iconColor: 'text-accent-amber',
   },
 ];
@@ -48,8 +57,11 @@ export default function HowItWorks() {
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <div key={index} className="flex flex-col items-center text-center">
-                <div className={`${step.iconBgColor} rounded-full p-4 mb-4 border-border`}>
+              <div
+                key={index}
+                className="bg-background flex flex-col items-center text-center shadow-lg rounded-lg p-6 border border-border hover:shadow-xl transition-all duration-300"
+              >
+                <div className={`${step.iconBgColor} rounded-full p-4 mb-4`}>
                   <Icon className={`w-8 h-8 ${step.iconColor}`} />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>
