@@ -1,9 +1,9 @@
 'use client';
 
+import { Shield, TrendingUp, Users, Zap } from 'lucide-react';
 import type React from 'react';
-
 import { useState } from 'react';
-import { Users, Zap, TrendingUp, Shield, Star, Clock, Award } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
 export default function LawyersPage() {
@@ -21,36 +21,52 @@ export default function LawyersPage() {
   const benefits = [
     {
       icon: Users,
-      title: 'Mehr Mandanten',
-      description: 'Erreichen Sie gezielt Menschen, die genau Ihre Expertise benötigen',
-      color: 'from-blue-500 to-cyan-500',
+      title: 'Mehr Mandant*innen',
+      description: 'Du erreichst gezielt Menschen, die genau deine rechtliche Expertise benötigen.',
+      color: 'from-accent-blue/80 to-accent-blue/60',
     },
     {
       icon: Zap,
       title: 'Effiziente Vermittlung',
-      description: 'Qualifizierte Anfragen ohne aufwändige Akquise oder Marketing',
-      color: 'from-purple-500 to-pink-500',
+      description: 'Du erhältst qualifizierte Anfragen ohne aufwändige Akquise oder Marketing.',
+      color: 'from-accent-purple/80 to-accent-purple/40',
     },
     {
       icon: TrendingUp,
       title: 'Wachstum',
-      description: 'Bauen Sie Ihre Praxis mit kontinuierlichem Mandantenzufluss aus',
-      color: 'from-emerald-500 to-teal-500',
+      description: 'Du kannst deine Praxis mit kontinuierlichem Mandant*innenzufluss ausbauen.',
+      color: 'from-accent-emerald/80 to-accent-emerald/40',
     },
     {
       icon: Shield,
       title: 'Vertrauen',
-      description: 'Profitieren Sie von unserem Qualitätssiegel und Bewertungssystem',
-      color: 'from-amber-500 to-orange-500',
+      description: 'Du profitierst von unserem Qualitätssiegel und Bewertungssystem.',
+      color: 'from-accent-red/80 to-accent-amber/80',
     },
   ];
 
-  const features = [
-    { icon: Star, text: 'Detailliertes Profil für Ihre Organisation' },
-    { icon: Clock, text: 'Integriertes Terminbuchungssystem' },
-    { icon: Award, text: 'Bewertungen und Empfehlungen' },
-    { icon: Users, text: 'Team-Vorstellung und Expertenprofil' },
-  ];
+  // const features = [
+  //   {
+  //     icon: Star,
+  //     text: 'Detailliertes Profil für deine Organisation',
+  //     color: 'text-accent-amber/70 fill-accent-amber-light',
+  //   },
+  //   {
+  //     icon: Clock,
+  //     text: 'Integriertes Terminbuchungssystem',
+  //     color: 'text-accent-purple/70',
+  //   },
+  //   {
+  //     icon: Award,
+  //     text: 'Bewertungen und Empfehlungen',
+  //     color: 'text-accent-emerald/70',
+  //   },
+  //   {
+  //     icon: Users,
+  //     text: 'Team-Vorstellung und Expertenprofil',
+  //     color: 'text-accent-blue/70',
+  //   },
+  // ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +87,7 @@ export default function LawyersPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
+        <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
               Du bist Jurist*in?
@@ -84,7 +100,7 @@ export default function LawyersPage() {
               onClick={() =>
                 document.getElementById('registration')?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="bg-primary text-primary-foreground px-8 py-6 text-lg rounded-full hover:opacity-90 transition"
+              className="bg-primary text-primary-foreground px-8 py-6 text-lg rounded-full hover:bg-primary-hover transition hover:scale-105"
             >
               Jetzt registrieren
             </Button>
@@ -97,17 +113,17 @@ export default function LawyersPage() {
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               Warum JuriLib nutzen?
             </h2>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-10">
               {benefits.map((benefit, index) => (
                 <div
                   key={index}
-                  className="bg-card rounded-2xl p-8 shadow-lg border border-border hover:shadow-2xl transition-all duration-300 animate-fade-in"
+                  className="bg-card rounded-2xl p-8 shadow-lg border border-border hover:shadow-xl transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div
-                    className={`bg-gradient-to-br ${benefit.color} p-4 rounded-xl inline-block mb-4`}
+                    className={`bg-linear-to-br ${benefit.color} p-4 rounded-xl inline-block mb-4`}
                   >
-                    <benefit.icon className="w-8 h-8 text-white" />
+                    <benefit.icon className="w-8 h-8 text-accent-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-3">{benefit.title}</h3>
                   <p className="text-lg text-muted-foreground leading-relaxed">
@@ -120,26 +136,29 @@ export default function LawyersPage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 px-4 bg-muted/30">
+        {/* <section className="py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-foreground text-center mb-12">
-              Was Sie bei uns erwartet
+              Was dich bei uns erwartet
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 bg-card p-6 rounded-xl shadow border border-border"
-                >
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <feature.icon className="w-6 h-6 text-primary" />
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 bg-card p-6 rounded-xl shadow hover:shadow-xl border border-border transition-all duration-300 animate-fade-in"
+                  >
+                    <div className="p-3 rounded-lg">
+                      <Icon className={`w-6 h-6 ${feature.color}`} />
+                    </div>
+                    <p className="text-lg font-medium text-foreground">{feature.text}</p>
                   </div>
-                  <p className="text-lg font-medium text-foreground">{feature.text}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Registration Form */}
         <section id="registration" className="py-16 px-4 scroll-mt-32">
@@ -149,7 +168,8 @@ export default function LawyersPage() {
                 Jetzt registrieren
               </h2>
               <p className="text-muted-foreground text-center mb-8">
-                Füllen Sie das Formular aus und wir melden uns innerhalb von 24 Stunden bei Ihnen.
+                Fülle das Formular aus um dich bei uns zu registrieren und wir melden uns innerhalb
+                von 24 Stunden bei dir.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -191,7 +211,7 @@ export default function LawyersPage() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Ansprechpartner *
+                      Ansprechpartner*in *
                     </label>
                     <input
                       type="text"
@@ -200,7 +220,7 @@ export default function LawyersPage() {
                       value={formData.contactPerson}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Ihr Name"
+                      placeholder="Dein Name"
                     />
                   </div>
 
@@ -252,7 +272,7 @@ export default function LawyersPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Fachbereiche *
+                    Fachgebiete *
                   </label>
                   <input
                     type="text"
@@ -268,7 +288,7 @@ export default function LawyersPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Beschreibung Ihrer Organisation
+                    Beschreibung deiner Organisation
                   </label>
                   <textarea
                     name="description"
@@ -276,23 +296,30 @@ export default function LawyersPage() {
                     onChange={handleChange}
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    placeholder="Beschreiben Sie kurz Ihre Organisation und Ihre Expertise..."
+                    placeholder="Beschreibe kurz deine Organisation und deine Expertise..."
                   />
                 </div>
 
                 <div className="flex items-start gap-3">
                   <input type="checkbox" required className="mt-1" />
                   <p className="text-sm text-muted-foreground">
-                    Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu und möchte
-                    über JuriLib Mandanten vermittelt bekommen.
+                    Ich stimme den{' '}
+                    <a href="/tos" className="underline">
+                      Nutzungsbedingungen
+                    </a>{' '}
+                    und der{' '}
+                    <a href="/privacy" className="underline">
+                      Datenschutzerklärung
+                    </a>{' '}
+                    zu und möchte über JuriLib Mandanten vermittelt bekommen.
                   </p>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground py-6 text-lg rounded-full hover:opacity-90 transition"
+                  className="w-full bg-primary text-primary-foreground py-6 text-lg rounded-full hover:bg-primary-hover transition hover:scale-105"
                 >
-                  Registrierung abschicken
+                  Registrierung anfragen
                 </Button>
               </form>
             </div>
