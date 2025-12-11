@@ -55,7 +55,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition">
+                <Link href="/tos" className="hover:text-foreground transition">
                   Nutzungsbedingungen
                 </Link>
               </li>
