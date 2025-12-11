@@ -27,13 +27,13 @@ type BookingSelectorProps = {
  * - Collapsed: shows current booking mode (quick / staff) with icon + subtitle.
  * - Expanded: shows two choice cards like in the reference.
  */
-export function BookingSelector({
+export default function BookingSelector({
   className,
   selectedEmployee = null,
   bookingMode: bookingModeProp,
   onBookingModeChange,
 }: BookingSelectorProps) {
-  const [isOpen, setIsOpen] = useState(true); // controls accordion open/closed state
+  const [isOpen, setIsOpen] = useState(false); // controls accordion open/closed state
   const [bookingModeState, handleSetBookingModeState] = useState<'quick' | 'employee'>('quick'); // local booking mode fallback when parent doesn't control it
 
   const bookingMode = bookingModeProp ?? bookingModeState;
@@ -79,12 +79,12 @@ export function BookingSelector({
       </button>
 
       {isOpen && (
-        <ItemGroup className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
+        <ItemGroup className="grid grid-cols-1 gap-4 l:grid-cols-2">
           <Item
             onClick={() => handleSetBookingMode('quick')}
             className={cn(
               // base card styles + variant for active/inactive quick mode
-              'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
+              'rounded-3xl border-2 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
               bookingMode === 'quick'
                 ? 'border-accent-blue-light bg-accent-gray-soft'
                 : 'border-accent-gray-light bg-accent-white'
@@ -100,15 +100,12 @@ export function BookingSelector({
                     : 'bg-accent-gray-soft text-muted-foreground'
                 )}
               >
-                <Zap className="h-6 w-6" />
+                <Zap className="h-4 w-4" />
               </ItemMedia>
               <ItemContent className="gap-2 min-w-0">
-                <ItemTitle className="text-xl font-bold text-foreground leading-tight">
+                <ItemTitle className="text-l font-bold text-foreground leading-tight">
                   Schnellbuchung
                 </ItemTitle>
-                <ItemDescription className="text-[11px] leading-4 text-muted-foreground">
-                  Nächsten freien Termin bei unserer Organisation buchen
-                </ItemDescription>
               </ItemContent>
             </div>
           </Item>
@@ -140,7 +137,7 @@ export function BookingSelector({
                   Mitarbeiter wählen
                 </ItemTitle>
                 <ItemDescription className="text-[11px] leading-4 text-muted-foreground">
-                  Wählen Sie die gewünschte Person aus
+                  Wähle die gewünschte Person aus
                 </ItemDescription>
               </ItemContent>
             </div>
@@ -151,4 +148,3 @@ export function BookingSelector({
   );
 }
 
-export default BookingSelector;
