@@ -88,7 +88,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
 
       <button
         type="submit"
-        className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full"
+        className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105"
       >
         Passende Lösung finden
       </button>
