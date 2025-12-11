@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
+import { useLoginContext } from '@/app/LoginContext';
 //https://ui.shadcn.com/docs/components/dialog
 import { Button } from '@/components/ui/button';
 import {
@@ -15,11 +16,13 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { RegisterRessource } from '@/services/Resources';
+import { deleteLogin, postLogin, register } from '@/services/api';
+import type { RegisterResource } from '@/services/Resources';
 
 //TODO Validate with customError
 
 export function Authentication() {
+  const { login, setLogin } = useLoginContext();
   const [isRegister, setIsRegister] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
@@ -31,46 +34,67 @@ export function Authentication() {
     const form = new FormData(e.currentTarget);
     const data = Object.fromEntries(form);
 
-    const registerData: RegisterRessource = {
-      account: {
-        email: data.email.toString(),
-        password: data.password.toString(),
-        role: 'USER',
-      },
-      entity: {
-        name: data.name.toString(),
-        address: data.address.toString(),
-        phone: data.phone.toString(),
-      },
-    };
-
     try {
       if (isRegister) {
-        const res = await fetch('/api/authentication/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(registerData),
-        });
+        const inputData: RegisterResource = {
+          account: {
+            email: data.email.toString(),
+            password: data.password.toString(),
+            role: 'USER',
+          },
+          entity: {
+            name: data.name.toString(),
+            address: data.address.toString(),
+            phone: data.phone.toString(),
+          },
+        };
 
-        if (!res.ok) {
-          const body = await res.json();
-          setError(body.message);
+        const reg = await register(inputData);
+        if (!reg) {
+          setError('Etwas ist schiefgelaufen, überprüfe deine Eingabe');
         } else {
           setError('');
           setShowDialog(false);
           setSuccessDialog(true);
         }
+      } else {
+        const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
+        if (loginFromServer) {
+          setLogin(loginFromServer);
+          setShowDialog(false);
+          setError('');
+        } else {
+          setError('Email oder Passwort falsch.');
+        }
       }
     } catch (error) {
       setError(String(error));
     }
-
-    setShowDialog(false);
   }
 
-  return (
+  return login ? (
+    <Button
+      onClick={async () => {
+        await deleteLogin();
+        setLogin(false);
+      }}
+      className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
+      variant="outline"
+    >
+      Abmelden
+    </Button>
+  ) : (
     <>
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+      <Dialog
+        open={showDialog}
+        onOpenChange={(open) => {
+          setShowDialog(open);
+          if (open) {
+            setIsRegister(false);
+            setError('');
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button
             className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
@@ -127,7 +151,7 @@ export function Authentication() {
                       required
                       minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
-                    <p>{error}</p>
+                    <p className="text-red-500">{error}</p>
                   </div>
                 </>
               )}
@@ -148,6 +172,7 @@ export function Authentication() {
                       required
                       minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
+                    <p className="text-red-500">{error}</p>
                   </div>
                 </>
               )}
@@ -159,11 +184,25 @@ export function Authentication() {
 
             <DialogFooter className="mt-6">
               {!isRegister ? (
-                <Button type="button" variant="link" onClick={() => setIsRegister(true)}>
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => {
+                    setIsRegister(true);
+                    setError('');
+                  }}
+                >
                   Noch kein Konto? Jetzt registrieren
                 </Button>
               ) : (
-                <Button type="button" variant="link" onClick={() => setIsRegister(false)}>
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => {
+                    setIsRegister(false);
+                    setError('');
+                  }}
+                >
                   Zurück zum Login
                 </Button>
               )}
