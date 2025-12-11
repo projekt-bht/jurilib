@@ -15,18 +15,13 @@ const openai = new OpenAI({
 
 export async function vectorizeSearch(query: string) {
   const expansionPrompt = `
-    Ordne den folgenden Text einem juristischen Fachgebiet zu.
-    Liste der möglichen Fachgebiete: ${Object.keys(Areas)}
-
-    Gib **genau eines** der Fachgebiete aus der Liste zurück.
-    Falls keine sinnvolle Zuordnung möglich ist, gib **nur '#'** zurück.
-
-    Wichtig: **Antworte ausschließlich mit einem einzelnen Wort aus der Liste oder '#'.**
-
-    Text:
+    Versuche bitte diesen Text zu juristschen rechtlichen Fachgebieten zuzuordnen, bzw. wo das hingehören könnte.
+    Gebe nur einzelne Fachgebiete zurück, keine Sätze oder Erklärungen.
+    Gib bitte nur die Fachgebiete als antwort zurück, falls du nichts sinnvolles findest gib einfach '#' das zurück
     "${query}"
     `;
-
+  const possibleAnswers = Object.values(Areas).join(', ');
+  console.log('Possible Answers:', possibleAnswers);
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
       User role: Equivalent to the queries made by the user.
@@ -35,7 +30,12 @@ export async function vectorizeSearch(query: string) {
   const expansion = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
-      { role: 'system', content: 'Du bist ein juristisch versiertes Modell' },
+      {
+        role: 'system',
+        content:
+          'Du bist ein juristisch versiertes Modell. Gebe genau EIN Fachgebiet EXAKT zurück. Mögliche Gebiete: ' +
+          possibleAnswers,
+      },
       { role: 'user', content: expansionPrompt },
     ],
   });
