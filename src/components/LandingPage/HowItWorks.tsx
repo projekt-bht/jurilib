@@ -56,7 +56,9 @@ export default function HowItWorks() {
                 <div className={`${step.iconBgColor} rounded-full p-4 mb-4`}>
                   <Icon className={`w-8 h-8 ${step.iconColor}`} />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {index + 1}. {step.title}
+                </h3>
                 <p className="text-muted-foreground text-sm">{step.description}</p>
               </div>
             );
