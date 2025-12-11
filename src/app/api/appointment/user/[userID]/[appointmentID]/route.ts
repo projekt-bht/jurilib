@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, headerSchema } from '../../../helper';
+import { handleValidationError, headerSchema } from '../../../../helper';
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
 
 // GET /api/appointment/:userID/:appointmentID
