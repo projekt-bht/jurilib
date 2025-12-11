@@ -1,50 +1,20 @@
 import { Separator } from '@radix-ui/react-separator';
-import { Building, Building2, Info, Users } from 'lucide-react';
+import { Info, Users } from 'lucide-react';
 
-import type { Areas, Organization } from '~/generated/prisma/client';
-import { OrganizationType } from '~/generated/prisma/client';
+import type { Employee, Organization } from '~/generated/prisma/client';
 
+import { EmployeeCard, ExpertiseAreaBadge } from './OrganizaionHelper';
+import { OrganisationTypeBadge } from './OrganizaionHelper';
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
 
-// Function to create and format the Expertise Area items to badges
-function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
-  return areas.map((area) => (
-    <div
-      key={area}
-      className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
-    >
-      {area}
-    </div>
-  ));
-}
-
-// Function to create and format the Organisation Type Badge
-function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
-  let displayType = '';
-  let icon = null;
-  switch (type) {
-    case OrganizationType.LAW_FIRM:
-      displayType = 'Kanzlei';
-      icon = <Building className="w-4 h-4 text-accent-gray" />;
-      break;
-    case OrganizationType.ASSOCIATION:
-      displayType = 'Verein';
-      icon = <Building2 className="w-4 h-4 text-accent-gray" />;
-      break;
-    default:
-      displayType = 'Keine Angabe';
-      icon = <Info className="w-4 h-4 text-accent-gray" />;
-  }
-  return (
-    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground inline-flex items-center gap-1">
-      {icon}
-      {displayType}
-    </span>
-  );
-}
-
-export function Profile({ organization }: { organization: Organization }) {
+export function Profile({
+  organization,
+  employees,
+}: {
+  organization: Organization;
+  employees: Employee[];
+}) {
   return (
     <div
       id={`${organization.id}_Profile`}
@@ -73,7 +43,7 @@ export function Profile({ organization }: { organization: Organization }) {
               <PricingInfo id={organization.id} priceCategory={organization.priceCategory} />
             </div>
             <div className="flex flex-wrap items-start gap-2">
-              <ExpertiseAreaItem areas={organization.expertiseArea} />
+              <ExpertiseAreaBadge areas={organization.expertiseArea} />
             </div>
           </div>
         </div>
@@ -103,16 +73,23 @@ export function Profile({ organization }: { organization: Organization }) {
       </div>
 
       {/* Employees Section */}
-      <div
-        id={`${organization.id}_Employees`}
-        className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
-      >
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
-          <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
-          Unser Team
-        </h2>
-        {/* Mapping der Employees kommt wenn der Endpoint implementiert ist*/}
-      </div>
+      {employees.length > 0 && (
+        <div
+          id={`${organization.id}_Employees`}
+          className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
+        >
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
+            <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
+            Unser Team
+          </h2>
+          {/* TODO implement pagination */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {employees.map((e) => (
+              <EmployeeCard key={e.id} employee={e} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -116,6 +116,7 @@ async function main() {
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
           account: { connect: { id: account.id } },
+          expertiseArea: [faker.helpers.enumValue(Areas)],
         },
       });
       employeeId.push(employee.id);
