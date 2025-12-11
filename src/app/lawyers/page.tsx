@@ -1,9 +1,9 @@
 'use client';
 
+import { Award, Clock, Shield, Star, TrendingUp, Users, Zap } from 'lucide-react';
 import type React from 'react';
-
 import { useState } from 'react';
-import { Users, Zap, TrendingUp, Shield, Star, Clock, Award } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
 export default function LawyersPage() {
@@ -23,33 +23,49 @@ export default function LawyersPage() {
       icon: Users,
       title: 'Mehr Mandanten',
       description: 'Erreichen Sie gezielt Menschen, die genau Ihre Expertise benötigen',
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-accent-blue/80 to-accent-blue/60',
     },
     {
       icon: Zap,
       title: 'Effiziente Vermittlung',
       description: 'Qualifizierte Anfragen ohne aufwändige Akquise oder Marketing',
-      color: 'from-purple-500 to-pink-500',
+      color: 'from-accent-purple/80 to-accent-purple/40',
     },
     {
       icon: TrendingUp,
       title: 'Wachstum',
       description: 'Bauen Sie Ihre Praxis mit kontinuierlichem Mandantenzufluss aus',
-      color: 'from-emerald-500 to-teal-500',
+      color: 'from-accent-emerald/80 to-accent-emerald/40',
     },
     {
       icon: Shield,
       title: 'Vertrauen',
       description: 'Profitieren Sie von unserem Qualitätssiegel und Bewertungssystem',
-      color: 'from-amber-500 to-orange-500',
+      color: 'from-accent-red/80 to-accent-amber/80',
     },
   ];
 
   const features = [
-    { icon: Star, text: 'Detailliertes Profil für Ihre Organisation' },
-    { icon: Clock, text: 'Integriertes Terminbuchungssystem' },
-    { icon: Award, text: 'Bewertungen und Empfehlungen' },
-    { icon: Users, text: 'Team-Vorstellung und Expertenprofil' },
+    {
+      icon: Star,
+      text: 'Detailliertes Profil für Ihre Organisation',
+      color: 'text-accent-amber/70 fill-accent-amber-light',
+    },
+    {
+      icon: Clock,
+      text: 'Integriertes Terminbuchungssystem',
+      color: 'text-accent-purple/70',
+    },
+    {
+      icon: Award,
+      text: 'Bewertungen und Empfehlungen',
+      color: 'text-accent-emerald/70',
+    },
+    {
+      icon: Users,
+      text: 'Team-Vorstellung und Expertenprofil',
+      color: 'text-accent-blue/70',
+    },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -71,7 +87,7 @@ export default function LawyersPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
+        <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
               Du bist Jurist*in?
@@ -84,7 +100,7 @@ export default function LawyersPage() {
               onClick={() =>
                 document.getElementById('registration')?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="bg-primary text-primary-foreground px-8 py-6 text-lg rounded-full hover:opacity-90 transition"
+              className="bg-primary text-primary-foreground px-8 py-6 text-lg rounded-full hover:bg-primary-hover transition hover:scale-105"
             >
               Jetzt registrieren
             </Button>
@@ -105,9 +121,9 @@ export default function LawyersPage() {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div
-                    className={`bg-gradient-to-br ${benefit.color} p-4 rounded-xl inline-block mb-4`}
+                    className={`bg-linear-to-br ${benefit.color} p-4 rounded-xl inline-block mb-4`}
                   >
-                    <benefit.icon className="w-8 h-8 text-white" />
+                    <benefit.icon className="w-8 h-8 text-accent-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-3">{benefit.title}</h3>
                   <p className="text-lg text-muted-foreground leading-relaxed">
@@ -126,24 +142,27 @@ export default function LawyersPage() {
               Was Sie bei uns erwartet
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 bg-card p-6 rounded-xl shadow border border-border"
-                >
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <feature.icon className="w-6 h-6 text-primary" />
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 bg-card p-6 rounded-xl shadow hover:shadow-2xl border border-border transition-all duration-300 animate-fade-in"
+                  >
+                    <div className="p-3 rounded-lg">
+                      <Icon className={`w-6 h-6 ${feature.color}`} />
+                    </div>
+                    <p className="text-lg font-medium text-foreground">{feature.text}</p>
                   </div>
-                  <p className="text-lg font-medium text-foreground">{feature.text}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* Registration Form */}
-        <section id="registration" className="py-16 px-4 scroll-mt-32">
-          <div className="max-w-4xl mx-auto">
+        <section className="py-16 px-4 scroll-mt-32">
+          <div id="registration" className="max-w-4xl mx-auto">
             <div className="bg-card rounded-2xl p-8 shadow-xl border border-border">
               <h2 className="text-3xl font-bold text-foreground text-center mb-2">
                 Jetzt registrieren
