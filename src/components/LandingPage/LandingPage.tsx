@@ -50,7 +50,7 @@ export function LandingPage() {
     <div className="bg-card min-h-screen flex items-start justify-start">
       <div className="text-center w-full mt-10">
         <h1 className="text-foreground text-5xl font-bold mb-2">Beschreibe dein Problem</h1>
-        <h2 className="text-accent-gray text-2xl mb-3 py-6 pt-4 pb-2">
+        <h2 className="text-muted-foreground text-2xl mb-3 py-6 pt-4 pb-2">
           Teile uns dein rechtliches Anliegen mit
         </h2>
         <div className="min-w-sm mx-auto max-w-lg">
