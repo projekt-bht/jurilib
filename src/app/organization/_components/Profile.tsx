@@ -1,14 +1,20 @@
 import { Separator } from '@radix-ui/react-separator';
 import { Info, Users } from 'lucide-react';
 
-import type { Organization } from '~/generated/prisma/client';
+import type { Employee, Organization } from '~/generated/prisma/client';
 
-import { ExpertiseAreaItem } from './OrganizaionHelper';
+import { EmplyeeCard, ExpertiseAreaBadge } from './OrganizaionHelper';
 import { OrganisationTypeBadge } from './OrganizaionHelper';
 import { PricingInfo } from './PricingInfo';
 import { ProfileInfos } from './ProfileInfos';
 
-export function Profile({ organization }: { organization: Organization }) {
+export function Profile({
+  organization,
+  employees,
+}: {
+  organization: Organization;
+  employees: Employee[];
+}) {
   return (
     <div
       id={`${organization.id}_Profile`}
@@ -37,7 +43,7 @@ export function Profile({ organization }: { organization: Organization }) {
               <PricingInfo id={organization.id} priceCategory={organization.priceCategory} />
             </div>
             <div className="flex flex-wrap items-start gap-2">
-              <ExpertiseAreaItem areas={organization.expertiseArea} />
+              <ExpertiseAreaBadge areas={organization.expertiseArea} />
             </div>
           </div>
         </div>
@@ -67,16 +73,23 @@ export function Profile({ organization }: { organization: Organization }) {
       </div>
 
       {/* Employees Section */}
-      <div
-        id={`${organization.id}_Employees`}
-        className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
-      >
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
-          <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
-          Unser Team
-        </h2>
-        {/* Mapping der Employees kommt wenn der Endpoint implementiert ist*/}
-      </div>
+      {employees.length > 0 && (
+        <div
+          id={`${organization.id}_Employees`}
+          className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
+        >
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
+            <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
+            Unser Team
+          </h2>
+          {/* TODO implement pagination */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {employees.map((e) => (
+              <EmplyeeCard key={e.id} employee={e} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
