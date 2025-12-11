@@ -150,19 +150,19 @@ model Case {
 model Appointment {
     id             String            @id @default(uuid())
     caseId         String?
-    userId         String
+    userId         String?
     organizationId String
     employeeId     String
     //serviceID oder reicht ServiceType?
-    serviceId      String
-    duration       Int?
+    serviceId      String?
+    duration       Int
     status         AppointmentStatus @default(OPEN)
     createdAt      DateTime          @default(now())
     updatedAt      DateTime          @updatedAt
     location       String?
     meetingLink    String?
-    dateTime       DateTime
-    timeZone       String?
+    dateTimeStart  DateTime
+    dateTimeEnd    DateTime
     notes          String?
 
     case         Case?         @relation(fields: [caseId], references: [id])
