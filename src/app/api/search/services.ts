@@ -7,7 +7,6 @@ const similarityOffset = 0.9;
 const threshold = 0.12;
 
 export async function createSearch(query: string) {
-  if (query) {
     const searchInput = await vectorizeSearch(query);
 
     const matches = await prisma.$queryRaw<
@@ -63,7 +62,4 @@ export async function createSearch(query: string) {
     console.log(transformedMatches);
 
     return transformedMatches;
-  } else {
-    return null;
-  }
 }
