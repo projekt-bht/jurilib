@@ -44,11 +44,11 @@ export default async function OrganizationDetailPage({
     <div className="container mx-auto">
       <div className="bg-card flex justify-center xl:flex-row flex-col">
         {/* Left Column - Profile Info */}
-        <div className=" space-y-8 w-full xl:w-[55%]">
+        <div className=" space-y-8 w-full xl:w-[65%]">
           <Profile organization={organization} />
         </div>
         {/* Right Column - Booking Section */}
-        <div className=" space-y-8 w-full xl:w-[45%] ">
+        <div className=" space-y-8 w-full xl:w-[35%] ">
           <OrganizationCalendar />
         </div>
       </div>
