@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, headerSchema } from '../helper';
+import { handleValidationError, headerSchema } from '../../helper';
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
 
 /**
