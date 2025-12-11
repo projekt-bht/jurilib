@@ -245,18 +245,18 @@ enum Areas {
     Anwaltliches_Berufsrecht
     Anwaltshaftungsrecht
     Apothekenrecht
-    Arbeitsförderungsrecht
+    Arbeitsfoerderungsrecht
     Arbeitsrecht //(Fachanwalt/-anwältin für)
     // Arbeitsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
     Architektenrecht_Ingenieurrecht
     Arzthaftungsrecht
     Arztrecht
-    Ausländer_Asylrecht
-    Ausländisches_Familienrecht
+    Auslaender_Asylrecht
+    Auslaendisches_Familienrecht
     Anlage //würde ich rausnehmen, weil ich es nicht ganz verstehe und es auch bei denen bei den einzelnen Kanzleien nicht auftaucht
     //  --- B ---
 	Bank_und_Kapitalmarktrecht //(Fachanwalt/-anwältin für)
-	BAFÖG_Recht
+	BAFOEG_Recht
 	Bankrecht
 	Bau_und_Architektenrecht //(Fachanwalt/-anwältin für)
 	Baurecht
@@ -264,19 +264,19 @@ enum Areas {
 	Belgisches_Recht
 	Belgien
 	Berufshaftungsrecht
-	Betäubungsmittelrecht
+	Betaeubungsmittelrecht
 	Betreuungs_Unterbringungsrecht
 	Betriebsverfassungs_Personalvertretungsrecht
-	Börsenrecht
+	Boersenrecht
 	Brasilianisches_Recht
-	Bürgschaftsrecht
+	Buergschaftsrecht
 	Bulgarisches_Recht
-	Bußgeldsachen
+	Bussgeldsachen
     //  --- C ---
 	Chinesisches_Recht
 	China
     //  --- D ---
-	Dänisches_Recht
+	Daenisches_Recht
 	Datenschutzrecht
     //  --- E ---
 	EDV_Recht
@@ -284,15 +284,15 @@ enum Areas {
 	Erbrecht //(Fachanwalt/-anwältin für)
 	// Erbrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
 	Europarecht
-	Existenzgründungsrecht
+	Existenzgruendungsrecht
     //  --- F ---
 	Familienrecht //(Fachanwalt/-anwältin für)
 	// Familienrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
 	Franchisingrecht
-	Französisches_Recht
-	Führerscheinrecht
+	Franzoesisches_Recht
+	Fuehrerscheinrecht
     //  G
-    Gaststättenrecht
+    Gaststaettenrecht
 	Genossenschaftsrecht
 	Gesellschaftsrecht
 	Gewerberecht
@@ -302,11 +302,11 @@ enum Areas {
 	GmbH_Recht
 	Griechisches_Recht
 	Grossbritannien
-	Grundstücksrecht_Immobilienr
+	Grundstuecksrecht_Immobilienr
     // --- H ---
     Handels_und_Gesellschaftsrecht // (Fachanwalt/-anwältin für)
     // Handelsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
-    Handelsvertreterrecht_Außendienstrecht
+    Handelsvertreterrecht_Aussendienstrecht
     // --- I ---
     Indonesisches_Recht
     Italienisches_Recht
@@ -314,7 +314,7 @@ enum Areas {
     Insolvenzrecht // (Fachanwalt/-anwältin für)
     // Insolvenzrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
     Internationales_Familienrecht
-    Internationales_Grundstücksrecht
+    Internationales_Grundstuecksrecht
     Internationales_Handelsrecht
     Internationales_Privatrecht
     Internationales_Recht
@@ -338,7 +338,7 @@ enum Areas {
     Kraftfahrzeugrecht
     Krankenhausrecht
     Krankenversicherungsrecht
-    Kündigungsschutzrecht
+    Kuendigungsschutzrecht
     //  --- L ---
     Landwirtschaftsrecht
     Lateinamerika
@@ -364,18 +364,17 @@ enum Areas {
     Nachbarrecht
     Niederlande
     Nordisches_Recht
-    // --- Ö ---
-    Öffentliches_Baurecht
-    Öffentliches_Dienstrecht
-    Öffentliches_Recht
     // --- O ---
-    Offene_Vermögensfragen
+    Offene_Vermoegensfragen
+    Oeffentliches_Baurecht
+    Oeffentliches_Dienstrecht
+    Oeffentliches_Recht
     Opfer_Gewaltschutzrecht //(Stalking)
     Ordnungswidrigkeitenrecht
     // --- P ---
     Patent_und_Gebrauchsmusterrecht
-    Persönlichkeitsrecht
-    Personenbeförderungsrecht
+    Persoenlichkeitsrecht
+    Personenbefoerderungsrecht
     Pflegeversicherungsrecht
     Polizeirecht
     Polnisches_Recht
@@ -403,7 +402,7 @@ enum Areas {
     Spanisches_Recht
     Speditions_Lager_und_Frachtrecht
     Sportrecht // ist nicht aufgelistet, aber Fachanwalt wird angeboten
-    Staatsangehörigkeitsrecht
+    Staatsangehoerigkeitsrecht
     Staatshaftungsrecht
     Steuerrecht // (Fachanwalt/-anwältin für)
     // Steuerrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
@@ -412,24 +411,24 @@ enum Areas {
     Strafrecht // (Fachanwalt/-anwältin für)
     // Strafrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
     Strafrechtlicher_Notdienst
-    Straßenverkehrsrecht
-    Straßenverkehrsstrafrecht
+    Strassenverkehrsrecht
+    Strassenverkehrsstrafrecht
     Subventionsrecht
     // --- T ---
     Taiwan
     Telekommunikationsrecht
-    Thailändisches_Recht
+    Thailaendisches_Recht
     Transportrecht
     Transport_und_Speditionsrecht // (Fachanwalt/-anwältin für)
     Tschechien
-    Türkei
+    Tuerkei
     // --- U ---
     Umweltrecht
     Unfall_und_Schadenregulierung
     Ungarn
     Unterhaltsrecht
     Unternehmenssanierung
-    Unternehmensveräußerung_nachfolge
+    Unternehmensveraeusserung_nachfolge
     Urheberrecht
     Urheber_und_Medienrecht // (Fachanwalt/-anwältin für)
     US_amerikanisches_Recht
