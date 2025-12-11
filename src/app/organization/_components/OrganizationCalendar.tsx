@@ -87,21 +87,21 @@ export default function OrganizationCalendar({ onChange }: OrganizationCalendarP
       <div className="space-y-1">
         <h2 className="text-3xl font-bold">Termin buchen</h2>
         <p className="text-base text-muted-foreground">
-          Wählen Sie einen passenden Termin für Ihre Beratung
+          Wähle einen passenden Termin für Ihre Beratung
         </p>
       </div>
 
-      <BookingSelector
+      {/* <BookingSelector
         bookingMode={bookingMode}
         onBookingModeChange={(mode) => setBookingMode(mode)}
         selectedEmployee={selectedEmployee}
-      />
+      /> */}
 
       {bookingMode === 'employee' && (
         <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
           <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
             <User className="w-5 h-5 text-accent-blue" />
-            Wählen Sie einen Mitarbeiter
+            Wähle einen Mitarbeiter
           </h3>
           <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
             {mockStaff.map((employee) => (
@@ -145,7 +145,7 @@ export default function OrganizationCalendar({ onChange }: OrganizationCalendarP
 
       <div className="flex items-center gap-2">
         <CalendarIcon className="h-5 w-5 text-accent-blue" />
-        <span className="text-lg font-semibold">Wählen Sie ein Datum</span>
+        <span className="text-lg font-semibold">Wähle ein Datum</span>
       </div>
       <div className="rounded-md shadow-sm bg-accent-gray-soft p-4 space-y-4">
         <Calendar
@@ -161,23 +161,23 @@ export default function OrganizationCalendar({ onChange }: OrganizationCalendarP
           className="bg-transparent w-full flex justify-center items-center"
           // classNames customized to mirror the reference design: centered/bold caption, spaced nav, roomy day cells, visible today ring, muted disabled days, and hover affordances
           /* https://daypicker.dev/docs/styling */
-          // classNames={{
+          classNames={{
           //   months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
           //   month: 'w-full',
           //   caption: '',
           //   caption_label: 'mb-14 font-bold text-2xl',
           //   nav: 'w-full flex justify-between ',
-          //   button_previous: ' hover:bg-accent-white rounded-lg p-2',
-          //   button_next: ' hover:bg-accent-white rounded-lg p-2',
+            button_previous: ' hover:bg-accent-white rounded-lg p-2',
+            button_next: ' hover:bg-accent-white rounded-lg p-2',
           //   table: 'w-full max-w-full',
-          //   row: 'w-full flex justify-between',
-          //   day: 'm-1 h-12 w-12 rounded-lg bg-accent-white text-sm hover:border hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 md:text-base xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
-          //   today:
-          //     'm-1 h-12 w-12 rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0 sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
+            // row: 'flex justify-between',
+             day: 'm-1 p-1 rounded-lg bg-accent-white text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+            today:
+              'rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
 
-          //   disabled:
-          //     '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-          // }}
+            disabled:
+              '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
+           }}
         />
 
         <div className="flex items-center gap-6 px-2">
