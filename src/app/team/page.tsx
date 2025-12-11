@@ -219,7 +219,7 @@ export default function Team() {
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
               <div className="bg-linear-to-br from-accent-amber/90 to-accent-amber/60 p-4 rounded-xl shrink-0">
-                <Wrench className="w-8 h-8 text-white" />
+                <Wrench className="w-8 h-8 text-accent-white" />
               </div>
               <div className="flex-1">
                 <h2 className="text-3xl font-bold text-foreground mb-6">Das nutzen wir</h2>
@@ -229,7 +229,13 @@ export default function Team() {
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {tools.map((tool, index) => (
-                    <a key={index} href={tool.link} target="_blank" rel="noopener noreferrer">
+                    <a
+                      key={index}
+                      href={tool.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
+                    >
                       <Image
                         src={tool.logo}
                         alt={tool.name}
@@ -237,7 +243,6 @@ export default function Team() {
                         height={24}
                         className="object-contain"
                       />
-                      <span className="font-semibold text-foreground">{tool.name}</span>
                       <span className="font-semibold text-foreground">{tool.name}</span>
                     </a>
                   ))}
