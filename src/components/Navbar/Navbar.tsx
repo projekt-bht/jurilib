@@ -24,7 +24,7 @@ export function Navbar() {
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
-      <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border">
+      <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
         <Link href="/" className="flex items-center space-x-2">
           <div className="bg-foreground p-2 rounded-lg">
             <Image
