@@ -61,6 +61,8 @@ export default function Team() {
     },
   ];
 
+  // https://github.com/devicons/devicon/tree/master/icons
+  // Repo for logos
   const tools = [
     {
       name: 'Next.js',
