@@ -3,15 +3,18 @@ import bcrypt from 'bcryptjs';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
-import type { Account } from '~/generated/prisma/client';
+import type { Account, Prisma } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
-// Create a new Account
-export const createAccount = async (account: AccountCreateInput): Promise<AccountResource> => {
+// Create a new Account within a transaction
+export const createAccountTx = async (
+  account: AccountCreateInput,
+  tx: Prisma.TransactionClient
+): Promise<AccountResource> => {
   try {
     const hashedPassword = await bcrypt.hash(account.password, 10);
 
-    const createdAccount = await prisma.account.create({
+    const createdAccount = await tx.account.create({
       data: { ...account, password: hashedPassword },
     });
 

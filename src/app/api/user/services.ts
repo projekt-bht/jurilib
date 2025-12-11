@@ -1,14 +1,19 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { User } from '~/generated/prisma/client';
+import type { Prisma, User } from '~/generated/prisma/client';
 import type { UserCreateInput } from '~/generated/prisma/models';
 
-export const createUser = async (user: UserCreateInput, accountID: string): Promise<User> => {
+// Create a new user within a transaction
+export const createUserTx = async (
+  user: UserCreateInput,
+  accountID: string,
+  tx: Prisma.TransactionClient
+): Promise<User> => {
   try {
     if (!user) throw new ValidationError('invalidInput', 'user', user);
     if (!accountID) throw new ValidationError('invalidInput', 'account', accountID);
 
-    const createdUser = await prisma.user.create({
+    const createdUser = await tx.user.create({
       data: {
         ...user,
         account: {
