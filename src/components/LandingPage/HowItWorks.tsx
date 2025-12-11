@@ -1,13 +1,4 @@
-import {
-  CheckCircle2,
-  FileText,
-  MessageSquare,
-  Scale,
-  Users,
-  FileSearchCorner,
-  ClipboardClock,
-  Search,
-} from 'lucide-react';
+import { CheckCircle2, ClipboardClock, MessageSquare, Search } from 'lucide-react';
 
 const steps = [
   {

@@ -1,4 +1,4 @@
-import { Calendar, FileText, MessageSquare, Scale, Users } from 'lucide-react';
+import { Calendar, FileText, MessageSquare, Users } from 'lucide-react';
 
 const features = [
   {
