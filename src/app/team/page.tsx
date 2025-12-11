@@ -2,8 +2,6 @@
 
 import { CheckCircle2, GitBranch, Heart, Lightbulb, Target, Users, Wrench } from 'lucide-react';
 
-import { Footer } from '@/components/Footer/Footer';
-
 enum Expertise {
   FS = 'Full Stack',
   BE = 'Backend',
@@ -64,12 +62,51 @@ export default function Team() {
   ];
 
   const tools = [
-    { name: 'Next.js', icon: '⚡', color: 'bg-blue-500' },
-    { name: 'TypeScript', icon: '📘', color: 'bg-blue-600' },
-    { name: 'Tailwind CSS', icon: '🎨', color: 'bg-cyan-500' },
-    { name: 'Supabase', icon: '🗄️', color: 'bg-green-500' },
-    { name: 'Vercel', icon: '▲', color: 'bg-black' },
-    { name: 'AI SDK', icon: '🤖', color: 'bg-purple-500' },
+    {
+      name: 'Next.js',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg',
+      link: 'https://nextjs.org/',
+    },
+    {
+      name: 'TypeScript',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
+      link: 'https://www.typescriptlang.org/',
+    },
+    {
+      name: 'Tailwind CSS',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg',
+      link: 'https://tailwindcss.com/',
+    },
+    {
+      name: 'React',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+      link: 'https://reactjs.org/',
+    },
+    {
+      name: 'Docker',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
+      link: 'https://www.docker.com/',
+    },
+    {
+      name: 'Prisma',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg',
+      link: 'https://www.prisma.io/',
+    },
+    {
+      name: 'PostgreSQL',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
+      link: 'https://www.postgresql.org/',
+    },
+    {
+      name: 'Vercel',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg',
+      link: 'https://vercel.com/',
+    },
+    {
+      name: 'OpenAI',
+      logo: 'https://logo.svgcdn.com/logos/openai-icon.svg',
+      link: 'https://openai.com/',
+    },
   ];
 
   const processSteps = [
@@ -99,7 +136,7 @@ export default function Team() {
     <div className="min-h-screen bg-background flex flex-col">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
+        <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">Das Team</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
@@ -112,10 +149,10 @@ export default function Team() {
 
         {/* Motivation Section */}
         <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-6xl mx-auto ">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-gradient-to-br from-red-500 to-pink-500 p-4 rounded-xl shrink-0">
-                <Heart className="w-8 h-8 text-white" />
+              <div className="bg-linear-to-br from-accent-red to-accent-red/60 p-4 rounded-xl shrink-0 shadow-sm">
+                <Heart className="w-8 h-8 text-accent-white" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-foreground mb-4">Unsere Motivation</h2>
@@ -142,7 +179,7 @@ export default function Team() {
               {teamMembers.map((member, index) => (
                 <div
                   key={index}
-                  className="bg-card rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-2xl transition-shadow duration-300 animate-fade-in"
+                  className="bg-background rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-2xl transition-shadow duration-300 animate-fade-in hover:scale-105"
                   style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => window.open(member.profile)}
                 >
@@ -152,6 +189,7 @@ export default function Team() {
                       src={member.image || '/placeholder.svg'}
                       alt={member.name}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                   </div>
                   <div className="p-6">
@@ -162,7 +200,7 @@ export default function Team() {
                       {member.expertise.map((skill, idx) => (
                         <span
                           key={idx}
-                          className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                          className="px-3 py-1 bg-accent-gray-soft text-primary text-sm rounded-full border border-primary/10 shadow-sm"
                         >
                           {skill}
                         </span>
@@ -178,7 +216,7 @@ export default function Team() {
         <section className="py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-gradient-to-br from-amber-500 to-orange-500 p-4 rounded-xl shrink-0">
+              <div className="bg-linear-to-br from-accent-amber/90 to-accent-amber/60 p-4 rounded-xl shrink-0">
                 <Wrench className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
@@ -189,17 +227,22 @@ export default function Team() {
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {tools.map((tool, index) => (
-                    <div
+                    <a
                       key={index}
-                      className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
+                      href={tool.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted transition-colors"
                     >
-                      <div
-                        className={`${tool.color} w-10 h-10 rounded-lg flex items-center justify-center text-xl`}
-                      >
-                        {tool.icon}
-                      </div>
+                      <img
+                        src={tool.logo}
+                        alt={tool.name}
+                        width={24}
+                        height={24}
+                        className="object-contain"
+                      />
                       <span className="font-semibold text-foreground">{tool.name}</span>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -211,7 +254,7 @@ export default function Team() {
         <section className="py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-500 p-4 rounded-xl shrink-0">
+              <div className="bg-linear-to-br from-accent-emerald/80 to-accent-emerald/60 p-4 rounded-xl shrink-0 shadow-sm">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
@@ -225,7 +268,7 @@ export default function Team() {
                       key={index}
                       className="flex items-start gap-4 p-6 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
                     >
-                      <div className="bg-primary/10 p-3 rounded-lg shrink-0">
+                      <div className="bg-primary/10 p-3 rounded-lg shrink-0 shadow-sm">
                         <step.icon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
