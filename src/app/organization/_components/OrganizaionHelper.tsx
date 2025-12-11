@@ -1,6 +1,6 @@
-import { Building, Building2, Info } from 'lucide-react';
+import { Briefcase, Building, Building2, Info } from 'lucide-react';
 
-import type { Areas } from '~/generated/prisma/browser';
+import type { Areas, Employee } from '~/generated/prisma/browser';
 import { OrganizationType } from '~/generated/prisma/browser';
 
 // Function to create and format the Organisation Type Badge
@@ -40,5 +40,38 @@ export function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
         </div>
       ))}
     </>
+  );
+}
+
+// Function to create and format an Employee Card
+export function EmplyeeCard({ employee }: { employee: Employee }) {
+  return (
+    <div
+      key={employee.name}
+      className="bg-linear-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in"
+      id={`${employee.id}_EmployeeCard`}
+    >
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-md shrink-0">
+          {employee.name
+            .split(' ')
+            .map((n) => n[0])
+            .join('')}
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-foreground">{employee.name}</h3>
+          <p className="text-sm text-blue-600 font-medium">{employee.position}</p>
+        </div>
+      </div>
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center gap-2 text-sm">
+          <Briefcase className="w-4 h-4 text-purple-600" />
+          <span className="text-muted-foreground">{employee.position}</span>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <ExpertiseAreaBadge areas={employee.expertiseArea} />
+      </div>
+    </div>
   );
 }
