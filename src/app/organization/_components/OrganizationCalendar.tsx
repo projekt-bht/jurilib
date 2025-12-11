@@ -175,9 +175,9 @@ export default function OrganizationCalendar({ onChange }: OrganizationCalendarP
           //   today:
           //     'm-1 h-12 w-12 rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-2 ring-offset-transparent data-[selected=true]:ring-0 sm:m-1.5 sm:h-12 sm:w-12 md:h-16 md:w-16 xl:h-10 xl:w-10 2xl:h-14 2xl:w-14',
 
-            disabled:
-              '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-          }}
+          //   disabled:
+          //     '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
+          // }}
         />
 
         <div className="flex items-center gap-6 px-2">
