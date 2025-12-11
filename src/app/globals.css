@@ -1,0 +1,132 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background); /* Hintergrundfarbe der gesamten Seite */
+  --color-foreground: var(--foreground); /* Textfarbe */
+  --color-card: var(--card); /* Hintergrundfarbe der Cards */
+  --color-card-foreground: var(--card-foreground); /* Textfarbe der Cards */
+  --color-primary: var(--primary); /* Primäre Aktionsfarbe */
+  --color-primary-foreground: var(--primary-foreground); /* Textfarbe für primäre Aktionen */
+  --color-secondary-foreground: var(--secondary-foreground); /* Textfarbe für sekundäre Elemente */
+  --color-secondary: var(--secondary); /* Hintergrundfarbe für sekundäre Elemente */
+  --color-primary-hover: var(--primary-hover); /* Hover-Farbe für primäre Aktionen */
+  --color-input: var(--input); /* Hintergrundfarbe für Eingabefelder */
+  --color-border: var(--border); /* Rahmenfarbe für Container und Eingabefelder */
+  --color-destructive: var(
+    --destructive
+  ); /* Farbe für destruktive Aktionen (z.B. Löschen oder Fehler) */
+  --color-muted-foreground: var(--muted-foreground); /* Textfarbe für dezente Elemente */
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-purple-light: var(--accent-purple-light);
+  --color-accent-purple-soft: var(--accent-purple-soft);
+  --color-accent-emerald: var(--accent-emerald);
+  --color-accent-emerald-light: var(--accent-emerald-light);
+  --color-accent-emerald-soft: var(--accent-emerald-soft);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-light: var(--accent-blue-light);
+  --color-accent-blue-soft: var(--accent-blue-soft);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-amber-light: var(--accent-amber-light);
+  --color-accent-amber-soft: var(--accent-amber-soft);
+  --color-accent-gray: var(--accent-gray);
+  --color-accent-gray-light: var(--accent-gray-light);
+  --color-accent-gray-soft: var(--accent-gray-soft);
+  --color-accent-black: var(--accent-black);
+  --color-accent-black-light: var(--accent-black-light);
+  --color-accent-white: var(--accent-white);
+  --color-accent-red: var(--destructive);
+  --radius-sm: calc(var(--radius) - 4px); /* Rundung für Badges oder kleine Elemente */
+  --radius-md: calc(
+    var(--radius) - 2px
+  ); /* Standard-Rundung für allgemeine Elemente (Inputs, Button, ..) */
+  --radius-lg: var(--radius); /* Standard-Rundung für große Elemente */
+  --radius-xl: calc(var(--radius) + 4px); /* Größere Rundung für Container oder größere Elemente */
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: rgb(255 255 255);
+  --foreground: rgb(48 48 48);
+  --card: rgb(248 248 248);
+  --card-foreground: rgb(48 48 48);
+  --primary: rgb(48 48 48);
+  --primary-foreground: rgb(255 255 255);
+  --primary-hover: rgb(64 64 64);
+  --primary-hover-foreground: rgb(255 255 255);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
+  --muted-foreground: rgb(115 155 155);
+  --destructive: rgb(239, 37, 27);
+  --border: rgb(228 228 228);
+  --input: rgb(255 255 255);
+  --accent-purple: rgb(152 16 250);
+  --accent-purple-light: rgb(243 232 255);
+  --accent-purple-soft: rgb(250 245);
+  --accent-emerald: rgb(0 153 102);
+  --accent-emerald-light: rgb(208 250 229);
+  --accent-emerald-soft: rgb(236 253 245);
+  --accent-blue: rgb(21 93 252);
+  --accent-blue-light: rgb(219 234 254);
+  --accent-blue-soft: rgb(239 246 255);
+  --accent-amber: rgb(225 113 0);
+  --accent-amber-light: rgb(254 243 198);
+  --accent-amber-soft: rgb(255 251 235);
+  --accent-gray: rgb(115 115 115);
+  --accent-gray-light: rgb(228 228 228);
+  --accent-gray-soft: rgb(248 248 248);
+  --accent-black: rgb(48 48 48);
+  --accent-black-light: rgb(64 64 64);
+  --accent-white: rgb(255 255 255);
+  --accent-red: rgb(239, 37, 27);
+}
+
+.dark {
+  --radius: 0.625rem;
+  --background: rgb(255 255 255);
+  --foreground: rgb(48 48 48);
+  --card: rgb(248 248 248);
+  --card-foreground: rgb(48 48 48);
+  --primary: rgb(48 48 48);
+  --primary-foreground: rgb(255 255 255);
+  --primary-hover: rgb(64 64 64);
+  --primary-hover-foreground: rgb(255 255 255);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
+  --muted-foreground: rgb(115 155 155);
+  --destructive: rgb(239, 37, 27);
+  --border: rgb(228 228 228);
+  --input: rgb(255 255 255);
+  --accent-purple: rgb(152 16 250);
+  --accent-purple-light: rgb(243 232 255);
+  --accent-purple-soft: rgb(250 245);
+  --accent-emerald: rgb(0 153 102);
+  --accent-emerald-light: rgb(208 250 229);
+  --accent-emerald-soft: rgb(236 253 245);
+  --accent-blue: rgb(21 93 252);
+  --accent-blue-light: rgb(219 234 254);
+  --accent-blue-soft: rgb(239 246 255);
+  --accent-amber: rgb(225 113 0);
+  --accent-amber-light: rgb(254 243 198);
+  --accent-amber-soft: rgb(255 251 235);
+  --accent-gray: rgb(115 115 115);
+  --accent-gray-light: rgb(228 228 228);
+  --accent-gray-soft: rgb(248 248 248);
+  --accent-black: rgb(48 48 48);
+  --accent-black-light: rgb(64 64 64);
+  --accent-white: rgb(255 255 255);
+  --accent-red: rgb(239, 37, 27);
+}
+
+@layer base {
+  /* * {
+    @apply border border-border;
+  } */
+  body {
+    @apply bg-background text-foreground;
+  }
+}

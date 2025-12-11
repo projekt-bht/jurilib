@@ -1,0 +1,510 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider        = "prisma-client"
+    output          = "../generated/prisma"
+    previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+    provider = "postgresql"
+    extensions = [vector()]
+    schemas = ["public"]
+}
+
+// -------- Playtest ------
+
+model SearchLog {
+    id        String   @id @default(uuid())
+    searchString     String
+    searchStringExpanded String
+    searchStringExpandedVector  Unsupported("vector(3072)")?
+
+    createdAt      DateTime     @default(now())
+
+    @@schema("public")
+}
+
+// -------- Models --------
+
+model Account {
+    id        String   @id @default(uuid())
+    email     String   @unique
+    password  String
+    role      Role
+    
+    user     User?
+    employee  Employee?
+
+    @@schema("public")
+}
+
+model User {
+    id        String   @id @default(uuid())
+    accountId String   @unique
+    name      String
+    phone     String?
+    address   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    cases          Case[]
+    appointments   Appointment[]
+
+    account Account @relation(fields: [accountId], references: [id])
+
+    @@schema("public")
+}
+
+model Employee {
+    id             String       @id @default(uuid())
+    accountId      String       @unique
+    organizationId String
+    name           String
+    phone          String?
+    position       String?
+    expertiseArea  Areas[]
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+
+    account      Account @relation(fields: [accountId], references: [id])
+    organization Organization @relation(fields: [organizationId], references: [id])
+    appointments Appointment[]
+    cases        Case[]
+
+    @@schema("public")
+}
+
+
+model Organization {
+    id                 String                       @id @default(uuid())
+    name               String
+    description        String?
+    shortDescription   String
+    //Orga Email for contacting purposes (not for Authentication)
+    email              String                       @unique
+    phone              String?
+    address            String?
+    website            String?
+    expertiseArea      Areas[]
+    expertiseVector    Unsupported("vector(3072)")?
+    type               OrganizationType
+    priceCategory      PriceCategory
+  
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+  
+    services     Service[]
+    appointments Appointment[]
+    cases        Case[] // nur dem Employee der Org zugeordnet?
+    employees    Employee[]
+  
+    @@index([expertiseArea(ops: ArrayOps)], type: Gin)
+    @@schema("public")
+}
+
+//Evtl hier Enum für Dienstleistungstyp (Erstgespräch etc.) und duration als Attribut, sodass Termintypen default Dauer haben?
+model Service {
+    id             String       @id @default(uuid())
+    organizationId String
+    title          String
+    description    String
+    type           ServiceType
+    pricingModel   PricingModel @default(FIXED)
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+
+    organization Organization   @relation(fields: [organizationId], references: [id])
+    cases        Case[]
+    appointments Appointment[]
+
+    @@schema("public")
+}
+
+model Case {
+    id             String        @id @default(uuid())
+    userId         String
+    organizationId String
+    employeeId     String
+    serviceId      String
+    title          String
+    description    String
+    documents      String?
+    status         CaseStatus    @default(OPEN)
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+
+    user         User          @relation(fields: [userId], references: [id])
+    //maybe multiple services? 
+    organization Organization? @relation(fields: [organizationId], references: [id])
+    service      Service?      @relation(fields: [serviceId], references: [id])
+    employee     Employee?     @relation(fields: [employeeId], references: [id])
+    appointments Appointment[]
+
+    @@schema("public")
+}
+
+model Appointment {
+    id             String            @id @default(uuid())
+    caseId         String?
+    userId         String?
+    organizationId String
+    employeeId     String
+    //serviceID oder reicht ServiceType?
+    serviceId      String?
+    duration       Int
+    status         AppointmentStatus @default(OPEN)
+    createdAt      DateTime          @default(now())
+    updatedAt      DateTime          @updatedAt
+    location       String?
+    meetingLink    String?
+    dateTimeStart  DateTime
+    dateTimeEnd    DateTime
+    notes          String?
+
+    case         Case?         @relation(fields: [caseId], references: [id])
+    user         User?         @relation(fields: [userId], references: [id])
+    organization Organization? @relation(fields: [organizationId], references: [id])
+    service      Service?      @relation(fields: [serviceId], references: [id])
+    employee     Employee?     @relation(fields: [employeeId], references: [id])
+
+    @@schema("public")
+}
+
+
+// -------- Enums --------
+
+enum Role {
+    USER
+    EMPLOYEE
+    @@schema("public")
+}
+
+enum UserType {
+    USER
+    EMPLOYEE
+    ADMIN
+
+    @@schema("public")
+}
+
+enum OrganizationType {
+    LAW_FIRM
+    ASSOCIATION
+    
+    @@schema("public")
+}
+
+enum ServiceType {
+    INITIAL_CONSULTATION
+    FOLLOW_UP_CONSULTATION
+    DOCUMENT_REVIEW
+    CASE_EVALUATION
+    CORT_APPEARANCE
+    MEDIATION_SESSION
+    CLIENT_INTAKE
+    LEAGAL_ADVICE
+    STRATEGY_SESSION
+    CASE_PROGRESSION
+    REMOTE_CONSULTATION
+
+    @@schema("public")
+}
+ 
+enum CaseStatus {
+    OPEN
+    IN_PROGRESS
+    COMPLETED
+    
+    @@schema("public")
+}
+
+enum AppointmentStatus {
+    CONFIRMED
+    CANCELED
+    OPEN
+    COMPLETED
+
+    @@schema("public")
+}
+
+enum PricingModel {
+    FIXED
+    HOURLY
+  
+    @@schema("public")
+}
+
+enum PriceCategory {
+    FREE
+    LOW
+    MEDIUM
+    HIGH
+
+    @@schema("public")
+}
+
+enum Areas {
+    // // Liste der Berliner Rechtsanwaltskammer https://www.rak-berlin.de/anwaltssuche/ (unter Schlagwortkatalog)
+    // //  --- A ---
+    // Adoptionsrecht
+    // AGB_Recht
+    // Agrarrecht //(Fachanwalt/-anwältin für)
+    // Aktienrecht
+    // Amtshaftungsrecht
+    // Anwaltliches_Berufsrecht
+    // Anwaltshaftungsrecht
+    // Apothekenrecht
+    // Arbeitsfoerderungsrecht
+    // Arbeitsrecht //(Fachanwalt/-anwältin für)
+    // // Arbeitsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Architektenrecht_Ingenieurrecht
+    // Arzthaftungsrecht
+    // Arztrecht
+    // Auslaender_Asylrecht
+    // Auslaendisches_Familienrecht
+    // Anlage //würde ich rausnehmen, weil ich es nicht ganz verstehe und es auch bei denen bei den einzelnen Kanzleien nicht auftaucht
+    // //  --- B ---
+	// Bank_und_Kapitalmarktrecht //(Fachanwalt/-anwältin für)
+	// BAFOEG_Recht
+	// Bankrecht
+	// Bau_und_Architektenrecht //(Fachanwalt/-anwältin für)
+	// Baurecht
+	// Beamtenrecht
+	// Belgisches_Recht
+	// Belgien
+	// Berufshaftungsrecht
+	// Betaeubungsmittelrecht
+	// Betreuungs_Unterbringungsrecht
+	// Betriebsverfassungs_Personalvertretungsrecht
+	// Boersenrecht
+	// Brasilianisches_Recht
+	// Buergschaftsrecht
+	// Bulgarisches_Recht
+	// Bussgeldsachen
+    // //  --- C ---
+	// Chinesisches_Recht
+	// China
+    // //  --- D ---
+	// Daenisches_Recht
+	// Datenschutzrecht
+    // //  --- E ---
+	// EDV_Recht
+	// Energierecht
+	// Erbrecht //(Fachanwalt/-anwältin für)
+	// // Erbrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+	// Europarecht
+	// Existenzgruendungsrecht
+    // //  --- F ---
+	// Familienrecht //(Fachanwalt/-anwältin für)
+	// // Familienrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+	// Franchisingrecht
+	// Franzoesisches_Recht
+	// Fuehrerscheinrecht
+    // //  G
+    // Gaststaettenrecht
+	// Genossenschaftsrecht
+	// Gesellschaftsrecht
+	// Gewerberecht
+	// Gewerblichen_Rechtsschutz // (Fachanwalt/-anwältin für)
+	// // Gewerblicher_Rechtsschutz (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+	// Gibraltar
+	// GmbH_Recht
+	// Griechisches_Recht
+	// Grossbritannien
+	// Grundstuecksrecht_Immobilienr
+    // // --- H ---
+    // Handels_und_Gesellschaftsrecht // (Fachanwalt/-anwältin für)
+    // // Handelsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Handelsvertreterrecht_Aussendienstrecht
+    // // --- I ---
+    // Indonesisches_Recht
+    // Italienisches_Recht
+    // Informationstechnologierecht // (Fachanwalt/-anwältin für)
+    // Insolvenzrecht // (Fachanwalt/-anwältin für)
+    // // Insolvenzrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Internationales_Familienrecht
+    // Internationales_Grundstuecksrecht
+    // Internationales_Handelsrecht
+    // Internationales_Privatrecht
+    // Internationales_Recht
+    // Internationales_Wirtschaftsrecht // (Fachanwalt/-anwältin für)
+    // Internationaler_Strafgerichtshof
+    // Internetrecht
+    // Iran
+    // Israel
+    // //  --- J ---
+    // Japanisches_Recht
+    // Jugendstrafrecht
+    // //  --- K ---
+    // Kapitalanlagenrecht
+    // Kartellrecht
+    // Kassenarztrecht
+    // Kaufvertragsrecht
+    // Kindschaftsrecht
+    // Kirchenrecht
+    // Kleingartenrecht
+    // Kommunalrecht
+    // Kraftfahrzeugrecht
+    // Krankenhausrecht
+    // Krankenversicherungsrecht
+    // Kuendigungsschutzrecht
+    // //  --- L ---
+    // Landwirtschaftsrecht
+    // Lateinamerika
+    // Leasingrecht
+    // Lebenspartnerschaftsrecht
+    // Litauisches_Recht
+    // Lizenz_und_Lizenzvertragsrecht
+    // Luftverkehrsrecht
+    // //  --- M ---
+    // Mahn_und_Beitreibungswesen
+    // Maklerrecht
+    // Markenrecht
+    // Mediation
+    // Medizinrecht // (Fachanwalt/-anwältin für) 
+    // // Medizinrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Menschenrechte
+    // Miet_und_Pachtrecht
+    // Migrationsrecht // (Fachanwalt/-anwältin für)
+    // Miet_und_Wohnungseigentumsrecht // (Fachanwalt/-anwältin für)
+    // Multimediarecht
+    // Musikrecht
+    // //  --- N ---
+    // Nachbarrecht
+    // Niederlande
+    // Nordisches_Recht
+    // // --- O ---
+    // Offene_Vermoegensfragen
+    // Oeffentliches_Baurecht
+    // Oeffentliches_Dienstrecht
+    // Oeffentliches_Recht
+    // Opfer_Gewaltschutzrecht //(Stalking)
+    // Ordnungswidrigkeitenrecht
+    // // --- P ---
+    // Patent_und_Gebrauchsmusterrecht
+    // Persoenlichkeitsrecht
+    // Personenbefoerderungsrecht
+    // Pflegeversicherungsrecht
+    // Polizeirecht
+    // Polnisches_Recht
+    // Presse_und_Medienrecht
+    // Privates_Baurecht
+    // // --- R ---
+    // Reise_und_Tourismusrecht
+    // Rentenrecht
+    // Russisches_Recht
+    // // --- S ---
+    // Schadenersatzrecht
+    // Scheidungsrecht
+    // Schlichtung
+    // Schmerzensgeldrecht
+    // Schul_und_Hochschulrecht
+    // Schweiz
+    // Schwerbehindertenrecht
+    // See_und_Schifffahrtsrecht
+    // Sexualstrafverfahren
+    // Skandinavisches_Recht
+    // Sorgerecht
+    // Sozialrecht // (Fachanwalt/-anwältin für)
+    // // Sozialrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Sozialversicherungsrecht
+    // Spanisches_Recht
+    // Speditions_Lager_und_Frachtrecht
+    // Sportrecht // ist nicht aufgelistet, aber Fachanwalt wird angeboten
+    // Staatsangehoerigkeitsrecht
+    // Staatshaftungsrecht
+    // Steuerrecht // (Fachanwalt/-anwältin für)
+    // // Steuerrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Steuerstrafrecht
+    // Stiftungsrecht
+    // Strafrecht // (Fachanwalt/-anwältin für)
+    // // Strafrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Strafrechtlicher_Notdienst
+    // Strassenverkehrsrecht
+    // Strassenverkehrsstrafrecht
+    // Subventionsrecht
+    // // --- T ---
+    // Taiwan
+    // Telekommunikationsrecht
+    // Thailaendisches_Recht
+    // Transportrecht
+    // Transport_und_Speditionsrecht // (Fachanwalt/-anwältin für)
+    // Tschechien
+    // Tuerkei
+    // // --- U ---
+    // Umweltrecht
+    // Unfall_und_Schadenregulierung
+    // Ungarn
+    // Unterhaltsrecht
+    // Unternehmenssanierung
+    // Unternehmensveraeusserung_nachfolge
+    // Urheberrecht
+    // Urheber_und_Medienrecht // (Fachanwalt/-anwältin für)
+    // US_amerikanisches_Recht
+    // // --- V ---
+    // Veranstaltungsrecht
+    // Verbraucherschutzrecht
+    // Vereins_und_erbandsrecht
+    // Verfassungsrecht
+    // Vergaberecht // (Fachanwalt/-anwältin für)
+    // // Vergaberecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Verkehrsrecht // (Fachanwalt/-anwältin für)
+    // // Verkehrsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Verkehrsstrafrecht
+    // Verkehrsunfallrecht
+    // Verlagsrecht
+    // Versicherungsrecht // (Fachanwalt/-anwältin für)
+    // // Versicherungsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // Vertragsrecht
+    // Verwaltungsrecht // (Fachanwalt/-anwältin für)
+    // // Verwaltungsrecht (wird doppelt geführt, wahrscheinlich für die Anwältinnen, die die Fachanwaltschaft nicht haben)
+    // // --- W ---
+    // Waffenrecht
+    // Wehrdienstrecht
+    // Werkvertragsrecht
+    // Wettbewerbsrecht
+    // Wirtschaftsrecht
+    // Wirtschaftsstrafrecht
+    // Wohnungseigentumsrecht
+    // // --- Z ---
+    // Zahnarztrecht
+    // Zivilrecht
+    // Zollrecht
+    // Zwangsversteigerungsrecht
+    // Zwangsvollstreckungsrecht
+
+
+    //  Offical list (Fachanwaltsordnung §1) https://www.brak.de/fileadmin/02_fuer_anwaelte/berufsrecht/fao-stand-01.06.2022.pdf
+    Arbeitsrecht
+    Agrarrecht
+    Bank_und_Kapitalmarktrecht
+    Bau_und_Architektenrecht
+    Erbrecht
+    Familienrecht
+    Gewerblichen_Rechtsschutz
+    Handels_und_Gesellschaftsrecht
+    Informationstechnologierecht
+    Insolvenz_und_Sanierungsrecht
+    Internationales_Wirtschaftsrecht
+    Medizinrecht
+    Miet_und_Wohnungseigentumsrecht
+    Migrationsrecht
+    Sozialrecht
+    Sportrecht
+    Steuerrecht
+    Strafrecht
+    Transport_und_Speditionsrecht
+    Urheber_und_Medienrecht
+    Vergaberecht
+    Verkehrsrecht
+    Versicherungsrecht
+    Verwaltungsrecht
+
+    @@schema("public")
+}
+
+

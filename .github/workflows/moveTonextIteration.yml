@@ -1,0 +1,20 @@
+on:
+  schedule:
+    # Runs "at 01:00, only on Saturday" (see https://crontab.guru)
+    - cron: '0 7 * * 6'
+
+jobs:
+  move-to-next-iteration:
+    name: Move to next iteration
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: blombard/move-to-next-iteration@master
+      with:
+        owner: projekt-bht
+        number: 1
+        token: ${{ secrets.MOVETONEXTITERATION }}
+        iteration-field: Iteration
+        iteration: last
+        new-iteration: current
+        excluded-statuses: "Done"
