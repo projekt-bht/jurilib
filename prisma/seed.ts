@@ -1,4 +1,4 @@
-import { fakerDE as faker } from '@faker-js/faker';
+import { da, fa, fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
 import {
   Areas,
@@ -17,11 +17,12 @@ const orgAmount: number = process.env.SEED_AMOUNT ? parseInt(process.env.SEED_AM
 const orgIds = Array.from({ length: orgAmount }, () => faker.string.uuid());
 
 async function main() {
-  // Cleanup for each Seeding
+  // Cleanup for each Seeding - in der richtigen Reihenfolge (abhängige zuerst)
 
   await prisma.appointment.deleteMany();
   await prisma.case.deleteMany();
   await prisma.service.deleteMany();
+  await prisma.employee.deleteMany();
   await prisma.user.deleteMany();
   await prisma.employee.deleteMany();
   await prisma.account.deleteMany();
@@ -161,6 +162,15 @@ async function main() {
 
     // Create 5 Appointments per Org
     for (let i = 0; i < 5; i++) {
+      // creating ralistic appointment times
+      const hour = faker.number.int({ min: 8, max: 21 });
+      const minute = faker.helpers.arrayElement([0, 15, 30, 45]);
+      const dateTimeStart = faker.date.future();
+      // replace random hour and minute within business hours
+      dateTimeStart.setHours(hour, minute, 0, 0);
+      const duration = faker.helpers.arrayElement([15, 30, 45, 60, 90, 120]);
+      const dateTimeEnd = new Date(dateTimeStart.getTime() + duration * 60000);
+
       const appointment = await prisma.appointment.create({
         data: {
           case: { connect: { id: caseIds[i % caseIds.length] } },
@@ -168,11 +178,11 @@ async function main() {
           organization: { connect: { id: orgId } },
           employee: { connect: { id: employeeId[i % employeeId.length] } },
           service: { connect: { id: serviceIds[i % serviceIds.length] } },
-          duration: faker.number.int({ min: 30, max: 120 }),
+          duration: duration,
           status: 'OPEN',
           meetingLink: faker.internet.url(),
-          dateTime: faker.date.future(),
-          timeZone: faker.location.timeZone(),
+          dateTimeStart: dateTimeStart,
+          dateTimeEnd: dateTimeEnd,
           notes: faker.lorem.sentence(),
         },
       });
