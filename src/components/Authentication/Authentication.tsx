@@ -59,9 +59,13 @@ export function Authentication() {
         }
       } else {
         const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
-        setLogin(loginFromServer);
-        if (loginFromServer) setShowDialog(false);
-        setError('Email oder Passwort falsch.');
+        if (loginFromServer) {
+          setLogin(loginFromServer);
+          setShowDialog(false);
+          setError('');
+        } else {
+          setError('Email oder Passwort falsch.');
+        }
       }
     } catch (error) {
       setError(String(error));
@@ -93,10 +97,6 @@ export function Authentication() {
       >
         <DialogTrigger asChild>
           <Button
-            onClick={async () => {
-              await deleteLogin();
-              setLogin(false);
-            }}
             className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
             variant="outline"
           >
@@ -151,7 +151,7 @@ export function Authentication() {
                       required
                       minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
-                    <p>{error}</p>
+                    <p className="text-red-500">{error}</p>
                   </div>
                 </>
               )}
