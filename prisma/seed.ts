@@ -4,8 +4,8 @@ import {
   Areas,
   OrganizationType,
   PriceCategory,
-  UserType,
   ServiceType,
+  Role,
 } from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
@@ -23,22 +23,33 @@ async function main() {
   await prisma.case.deleteMany();
   await prisma.service.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.employee.deleteMany();
+  await prisma.account.deleteMany();
   await prisma.organization.deleteMany();
 
-  // Create 20 Users
+  // Create 20 Users with accounts
   const userIds: string[] = [];
   for (let i = 0; i < 20; i++) {
     const userName = faker.person.fullName();
+
+    const account = await prisma.account.create({
+      data: {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        role: Role.USER,
+      },
+    });
+
     const user = await prisma.user.create({
       data: {
         name: userName,
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        type: faker.helpers.enumValue(UserType),
+        accountId: account.id,
+        phone: faker.phone.number(),
+        address: faker.location.streetAddress(),
       },
     });
     userIds.push(user.id);
-    console.log(`created User ${userName}`);
+    console.log(`created User ${userName} with accID ${account.id}`);
   }
 
   // Create Organizations with related Data
@@ -60,13 +71,13 @@ async function main() {
       INSERT INTO "Organization" (
         "id", "name", "description", "shortDescription", "email",
         "phone", "address", "website",
-        "expertiseArea", "expertiseVector", "type", "priceCategory", "password",
+        "expertiseArea", "expertiseVector", "type", "priceCategory",
         "createdAt", "updatedAt"
       )
       VALUES (
         $1, $2, $3, $4, $5,
         $6, $7, $8,
-        $9::"Areas"[], $10::vector, $11::"OrganizationType", $12::"PriceCategory", $13,
+        $9::"Areas"[], $10::vector, $11::"OrganizationType", $12::"PriceCategory",
         NOW(), NOW()
       )
       `,
@@ -81,8 +92,7 @@ async function main() {
       expertiseArea,
       expertiseVector,
       type,
-      faker.helpers.enumValue(PriceCategory),
-      faker.internet.password()
+      faker.helpers.enumValue(PriceCategory)
     );
 
     console.log(`created "${orgName}" (${orgId})`);
@@ -90,14 +100,23 @@ async function main() {
     // Create 5 Employees per Org
     const employeeId: string[] = [];
     for (let i = 0; i < 5; i++) {
+      const account = await prisma.account.create({
+        data: {
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+          role: Role.EMPLOYEE,
+        },
+      });
+
       const employeeName = faker.person.fullName();
       const employee = await prisma.employee.create({
         data: {
           name: employeeName,
           organization: { connect: { id: orgId } },
-          email: faker.internet.email(),
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
+          account: { connect: { id: account.id } },
+          expertiseArea: [faker.helpers.enumValue(Areas)],
         },
       });
       employeeId.push(employee.id);
