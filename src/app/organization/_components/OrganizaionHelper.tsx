@@ -40,7 +40,7 @@ export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
       {areas.map((area) => (
         <div
           key={area}
-          className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
+          className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-white border border-accent-gray-light text-foreground shadow-sm"
         >
           {area}
         </div>
@@ -54,11 +54,11 @@ export function EmplyeeCard({ employee }: { employee: Employee }) {
   return (
     <div
       key={employee.name}
-      className="bg-linear-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 animate-fade-in"
+      className="bg-linear-to-br from-accent-purple-soft to-accent-blue/5 rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-101 animate-fade-in"
       id={`${employee.id}_EmployeeCard`}
     >
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-md shrink-0">
+        <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0">
           {employee.name
             .split(' ')
             .map((n) => n[0])
@@ -66,13 +66,13 @@ export function EmplyeeCard({ employee }: { employee: Employee }) {
         </div>
         <div>
           <h3 className="text-xl font-bold text-foreground">{employee.name}</h3>
-          <p className="text-sm text-blue-600 font-medium">{employee.position}</p>
+          <p className="text-sm text-accent-blue font-medium">{employee.position}</p>
         </div>
       </div>
       <div className="space-y-2 mb-4">
         <div className="flex items-center gap-2 text-sm">
-          <Briefcase className="w-4 h-4 text-purple-600" />
-          <span className="text-muted-foreground">{employee.position}</span>
+          <Briefcase className="w-4 h-4 text-accent-purple" />
+          <span className="text-muted-foreground">Fachanwältin/ -anwalt</span>
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
