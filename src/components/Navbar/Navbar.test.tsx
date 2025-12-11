@@ -12,14 +12,23 @@ jest.unstable_mockModule('next/image', () => ({
   default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
+jest.unstable_mockModule('@/services/api', () => ({
+  getLogin: async () => null,
+  deleteLogin: async () => {},
+  postLogin: async () => {},
+  register: async () => {},
+}));
+
+// im Test
 // top-level await
 const { render, screen } = await import('@testing-library/react');
 const { Navbar } = await import('./Navbar');
 
 describe('Test NavBar', () => {
-  it('renders the component text', () => {
+  it('renders the component text', async () => {
     render(<Navbar />);
-    expect(screen.getByText(/JuriLib/i)).toBeInTheDocument();
+
+    expect(await screen.findByText(/JuriLib/i)).toBeInTheDocument();
     expect(screen.getByText(/Organisationen/i)).toBeInTheDocument();
     expect(screen.getByText(/Einloggen/i)).toBeInTheDocument();
   });
