@@ -21,7 +21,6 @@ export async function vectorizeSearch(query: string) {
     "${query}"
     `;
   const possibleAnswers = Object.values(Areas).join(', ');
-  console.log('Possible Answers:', possibleAnswers);
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
       User role: Equivalent to the queries made by the user.
