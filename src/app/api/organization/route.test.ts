@@ -26,7 +26,7 @@ describe('Organization Routen testen', () => {
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      expertiseArea: ['Verkehrsrecht', 'Transport- & Speditionsrecht'],
     };
 
     const req = new NextRequest(baseUrl, {

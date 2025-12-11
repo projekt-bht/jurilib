@@ -80,37 +80,73 @@ enum PriceCategory {
     @@schema("public")
 }
 
+// @map used to correctly display Areas with naming schema not following this regular expression: [A-Za-z][A-Za-z0-9_]*
+// Area source https://www.anwalt.org/rechtsgebiete/ [11.12.2025]
 enum Areas {
-    Mietrecht
-    Verkehrsrecht
-    Arbeitsrecht
-    Familienrecht
-    Erbrecht
-    Strafrecht
-    Zivilrecht
-    Verwaltungsrecht
-    Steuerrecht
-    Sozialrecht
-    Vertragsrecht
-    Handelsrecht
-    Gesellschaftsrecht
-    Wettbewerbsrecht
-    Urheberrecht
-    Markenrecht
-    Patentrecht
-    Medizinrecht
-    Versicherungsrecht
-    Baurecht
-    Umweltrecht
-    Asylrecht
-    Itrecht
-    Datenschutzrecht
-    Energierecht
+    Abstammungsrecht
     Agrarrecht
-    Wirtschaftsrecht
-    Bankrecht
+    Arbeitsrecht
+    AsylMigrationsrecht @map("Asyl- & Migrationsrecht")
+    Arzthaftungsrecht
+    Aufenthaltsrecht
+    Ausländerrecht
+    BankKapitalmarktrecht @map("Bank- & Kapitalmarktrecht")
+    BauArchitekturrecht @map("Bau- & Architekturrecht")
+    Betreuungsrecht
+    CryptoCrime @map("Crypto Crime")
+    Erbrecht
+    Europarecht
+    Familienrecht
+    GewerblicherRechtsschutz @map("Gewerblicher Rechtsschutz")
+    Glücksspielrecht
+    HandelsGesellschaftsrecht @map("Handels- & Gesellschaftsrecht")
+    GrundgesetzGrundrechte @map("Grundgesetz und Grundrechte")
+    InternationalesWirtschaftsrecht @map("Internationales Wirtschaftsrecht")
     Insolvenzrecht
-    Prozessrecht
+    ITRecht @map("IT-Recht")
+    Jagdrecht
+    Kaufrecht
+    Kindschaftsrecht
+    Luftrecht
+    Maklerrecht
+    Markenrecht
+    Medizinrecht
+    Mietrecht
+    Namensrecht
+    ÖffentlichesRecht @map("Öffentliches Recht")
+    Patentrecht
+    Pflegerecht
+    Polizeirecht
+    Presserecht
+    Reiserecht
+    Schadensersatzrecht
+    Schulrecht
+    Schwerbehindertenrecht
+    Sexualstrafrecht
+    Sozialrecht
+    Sportrecht
+    Staatsangehörigkeitsrecht
+    Staatsrecht
+    Steuerrecht
+    Strafrecht
+    Tierrecht
+    TransportSpeditionsrecht @map("Transport- & Speditionsrecht")
+    Umweltrecht
+    Urheberrecht
+    Verbraucherrecht
+    Verfassungsrecht
+    Vergaberecht
+    Verkehrsrecht
+    Verkehrsstrafrecht
+    Verkehrunfallsrecht
+    Versicherungsrecht
+    Verwaltungsrecht
+    Völkerrecht
+    Völkerstrafrecht
+    Wahlrecht
+    Weltraumrecht
+    Wirtschaftsrecht
+    Zivilrecht
 
     @@schema("public")
 }

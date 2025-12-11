@@ -14,7 +14,7 @@ const mockOrganization: Organization = {
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
-  expertiseArea: ['Arbeitsrecht'],
+  expertiseArea: ['Transport- & Speditionsrecht'],
   type: 'LAW_FIRM',
   priceCategory: 'MEDIUM', // Medium pricing is represented by '€€'
   createdAt: new Date(),

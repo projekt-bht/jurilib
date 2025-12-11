@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import type { RegisterRessource } from '@/services/Resources';
 import { Role } from '~/generated/prisma/enums';
 
 import { createAccount } from '../../account/services';
@@ -12,7 +13,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
     }
 
-    const body = await req.json();
+    const body: RegisterRessource = await req.json();
+    const pw: string = body.account.password;
+    if (pw.length! >= Number(process.env.PASSWORD_LENGTH)) {
+      return NextResponse.json(
+        {
+          message:
+            'Creation failed: Passwort length insufficient. Minimum Length: 8; Current Length: ' +
+            pw.length,
+        },
+        { status: 400 }
+      );
+    }
 
     const createdAccount = await createAccount(body.account);
 
