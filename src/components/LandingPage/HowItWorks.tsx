@@ -3,29 +3,30 @@ import { CheckCircle2, ClipboardClock, MessageSquare, Search } from 'lucide-reac
 const steps = [
   {
     icon: MessageSquare,
-    title: 'Beschreibe Dein Problem',
-    description: 'Erzähle uns mit eigenen Worten von Deinem rechtlichen Anliegen',
+    title: 'Beschreibe dein Problem',
+    description: 'Beschreibe mit eigenen Worten, wobei du rechtliche Unterstützung brauchst.',
     iconBgColor: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
   {
     icon: Search,
-    title: 'Finde Dein Match',
-    description: 'Unser Algorithmus findet die besten Angebote für Dein Anliegen',
+    title: 'Finde dein Match',
+    description:
+      'Mit unserem Algorithmus entdeckst du schnell die besten Angebote für dein Anliegen.',
     iconBgColor: 'bg-accent-emerald-light shadow-sm',
     iconColor: 'text-accent-emerald',
   },
   {
     icon: ClipboardClock,
-    title: 'Buche Deinen Termin',
-    description: 'Vereinbare einen Beratungstermin, der zu Dir passt',
+    title: 'Buche deinen Termin',
+    description: 'Finde und buche einen Beratungstermin, der perfekt zu dir passt.',
     iconBgColor: 'bg-accent-purple-light shadow-sm',
     iconColor: 'text-accent-purple',
   },
   {
     icon: CheckCircle2,
     title: 'Match!',
-    description: 'Dein rechtliches Problem ist nun in guten Händen',
+    description: 'Dein rechtliches Anliegen ist jetzt in sicheren Händen.',
     iconBgColor: 'bg-accent-amber-light shadow-sm',
     iconColor: 'text-accent-amber',
   },
