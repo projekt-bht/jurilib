@@ -2,7 +2,7 @@ import { ArrowRight, Clock, MapPin } from 'lucide-react';
 
 import type { Organization } from '~/generated/prisma/client';
 
-import { ExpertiseAreaItem, OrganisationTypeBadge } from './OrganizaionHelper';
+import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 
 // TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
 
@@ -32,7 +32,7 @@ export function OrganizationCard({ organization }: { organization: Organization 
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <ExpertiseAreaItem areas={organization.expertiseArea} />
+          <ExpertiseAreaBadge areas={organization.expertiseArea} />
         </div>
 
         <div className="mt-auto pt-6 border-t border-border/50">
