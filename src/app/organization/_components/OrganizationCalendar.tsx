@@ -12,12 +12,12 @@ import type { Employee } from '~/generated/prisma/client';
 import BookingSelector from './BookingSelector';
 import { useBookingSchedule } from './useBookingSchedule';
 
-type CalendarWithTimeProps = {
+type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
 };
 // Placeholder employee data
 export type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
-  specialties: string[];
+  expertiseAreas: string[];
   avatar?: string | null;
 };
 /* TODO: replace mockStaff with real employee data once the backend API is ready */
@@ -26,21 +26,21 @@ const mockStaff: EmployeeCard[] = [
     id: '1',
     name: 'Anna Schmidt',
     position: 'Rechtsanwältin',
-    specialties: ['Familienrecht', 'Arbeitsrecht'],
+    expertiseAreas: ['Familienrecht', 'Arbeitsrecht'],
     avatar: null,
   },
   {
     id: '2',
     name: 'Lukas Meyer',
     position: 'Jurist',
-    specialties: ['Vertragsrecht', 'Mietrecht'],
+    expertiseAreas: ['Vertragsrecht', 'Mietrecht'],
     avatar: null,
   },
   {
     id: '3',
     name: 'Sofia Keller',
     position: 'Beraterin',
-    specialties: ['Compliance', 'Datenschutz'],
+    expertiseAreas: ['Compliance', 'Datenschutz'],
     avatar: null,
   },
 ];
@@ -48,7 +48,7 @@ const mockStaff: EmployeeCard[] = [
 /**
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
  */
-export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
+export default function OrganizationCalendar({ onChange }: OrganizationCalendarProps) {
   /* TODO: adjust colors, icons, and calendar positioning after Hannes' PR */
   const {
     selectedDate,
@@ -66,12 +66,10 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
   const [selectedEmployee, setSelectedEmployee] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
   // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
 
-  const today = useMemo(() => new Date(), []); // cache today's date so it doesn't change across renders; useMemo avoids new Date() on every render
-  const germanLocale = useMemo(() => de, []); // reuse locale object instead of recreating per render; useMemo keeps it stable for DayPicker
 
   const isDisabledDay = (date: Date) => {
-    const midnight = new Date(today);
-    midnight.setHours(0, 0, 0, 0);
+    // checks if the given date is either a weekend or a day before today
+    const midnight = new Date(new Date().setHours(0, 0, 0, 0));
     const weekday = date.getDay();
     const isWeekend = weekday === 0 || weekday === 6;
     return date < midnight || isWeekend;
@@ -128,12 +126,12 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
                     <h4 className="font-bold text-foreground mb-1">{employee.name}</h4>
                     <p className="text-sm text-muted-foreground mb-2">{employee.position}</p>
                     <div className="flex flex-wrap gap-1">
-                      {employee.specialties.map((specialty) => (
+                      {employee.expertiseAreas.map((expertiseArea) => (
                         <span
-                          key={specialty}
+                          key={expertiseArea}
                           className="px-3 py-1 rounded-xl text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
                         >
-                          {specialty}
+                          {expertiseArea}
                         </span>
                       ))}
                     </div>
@@ -152,8 +150,8 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       <div className="rounded-md shadow-sm bg-accent-gray-soft p-4 space-y-4">
         <Calendar
           mode="single"
-          today={today}
-          locale={germanLocale}
+          today={new Date()}
+          locale={de}
           selected={selectedDate}
           onSelect={(date) => {
             setDate(date);
@@ -266,8 +264,4 @@ export function CalendarWithTime({ onChange }: CalendarWithTimeProps) {
       )}
     </div>
   );
-}
-
-export default function OrganizationCalendar(props: CalendarWithTimeProps) {
-  return <CalendarWithTime {...props} />;
 }
