@@ -1,16 +1,16 @@
-import { Calendar, FileText, MessageSquare, Users } from 'lucide-react';
+import { Calendar, FileLock, HandFist, Users } from 'lucide-react';
 
 const features = [
   {
-    icon: MessageSquare,
+    icon: Users,
     title: 'Vielfältige Auswahl an Expert*innen',
     description:
-      'Bei uns findest du gezielt Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem, wer für dein Anliegen am besten geeignet ist oder wonach du suchst.',
+      'Bei uns findest du gezielt Kanzleien, Beratungsstellen, Gewerkschaften oder NGOs – je nachdem wonach du suchst und wer für dein Anliegen am besten geeignet ist.',
     color: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
   {
-    icon: Users,
+    icon: HandFist,
     title: 'Demokratisierung des Rechts',
     description:
       'Der Zugang zum Recht ist ein fundamentales Menschenrecht und die Grundlage für ein selbstbestimmtes Leben. Deshalb ist es unsere Philosophie, rechtliche Hilfe für alle gleichermaßen zugänglich zu machen.',
@@ -18,10 +18,10 @@ const features = [
     iconColor: 'text-accent-emerald',
   },
   {
-    icon: FileText,
-    title: 'Transparente Preise',
+    icon: FileLock,
+    title: 'Sicherer Umgang mit deinen Daten',
     description:
-      'Entstehende Kosten werden dir transparent mitgeteilt – es gibt keine versteckten Gebühren.',
+      'Deine Daten gehören nur dir! Wir setzen höchste Standards im Datenschutz ein, um deine Informationen zu schützen und dir ein sicheres Erlebnis zu bieten.',
     color: 'bg-accent-purple-light shadow-sm',
     iconColor: 'text-accent-purple',
   },
