@@ -28,9 +28,15 @@ export function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   );
 }
 // Function to create and format the Expertise Area items to badges
-export function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
+export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
   return (
     <>
+      {areas.length === 0 && (
+        <div className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-gray-soft border border-accent-gray-light text-foreground shadow-sm">
+          Keine Angabe
+        </div>
+      )}
+
       {areas.map((area) => (
         <div
           key={area}
