@@ -1,7 +1,7 @@
 import type { LoginResource, RegisterResource } from '@/services/Resources';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
-  const url = `/api/authentication/register`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/register`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -12,7 +12,7 @@ export async function register(inputData: RegisterResource): Promise<RegisterRes
 }
 
 export async function getLogin(): Promise<LoginResource> {
-  const url = `/api/authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
@@ -20,7 +20,7 @@ export async function getLogin(): Promise<LoginResource> {
 }
 
 export async function postLogin(email: string, password: string): Promise<LoginResource | false> {
-  const url = `/api/authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify({ email: email, password: password }),
@@ -37,7 +37,7 @@ export async function postLogin(email: string, password: string): Promise<LoginR
 }
 
 export async function deleteLogin() {
-  const url = `/api/authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
   await fetch(url, {
     method: 'DELETE',
     credentials: 'include' as RequestCredentials,
