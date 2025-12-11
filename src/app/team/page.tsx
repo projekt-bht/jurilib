@@ -83,11 +83,6 @@ export default function Team() {
       link: 'https://reactjs.org/',
     },
     {
-      name: 'Docker',
-      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
-      link: 'https://www.docker.com/',
-    },
-    {
       name: 'Prisma',
       logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg',
       link: 'https://www.prisma.io/',
@@ -106,6 +101,11 @@ export default function Team() {
       name: 'OpenAI',
       logo: 'https://logo.svgcdn.com/logos/openai-icon.svg',
       link: 'https://openai.com/',
+    },
+    {
+      name: 'Docker',
+      logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
+      link: 'https://www.docker.com/',
     },
   ];
 
