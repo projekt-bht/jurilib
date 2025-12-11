@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 
+import prisma from '@/lib/db';
+import { Areas } from '~/generated/prisma/enums';
+
 const openai = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL ?? '',
   apiKey: process.env.OPENAI_API_KEY ?? '',
@@ -12,10 +15,15 @@ const openai = new OpenAI({
 
 export async function vectorizeSearch(query: string) {
   const expansionPrompt = `
-    Versuche bitte diesen Text zu juristschen rechtlichen Fachgebieten zuzuordnen, bzw. wo das hingehören könnte.
-    BEISPIEL: Strafrecht, Verkehrsrecht, Mietercht, Zivilrecht, Arbeitsrecht und so weiter ...
-    Gib bitte nur die Fachgebiete als antwort zurück, falls du nichts sinnvolles findest gib einfach '#' das zurück
+    Ordne den folgenden Text einem juristischen Fachgebiet zu.
+    Liste der möglichen Fachgebiete: ${Object.keys(Areas)}
 
+    Gib **genau eines** der Fachgebiete aus der Liste zurück.
+    Falls keine sinnvolle Zuordnung möglich ist, gib **nur '#'** zurück.
+
+    Wichtig: **Antworte ausschließlich mit einem einzelnen Wort aus der Liste oder '#'.**
+
+    Text:
     "${query}"
     `;
 
@@ -42,6 +50,19 @@ export async function vectorizeSearch(query: string) {
   });
 
   const embedding = embeddingResponse.data[0].embedding;
+
+  const createdSearchLog = await prisma.searchLog.create({
+    data: {
+      searchString: query,
+      searchStringExpanded: expandedQuery,
+    },
+  });
+
+  if (embedding)
+    await prisma.$executeRaw`UPDATE "SearchLog"
+                SET "searchStringExpandedVector" = ${`[${embedding.join(',')}]`}::vector
+                WHERE "id" = ${createdSearchLog.id}`;
+
   // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.
   return `[${embedding.join(',')}]`;
