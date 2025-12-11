@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, GitBranch, Heart, Lightbulb, Target, Users, Wrench } from 'lucide-react';
+import { Heart, Users, Wrench } from 'lucide-react';
 import Image from 'next/image';
 
 enum Expertise {
