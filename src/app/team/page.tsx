@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle2, GitBranch, Heart, Lightbulb, Target, Users, Wrench } from 'lucide-react';
+import Image from 'next/image';
 
 enum Expertise {
   FS = 'Full Stack',
@@ -185,13 +186,12 @@ export default function Team() {
                   style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => window.open(member.profile)}
                 >
-                  <div className="aspect-square overflow-hidden bg-muted">
-                    {/* FIXME use Image from NextJS*/}
-                    <img
+                  <div className="aspect-square overflow-hidden bg-muted relative">
+                    <Image
                       src={member.image || '/placeholder.svg'}
                       alt={member.name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      fill
+                      className="object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-6">
@@ -229,20 +229,15 @@ export default function Team() {
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {tools.map((tool, index) => (
-                    <a
-                      key={index}
-                      href={tool.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted transition-colors"
-                    >
-                      <img
+                    <a key={index} href={tool.link} target="_blank" rel="noopener noreferrer">
+                      <Image
                         src={tool.logo}
                         alt={tool.name}
                         width={24}
                         height={24}
                         className="object-contain"
                       />
+                      <span className="font-semibold text-foreground">{tool.name}</span>
                       <span className="font-semibold text-foreground">{tool.name}</span>
                     </a>
                   ))}
