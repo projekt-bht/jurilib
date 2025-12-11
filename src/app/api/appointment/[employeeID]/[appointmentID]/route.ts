@@ -35,7 +35,7 @@ export const appointmentUpdateSchema = z.object({
 });
 
 // GET /api/appointment/:employeeID/:appointmentID
-// Retrieve a specific appointment (to be implemented)
+// Retrieve a specific appointment
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
@@ -63,7 +63,7 @@ export async function GET(
 }
 
 // PATCH /api/appointment/:employeeID/:appointmentID
-// Update an appointment (to be implemented)
+// Update an appointment
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
@@ -96,7 +96,7 @@ export async function PATCH(
 }
 
 // DELETE /api/appointment/:employeeID/:appointmentID
-// Delete an appointment (to be implemented)
+// Delete an appointment
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }

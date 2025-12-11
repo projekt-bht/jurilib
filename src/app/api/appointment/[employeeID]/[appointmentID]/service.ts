@@ -77,6 +77,7 @@ export async function deleteAppointment(employeeID: string, appointmentID: strin
   // TODO: hier später noch prüfen, welchen Status der Termin haben darf, um gelöscht zu werden
   // und ggf. Benachrichtigungen verschicken
   try {
+    await validateReference(employeeID, appointmentID);
     await prisma.appointment.delete({ where: { id: appointmentID, employeeId: employeeID } });
   } catch (error) {
     throw new Error('Database delete failed: ' + (error as Error).message);
