@@ -42,7 +42,7 @@ export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
           key={area}
           className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-white border border-accent-gray-light text-foreground shadow-sm"
         >
-          {area}
+          {area.toString().replace(/_/g, ' ')}
         </div>
       ))}
     </>
