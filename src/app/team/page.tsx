@@ -21,10 +21,10 @@ enum Role {
 export default function Team() {
   const teamMembers = [
     {
-      name: 'Hanna Lian Dolzycka',
+      name: 'Hanna JEST Dolzycka',
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/173495618?v=4',
-      bio: 'Mit über 15 Jahren Erfahrung in der Rechtsberatung und Passion für Technologie.',
+      bio: 'Test Driven Development ist ihr zweiter Vorname.',
       expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX],
       profile: 'https://github.com/dolzycka',
     },
@@ -32,7 +32,7 @@ export default function Team() {
       name: 'Rominasadat Mirmehdi',
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/148480006?v=4',
-      bio: 'Experte für skalierbare Plattformen und KI-gestützte Matching-Algorithmen.',
+      bio: '...ist nur ab 24 Uhr erreichbar.',
       expertise: [Expertise.FS, Expertise.UIUX],
       profile: 'https://github.com/Romina00',
     },
@@ -40,7 +40,7 @@ export default function Team() {
       name: 'Hannes Pralle',
       role: Role.SA,
       image: 'https://avatars.githubusercontent.com/u/176742631?v=4',
-      bio: 'Verantwortlich für die Qualitätssicherung und Partnermanagement.',
+      bio: 'Benutzt Word als IDE.',
       expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX, Expertise.DES],
       profile: 'https://github.com/hpbexxter',
     },
@@ -48,7 +48,7 @@ export default function Team() {
       name: 'Imran Timur',
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/141875371?v=4',
-      bio: 'Verantwortlich für die Qualitätssicherung und Partnermanagement.',
+      bio: 'Linus Torvald`s rechte Hand.',
       expertise: [Expertise.FS, Expertise.ARC, Expertise.DEP],
       profile: 'https://github.com/orkzahn',
     },
@@ -56,7 +56,7 @@ export default function Team() {
       name: 'Max Uden',
       role: Role.SA,
       image: 'https://avatars.githubusercontent.com/u/93664429?v=4',
-      bio: 'Verantwortlich für die Qualitätssicherung und Partnermanagement.',
+      bio: '...hat auch schon eine Zeile Code ohne GPT geschrieben.',
       expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX],
       profile: 'https://github.com/Maxlo158',
     },
@@ -112,28 +112,29 @@ export default function Team() {
     },
   ];
 
-  const processSteps = [
-    {
-      title: 'Anfrage analysieren',
-      description: 'KI-gestützte Analyse der rechtlichen Anfrage',
-      icon: GitBranch,
-    },
-    {
-      title: 'Matching durchführen',
-      description: 'Algorithmus findet passende Organisationen',
-      icon: Target,
-    },
-    {
-      title: 'Qualität sichern',
-      description: 'Manuelle Überprüfung durch unser Team',
-      icon: CheckCircle2,
-    },
-    {
-      title: 'Vermittlung optimieren',
-      description: 'Kontinuierliche Verbesserung basierend auf Feedback',
-      icon: Lightbulb,
-    },
-  ];
+  const github = 'https://github.com/devicons/devicon/blob/master/icons/github/github-original.svg';
+  // const processSteps = [
+  //   {
+  //     title: 'Anfrage analysieren',
+  //     description: 'KI-gestützte Analyse der rechtlichen Anfrage',
+  //     icon: GitBranch,
+  //   },
+  //   {
+  //     title: 'Matching durchführen',
+  //     description: 'Algorithmus findet passende Organisationen',
+  //     icon: Target,
+  //   },
+  //   {
+  //     title: 'Qualität sichern',
+  //     description: 'Manuelle Überprüfung durch unser Team',
+  //     icon: CheckCircle2,
+  //   },
+  //   {
+  //     title: 'Vermittlung optimieren',
+  //     description: 'Kontinuierliche Verbesserung basierend auf Feedback',
+  //     icon: Lightbulb,
+  //   },
+  // ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -141,12 +142,9 @@ export default function Team() {
         {/* Hero Section */}
         <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">Das Team</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-              Wir - 5 Studierende im Studiengang Medieninformatik - dachten uns <br />
-              „Wieso ist die Suche nach Rechtsunterstützung so analog?“ <br />
-              Also machten wir uns an die Arbeit...
-            </p>
+            <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
+              Entwickler*innen hinter JuriLib
+            </h1>
           </div>
         </section>
 
@@ -253,19 +251,21 @@ export default function Team() {
         </section>
 
         {/* Process Section */}
-        <section className="py-16 px-4 bg-muted/30">
+        {/* <section className="py-16 px-4 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
               <div className="bg-linear-to-br from-accent-emerald/80 to-accent-emerald/60 p-4 rounded-xl shrink-0 shadow-sm">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-3xl font-bold text-foreground mb-6">Unser Arbeitsprozess</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-6">
+                  Ihr sucht uns? Hier findet ihr uns!
+                </h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Von der Anfrage bis zur erfolgreichen Vermittlung – so arbeiten wir:
+                  Open Source, denn gute Software sollte für alle zugänglich sein.
                 </p>
                 <div className="grid md:grid-cols-2 gap-6">
-                  {processSteps.map((step, index) => (
+                  {/* {processSteps.map((step, index) => (
                     <div
                       key={index}
                       className="flex items-start gap-4 p-6 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
@@ -278,12 +278,20 @@ export default function Team() {
                         <p className="text-muted-foreground text-sm">{step.description}</p>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
+
+        {/* <Image
+                    src={github}
+                    alt="GitHub Repository Screenshot"
+                    width={600}
+                    height={400}
+                    className="rounded-xl shadow-lg border border-border"
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        // </section> */}
       </main>
     </div>
   );
