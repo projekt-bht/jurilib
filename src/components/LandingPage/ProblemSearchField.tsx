@@ -1,11 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
 //https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
 //WebSpeechAPI only exits on client
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
+
+import { Button } from '../ui/button';
 const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 
 // Find filtered Organizations...
@@ -13,17 +13,21 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // New line can be added with Shift + Enter
 // If the input is empty, an error message will be displayed
 // When reentering the input field, the error message will be cleared
-export function ProblemSearchField() {
+export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
   const [problem, setProblem] = useState('');
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const router = useRouter();
-
+  const exampleSearches = [
+    'Ich habe Probleme mit meinem Vermieter wegen Mieterhöhung',
+    'Mein Arbeitgeber hat mir gekündigt, ich brauche rechtliche Beratung',
+    'Ich benötige Hilfe bei einem Verkehrsunfall',
+    'Fragen zum Erbrecht und Testament',
+  ];
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
 
     // handle empty input
     if (!problem.trim()) {
@@ -31,13 +35,10 @@ export function ProblemSearchField() {
       return;
     }
 
-    setIsRecordingDone(true)
-
-    try {
-      router.push(`/search/${problem}`);
-    } catch (err) {
-      throw new Error('Could not load search results: ' + (err as Error).message);
-    }
+    setIsRecordingDone(true);
+    setError('');
+    onSubmit(problem);
+    setIsSubmitted(true);
   }
 
   // Handle Enter key for submission
@@ -69,10 +70,42 @@ export function ProblemSearchField() {
 
       <button
         type="submit"
-        className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foregroundfont-bold p-2 pr-3 pl-3 rounded-full"
+        className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full"
       >
         Passende Lösung finden
       </button>
+
+      <p className="text-accent-gray text-base mt-2 mb-8">
+        Deine Anfrage wird vertraulich behandelt
+      </p>
+
+      <div
+        className={`mt-6 w-full transition-all duration-500 ease-in-out ${
+          isSubmitted
+            ? 'opacity-0 scale-95 max-h-0 overflow-hidden'
+            : 'opacity-100 scale-100 max-h-96'
+        }`}
+      >
+        <span className="text-base text-accent-gray text-center mt-4 mb-4">
+          Oder wähle ein Beispiel:
+        </span>
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {exampleSearches.map((example) => (
+            <Button
+              key={example}
+              type="button"
+              variant="outline"
+              size="sm"
+              className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray"
+              onClick={() => {
+                setProblem(example);
+              }}
+            >
+              {example}
+            </Button>
+          ))}
+        </div>
+      </div>
     </form>
   );
 }

@@ -39,6 +39,7 @@
   --color-accent-black: var(--accent-black);
   --color-accent-black-light: var(--accent-black-light);
   --color-accent-white: var(--accent-white);
+  --color-accent-red: var(--destructive);
   --radius-sm: calc(var(--radius) - 4px); /* Rundung für Badges oder kleine Elemente */
   --radius-md: calc(
     var(--radius) - 2px
@@ -57,8 +58,8 @@
   --primary-foreground: rgb(255 255 255);
   --primary-hover: rgb(64 64 64);
   --primary-hover-foreground: rgb(255 255 255);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
   --muted-foreground: rgb(115 155 155);
   --destructive: rgb(239, 37, 27);
   --border: rgb(228 228 228);
@@ -81,6 +82,7 @@
   --accent-black: rgb(48 48 48);
   --accent-black-light: rgb(64 64 64);
   --accent-white: rgb(255 255 255);
+  --accent-red: rgb(239, 37, 27);
 }
 
 .dark {
@@ -93,8 +95,8 @@
   --primary-foreground: rgb(255 255 255);
   --primary-hover: rgb(64 64 64);
   --primary-hover-foreground: rgb(255 255 255);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary: rgb(228 228 228);
+  --secondary-foreground: rgb(48 48 48);
   --muted-foreground: rgb(115 155 155);
   --destructive: rgb(239, 37, 27);
   --border: rgb(228 228 228);
@@ -117,6 +119,7 @@
   --accent-black: rgb(48 48 48);
   --accent-black-light: rgb(64 64 64);
   --accent-white: rgb(255 255 255);
+  --accent-red: rgb(239, 37, 27);
 }
 
 @layer base {
