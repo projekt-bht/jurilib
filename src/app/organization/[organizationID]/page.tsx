@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 
 import { Profile } from '@/app/organization/_components/Profile';
-import type { Employee, Organization } from '~/generated/prisma/client';
+import type { Appointment, Employee, Organization } from '~/generated/prisma/client';
+
+import OrganizationCalendar from '../_components/OrganizationCalendar';
 
 async function fetchBackendData(endpoint: string, organizationID: string): Promise<Response> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}${endpoint}/${organizationID}`, {
@@ -37,14 +39,22 @@ export default async function OrganizationDetailPage({
   const resEmployee = await fetchBackendData('employee/organization/', organizationID);
   const employees: Employee[] = await resEmployee.json();
 
+  // Parse organization appointments
+  // Upcomming errors are also handled by the Error Boundary
+  const resAppointments = await fetchBackendData('appointment/organization/', organizationID);
+  const appointments: Appointment[] = await resAppointments.json();
+  console.log(appointments);
+
   return (
-    <div className="bg-card grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div className="flex justify-center bg-card items-start gap-2 p-2">
       {/* Left Column - Profile Info */}
-      <div className="lg:col-span-2 space-y-8">
+      <div className="w-4/6">
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      <div className="lg:col-span-1 space-y-8">{/*<OrganizationCalendar />*/}</div>
+      <div className="w-2/6">
+        <OrganizationCalendar appointments={appointments} employees={employees} />
+      </div>
     </div>
   );
 }

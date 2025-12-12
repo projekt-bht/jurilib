@@ -15,12 +15,14 @@ export function Navbar() {
 
   useEffect(() => {
     (async () => {
-      const loginFromServer = await getLogin();
-      setLogin(loginFromServer);
+      try {
+        const loginFromServer = await getLogin();
+        setLogin(loginFromServer);
+      } catch {
+        setLogin(false);
+      }
     })();
   }, []);
-
-  if (login === undefined) return <></>;
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
