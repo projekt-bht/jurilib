@@ -25,17 +25,15 @@ export type BookingRequest = {
   note?: string;
 };
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function fetchAvailableSlots(date: Date): Promise<string[]> {
-  await wait(150);
 
   const day = date.getDate();
   return DEFAULT_TIME_SLOTS.filter((slot, index) => (day + index) % 2 === 0);
 }
 
 export async function bookAppointment({ date, time }: BookingRequest) {
-  await wait(300);
+
   console.warn('Booked appointment (mock)', { date, time });
 }
 
