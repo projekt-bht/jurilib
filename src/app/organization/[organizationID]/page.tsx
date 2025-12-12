@@ -43,19 +43,18 @@ export default async function OrganizationDetailPage({
   // Upcomming errors are also handled by the Error Boundary
   const resAppointments = await fetchBackendData('appointment/organization/', organizationID);
   const appointments: Appointment[] = await resAppointments.json();
-  console.log(appointments)
+  console.log(appointments);
 
   return (
-    <div className="bg-card grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div className="flex justify-center bg-card items-start gap-2 p-2">
       {/* Left Column - Profile Info */}
-      <div className="lg:col-span-2 space-y-8 ">
+      <div className="w-4/6">
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      <div className="lg:col-span-1 space-y-8  w-full">
-          <OrganizationCalendar appointments={appointments} employees={employees}/>
-        </div>
-      
+      <div className="w-2/6">
+        <OrganizationCalendar appointments={appointments} employees={employees} />
+      </div>
     </div>
   );
 }
