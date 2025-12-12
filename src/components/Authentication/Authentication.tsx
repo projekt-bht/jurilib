@@ -97,6 +97,7 @@ export function Authentication() {
       >
         <DialogTrigger asChild>
           <Button
+            id="authButton"
             className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
             variant="outline"
           >
