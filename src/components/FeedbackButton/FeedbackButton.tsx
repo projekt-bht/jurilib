@@ -10,7 +10,7 @@ export default function FeedbackButton() {
   return (
     <Link
       href="/feedback"
-      className="fixed bottom-4 right-4 bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground p-3 rounded-full cursor-pointer"
+      className="fixed bottom-4 right-4 bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground p-3 rounded-full cursor-pointer z-50"
       aria-label="Open feedback page"
     >
       <div className="flex items-center gap-2">

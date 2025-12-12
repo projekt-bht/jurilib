@@ -48,7 +48,7 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
         <CarouselContent>
           {Array.from({ length: totalPages }).map((_, pageIndex) => (
             <CarouselItem key={pageIndex}>
-              <div className="flex flex-wrap justify-center gap-6">
+              <div className="flex flex-wrap justify-center gap-6 p-2">
                 {organizations
                   .slice(pageIndex * 4, pageIndex * 4 + 4)
                   .map((organization: Organization) => {

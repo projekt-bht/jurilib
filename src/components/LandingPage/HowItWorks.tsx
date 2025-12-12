@@ -1,32 +1,33 @@
-import { CheckCircle2, FileText, Scale, Users } from 'lucide-react';
+import { CheckCircle2, ClipboardClock, MessageSquare, Search } from 'lucide-react';
 
 const steps = [
   {
-    icon: FileText,
-    title: 'Beschreibe Dein Problem',
-    description: 'Erzähle uns mit eigenen Worten von Deinem rechtlichen Anliegen',
-    iconBgColor: 'bg-accent-blue-soft',
+    icon: MessageSquare,
+    title: 'Beschreibe dein Problem',
+    description: 'Beschreibe mit eigenen Worten, wobei du rechtliche Unterstützung brauchst.',
+    iconBgColor: 'bg-accent-blue-soft shadow-sm',
     iconColor: 'text-accent-blue',
   },
   {
-    icon: Scale,
-    title: 'Finde Dein Match',
-    description: 'Unser Algorithmus findet die besten Anwält*innen für Dein Anliegen',
-    iconBgColor: 'bg-accent-purple-light',
-    iconColor: 'text-accent-purple',
+    icon: Search,
+    title: 'Finde dein Match',
+    description:
+      'Mit unserem Algorithmus entdeckst du schnell die besten Angebote für dein Anliegen.',
+    iconBgColor: 'bg-accent-emerald-light shadow-sm',
+    iconColor: 'text-accent-emerald',
   },
   {
-    icon: Users,
-    title: 'Buche Deinen Termin',
-    description: 'Vereinbare einen Beratungstermin, der zu Dir passt',
-    iconBgColor: 'bg-accent-emerald-light',
-    iconColor: 'text-accent-emerald',
+    icon: ClipboardClock,
+    title: 'Buche deinen Termin',
+    description: 'Finde und buche einen Beratungstermin, der perfekt zu dir passt.',
+    iconBgColor: 'bg-accent-purple-light shadow-sm',
+    iconColor: 'text-accent-purple',
   },
   {
     icon: CheckCircle2,
     title: 'Match!',
-    description: 'Dein rechtliches Problem ist nun in guten Händen',
-    iconBgColor: 'bg-accent-amber-light',
+    description: 'Dein rechtliches Anliegen ist jetzt in sicheren Händen.',
+    iconBgColor: 'bg-accent-amber-light shadow-sm',
     iconColor: 'text-accent-amber',
   },
 ];
@@ -48,11 +49,16 @@ export default function HowItWorks() {
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <div key={index} className="flex flex-col items-center text-center">
-                <div className={`${step.iconBgColor} rounded-full p-4 mb-4 border-border`}>
+              <div
+                key={index}
+                className="bg-background flex flex-col items-center text-center shadow-lg rounded-lg p-6 border border-border hover:shadow-xl transition-all duration-300"
+              >
+                <div className={`${step.iconBgColor} rounded-full p-4 mb-4`}>
                   <Icon className={`w-8 h-8 ${step.iconColor}`} />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{step.title}</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {index + 1}. {step.title}
+                </h3>
                 <p className="text-muted-foreground text-sm">{step.description}</p>
               </div>
             );
