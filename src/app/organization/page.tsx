@@ -1,9 +1,9 @@
+'use client';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
-
-//export const dynamic = 'force-dynamic';
 
 async function fetchOrganizations(): Promise<Organization[]> {
   try {
@@ -19,8 +19,27 @@ async function fetchOrganizations(): Promise<Organization[]> {
   }
 }
 
-export default async function OrganizationsPage() {
-  const organizations: Organization[] = await fetchOrganizations();
+export default function OrganizationsPage() {
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetchOrganizations();
+      setOrganizations(data);
+      setLoading(false);
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
+        <div className="flex justify-center items-center h-full">
+          <p className="text-lg text-muted-foreground">Lade Organisationen...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
