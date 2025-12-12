@@ -160,8 +160,8 @@ async function main() {
       console.log(`created Case "${caseTitle}" in Organization`);
     }
 
-    // Create 5 Appointments per Org
-    for (let i = 0; i < 5; i++) {
+    // Create 50 Appointments per Org
+    for (let i = 0; i < 50; i++) {
       // creating ralistic appointment times
       const hour = faker.number.int({ min: 8, max: 21 });
       const minute = faker.helpers.arrayElement([0, 15, 30, 45]);
