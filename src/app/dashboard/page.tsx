@@ -36,21 +36,16 @@ export default function Dashboard() {
   }
   //Add cases and appointments later (case Endpoint missing)
   return (
-    <div className="min-h-screen flex flex-col items-center mt-10">
-      <h1 className="text-4xl font-bold mb-6">Dashboard</h1>
+    <div className="min-h-screen flex flex-col mt-10">
+      <h1 className="text-4xl font-bold mb-6 text-center">Dashboard</h1>
       {user && (
-        <div>
-          <div>
-            <div>
-              <span>Name: {user.name}</span>
-            </div>
-            <div>
-              <span>Telefon: {user.phone}</span>
-            </div>
-            <div>
-              <span>Adresse: {user.address}</span>
-            </div>
+        <div className="mt-10">
+          <h1 className="text-4xl font-bold ml-6 mb-6">Willkommen, {user.name}</h1>
+          <div className="ml-6">
+            <p>Telefon: {user.phone}</p>
+            <p>Adresse: {user.address}</p>
           </div>
+          <h1 className="text-4xl font-bold ml-6 mt-20">Deine Anfragen: </h1>
         </div>
       )}
     </div>
