@@ -63,6 +63,7 @@ export function Authentication() {
           //Login user after successful registration
           const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
           setLogin(loginFromServer);
+          router.push('/dashboard');
         }
       } else {
         const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
