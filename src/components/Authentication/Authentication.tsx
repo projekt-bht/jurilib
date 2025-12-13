@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -29,6 +30,8 @@ export function Authentication() {
   const [successDialog, setSuccessDialog] = useState(false);
   const [error, setError] = useState('');
 
+  const router = useRouter();
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -55,13 +58,18 @@ export function Authentication() {
         } else {
           setError('');
           setShowDialog(false);
-          setSuccessDialog(true);
+          //setSuccessDialog(true);
+
+          //Login user after successful registration
+          const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
+          setLogin(loginFromServer);
         }
       } else {
         const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
         if (loginFromServer) {
           setLogin(loginFromServer);
           setShowDialog(false);
+          router.push('/dashboard');
           setError('');
         } else {
           setError('Email oder Passwort falsch.');
@@ -76,6 +84,7 @@ export function Authentication() {
     <Button
       onClick={async () => {
         await deleteLogin();
+        router.push('/');
         setLogin(false);
       }}
       className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
