@@ -2,27 +2,13 @@
 import { Building2, ShieldUser, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
-import { LoginContext } from '@/app/LoginContext';
+import { LoginContext, useLoginContext } from '@/app/LoginContext';
 import { Authentication } from '@/components/Authentication/Authentication';
-import { getLogin } from '@/services/api';
-import type { LoginResource } from '@/services/Resources';
 import scale_logo from '~/public/scale_logo.svg';
 
 export function Navbar() {
-  const [login, setLogin] = useState<undefined | false | LoginResource>(undefined);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const loginFromServer = await getLogin();
-        setLogin(loginFromServer);
-      } catch {
-        setLogin(false);
-      }
-    })();
-  }, []);
+  const { login, setLogin } = useLoginContext();
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
@@ -41,6 +27,13 @@ export function Navbar() {
         </Link>
 
         <div className="flex items-center gap-x-5">
+          {login && (
+            <Link href="/dashboard" className="flex items-center gap-x-2">
+              <ShieldUser className="text-forground" size={24} />
+              <p>Dashboard</p>
+            </Link>
+          )}
+
           <Link href="/lawyers" className="flex items-center gap-x-2">
             <ShieldUser className="text-forground" size={24} />
             <p>Du bist Jurist*in?</p>
