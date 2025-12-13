@@ -1,4 +1,4 @@
-import type { LoginResource, RegisterResource } from '@/services/Resources';
+import type { LoginResource, RegisterResource, UserResource } from '@/services/Resources';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/register`;
@@ -43,4 +43,12 @@ export async function deleteLogin() {
     credentials: 'include' as RequestCredentials,
   });
   return;
+}
+
+export async function getUser(userID: string): Promise<UserResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/${userID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as UserResource;
 }
