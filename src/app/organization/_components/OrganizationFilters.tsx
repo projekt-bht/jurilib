@@ -27,19 +27,17 @@ const priceCategoryLabels: Record<PriceCategoryEnum, string> = {
   [PriceCategoryEnum.HIGH]: 'Hoch (200€+)',
 };
 
-const organizationTypeMeta: Record<
-  OrganizationTypeEnum,
-  { label: string; icon: React.ReactNode }
-> = {
-  [OrganizationTypeEnum.LAW_FIRM]: {
-    label: 'Kanzlei',
-    icon: <Building2 className="w-3.5 h-3.5" />,
-  },
-  [OrganizationTypeEnum.ASSOCIATION]: {
-    label: 'Verein',
-    icon: <Users className="w-3.5 h-3.5" />,
-  },
-};
+const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
+  {
+    [OrganizationTypeEnum.LAW_FIRM]: {
+      label: 'Kanzlei',
+      icon: <Building2 className="w-3.5 h-3.5" />,
+    },
+    [OrganizationTypeEnum.ASSOCIATION]: {
+      label: 'Verein',
+      icon: <Users className="w-3.5 h-3.5" />,
+    },
+  };
 
 const collapsibleDefaults: Record<keyof FilterOptions, boolean> = {
   priceCategory: true,
@@ -58,9 +56,8 @@ export function OrganizationFilters({
   onReset: () => void;
   activeFilterCount: number;
 }) {
-  const [openSections, setOpenSections] = useState<Record<keyof FilterOptions, boolean>>(
-    collapsibleDefaults,
-  );
+  const [openSections, setOpenSections] =
+    useState<Record<keyof FilterOptions, boolean>>(collapsibleDefaults);
 
   const toggleSection = (section: keyof FilterOptions) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -84,12 +81,12 @@ export function OrganizationFilters({
   const handleCheckboxChange = (
     category: keyof FilterOptions,
     value: FilterValue,
-    checked: boolean,
+    checked: boolean
   ) => {
     onFilterChange(category, value, checked);
   };
 
-  const hasActiveFilters = activeFilterCount > 0;
+  const isActiveFilters = activeFilterCount > 0;
 
   return (
     <aside className="lg:w-[320px] w-full self-start lg:sticky lg:top-24 space-y-4">
@@ -114,7 +111,7 @@ export function OrganizationFilters({
               type="button"
               variant="ghost"
               size="sm"
-              disabled={!hasActiveFilters}
+              disabled={!isActiveFilters}
               onClick={onReset}
               className="h-8 px-2 text-xs font-semibold"
             >
