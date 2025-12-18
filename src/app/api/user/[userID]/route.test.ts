@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 import type { User } from '~/generated/prisma/browser';
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
@@ -28,7 +26,9 @@ describe('User Routen testen', () => {
     const createdAccount = await createAccount(account);
 
     const user: UserCreateInput = {
-      name: 'peter',
+      firstName: 'peter',
+      lastName: 'peter',
+
       account: {
         connect: { id: createdAccount.id },
       },
@@ -53,7 +53,7 @@ describe('User Routen testen', () => {
     expect(res.status).toBe(404);
   });
 
-  test('PATCH User name', async () => {
+  test('PATCH User firstName', async () => {
     const getReq = new NextRequest(baseUrl);
     const getRes = await GET(getReq, { params: Promise.resolve({ userID: cUser.id }) });
     const getJSON = await getRes.json();
@@ -63,7 +63,8 @@ describe('User Routen testen', () => {
 
     const user: UserCreateInput = {
       id: cUser.id,
-      name: 'updatedPeter',
+      firstName: 'updatedPeter',
+      lastName: cUser.lastName,
       account: {
         connect: { id: cUser.accountId },
       },
@@ -80,10 +81,10 @@ describe('User Routen testen', () => {
     });
 
     const updated = await prisma.user.findFirst({
-      where: { name: user.name },
+      where: { firstName: user.firstName },
     });
 
-    expect(updated?.name).toBe('updatedPeter');
+    expect(updated?.firstName).toBe('updatedPeter');
     expect(res.status).toBe(200);
   });
 

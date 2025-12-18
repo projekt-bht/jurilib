@@ -23,7 +23,8 @@ describe('User Routen testen', () => {
     const createdAccount = await createAccount(account);
 
     const user: UserCreateInput = {
-      name: 'peter',
+      firstName: 'peter',
+      lastName: 'parker',
       account: {
         connect: { id: createdAccount.id },
       },

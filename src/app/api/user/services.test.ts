@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 import { createAccount } from '../account/services';
@@ -16,7 +14,8 @@ describe('User testen', () => {
     const createdAccount = await createAccount(account);
 
     const user: UserCreateInput = {
-      name: 'peter',
+      firstName: 'peter',
+      lastName: 'parker',
       account: {
         connect: { id: createdAccount.id },
       },
