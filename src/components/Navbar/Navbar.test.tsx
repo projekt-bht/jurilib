@@ -19,6 +19,12 @@ jest.unstable_mockModule('@/services/api', () => ({
   register: async () => {},
 }));
 
+jest.unstable_mockModule('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
 // top-level await
 const { render, screen } = await import('@testing-library/react');
 const { Navbar } = await import('./Navbar');
