@@ -46,7 +46,8 @@ model Account {
 model User {
     id        String   @id @default(uuid())
     accountId String   @unique
-    name      String
+    firstName      String
+    lastName      String
     phone     String?
     address   String?
     createdAt DateTime @default(now())
@@ -63,7 +64,8 @@ model Employee {
     id             String       @id @default(uuid())
     accountId      String       @unique
     organizationId String
-    name           String
+    firstName      String
+    lastName      String
     phone          String?
     position       String?
     expertiseArea  Areas[]
