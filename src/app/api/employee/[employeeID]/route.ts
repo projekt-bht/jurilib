@@ -10,7 +10,8 @@ import { deleteEmployee, readEmployeeByEmployeeID, updateEmployee } from './serv
 const UpdateSchemaEmployee = z.object({
   id: z.string().min(36),
   //organizationId: z.string().optional(), // organizationId should not be updated, maybe later
-  name: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   phone: z.string().optional(),
   position: z.string().optional(),
   expertiseAreas: z.array(z.enum(Areas)).optional(),
