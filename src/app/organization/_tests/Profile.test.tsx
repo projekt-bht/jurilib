@@ -25,7 +25,8 @@ const mockOrganization: Organization = {
 const mockEmployees: Employee[] = [
   {
     id: 'e1',
-    name: 'Max Mustermann',
+    firstName: 'Max',
+    lastName: 'Mustermann',
     position: 'Rechtsanwalt',
     organizationId: '1',
     accountId: 'a1',
