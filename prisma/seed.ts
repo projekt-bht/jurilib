@@ -31,7 +31,8 @@ async function main() {
   // Create 20 Users with accounts
   const userIds: string[] = [];
   for (let i = 0; i < 20; i++) {
-    const userName = faker.person.fullName();
+    const userFirstName = faker.person.firstName();
+    const userLastName = faker.person.lastName();
 
     const account = await prisma.account.create({
       data: {
@@ -43,14 +44,15 @@ async function main() {
 
     const user = await prisma.user.create({
       data: {
-        name: userName,
+        firstName: userFirstName,
+        lastName: userLastName,
         accountId: account.id,
         phone: faker.phone.number(),
         address: faker.location.streetAddress(),
       },
     });
     userIds.push(user.id);
-    console.log(`created User ${userName} with accID ${account.id}`);
+    console.log(`created User ${userFirstName} ${userLastName} with accID ${account.id}`);
   }
 
   // Create Organizations with related Data
@@ -108,11 +110,13 @@ async function main() {
           role: Role.EMPLOYEE,
         },
       });
+      const employeeFirstName = faker.person.firstName();
+      const employeeLastName = faker.person.lastName();
 
-      const employeeName = faker.person.fullName();
       const employee = await prisma.employee.create({
         data: {
-          name: employeeName,
+          firstName: employeeFirstName,
+          lastName: employeeLastName,
           organization: { connect: { id: orgId } },
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
@@ -121,7 +125,7 @@ async function main() {
         },
       });
       employeeId.push(employee.id);
-      console.log(`created Employee ${employeeName} in Organization`);
+      console.log(`created Employee ${employeeFirstName} ${employeeLastName} in Organization`);
     }
 
     // Create 3 Services per Org
