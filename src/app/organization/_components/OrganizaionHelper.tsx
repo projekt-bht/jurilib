@@ -53,19 +53,19 @@ export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
 export function EmployeeCard({ employee }: { employee: Employee }) {
   return (
     <div
-      key={employee.name}
+      key={employee.firstName}
       className="bg-linear-to-br from-accent-purple-soft to-accent-blue/5 rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-101 animate-fade-in"
       id={`${employee.id}_EmployeeCard`}
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0">
-          {employee.name
+          {employee.firstName
             .split(' ')
             .map((n) => n[0])
             .join('')}
         </div>
         <div>
-          <h3 className="text-xl font-bold text-foreground">{employee.name}</h3>
+          <h3 className="text-xl font-bold text-foreground">{employee.firstName}</h3>
           <p className="text-sm text-accent-blue font-medium">{employee.position}</p>
         </div>
       </div>
