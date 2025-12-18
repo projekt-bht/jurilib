@@ -33,6 +33,7 @@ type SlotOption = {
   employeeId: string;
   label: string;
 };
+// SlotOption carries the IDs needed to PATCH the existing appointment (employee + appointment) instead of creating a new one.
 
 /**
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
@@ -152,6 +153,7 @@ export default function OrganizationCalendar({
 
     setIsBooking(true);
     setStatusMessage(null);
+    // PATCH-Call: bestehenden Termin für den Nutzer bestätigen und Slot schließen
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/employee/${selectedSlot.employeeId}/${selectedSlot.appointmentId}`,
