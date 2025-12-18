@@ -10,11 +10,12 @@ import { cn } from '@/lib/utils';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 
 import BookingSelector from './BookingSelector';
-import { useBookingSchedule } from './useBookingSchedule';
+//import { useBookingSchedule } from './useBookingSchedule';
 import { Noto_Sans_Cypro_Minoan } from 'next/font/google';
 import { LoginContext } from '@/app/LoginContext';
 import { getLogin } from '@/services/api';
 import { LoginResource } from '@/services/Resources';
+import { bookAppointment } from './bookingService';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -35,16 +36,25 @@ export default function OrganizationCalendar({
   appointments,
   employees,
 }: OrganizationCalendarProps) {
-  /* TODO: adjust colors, icons, and calendar positioning after Hannes' PR */
-  const { selectedDate, selectedTime, isBooking, setDate, selectTime } = useBookingSchedule();
+  /* TODO: adjust colors, icons, and calendar positioning after Hannes' PR 
+  const { selectedDate, selectedTime, isBooking, setDate, selectTime } = useBookingSchedule();*/
 
   const [login, setLogin] = useState<undefined | false | LoginResource>(undefined);
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
   const [availableSlots, setAvailableSlots] = useState<Record<string, string[]>>({});
-  const [statusMessage, setStatusMessage] = useState<boolean>(false);
+  const [showStatusMessage, setShowStatusMessage] = useState<boolean>(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
   // const [bookingMode, setBookingMode] = useState<'quick' | 'employee'>('quick'); // track current booking mode (quick/employee)
   // const [selectedEmployee, setSelectedEmployee] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
   // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
+
+  const setDate = (date: Date | undefined) => {
+    setSelectedDate(date);
+    setSelectedTime(null);
+  };
 
   useEffect(() => {
     (async () => {
@@ -60,7 +70,7 @@ export default function OrganizationCalendar({
   useEffect(() => {
     if (statusMessage) {
       const timer = setTimeout(() => {
-        setStatusMessage(false);
+        setShowStatusMessage(false);
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -110,7 +120,7 @@ export default function OrganizationCalendar({
     // const isWeekend = weekday === 0 || weekday === 6;
     // return date < midnight || isWeekend;
   }
-  function confirmBooking() {
+  async function confirmBooking() {
     if (!login) {
       const authDialog = document.getElementById('authButton') as HTMLElement | null;
       if (authDialog) {
@@ -118,9 +128,24 @@ export default function OrganizationCalendar({
       }
       return;
     } else {
-      setStatusMessage(true);
+      setShowStatusMessage(true);
     }
     // Simulate booking process
+    if (!selectedDate || !selectedTime) {
+      setStatusMessage('Bitte Datum und Uhrzeit auswählen.');
+      return;
+    }
+
+    setIsBooking(true);
+    setStatusMessage(null);
+    try {
+      await bookAppointment({ date: selectedDate, time: selectedTime });
+      setStatusMessage('Termin erfolgreich gebucht!');
+    } catch {
+      setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
+    } finally {
+      setIsBooking(false);
+    }
   }
 
   const handleChange = (date?: Date, time?: string | null) => {
@@ -273,7 +298,7 @@ export default function OrganizationCalendar({
                             : 'border-border hover:bg-accent-gray-light'
                         )}
                         onClick={() => {
-                          selectTime(slot);
+                          setSelectedTime(slot);
                           handleChange(undefined, slot);
                         }}
                       >
@@ -310,7 +335,7 @@ export default function OrganizationCalendar({
                 >
                   {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
                 </Button>
-                {statusMessage && (
+                {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
                     <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
                   </div>
