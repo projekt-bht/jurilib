@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
@@ -19,7 +17,8 @@ describe('Account Routen testen', () => {
     };
 
     const user: UserCreateInput = {
-      name: 'PETER_USER_REGISTER',
+      firstName: 'PETER_USER_REGISTER',
+      lastName: 'PARKER_USER_REGISTER',
       account: {
         connect: undefined, // Wird später gesetzt (user Service),
       },

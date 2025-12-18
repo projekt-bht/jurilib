@@ -23,7 +23,8 @@ describe('Login test', () => {
     const account = await createAccount(accountInput);
 
     const userInput: UserCreateInput = {
-      name: 'PETER_USER_REGISTER',
+      firstName: 'PETER_USER_REGISTER',
+      lastName: 'PARKER_USER_REGISTER',
       account: {
         connect: undefined, // Wird später gesetzt (user Service),
       },
