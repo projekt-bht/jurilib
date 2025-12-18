@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import type { Appointment, Employee } from '~/generated/prisma/client';
+import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import BookingSelector from './BookingSelector';
 //import { useBookingSchedule } from './useBookingSchedule';
@@ -15,7 +16,6 @@ import { Noto_Sans_Cypro_Minoan } from 'next/font/google';
 import { LoginContext } from '@/app/LoginContext';
 import { getLogin } from '@/services/api';
 import { LoginResource } from '@/services/Resources';
-import { bookAppointment } from './bookingService';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -26,6 +26,12 @@ type OrganizationCalendarProps = {
 export type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
   expertiseAreas: string[];
   avatar?: string | null;
+};
+
+type SlotOption = {
+  appointmentId: string;
+  employeeId: string;
+  label: string;
 };
 
 /**
@@ -41,11 +47,12 @@ export default function OrganizationCalendar({
 
   const [login, setLogin] = useState<undefined | false | LoginResource>(undefined);
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
-  const [availableSlots, setAvailableSlots] = useState<Record<string, string[]>>({});
+  const [availableSlots, setAvailableSlots] = useState<Record<string, SlotOption[]>>({});
   const [showStatusMessage, setShowStatusMessage] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   // const [bookingMode, setBookingMode] = useState<'quick' | 'employee'>('quick'); // track current booking mode (quick/employee)
   // const [selectedEmployee, setSelectedEmployee] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
@@ -54,6 +61,7 @@ export default function OrganizationCalendar({
   const setDate = (date: Date | undefined) => {
     setSelectedDate(date);
     setSelectedTime(null);
+    setSelectedSlot(null);
   };
 
   useEffect(() => {
@@ -77,15 +85,19 @@ export default function OrganizationCalendar({
   }, [statusMessage]);
 
   useEffect(() => {
-    const days: Date[] = appointments.map((a) => {
+    const openAppointments = appointments.filter((a) => a.status === AppointmentStatus.OPEN);
+
+    const days: Date[] = openAppointments.map((a) => {
       // create a new Date instance and normalize to midnight without mutating source
       const d = new Date(a.dateTimeStart);
       d.setHours(0, 0, 0, 0);
       return d;
     });
     // vibe coded hell
-    const slotsByDate: Record<string, string[]> = appointments.reduce(
-      (acc: Record<string, string[]>, appointment) => {
+    const slotsByDate: Record<string, SlotOption[]> = openAppointments.reduce(
+      (acc: Record<string, SlotOption[]>, appointment) => {
+        if (!appointment.employeeId) return acc;
+
         const dateKey = new Date(appointment.dateTimeStart).toDateString();
         const start = new Date(appointment.dateTimeStart);
         const end = new Date(appointment.dateTimeEnd);
@@ -95,7 +107,11 @@ export default function OrganizationCalendar({
         if (!acc[dateKey]) {
           acc[dateKey] = [];
         }
-        acc[dateKey].push(slot);
+        acc[dateKey].push({
+          appointmentId: appointment.id,
+          employeeId: appointment.employeeId,
+          label: slot,
+        });
         return acc;
       },
       {}
@@ -127,11 +143,9 @@ export default function OrganizationCalendar({
         authDialog.click();
       }
       return;
-    } else {
-      setShowStatusMessage(true);
     }
     // Simulate booking process
-    if (!selectedDate || !selectedTime) {
+    if (!selectedDate || !selectedSlot) {
       setStatusMessage('Bitte Datum und Uhrzeit auswählen.');
       return;
     }
@@ -139,7 +153,27 @@ export default function OrganizationCalendar({
     setIsBooking(true);
     setStatusMessage(null);
     try {
-      await bookAppointment({ date: selectedDate, time: selectedTime });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/employee/${selectedSlot.employeeId}/${selectedSlot.appointmentId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include' as RequestCredentials,
+          body: JSON.stringify({
+            // attach user and close slot in backend so it no longer appears as OPEN
+            userId: login.id,
+            appointmentStatus: AppointmentStatus.CONFIRMED,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Update failed');
+      }
+
+      setShowStatusMessage(true);
       setStatusMessage('Termin erfolgreich gebucht!');
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
@@ -281,15 +315,15 @@ export default function OrganizationCalendar({
 
               <div className="grid grid-cols-2 gap-2">
                 {(() => {
-                  const slotsForSelectedDate: string[] =
+                  const slotsForSelectedDate: SlotOption[] =
                     availableSlots[selectedDate?.toDateString() || ''] || [];
 
-                  return slotsForSelectedDate.map((slot: string) => {
-                    const isSelected = selectedTime === slot;
+                  return slotsForSelectedDate.map((slot: SlotOption) => {
+                    const isSelected = selectedSlot?.appointmentId === slot.appointmentId;
 
                     return (
                       <Button
-                        key={slot}
+                        key={slot.appointmentId}
                         variant="outline"
                         className={cn(
                           'm-2 rounded-lg border font-semibold text-center w-full px-4 text-base',
@@ -298,11 +332,12 @@ export default function OrganizationCalendar({
                             : 'border-border hover:bg-accent-gray-light'
                         )}
                         onClick={() => {
-                          setSelectedTime(slot);
-                          handleChange(undefined, slot);
+                          setSelectedSlot(slot);
+                          setSelectedTime(slot.label);
+                          handleChange(undefined, slot.label);
                         }}
                       >
-                        {slot}
+                        {slot.label}
                       </Button>
                     );
                   });
