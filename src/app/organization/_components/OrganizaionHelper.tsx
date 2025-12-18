@@ -59,13 +59,12 @@ export function EmployeeCard({ employee }: { employee: Employee }) {
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0">
-          {employee.firstName
-            .split(' ')
-            .map((n) => n[0])
-            .join('')}
+          {employee.firstName.charAt(0) + employee.lastName.charAt(0)}
         </div>
         <div>
-          <h3 className="text-xl font-bold text-foreground">{employee.firstName}</h3>
+          <h3 className="text-xl font-bold text-foreground">
+            {`${employee.firstName} ${employee.lastName}`}
+          </h3>
           <p className="text-sm text-accent-blue font-medium">{employee.position}</p>
         </div>
       </div>
