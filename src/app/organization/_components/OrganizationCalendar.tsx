@@ -33,6 +33,8 @@ type SlotOption = {
   label: string;
 };
 
+// TODO (future): Ampelsystem für Terminstatus (OPEN=grün, REQUESTED=gelb, CONFIRMED=rot) direkt im Kalender visualisieren.
+
 export enum BookingMode {
   QUICK = 'quick',
   EMPLOYEE = 'employee',
@@ -55,6 +57,7 @@ export default function OrganizationCalendar({
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
   const [isBooking, setIsBooking] = useState(false);
+  const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
   const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
   // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
@@ -171,6 +174,12 @@ export default function OrganizationCalendar({
 
       setShowStatusMessage(true);
       setStatusMessage('Termin erfolgreich gebucht!');
+      // mark slot as booked locally so it disappears/appears disabled without reload
+      setBookedSlotIds((prev) =>
+        prev.includes(selectedSlot.appointmentId) ? prev : [...prev, selectedSlot.appointmentId]
+      );
+      setSelectedSlot(null);
+      setSelectedTime(null);
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
     } finally {
@@ -308,6 +317,7 @@ export default function OrganizationCalendar({
                     availableSlots[selectedDate?.toDateString() || ''] || [];
 
                   return slotsForSelectedDate.map((slot: SlotOption) => {
+                    const isBooked = bookedSlotIds.includes(slot.appointmentId);
                     const isSelected = selectedSlot?.appointmentId === slot.appointmentId;
 
                     return (
@@ -316,11 +326,15 @@ export default function OrganizationCalendar({
                         variant="outline"
                         className={cn(
                           'm-2 rounded-lg border font-semibold text-center w-full px-4 text-base',
-                          isSelected
+                          isBooked
+                            ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
+                            : isSelected
                             ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
                             : 'border-border hover:bg-accent-gray-light'
                         )}
+                        disabled={isBooked}
                         onClick={() => {
+                          if (isBooked) return;
                           setSelectedSlot(slot);
                           setSelectedTime(slot.label);
                           handleChange(undefined, slot.label);
