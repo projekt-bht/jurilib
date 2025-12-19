@@ -270,18 +270,18 @@ export default function OrganizationCalendar({
               // classNames customized to mirror the reference design: centered/bold caption, spaced nav, roomy day cells, visible today ring, muted disabled days, and hover affordances
               /* https://daypicker.dev/docs/styling */
               classNames={{
-                //   months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-                //   month: 'w-full',
-                //   caption: '',
-                //   caption_label: 'mb-14 font-bold text-2xl',
-                //   nav: 'w-full flex justify-between ',
+                months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
+                month: 'w-full',
+                caption: '',
+                caption_label: 'mb-15 font-bold text-l',
+                nav: 'w-full flex justify-between ',
                 button_previous: ' hover:bg-accent-white rounded-lg p-2',
                 button_next: ' hover:bg-accent-white rounded-lg p-2',
-                //   table: 'w-full max-w-full',
-                // row: 'flex justify-between',
-                day: 'm-1 p-1 rounded-lg bg-accent-white text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+                table: 'w-full max-w-full',
+                row: 'flex justify-between',
+                day: 'm-1 h-10 w-10 flex items-center justify-center rounded-lg bg-accent-white text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
                 today:
-                  'rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
+                  'm-1 h-10 w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
 
                 disabled:
                   '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
