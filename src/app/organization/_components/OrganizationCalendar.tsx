@@ -4,16 +4,16 @@ import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { LoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { getLogin } from '@/services/api';
+import type { LoginResource } from '@/services/Resources';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import BookingSelector from './BookingSelector';
-import { LoginContext } from '@/app/LoginContext';
-import { getLogin } from '@/services/api';
-import { LoginResource } from '@/services/Resources';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -196,13 +196,11 @@ export default function OrganizationCalendar({
             </p>
           </div>
 
-          {
-            <BookingSelector
-              bookingMode={bookingMode}
-              onBookingModeChange={(mode) => setBookingMode(mode)}
-              selectedEmployee={selectedEmployee}
-            />
-          }
+          <BookingSelector
+            bookingMode={bookingMode}
+            onBookingModeChange={(mode) => setBookingMode(mode)}
+            selectedEmployee={selectedEmployee}
+          />
 
           {bookingMode === BookingMode.EMPLOYEE && (
             <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
@@ -280,12 +278,12 @@ export default function OrganizationCalendar({
               }}
             />
 
-              <div className="flex items-center gap-6 px-2 pb-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
-                  <span>Heute</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-6 px-2 pb-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
+                <span>Heute</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
                 <span>Ausgewählt</span>
               </div>

@@ -12,9 +12,9 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { cn } from '@/lib/utils';
+import type { Employee } from '~/generated/prisma/client';
 
 import { BookingMode } from './OrganizationCalendar';
-import type { Employee } from '~/generated/prisma/client';
 
 type BookingSelectorProps = {
   className?: string;
