@@ -11,7 +11,6 @@ import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import BookingSelector from './BookingSelector';
-//import { useBookingSchedule } from './useBookingSchedule';
 import { Noto_Sans_Cypro_Minoan } from 'next/font/google';
 import { LoginContext } from '@/app/LoginContext';
 import { getLogin } from '@/services/api';
@@ -28,12 +27,17 @@ export type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
   avatar?: string | null;
 };
 
+// SlotOption carries the IDs needed to PATCH the existing appointment (employee + appointment) instead of creating a new one.
 type SlotOption = {
   appointmentId: string;
   employeeId: string;
   label: string;
 };
-// SlotOption carries the IDs needed to PATCH the existing appointment (employee + appointment) instead of creating a new one.
+
+export enum BookingMode {
+  QUICK = 'quick',
+  EMPLOYEE = 'employee',
+}
 
 /**
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
@@ -43,9 +47,6 @@ export default function OrganizationCalendar({
   appointments,
   employees,
 }: OrganizationCalendarProps) {
-  /* TODO: adjust colors, icons, and calendar positioning after Hannes' PR 
-  const { selectedDate, selectedTime, isBooking, setDate, selectTime } = useBookingSchedule();*/
-
   const [login, setLogin] = useState<undefined | false | LoginResource>(undefined);
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
   const [availableSlots, setAvailableSlots] = useState<Record<string, SlotOption[]>>({});
@@ -55,8 +56,8 @@ export default function OrganizationCalendar({
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
   const [isBooking, setIsBooking] = useState(false);
-  // const [bookingMode, setBookingMode] = useState<'quick' | 'employee'>('quick'); // track current booking mode (quick/employee)
-  // const [selectedEmployee, setSelectedEmployee] = useState<EmployeeCard | null>(null); // currently chosen employee (null for quick mode)
+  const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
   // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
 
   const setDate = (date: Date | undefined) => {
@@ -153,7 +154,7 @@ export default function OrganizationCalendar({
 
     setIsBooking(true);
     setStatusMessage(null);
-    // PATCH-Call: bestehenden Termin für den Nutzer bestätigen und Slot schließen
+    //patchCall to backend to confirm booking
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/employee/${selectedSlot.employeeId}/${selectedSlot.appointmentId}`,
@@ -202,57 +203,59 @@ export default function OrganizationCalendar({
             </p>
           </div>
 
-          {/* <BookingSelector
-        bookingMode={bookingMode}
-        onBookingModeChange={(mode) => setBookingMode(mode)}
-        selectedEmployee={selectedEmployee}
-      /> */}
+          {
+            <BookingSelector
+              bookingMode={bookingMode}
+              onBookingModeChange={(mode) => setBookingMode(mode)}
+              selectedEmployee={selectedEmployee}
+            />
+          }
 
-          {/* {bookingMode === 'employee' && (
-        <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-            <User className="w-5 h-5 text-accent-blue" />
-            Wähle einen Mitarbeiter
-          </h3>
-          <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
-            {mockStaff.map((employee) => (
-              <button
-                key={employee.id}
-                onClick={() => {
-                  setSelectedEmployee(employee);
-                }}
-                className={cn(
-                  // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
-                  'p-4 rounded-xl border-2 transition-all duration-200 text-left',
-                  selectedEmployee?.id === employee.id
-                    ? 'border-accent-blue-light bg-accent-gray-soft shadow-md'
-                    : 'border-border hover:border-primary/50 bg-accent-white'
-                )}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
-                    <User className="w-7 h-7" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-foreground mb-1">{employee.name}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{employee.position}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {employee.expertiseAreas.map((expertiseArea) => (
-                        <span
-                          key={expertiseArea}
-                          className="px-3 py-1 rounded-xl text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
-                        >
-                          {expertiseArea}
-                        </span>
-                      ))}
+          {bookingMode === BookingMode.EMPLOYEE && (
+            <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
+              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+                <User className="w-5 h-5 text-accent-blue" />
+                Wähle einen Mitarbeiter
+              </h3>
+              <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
+                {employees.map((employee) => (
+                  <button
+                    key={employee.id}
+                    onClick={() => {
+                      setSelectedEmployee(employee);
+                    }}
+                    className={cn(
+                      // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
+                      'p-4 rounded-xl border-2 transition-all duration-200 text-left',
+                      selectedEmployee?.id === employee.id
+                        ? 'border-accent-blue-light bg-accent-gray-soft shadow-md'
+                        : 'border-border hover:border-primary/50 bg-accent-white'
+                    )}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
+                        <User className="w-7 h-7" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-foreground mb-1">{employee.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-2">{employee.position}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {employee.expertiseArea.map((expertiseArea) => (
+                            <span
+                              key={expertiseArea}
+                              className="px-3 py-1 rounded-xl text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
+                            >
+                              {expertiseArea}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )} */}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-5 w-5 text-accent-blue" />
