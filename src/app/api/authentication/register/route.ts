@@ -1,39 +1,119 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { Role } from '~/generated/prisma/enums';
+import { Areas, Role } from '~/generated/prisma/enums';
+import type {
+  AccountCreateInput,
+  EmployeeUncheckedCreateInput,
+  UserUncheckedCreateInput,
+} from '~/generated/prisma/models';
 
 import { createAccountTx } from '../../account/services';
 import { createEmployeeTx } from '../../employee/services';
 import { createUserTx } from '../../user/services';
 
+const registrationSchema = z.object({
+  email: z.string().min(5), // TODO: add email regex validation and mybe move to helper file
+  password: z.string().min(6), // TODO: ask what our password policy should be
+  role: z.enum(Role),
+  name: z.string(), // TODO: potentially extend for surname, first name
+  phone: z.string().optional(), // TODO: add phone regex validation and mybe move to helper file
+  address: z.string().optional(), // TODO: potentially extend for street, city, zip, country
+  organizationId: z.string().optional(), // only for EMPLOYEE registration
+  position: z.string().optional(), // only for EMPLOYEE registration
+  expertiseArea: z.array(z.enum(Areas)).optional(), // only for EMPLOYEE registration
+});
+
 export async function POST(req: NextRequest) {
   try {
+    // validate header
+    // TODO: use helper function to check content-type
     if (!req.headers.get('content-type')?.includes('application/json')) {
       return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
     }
+    // validate body
+    const body = registrationSchema.parse(await req.json());
 
-    const body = await req.json();
-
+    // console.log('Test 2: programm läuft noch');
+    /**
+     * Create Account and associated User/Employee in a transaction
+     * This ensures that either both records are created or none at all
+     */
     const result = await prisma.$transaction(async (tx) => {
-      const createdAccount = await createAccountTx(body.account, tx);
+      // console.log('Test 3: programm läuft noch');
+      // console.log('Request body:', body);
+      const accountInput = convertBodyToAccountInput(body);
+      const createdAccount = await createAccountTx(accountInput, tx);
 
       if (createdAccount.role === Role.USER) {
-        return await createUserTx(body.entity, createdAccount.id!, tx);
+        // console.log('Test 8: programm läuft noch');
+        const userInput = convertBodyToUserInput(body, createdAccount.id!);
+        return await createUserTx(userInput, tx);
       } else if (createdAccount.role === Role.EMPLOYEE) {
-        return await createEmployeeTx(body.entity, createdAccount.id!, tx);
+        const employeeInput = convertBodyToEmployeeInput(body, createdAccount.id!);
+        return await createEmployeeTx(employeeInput, tx);
       } else {
         throw new ValidationError('invalidInput', 'role', createdAccount.role);
       }
     });
 
+    // console.log('Test 12: programm läuft noch');
+    // console.log('Creation result:', result);
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Creation failed: ' + (error as Error).message },
-      { status: 400 }
-    );
+    // TODO: use handleValidationError helper function
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { message: 'Validation Problem: ' + (error as Error).message },
+        { status: 400 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'Creation failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
   }
+}
+
+function convertBodyToAccountInput(body: z.infer<typeof registrationSchema>): AccountCreateInput {
+  return {
+    email: body.email,
+    password: body.password,
+    role: body.role,
+  };
+}
+
+function convertBodyToUserInput(
+  body: z.infer<typeof registrationSchema>,
+  accountId: string
+): UserUncheckedCreateInput {
+  return {
+    accountId: accountId,
+    name: body.name,
+    phone: body.phone ?? null,
+    address: body.address ?? null,
+  };
+}
+
+function convertBodyToEmployeeInput(
+  body: z.infer<typeof registrationSchema>,
+  accountId: string
+): EmployeeUncheckedCreateInput {
+  if (!body.organizationId) {
+    throw new ValidationError('invalidInput', 'organizationId', body.organizationId);
+  } else if (body.expertiseArea?.length === 0) {
+    throw new ValidationError('invalidInput', 'expertiseArea', body.expertiseArea);
+  }
+  return {
+    accountId: accountId,
+    organizationId: body.organizationId,
+    name: body.name,
+    phone: body.phone ?? undefined,
+    position: body.position ?? undefined,
+    expertiseArea: body.expertiseArea ?? undefined,
+  };
 }

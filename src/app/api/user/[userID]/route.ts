@@ -1,10 +1,11 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import z from 'zod';
+
+import type { User } from '~/generated/prisma/browser';
+import { Role } from '~/generated/prisma/enums';
 
 import { deleteUser, readUser, updateUser } from './services';
-import z from 'zod';
-import { Role } from '~/generated/prisma/enums';
-import { User } from '~/generated/prisma/browser';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),

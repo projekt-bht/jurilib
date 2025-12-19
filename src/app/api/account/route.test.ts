@@ -1,49 +1,20 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { jest } from '@jest/globals';
-
-import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
 // Dynamisch die API-Funktionen importieren
-const { POST, GET } = await import('@/app/api/account/route');
+const { GET } = await import('@/app/api/account/route');
 
 describe('Account Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
 
-  test('POST Account', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-    };
+  // tests wurden entfernt, weil die POST route jetzt in /authentication/register ist
+  // TODO: rausfinden, ob hier als vorbereitung für die tests mit der neuen route noch was gemacht werden muss
 
-    const req = new NextRequest(baseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(account),
-    });
-
-    const res = await POST(req);
-    expect(res.status).toBe(201);
-  });
-
-  test('POST Account with Invalid data', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
-      password: '12',
-      role: 'USER',
-    };
-
-    const req = new NextRequest(baseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(account),
-    });
-
-    const res = await POST(req);
-    expect(res.status).toBe(400);
-  });
+  // welche accounts werden hier gefunden? wo ist die DB mit testdaten?
+  // TODO: gibt es eine Mock-DB oder so was in der Art?
 
   test('GET Accounts', async () => {
     const req = new NextRequest(baseUrl);

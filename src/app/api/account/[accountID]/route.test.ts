@@ -9,35 +9,53 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET, PATCH, DELETE } = await import('@/app/api/account/[accountID]/route');
-const { POST } = await import('@/app/api/account/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('Account Routen testen', () => {
+  const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
   let createdAcc: Account;
 
   test('POST Account', async () => {
-    const account: AccountCreateInput = {
+    const account = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '123456',
       role: 'USER',
+      name: 'Peter Mustermann',
     };
 
-    const req = new NextRequest(baseUrl, {
+    const req = new NextRequest(baseUrlRegister, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(account),
     });
 
+    console.log('Test 1: programm läuft noch');
+
     const res = await POST(req);
     expect(res.status).toBe(201);
-    createdAcc = await res.json();
+    const result = await prisma.account.findUnique({
+      where: { email: account.email },
+    });
+    expect(result).not.toBeNull();
+    console.log('Created Account in DB:', result);
+    createdAcc = result as Account;
+    console.log('Created Account:', createdAcc);
   });
 
   test('GET Account', async () => {
+    console.log('Test ##11: programm läuft noch');
     const req = new NextRequest(baseUrl);
+    console.log('Test ##12: programm läuft noch');
+    console.log('Account ID for GET:', createdAcc.id);
     const res = await GET(req, { params: Promise.resolve({ accountID: createdAcc.id }) });
+    console.log('Test ##13: programm läuft noch');
     const json = await res.json();
-    expect(json.length).not.toBe(0);
+    console.log('Test ##14: programm läuft noch');
+    console.log('Response JSON:', json);
+    expect(json.email).toBe(createdAcc.email);
+    console.log('Email Old:', createdAcc.email);
+    console.log('Email New:', json.email);
     expect(res.status).toBe(200);
   });
 
@@ -97,8 +115,15 @@ describe('Account Routen testen', () => {
   });
 
   test('DELETE Account', async () => {
+    console.log('Test ???1: programm läuft noch');
     const getReq = new NextRequest(baseUrl);
+    console.log('Test ???2: programm läuft noch');
+    console.log('TEST: Account ID to delete:', createdAcc.id);
     const res = await DELETE(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
+    console.log('Test ???3: programm läuft noch');
+    console.log('RESULT: ', res.body);
+    const jsonResponse = await res.json();
+    console.log('Error Message:', jsonResponse.message);
     expect(res.status).toBe(200);
   });
 
