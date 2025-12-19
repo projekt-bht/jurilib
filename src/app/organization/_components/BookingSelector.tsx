@@ -80,7 +80,7 @@ export default function BookingSelector({
       </button>
 
       {isOpen && (
-        <ItemGroup className="grid grid-cols-1 gap-4 l:grid-cols-2">
+        <ItemGroup className="grid grid-cols-2 gap-4 l:grid-cols-2">
           <Item
             onClick={() => handleSetBookingMode(BookingMode.QUICK)}
             className={cn(
@@ -134,7 +134,7 @@ export default function BookingSelector({
                 <User className="h-6 w-6" />
               </ItemMedia>
               <ItemContent className="gap-2">
-                <ItemTitle className="text-xl font-bold text-foreground leading-tight">
+                <ItemTitle className="text-l font-bold text-foreground leading-tight">
                   Mitarbeiter wählen
                 </ItemTitle>
                 <ItemDescription className="text-[11px] leading-4 text-muted-foreground">

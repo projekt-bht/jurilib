@@ -234,21 +234,15 @@ export default function OrganizationCalendar({
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
-                        <User className="w-7 h-7" />
+                        <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0">
+                          {employee.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </div>
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-foreground mb-1">{employee.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-2">{employee.position}</p>
-                        <div className="flex flex-wrap gap-1">
-                          {employee.expertiseArea.map((expertiseArea) => (
-                            <span
-                              key={expertiseArea}
-                              className="px-3 py-1 rounded-xl text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
-                            >
-                              {expertiseArea}
-                            </span>
-                          ))}
-                        </div>
                       </div>
                     </div>
                   </button>
