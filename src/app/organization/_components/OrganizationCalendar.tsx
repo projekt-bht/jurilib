@@ -2,7 +2,7 @@
 
 import { de } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock, User } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -11,7 +11,6 @@ import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import BookingSelector from './BookingSelector';
-import { Noto_Sans_Cypro_Minoan } from 'next/font/google';
 import { LoginContext } from '@/app/LoginContext';
 import { getLogin } from '@/services/api';
 import { LoginResource } from '@/services/Resources';
@@ -131,12 +130,6 @@ export default function OrganizationCalendar({
     // Compare by timestamp to avoid reference equality issues with Date objects
     const isAvailable = availableDays.some((d) => d.getTime() === normalisedDate.getTime());
     return !isAvailable;
-
-    // // checks if the given date is either a weekend or a day before today
-    // const midnight = new Date(new Date().setHours(0, 0, 0, 0));
-    // const weekday = date.getDay();
-    // const isWeekend = weekday === 0 || weekday === 6;
-    // return date < midnight || isWeekend;
   }
   async function confirmBooking() {
     if (!login) {
@@ -267,14 +260,13 @@ export default function OrganizationCalendar({
               }}
               disabled={isDisabledDay}
               className="bg-transparent w-full max-w-sm mx-auto justify-center items-center "
-              // classNames customized to mirror the reference design: centered/bold caption, spaced nav, roomy day cells, visible today ring, muted disabled days, and hover affordances
               /* https://daypicker.dev/docs/styling */
               classNames={{
                 months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
                 month: 'w-full',
                 caption: '',
-                caption_label: 'mb-15 font-bold text-l',
-                nav: 'w-full flex justify-between ',
+                caption_label: 'mb-15 font-bold text-xl',
+                nav: 'w-full flex justify-between pl-1 pr-6',
                 button_previous: ' hover:bg-accent-white rounded-lg p-2',
                 button_next: ' hover:bg-accent-white rounded-lg p-2',
                 table: 'w-full max-w-full',
@@ -288,12 +280,12 @@ export default function OrganizationCalendar({
               }}
             />
 
-            <div className="flex items-center gap-6 px-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
-                <span>Heute</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-6 px-2 pb-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
+                  <span>Heute</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
                 <span>Ausgewählt</span>
               </div>
