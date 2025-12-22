@@ -26,6 +26,12 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
   }
 };
 
+/**
+ * Update an existing account in the database by accountID
+ * Only mail and password can be updated.
+ * Role and id are immutable, since they are used to connect
+ * the account to other entities.
+ */
 export const updateAccount = async (
   account: Account,
   accountId: string
@@ -41,7 +47,8 @@ export const updateAccount = async (
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },
       data: {
-        ...account,
+        email: account.email ?? existingAccount.email,
+        password: account.password ?? existingAccount.password,
       },
     });
 

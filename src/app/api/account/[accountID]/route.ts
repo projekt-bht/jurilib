@@ -40,17 +40,22 @@ export async function PATCH(
 ) {
   // console.log('PATCH Account - Start');
   try {
+    // validate header content-type
     if (!req.headers.get('content-type')?.includes('application/json')) {
       return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
     }
 
+    // validate params
     const { accountID } = await params;
     if (!accountID) {
       return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
     }
+
+    // validate body
     const body = await req.json();
     const data = UpdateSchema.parse(body);
 
+    // update account
     const updatedAccount = await updateAccount(data, accountID);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
