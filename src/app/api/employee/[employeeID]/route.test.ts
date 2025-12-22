@@ -1,8 +1,7 @@
 import { jest } from '@jest/globals';
 
 import type { Employee } from '~/generated/prisma/client';
-import { EmployeeCreateInput, OrganizationCreateInput } from '~/generated/prisma/models';
-import { createOrganization } from '../../organization/services';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   vectorizeExpertiseArea: jest.fn(async () => {
@@ -46,9 +45,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     });
 
     const resOrga = await orgPOST(reqOrga);
-    console.log('TEST - Created Organization Response Status:', resOrga.status);
     const createdOrga = await resOrga.json();
-    console.log('TEST - Created Organization response message:', createdOrga.message);
     expect(resOrga.status).toBe(201);
 
     // Create both account and employee through registration route
@@ -71,8 +68,6 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     expect(resRegister.status).toBe(201);
 
     const createdEmployee = await resRegister.json();
-    console.log('TEST EMPLOYEE - Created Employee:', createdEmployee);
-    console.log('TEST EMPLOYEE - Created Employee response message:', createdEmployee.message);
     cEmployee = createdEmployee;
     expect(createdEmployee.name).toBe(registerInput.name);
 

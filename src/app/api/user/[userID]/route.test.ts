@@ -34,7 +34,6 @@ describe('User Routen testen', () => {
     const resRegistration = await POST(request);
     expect(resRegistration.status).toBe(201);
     cUser = await resRegistration.json();
-    console.log('TEST USER - created user:', cUser);
 
     const createdAccount = await prisma.account.findUnique({
       where: { email: registrationInput.email },
@@ -45,7 +44,6 @@ describe('User Routen testen', () => {
 
   test('GET User', async () => {
     const req = new NextRequest(baseUrl);
-    console.log('TEST USER - getting user with ID:', cUser.id);
     const res = await GET(req, { params: Promise.resolve({ userID: cUser.id }) });
     const json = await res.json();
     expect(json.length).not.toBe(0);

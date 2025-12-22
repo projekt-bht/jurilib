@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
@@ -39,3 +37,4 @@ describe('Globale Employee Routen testen', () => {
     expect(res.status).toBe(200);
   });
 });
+export {};

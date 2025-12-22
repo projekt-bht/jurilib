@@ -37,19 +37,15 @@ export async function POST(req: NextRequest) {
     // validate body
     const body = registrationSchema.parse(await req.json());
 
-    // console.log('Test 2: programm läuft noch');
     /**
      * Create Account and associated User/Employee in a transaction
      * This ensures that either both records are created or none at all
      */
     const result = await prisma.$transaction(async (tx) => {
-      // console.log('Test 3: programm läuft noch');
-      // console.log('Request body:', body);
       const accountInput = convertBodyToAccountInput(body);
       const createdAccount = await createAccountTx(accountInput, tx);
 
       if (createdAccount.role === Role.USER) {
-        // console.log('Test 8: programm läuft noch');
         const userInput = convertBodyToUserInput(body, createdAccount.id!);
         return await createUserTx(userInput, tx);
       } else if (createdAccount.role === Role.EMPLOYEE) {
@@ -60,8 +56,6 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // console.log('Test 12: programm läuft noch');
-    // console.log('Creation result:', result);
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     // TODO: use handleValidationError helper function

@@ -33,7 +33,6 @@ describe('User Routen testen', () => {
     const resRegistration = await POST(request);
     expect(resRegistration.status).toBe(201);
     cUser = await resRegistration.json();
-    console.log('TEST USER - created user:', cUser);
 
     const createdAccount = await prisma.account.findUnique({
       where: { email: registrationInput.email },

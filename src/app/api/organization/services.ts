@@ -7,24 +7,19 @@ import type { OrganizationCreateInput } from '~/generated/prisma/models';
 // Create a new organization
 export const createOrganization = async (organization: Organization): Promise<Organization> => {
   try {
-    console.log('ORG SERVICE - createOrganization called with:', organization);
     if (!organization.expertiseArea) {
       throw new Error('Expertise area is required');
     }
 
     // Iterate through expertiseArea and validate each area
-    console.log('ORG SERVICE - Validating expertise areas:', organization.expertiseArea);
     organization.expertiseArea.forEach((area) => {
       if (!Object.values(Areas).includes(area)) {
         throw new Error(`Invalid expertise ${area} found!`);
       }
     });
 
-    console.log('ORG SERVICE - All expertise areas are valid.');
-    console.log('ORG SERVICE - Vectorizing expertise area:', organization.expertiseArea.toString());
     const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
 
-    console.log('ORG SERVICE - creating organization');
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
     });

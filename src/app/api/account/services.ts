@@ -11,12 +11,8 @@ export const createAccountTx = async (
   account: AccountCreateInput,
   tx: Prisma.TransactionClient
 ): Promise<AccountResource> => {
-  // console.log('Test 4: programm läuft noch');
-  // console.log('Account data:', account);
   try {
     const hashedPassword = await bcrypt.hash(account.password, 10);
-    // console.log('Test 5: programm läuft noch');
-    // console.log('Hashed password:', hashedPassword);
 
     const createdAccount = await tx.account.create({
       data: {
@@ -26,17 +22,11 @@ export const createAccountTx = async (
       },
     });
 
-    // console.log('Test 6: programm läuft noch');
-    // console.log('Created account:', createdAccount);
-
     const accountRes = {
       id: createdAccount.id,
       email: createdAccount.email,
       role: createdAccount.role,
     };
-
-    // console.log('Test 7: programm läuft noch');
-    // console.log('Account resource to return:', accountRes);
 
     return accountRes;
   } catch (error) {

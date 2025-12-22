@@ -20,7 +20,6 @@ describe('User testen', () => {
       name: 'Petra Muster',
     };
 
-    // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
     const request = new NextRequest(registrationURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

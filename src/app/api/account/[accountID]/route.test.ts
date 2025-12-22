@@ -28,32 +28,20 @@ describe('Account Routen testen', () => {
       body: JSON.stringify(account),
     });
 
-    console.log('Test 1: programm läuft noch');
-
     const res = await POST(req);
     expect(res.status).toBe(201);
     const result = await prisma.account.findUnique({
       where: { email: account.email },
     });
     expect(result).not.toBeNull();
-    console.log('Created Account in DB:', result);
     createdAcc = result as Account;
-    console.log('Created Account:', createdAcc);
   });
 
   test('GET Account', async () => {
-    console.log('Test ##11: programm läuft noch');
     const req = new NextRequest(baseUrl);
-    console.log('Test ##12: programm läuft noch');
-    console.log('Account ID for GET:', createdAcc.id);
     const res = await GET(req, { params: Promise.resolve({ accountID: createdAcc.id }) });
-    console.log('Test ##13: programm läuft noch');
     const json = await res.json();
-    console.log('Test ##14: programm läuft noch');
-    console.log('Response JSON:', json);
     expect(json.email).toBe(createdAcc.email);
-    console.log('Email Old:', createdAcc.email);
-    console.log('Email New:', json.email);
     expect(res.status).toBe(200);
   });
 
@@ -114,21 +102,13 @@ describe('Account Routen testen', () => {
   });
 
   test('DELETE Account', async () => {
-    console.log('Test ???1: programm läuft noch');
     const getReq = new NextRequest(baseUrl);
-    console.log('Test ???2: programm läuft noch');
-    console.log('TEST: Account ID to delete:', createdAcc.id);
-    const account = await prisma.account.findUnique({
-      where: { id: createdAcc.id },
-      //select: { role: true },
-    });
-    console.log('TEST: Account fetched for deletion:', account);
     const res = await DELETE(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
-    console.log('Test ???3: programm läuft noch');
-    console.log('RESULT: ', res.body);
-    const jsonResponse = await res.json();
-    console.log('Response Message:', jsonResponse.message);
     expect(res.status).toBe(200);
+    const accountDeleted = await prisma.account.findUnique({
+      where: { email: createdAcc.email },
+    });
+    expect(accountDeleted).toBeNull();
   });
 
   test('DELETE non-existing Account', async () => {
