@@ -12,31 +12,37 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET, PATCH, DELETE } = await import('@/app/api/user/[userID]/route');
-const { POST } = await import('@/app/api/account/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/[userID]`;
+  const registrationURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
   let cUser: User;
 
-  test('POST User', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
+  test('create User', async () => {
+    // create both account and user through registration
+    const registrationInput = {
+      email: 'petra' + Math.random() + '@mail.de',
       password: '123456',
       role: 'USER',
+      name: 'Petra Muster',
     };
 
-    const createdAccount = await createAccount(account);
+    const request = new NextRequest(baseUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationInput),
+    });
 
-    const user: UserCreateInput = {
-      name: 'peter',
-      account: {
-        connect: { id: createdAccount.id },
-      },
-    };
+    const resRegistration = await POST(request);
+    expect(resRegistration.status).toBe(201);
+    const cUser = await resRegistration.json();
 
-    const createdUser = await createUser(user, createdAccount.id!);
-    cUser = createdUser;
-    expect(createdAccount.id).toBe(createdUser.accountId);
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registrationInput.email },
+    });
+
+    expect(createdAccount?.id).toBe(cUser.accountId);
   });
 
   test('GET User', async () => {
