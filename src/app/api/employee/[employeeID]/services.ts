@@ -47,6 +47,7 @@ export const deleteEmployeeTx = async (
   accountID: string,
   tx: Prisma.TransactionClient
 ): Promise<void> => {
+  console.log('Employee Service: deleteEmployeeTx - Start');
   try {
     // validate accountID
     if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);

@@ -72,9 +72,11 @@ export async function DELETE(
   { params }: { params: Promise<{ accountID: string }> }
 ) {
   // TODO: add validation
-  // console.log('Test ??1: programm läuft noch');
+  console.log('ROUTE: DELETE Account - Start');
+
   try {
     const { accountID } = await params;
+    console.log('ROUTE: Account ID to delete:', accountID);
     if (!accountID) {
       return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
     }
@@ -84,33 +86,45 @@ export async function DELETE(
      * This ensures that either both records are deleted or none at all
      */
     await prisma.$transaction(async (tx) => {
+      console.log('ROUTE: DELETE Account Transaction - Start');
       // First, delete any associated User or Employee record
       const account = await tx.account.findUnique({
         where: { id: accountID },
-        select: { role: true },
+        //select: { role: true },
       });
+      console.log('ROUTE: Account fetched for deletion:', account);
+      console.log('ROUTE: Fetched account role for deletion:', account?.role);
 
       if (!account) {
-        throw new ValidationError('notFound', 'account', accountID);
+        console.log('ROUTE: Account not found for ID:', accountID);
+        throw new ValidationError('notFound', 'account', accountID, 404);
       }
 
       if (account.role === Role.USER) {
+        console.log('ROUTE: enterd if case USER');
         await deleteUserTx(accountID, tx);
       } else if (account.role === Role.EMPLOYEE) {
+        console.log('ROUTE: enterd if case EMPLOYEE');
         await deleteEmployeeTx(accountID, tx);
       } else {
         throw new ValidationError('invalidInput', 'role', account.role);
       }
 
-      // console.log('ROUTE: Account ID to delete:', accountID);
+      console.log('ROUTE: Account ID to delete:', accountID);
       await deleteAccountTx(accountID, tx);
     });
 
-    // console.log('Test ??2: programm läuft noch');
+    console.log('Test ??2: programm läuft noch');
 
     // console.log('Test ??3: programm läuft noch');
-    return NextResponse.json({ message: 'Deleted' }, { status: 204 });
+    return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
+    if (error instanceof ValidationError) {
+      return NextResponse.json(
+        { message: `Validation Error: ${error.message}` },
+        { status: error.statusCode }
+      );
+    }
     return NextResponse.json(
       { message: 'Failed to delete Account: ' + (error as Error).message },
       { status: 400 }
