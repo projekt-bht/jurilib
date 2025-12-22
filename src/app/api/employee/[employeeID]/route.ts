@@ -5,7 +5,7 @@ import z from 'zod';
 import type { Employee } from '~/generated/prisma/client';
 import { Areas } from '~/generated/prisma/enums';
 
-import { deleteEmployee, readEmployeeByEmployeeID, updateEmployee } from './services';
+import { readEmployeeByEmployeeID, updateEmployee } from './services';
 
 const UpdateSchemaEmployee = z.object({
   id: z.string().min(36),
@@ -65,21 +65,8 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string }> }
-) {
-  try {
-    const { employeeID } = await params;
-    if (!employeeID) {
-      return NextResponse.json({ message: 'Employee ID is required' }, { status: 400 });
-    }
-    await deleteEmployee(employeeID);
-    return NextResponse.json({ message: 'Deleted' }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Failed to delete Employee: ' + (error as Error).message },
-      { status: 400 }
-    );
-  }
-}
+/**
+ * There is no DELETE endpoint for employee as employees are deleted through the account endpoint
+ * when an account is deleted, which in turn calls the deleteEmployeeTx function in services.ts.
+ * This ensures that all related data is cleaned up properly in a transaction.
+ */

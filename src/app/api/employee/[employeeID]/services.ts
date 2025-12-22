@@ -39,7 +39,10 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
   }
 };
 
-// Delete an employee from the database by accountID within a transaction
+/**
+ * Delete an employee from the database by accountID within a transaction
+ * This function is always called through the account endpoint when an account is deleted.
+ */
 export const deleteEmployeeTx = async (
   accountID: string,
   tx: Prisma.TransactionClient
