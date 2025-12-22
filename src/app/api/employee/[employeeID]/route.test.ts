@@ -1,6 +1,15 @@
+import { jest } from '@jest/globals';
+
 import type { Employee } from '~/generated/prisma/client';
 import { EmployeeCreateInput, OrganizationCreateInput } from '~/generated/prisma/models';
 import { createOrganization } from '../../organization/services';
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
@@ -9,6 +18,7 @@ const { prisma } = await import('@/lib/db');
 // Dynamisch die API-Funktionen importieren
 const { POST: orgPOST } = await import('@/app/api/organization/route');
 const { GET, PATCH, DELETE } = await import('@/app/api/employee/[employeeID]/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 // !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
 
@@ -36,11 +46,9 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
 
     const resOrga = await orgPOST(reqOrga);
     console.log('TEST - Created Organization Response Status:', resOrga.status);
-    const orgaJsonResponse = await resOrga.json();
-    console.log('TEST - Created Organization response message:', orgaJsonResponse.message);
+    const createdOrga = await resOrga.json();
+    console.log('TEST - Created Organization response message:', createdOrga.message);
     expect(resOrga.status).toBe(201);
-
-    const createdOrg = await resOrga.json();
 
     // Create both account and employee through registration route
     const registerInput = {
@@ -48,7 +56,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       password: '123456',
       role: 'EMPLOYEE',
       name: 'Peter Mustermann',
-      organizationId: createdOrg.id,
+      organizationId: createdOrga.id,
       expertiseArea: ['Arbeitsrecht', 'Familienrecht'],
     };
 
@@ -62,8 +70,17 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     expect(resRegister.status).toBe(201);
 
     const createdEmployee = await resRegister.json();
+    console.log('TEST EMPLOYEE - Created Employee:', createdEmployee);
+    console.log('TEST EMPLOYEE - Created Employee response message:', createdEmployee.message);
     cEmployee = createdEmployee;
-    expect(createdEmployee.email).toBe(registerInput.email);
+    expect(createdEmployee.name).toBe(registerInput.name);
+
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registerInput.email },
+    });
+    expect(createdAccount).not.toBeNull();
+    expect(createdAccount?.id).toBe(createdEmployee.accountId);
+    expect(createdAccount?.email).toBe(registerInput.email);
   });
 
   // Currently, there is no Account creation functionality for Employees
