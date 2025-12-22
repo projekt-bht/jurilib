@@ -1,5 +1,6 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
+import type { Prisma } from '~/generated/prisma/browser';
 import type { Employee } from '~/generated/prisma/client';
 
 // Read a single employee from the database by employeeID
@@ -38,11 +39,20 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
   }
 };
 
-// Delete an employee from the database by employeeID
-export const deleteEmployee = async (employeeID: string): Promise<void> => {
+// Delete an employee from the database by accountID within a transaction
+export const deleteEmployeeTx = async (
+  accountID: string,
+  tx: Prisma.TransactionClient
+): Promise<void> => {
   try {
-    await prisma.employee.delete({ where: { id: employeeID } });
+    // validate accountID
+    if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
+    // find employee by accountID
+    const employee = await tx.employee.findUnique({ where: { accountId: accountID } });
+    if (!employee) throw new ValidationError('notFound', 'employee', accountID);
+    // delete employee
+    await tx.employee.delete({ where: { id: employee.id } });
   } catch (error) {
-    throw new Error('Internal Server Error: ' + (error as Error).message);
+    throw new Error('Internal Server Error while deleting employee: ' + (error as Error).message);
   }
 };

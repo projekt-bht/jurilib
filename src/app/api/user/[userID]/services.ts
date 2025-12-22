@@ -1,6 +1,6 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { Prisma } from '~/generated/prisma/browser';
+import type { Prisma } from '~/generated/prisma/browser';
 import type { User } from '~/generated/prisma/client';
 
 export const readUser = async (userID: string): Promise<User> => {
@@ -37,6 +37,7 @@ export const updateUser = async (user: User, userID: string): Promise<User> => {
   }
 };
 
+// Delete a user from the database by accountID within a transaction
 export const deleteUserTx = async (
   accountID: string,
   tx: Prisma.TransactionClient
