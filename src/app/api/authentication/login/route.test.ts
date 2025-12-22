@@ -11,6 +11,7 @@ describe('Login test', () => {
   let createdAccount = {};
 
   test('Create Account and User', async () => {
+    // Create both account and user through registration route
     const registerInput = {
       email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
       password: '123456',

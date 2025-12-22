@@ -1,8 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { jest } from '@jest/globals';
-
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
-
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
@@ -13,31 +8,21 @@ describe('Account Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
 
   test('POST Register User', async () => {
-    const account: AccountCreateInput = {
+    const registerInput = {
       email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
       password: '123456',
       role: 'USER',
-    };
-
-    const user: UserCreateInput = {
-      name: 'PETER_USER_REGISTER',
-      account: {
-        connect: undefined, // Wird später gesetzt (user Service),
-      },
-    };
-
-    const struct = {
-      account: account,
-      entity: user,
+      name: 'Peter Mustermann',
     };
 
     const req = new NextRequest(baseUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(struct),
+      body: JSON.stringify(registerInput),
     });
 
     const res = await POST(req);
     expect(res!.status).toBe(201);
   });
 });
+export {};

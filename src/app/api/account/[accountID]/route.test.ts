@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 import type { Account } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
