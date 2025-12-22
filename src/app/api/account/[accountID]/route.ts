@@ -1,13 +1,14 @@
+import { de } from '@faker-js/faker';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { Role } from '~/generated/prisma/enums';
 
 import { deleteAccount, readAccount, updateAccount } from './services';
-import { ValidationError } from '@/error/validationErrors';
-import { de } from '@faker-js/faker';
+import { deleteUserTx } from '../../user/[userID]/services';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),
