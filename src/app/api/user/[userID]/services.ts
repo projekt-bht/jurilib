@@ -37,7 +37,10 @@ export const updateUser = async (user: User, userID: string): Promise<User> => {
   }
 };
 
-// Delete a user from the database by accountID within a transaction
+/**
+ * Delete a user from the database by accountID within a transaction
+ * This function is always called through the account endpoint when an account is deleted.
+ */
 export const deleteUserTx = async (
   accountID: string,
   tx: Prisma.TransactionClient

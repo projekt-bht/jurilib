@@ -5,7 +5,7 @@ import z from 'zod';
 import type { User } from '~/generated/prisma/browser';
 import { Role } from '~/generated/prisma/enums';
 
-import { deleteUser, readUser, updateUser } from './services';
+import { readUser, updateUser } from './services';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),
@@ -59,21 +59,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ us
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ userID: string }> }
-) {
-  try {
-    const { userID } = await params;
-    if (!userID) {
-      return NextResponse.json({ message: 'User ID is required' }, { status: 400 });
-    }
-    await deleteUser(userID);
-    return NextResponse.json({ message: 'Deleted' }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Failed to delete User: ' + (error as Error).message },
-      { status: 400 }
-    );
-  }
-}
+/**
+ * There is no DELETE endpoint for user as users are deleted through the account endpoint
+ * when an account is deleted, which in turn calls the deleteUserTx function in services.ts.
+ * This ensures that all related data is cleaned up properly in a transaction.
+ */
