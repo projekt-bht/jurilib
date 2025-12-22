@@ -1,17 +1,13 @@
-import { jest } from '@jest/globals';
-
 import type { User } from '~/generated/prisma/browser';
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
-
-import { createAccount } from '../../account/services';
-import { createUser } from '../services';
+import type { UserCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { GET, PATCH, DELETE } = await import('@/app/api/user/[userID]/route');
+const { GET, PATCH } = await import('@/app/api/user/[userID]/route');
+const { DELETE } = await import('@/app/api/account/[accountID]/route');
 const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('User Routen testen', () => {
@@ -28,7 +24,8 @@ describe('User Routen testen', () => {
       name: 'Petra Muster',
     };
 
-    const request = new NextRequest(baseUrl, {
+    // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
+    const request = new NextRequest(registrationURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registrationInput),
@@ -36,7 +33,8 @@ describe('User Routen testen', () => {
 
     const resRegistration = await POST(request);
     expect(resRegistration.status).toBe(201);
-    const cUser = await resRegistration.json();
+    cUser = await resRegistration.json();
+    console.log('TEST USER - created user:', cUser);
 
     const createdAccount = await prisma.account.findUnique({
       where: { email: registrationInput.email },
@@ -47,6 +45,7 @@ describe('User Routen testen', () => {
 
   test('GET User', async () => {
     const req = new NextRequest(baseUrl);
+    console.log('TEST USER - getting user with ID:', cUser.id);
     const res = await GET(req, { params: Promise.resolve({ userID: cUser.id }) });
     const json = await res.json();
     expect(json.length).not.toBe(0);
@@ -107,17 +106,19 @@ describe('User Routen testen', () => {
     expect(res.status).toBe(400);
   });
 
-  test('DELETE User', async () => {
+  test('DELETE User through account', async () => {
     const getReq = new NextRequest(baseUrl);
-    const res = await DELETE(getReq, { params: Promise.resolve({ userID: cUser.id }) });
+    const res = await DELETE(getReq, { params: Promise.resolve({ accountID: cUser.accountId }) });
     expect(res.status).toBe(200);
+    const deleted = await prisma.user.findUnique({ where: { id: cUser.id } });
+    expect(deleted).toBeNull();
   });
 
   test('DELETE non-existing User', async () => {
     const getReq = new NextRequest(baseUrl);
     const res = await DELETE(getReq, {
-      params: Promise.resolve({ userID: 'non-existing-id' }),
+      params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 });
