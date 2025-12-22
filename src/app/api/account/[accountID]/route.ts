@@ -1,4 +1,3 @@
-import { de } from '@faker-js/faker';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
@@ -7,8 +6,9 @@ import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { Role } from '~/generated/prisma/enums';
 
-import { deleteAccount, readAccount, updateAccount } from './services';
+import { deleteEmployeeTx } from '../../employee/[employeeID]/services';
 import { deleteUserTx } from '../../user/[userID]/services';
+import { deleteAccountTx, readAccount, updateAccount } from './services';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),
@@ -38,7 +38,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ accountID: string }> }
 ) {
-  console.log('PATCH Account - Start');
+  // console.log('PATCH Account - Start');
   try {
     if (!req.headers.get('content-type')?.includes('application/json')) {
       return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
@@ -71,14 +71,19 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ accountID: string }> }
 ) {
-  console.log('Test ??1: programm läuft noch');
+  // TODO: add validation
+  // console.log('Test ??1: programm läuft noch');
   try {
     const { accountID } = await params;
     if (!accountID) {
       return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
     }
 
-    const result = await prisma.$transaction(async (tx) => {
+    /**
+     * Delete Account and associated User/Employee in a transaction
+     * This ensures that either both records are deleted or none at all
+     */
+    await prisma.$transaction(async (tx) => {
       // First, delete any associated User or Employee record
       const account = await tx.account.findUnique({
         where: { id: accountID },
@@ -97,17 +102,14 @@ export async function DELETE(
         throw new ValidationError('invalidInput', 'role', account.role);
       }
 
-      // Then, delete the Account record itself
-      await tx.account.delete({
-        where: { id: accountID },
-      });
+      // console.log('ROUTE: Account ID to delete:', accountID);
+      await deleteAccountTx(accountID, tx);
     });
 
-    console.log('Test ??2: programm läuft noch');
-    console.log('ROUTE: Account ID to delete:', accountID);
-    await deleteAccount(accountID);
-    console.log('Test ??3: programm läuft noch');
-    return NextResponse.json({ message: 'Deleted' }, { status: 200 });
+    // console.log('Test ??2: programm läuft noch');
+
+    // console.log('Test ??3: programm läuft noch');
+    return NextResponse.json({ message: 'Deleted' }, { status: 204 });
   } catch (error) {
     return NextResponse.json(
       { message: 'Failed to delete Account: ' + (error as Error).message },
