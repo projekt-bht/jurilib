@@ -1,4 +1,4 @@
-import { da, fa, fakerDE as faker } from '@faker-js/faker';
+import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
 import {
   Area,
