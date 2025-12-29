@@ -256,17 +256,16 @@ enum OrganizationType {
 }
 
 enum Gender {
-    MALE
-    FEMALE
-    NON_BINARY
-    AGENDER
-    GENDERFLUID
-    BIGENDER
-    DEMIBOY
-    DEMIGIRL
-    PREFER_NOT_TO_SAY
-    OTHER // if OTHER is selected, genderText can be used to specify
-
+  Agender           // without gender
+  Bigender          // two identities simultaneously
+  Demiboy           // partially male
+  Demigirl          // partially female
+  Frau              // female
+  Mann              // male
+  Nicht_binär       // non-binary
+  Keine_Angabe      // no indication
+  Andere            // if "Andere" is selected, pronounText can be used to specify
+  
 @@schema("public")
 }
 
@@ -282,8 +281,8 @@ enum Pronoun {
     VE_VER
     PER_PER
     E_EM
-    PREFER_NOT_TO_SAY
-    OTHER // if OTHER is selected, pronounText can be used to specify
+    Keine_Angabe
+    Andere // if "Andere" is selected, pronounText can be used to specify
 
     @@schema("public")
 }
@@ -615,74 +614,75 @@ enum Area {
 
 enum Language {
   // Europa & Westeuropa
-  DEUTSCH
-  ENGLISCH
-  FRANZÖSISCH
-  SPANISCH
-  ITALIENISCH
-  PORTUGIESISCH
-  NIEDERLÄNDISCH
-  SCHWEDISCH
-  DÄNISCH
-  NORWEGISCH
-  FINNISCH
-  IRISCH
-  GRIECHISCH
-  RUMÄNISCH
-  UNGARISCH
-  TSCHECHISCH
-  SLOWAKISCH
-  POLNISCH
-  SERBISCH
-  KROATISCH
   BOSNISCH
   BULGARISCH
+  CZECH
+  CROATISCH
+  DÄNISCH
+  DEUTSCH
+  ENGLISCH
+  FINNISCH
+  FRANZÖSISCH
+  GRIECHISCH
+  HUNGARISCH
+  IRISCH
+  ITALIENISCH
+  NIEDERLÄNDISCH
+  NORWEGISCH
+  POLNISCH
+  PORTUGIESISCH
+  RUMÄNISCH
+  SCHWEDISCH
+  SERBISCH
+  SLOWAKISCH
+  SPANISCH
+  UNGARISCH
 
   // Naher Osten & Zentralasien
   ARABISCH
-  PERSISCH      // Farsi
-  DARI         // Afghanistan
-  KURDISCH
+  DARI
   HEBRÄISCH
-  TÜRKISCH
+  KURDISCH
   PASCHTO
+  PERSISCH      // Farsi
+  TÜRKISCH
 
   // Asien
-  CHINESISCH
-  JAPANISCH
-  KOREANISCH
-  HINDI
   BENGALI
-  URDU
-  PUNJABI
+  FILIPINO
+  GUJARATI
+  HINDI
+  JAPANISCH
+  KANNADA
+  KHMER
+  KOREANISCH
+  LAOTISCH
+  MALAY
+  MALAYALAM
+  MARATHI
+  SINHALA
   TAMIL
   TELUGU
-  MARATHI
-  GUJARATI
-  MALAYALAM
   THAILÄNDISCH
+  URDU
   VIETNAMESISCH
-  FILIPINO
-  INDONESISCH
-  LAOTISCH
-  KHMER
-  SINHALA
+  CHINESISCH
 
   // Afrika
-  SWAHILI
-  HAUSA
   AMHARISCH
+  HAUSA
+  IGBO
   SOMALI
-  ZULU
+  SWAHILI
   XHOSA
   YORUBA
-  IGBO
+  ZULU
 
   // Amerika
-  QUECHUA
   GUARANI
-  NAHUATL
   HAITIANISCH_CREOLE
+  NAHUATL
+  QUECHUA
 
   // Ozeanien
   MAORI
@@ -691,6 +691,7 @@ enum Language {
 
   @@schema("public")
 }
+
 
 
 
