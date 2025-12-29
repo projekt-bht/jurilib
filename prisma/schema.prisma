@@ -45,7 +45,8 @@ model User {
     title     String?
     firstname String
     lastname  String
-    gender    String // maybe use an Enum here?
+    gender    Gender
+    pronouns  Pronoun[]
     birthdate DateTime // should this be required?
     phone     String?
 
@@ -78,7 +79,9 @@ model Employee {
     title          String?
     firstname      String
     lastname       String
-    gender         String // maybe use an Enum here?
+    pronouns       Pronoun[]
+    gender         Gender // maybe use an Enum here?
+    genderFreeForm String?
     imageUrl       String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
     phone          String?
 
@@ -90,7 +93,7 @@ model Employee {
 
     // profile infos
     description    String?
-    expertiseArea  Areas[]
+    expertiseAreas Area[]
     cv             String[]
     languages      String[] // maybe use an Enum here?
 
@@ -122,7 +125,7 @@ model Organization {
     imageUrl           String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
     accessibility      Accessibility[]
 
-    expertiseArea      Areas[]
+    expertiseAreas      Area[]
     type               OrganizationType
     priceCategory      PriceCategory
 
@@ -148,7 +151,7 @@ model Organization {
     services     Service[]
     employees    Employee[]
   
-    @@index([expertiseArea(ops: ArrayOps)], type: Gin)
+    @@index([expertiseAreas(ops: ArrayOps)], type: Gin)
     @@schema("public")
 }
 
@@ -249,6 +252,38 @@ enum OrganizationType {
     @@schema("public")
 }
 
+enum Gender {
+    MALE
+    FEMALE
+    NON_BINARY
+    AGENDER
+    GENDERFLUID
+    BIGENDER
+    DEMIBOY
+    DEMIGIRL
+    OTHER
+    PREFER_NOT_TO_SAY
+
+@@schema("public")
+}
+
+enum Pronoun {
+    ER_IHN
+    SIE_IHR
+    HE_HIM
+    SHE_HER
+    THEY_THEM
+    ZE_ZIR
+    XE_XEM
+    FAE_FAER
+    VE_VER
+    PER_PER
+    E_EM
+    PREFER_NOT_TO_SAY
+
+    @@schema("public")
+}
+
 enum Accessibility {
     Stufenloser_Zugang
     Rollstuhlgerecht
@@ -314,7 +349,7 @@ enum PriceCategory {
     @@schema("public")
 }
 
-enum Areas {
+enum Area {
     // // Liste der Berliner Rechtsanwaltskammer https://www.rak-berlin.de/anwaltssuche/ (unter Schlagwortkatalog)
     // //  --- A ---
     // Adoptionsrecht
