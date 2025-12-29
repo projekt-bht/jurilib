@@ -2,14 +2,14 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { Role } from '~/generated/prisma/enums';
+import { AccountType } from '~/generated/prisma/enums';
 
 import { createAccount, readAccounts } from './services';
 
 const CreateSchema = z.object({
   email: z.string(),
   password: z.string().min(6),
-  role: z.enum(Role),
+  type: z.enum(AccountType),
 });
 
 export async function POST(req: NextRequest) {
