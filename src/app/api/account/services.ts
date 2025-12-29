@@ -18,7 +18,7 @@ export const createAccount = async (account: AccountCreateInput): Promise<Accoun
     const accountRes = {
       id: createdAccount.id,
       email: createdAccount.email,
-      role: createdAccount.role,
+      type: createdAccount.type,
     };
 
     return accountRes;
@@ -38,7 +38,7 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
     const accRes = accounts.map((account) => ({
       id: account.id,
       email: account.email,
-      role: account.role,
+      type: account.type,
     }));
 
     return accRes;
