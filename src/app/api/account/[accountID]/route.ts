@@ -2,15 +2,16 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { Role } from '~/generated/prisma/enums';
+import { AccountType } from '~/generated/prisma/enums';
 
 import { deleteAccount, readAccount, updateAccount } from './services';
+import { Account } from '~/generated/prisma/client';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),
   email: z.string(),
   password: z.string().min(6),
-  role: z.enum(Role),
+  type: z.enum(AccountType),
 });
 
 export async function GET(
@@ -46,7 +47,7 @@ export async function PATCH(
     const body = await req.json();
     const data = UpdateSchema.parse(body);
 
-    const updatedAccount = await updateAccount(data, accountID);
+    const updatedAccount = await updateAccount(data as Account, accountID);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
