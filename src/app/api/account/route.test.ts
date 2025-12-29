@@ -15,7 +15,7 @@ describe('Account Routen testen', () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '123456',
-      role: 'USER',
+      type: 'USER',
     };
 
     const req = new NextRequest(baseUrl, {
@@ -32,7 +32,7 @@ describe('Account Routen testen', () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '12',
-      role: 'USER',
+      type: 'USER',
     };
 
     const req = new NextRequest(baseUrl, {
