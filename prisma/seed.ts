@@ -8,6 +8,7 @@ import {
   AccountType,
   Gender,
   Pronoun,
+  Language,
 } from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
@@ -120,6 +121,16 @@ async function main() {
         },
       });
 
+      const cvParagraphs = [];
+      for (let j = 0; j < 3; j++) {
+        cvParagraphs.push(faker.lorem.paragraph(1));
+      }
+
+      const languages: Language[] = [];
+      for (let k = 0; k < 2; k++) {
+        languages.push(faker.helpers.enumValue(Language));
+      }
+
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
       const employee = await prisma.employee.create({
@@ -134,6 +145,8 @@ async function main() {
           position: faker.person.jobTitle(),
           account: { connect: { id: account.id } },
           expertiseAreas: [faker.helpers.enumValue(Area)],
+          cv: cvParagraphs,
+          languages: languages,
         },
       });
       employeeId.push(employee.id);
