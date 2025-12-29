@@ -1,7 +1,9 @@
-import { jest } from '@jest/globals';
-
-import type { User } from '~/generated/prisma/browser';
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/browser';
+import type {
+  AccountCreateInput,
+  UserCreateInput,
+  UserUpdateInput,
+} from '~/generated/prisma/models';
 
 import { createAccount } from '../../account/services';
 import { createUser } from '../services';
@@ -12,7 +14,6 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET, PATCH, DELETE } = await import('@/app/api/user/[userID]/route');
-const { POST } = await import('@/app/api/account/route');
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/[userID]`;
@@ -22,13 +23,24 @@ describe('User Routen testen', () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '123456',
-      role: 'USER',
+      type: AccountType.USER,
     };
 
     const createdAccount = await createAccount(account);
 
     const user: UserCreateInput = {
-      name: 'peter',
+      firstname: 'peter',
+      lastname: 'pan',
+      birthdate: new Date('1990-01-01'),
+      gender: Gender.Mann,
+      pronoun: Pronoun.HE_HIM,
+      phone: '0123456789',
+
+      country: 'Germany',
+      city: 'Berlin',
+      zipCode: '12345',
+      street: 'Musterstraße',
+      houseNumber: '1A',
       account: {
         connect: { id: createdAccount.id },
       },
@@ -61,12 +73,8 @@ describe('User Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const user: UserCreateInput = {
-      id: cUser.id,
-      name: 'updatedPeter',
-      account: {
-        connect: { id: cUser.accountId },
-      },
+    const user: UserUpdateInput = {
+      firstname: 'updatedPeter',
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -80,15 +88,17 @@ describe('User Routen testen', () => {
     });
 
     const updated = await prisma.user.findFirst({
-      where: { name: user.name },
+      where: { id: cUser.id },
     });
 
-    expect(updated?.name).toBe('updatedPeter');
+    expect(updated?.firstname).toBe('updatedPeter');
     expect(res.status).toBe(200);
   });
 
   test('PATCH User with invalid data', async () => {
-    const data = {};
+    const data = {
+      id: 12345,
+    };
     const patchReq = new NextRequest(baseUrl, {
       headers: { 'content-type': 'application/json' },
       method: 'PATCH',
