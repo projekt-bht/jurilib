@@ -1,19 +1,33 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import z from 'zod';
+
+import { AccountType } from '~/generated/prisma/enums';
+import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { deleteUser, readUser, updateUser } from './services';
-import z from 'zod';
-import { Role } from '~/generated/prisma/enums';
-import { User } from '~/generated/prisma/browser';
 
-const UpdateSchema = z.object({
-  id: z.string().min(36),
-  name: z.string().optional(),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  password: z.string().min(6).optional(),
-  role: z.enum(Role).optional().optional(),
-});
+const UpdateSchema = z
+  .object({
+    title: z.string().optional(),
+    firstname: z.string().optional(),
+    lastname: z.string().optional(),
+    birthdate: z.string().optional(),
+    gender: z.string().optional(),
+    genderText: z.string().optional(),
+    pronoun: z.string().optional(),
+    pronounText: z.string().optional(),
+    phone: z.string().optional(),
+    imageURL: z.string().optional(),
+    country: z.string().optional(),
+    city: z.string().optional(),
+    zipCode: z.string().optional(),
+    street: z.string().optional(),
+    houseNumber: z.string().optional(),
+    password: z.string().min(6).optional(),
+    type: z.enum(AccountType).optional(),
+  })
+  .strict();
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
   try {
@@ -42,7 +56,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ us
     const body = await req.json();
     const validatedBody = UpdateSchema.parse(body);
 
-    const updatedUser = await updateUser(validatedBody as User, userID);
+    const updatedUser = await updateUser(validatedBody as UserUpdateInput, userID);
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
