@@ -1,17 +1,17 @@
-import type { Role } from '~/generated/prisma/enums';
+import type { AccountType } from '~/generated/prisma/enums';
 
 export type AccountResource = {
   id?: string;
   email: string;
   password?: string;
-  role: Role;
+  type: AccountType;
 };
 
 export type RegisterResource = {
   account: {
     email: string;
     password: string;
-    role: Role;
+    type: AccountType;
   };
   entity: {
     name: string;
@@ -24,7 +24,7 @@ export type LoginResource = {
   id: string;
   userId?: string;
   employeeId?: string;
-  role: Role;
+  type: AccountType;
   /** Expiration time in seconds since 1.1.1970 */
   exp: number;
 };
