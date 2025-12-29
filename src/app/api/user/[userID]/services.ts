@@ -1,5 +1,6 @@
 import prisma from '@/lib/db';
 import type { User } from '~/generated/prisma/client';
+import type { UserUpdateInput } from '~/generated/prisma/models';
 
 export const readUser = async (userID: string): Promise<User> => {
   try {
@@ -15,11 +16,15 @@ export const readUser = async (userID: string): Promise<User> => {
   }
 };
 
-export const updateUser = async (user: User, userID: string): Promise<User> => {
+export const updateUser = async (user: UserUpdateInput, userID: string): Promise<User> => {
   try {
     const existingUser = await prisma.user.findUnique({ where: { id: userID } });
     if (!existingUser) {
       throw new Error('User not found for update');
+    }
+
+    if (Object.keys(user).length === 0) {
+      throw new Error('No valid fields provided for update');
     }
 
     const updatedUser = await prisma.user.update({
