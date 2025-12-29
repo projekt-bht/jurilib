@@ -98,7 +98,7 @@ model Employee {
     description    String?
     expertiseAreas Area[]
     cv             String[]
-    languages      String[] // maybe use an Enum here?
+    languages      Language[] // languages spoken by the employee
 
 
     // creation & update timestamps
@@ -612,5 +612,85 @@ enum Area {
 
     @@schema("public")
 }
+
+enum Language {
+  // Europa & Westeuropa
+  DEUTSCH
+  ENGLISCH
+  FRANZÖSISCH
+  SPANISCH
+  ITALIENISCH
+  PORTUGIESISCH
+  NIEDERLÄNDISCH
+  SCHWEDISCH
+  DÄNISCH
+  NORWEGISCH
+  FINNISCH
+  IRISCH
+  GRIECHISCH
+  RUMÄNISCH
+  UNGARISCH
+  TSCHECHISCH
+  SLOWAKISCH
+  POLNISCH
+  SERBISCH
+  KROATISCH
+  BOSNISCH
+  BULGARISCH
+
+  // Naher Osten & Zentralasien
+  ARABISCH
+  PERSISCH      // Farsi
+  DARI         // Afghanistan
+  KURDISCH
+  HEBRÄISCH
+  TÜRKISCH
+  PASCHTO
+
+  // Asien
+  CHINESISCH
+  JAPANISCH
+  KOREANISCH
+  HINDI
+  BENGALI
+  URDU
+  PUNJABI
+  TAMIL
+  TELUGU
+  MARATHI
+  GUJARATI
+  MALAYALAM
+  THAILÄNDISCH
+  VIETNAMESISCH
+  FILIPINO
+  INDONESISCH
+  LAOTISCH
+  KHMER
+  SINHALA
+
+  // Afrika
+  SWAHILI
+  HAUSA
+  AMHARISCH
+  SOMALI
+  ZULU
+  XHOSA
+  YORUBA
+  IGBO
+
+  // Amerika
+  QUECHUA
+  GUARANI
+  NAHUATL
+  HAITIANISCH_CREOLE
+
+  // Ozeanien
+  MAORI
+  SAMOAANISCH
+  TONGA
+
+  @@schema("public")
+}
+
 
 
