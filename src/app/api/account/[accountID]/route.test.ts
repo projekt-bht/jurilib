@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import type { Account } from '~/generated/prisma/client';
+import { type Account, AccountType } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
@@ -19,7 +19,7 @@ describe('Account Routen testen', () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '123456',
-      role: 'USER',
+      type: AccountType.USER,
     };
 
     const req = new NextRequest(baseUrl, {
@@ -59,7 +59,7 @@ describe('Account Routen testen', () => {
       id: createdAcc.id,
       email: 'peter' + Math.random() + '@mail.de',
       password: '5555555',
-      role: 'EMPLOYEE',
+      type: AccountType.EMPLOYEE,
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -76,7 +76,7 @@ describe('Account Routen testen', () => {
       where: { email: account.email },
     });
 
-    expect(updated?.role).toBe('EMPLOYEE');
+    expect(updated?.type).toBe(AccountType.EMPLOYEE);
     expect(res.status).toBe(200);
   });
 
