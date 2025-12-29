@@ -1,5 +1,4 @@
-import { jest } from '@jest/globals';
-
+import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 import { createAccount } from '../account/services';
@@ -10,13 +9,24 @@ describe('User testen', () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
       password: '123456',
-      role: 'USER',
+      type: AccountType.USER,
     };
 
     const createdAccount = await createAccount(account);
 
     const user: UserCreateInput = {
-      name: 'peter',
+      firstname: 'peter',
+      lastname: 'pan',
+      birthdate: new Date('1990-01-01'),
+      gender: Gender.Mann,
+      pronoun: Pronoun.HE_HIM,
+      phone: '0123456789',
+
+      country: 'Germany',
+      city: 'Berlin',
+      zipCode: '12345',
+      street: 'Musterstraße',
+      houseNumber: '1A',
       account: {
         connect: { id: createdAccount.id },
       },
