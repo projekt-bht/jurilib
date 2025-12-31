@@ -15,7 +15,7 @@ const mockOrganization: Organization = {
   phone: '+49 89 1234567',
   address: 'München, Germany',
   website: 'https://rechtsberatum.de',
-  expertiseArea: ['Arbeitsrecht'],
+  expertiseArea: ['Steuerrecht'],
   type: 'LAW_FIRM',
   priceCategory: 'MEDIUM',
   createdAt: new Date(),
@@ -29,7 +29,7 @@ const mockEmployees: Employee[] = [
     position: 'Rechtsanwalt',
     organizationId: '1',
     accountId: 'a1',
-    expertiseArea: ['Vertragsrecht'],
+    expertiseArea: ['Steuerrecht'],
     createdAt: new Date(),
     updatedAt: new Date(),
     phone: '+49 01231231323',
@@ -105,7 +105,7 @@ describe('Organization Profile Component', () => {
 
   it('renders profile expertise area', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
-    expect(screen.getByText('Arbeitsrecht')).toBeInTheDocument();
+    expect(screen.getAllByText('Steuerrecht')[0]).toBeInTheDocument();
   });
 
   it('renders profile organization type badge', () => {

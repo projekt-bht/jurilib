@@ -7,7 +7,7 @@ export type AccountResource = {
   role: Role;
 };
 
-export type RegisterRessource = {
+export type RegisterResource = {
   account: {
     email: string;
     password: string;
@@ -22,7 +22,17 @@ export type RegisterRessource = {
 
 export type LoginResource = {
   id: string;
+  userId?: string;
+  employeeId?: string;
   role: Role;
   /** Expiration time in seconds since 1.1.1970 */
   exp: number;
+};
+
+export type UserResource = {
+  id: string;
+  accountId: string;
+  name: string;
+  address?: string;
+  phone?: string;
 };

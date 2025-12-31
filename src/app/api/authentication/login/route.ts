@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { login, verifyJWT, verifyPasswordAndCreateJWT } from './JWTService';
+import { verifyJWT, verifyPasswordAndCreateJWT } from './JWTService';
 
 //TODO VALIDATE WITH ZOD - TOO LAZY RN
 
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const jwtTokenString = await verifyPasswordAndCreateJWT(email, password);
     const loginRes = verifyJWT(jwtTokenString);
 
-    const response = NextResponse.json({ message: 'Login successful' });
+    const response = NextResponse.json(loginRes);
 
     //SET HTTP COOKIE
     response.cookies.set('access_token', jwtTokenString!, {

@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server';
 
 import { verifyJWT } from './app/api/authentication/login/JWTService';
 
-const requiresAuthRoutes = ['/api/dashboard'];
+const requiresAuthRoutes = ['/api/dashboard', '/api/user/'];
 const optionalAuthRoutes = ['/api/authentication/login'];
 
 export function proxy(request: NextRequest, response: NextResponse) {
   const pathname = request.nextUrl.pathname;
-  if (requiresAuthRoutes.includes(pathname)) {
+  if (requiresAuthRoutes.some((route) => pathname.startsWith(route))) {
     return requiresAuthentication(request, response);
-  } else if (optionalAuthRoutes.includes(pathname)) {
+  } else if (optionalAuthRoutes.some((route) => pathname.startsWith(route))) {
     return optionalAuthentication(request, response);
   }
 
@@ -37,7 +37,8 @@ export function requiresAuthentication(req: NextRequest, res: NextResponse) {
 
     return response;
   } catch (err) {
-    return NextResponse.next({ status: 401 });
+    //No need to send detailed Error Message for security reasons, "Not Authorized" is enough.
+    return NextResponse.json('Not Authorized', { status: 401 });
   }
 }
 
@@ -57,6 +58,7 @@ export function optionalAuthentication(req: NextRequest, res: NextResponse) {
     }
     return response;
   } catch (err) {
-    return NextResponse.next({ status: 401 });
+    //No need to send detailed Error Message for security reasons, "Not Authorized" is enough.
+    return NextResponse.json('Not Authorized', { status: 401 });
   }
 }

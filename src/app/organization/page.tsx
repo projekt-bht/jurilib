@@ -7,7 +7,9 @@ import type { Organization } from '~/generated/prisma/client';
 
 async function fetchOrganizations(): Promise<Organization[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization`, {
+      cache: 'no-store',
+    });
     if (!res.ok) {
       return [];
     } else {
