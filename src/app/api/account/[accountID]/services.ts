@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
-import type { Account } from '~/generated/prisma/client';
+import type { Account, Prisma } from '~/generated/prisma/client';
 
 export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
@@ -26,6 +26,12 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
   }
 };
 
+/**
+ * Update an existing account in the database by accountID
+ * Only mail and password can be updated.
+ * Role and id are immutable, since they are used to connect
+ * the account to other entities.
+ */
 export const updateAccount = async (
   account: Account,
   accountId: string
@@ -41,7 +47,8 @@ export const updateAccount = async (
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },
       data: {
-        ...account,
+        email: account.email ?? existingAccount.email,
+        password: account.password ?? existingAccount.password,
       },
     });
 
@@ -57,10 +64,16 @@ export const updateAccount = async (
   }
 };
 
-export const deleteAccount = async (accountID: string): Promise<void> => {
+export const deleteAccountTx = async (
+  accountID: string,
+  tx: Prisma.TransactionClient
+): Promise<void> => {
   try {
-    await prisma.account.delete({ where: { id: accountID } });
+    // validate accountID
+    if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
+    // delete account
+    await tx.account.delete({ where: { id: accountID } });
   } catch (error) {
-    throw new Error('Internal Server Error: ' + (error as Error).message);
+    throw new Error('Internal Server Error while deleting account: ' + (error as Error).message);
   }
 };

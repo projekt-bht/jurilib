@@ -1,18 +1,25 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { User } from '~/generated/prisma/client';
-import type { UserCreateInput } from '~/generated/prisma/models';
+import type { Prisma, User } from '~/generated/prisma/client';
+import type { UserUncheckedCreateInput } from '~/generated/prisma/models';
 
-export const createUser = async (user: UserCreateInput, accountID: string): Promise<User> => {
+// Create a new user within a transaction
+export const createUserTx = async (
+  user: UserUncheckedCreateInput,
+  tx: Prisma.TransactionClient
+): Promise<User> => {
   try {
     if (!user) throw new ValidationError('invalidInput', 'user', user);
-    if (!accountID) throw new ValidationError('invalidInput', 'account', accountID);
+    if (!user.accountId) throw new ValidationError('invalidInput', 'account', user.accountId);
 
-    const createdUser = await prisma.user.create({
+    // TODO: Add more validations as needed and add phone and address as optional fields
+    const createdUser = await tx.user.create({
       data: {
-        ...user,
+        name: user.name,
+        phone: user.phone,
+        address: user.address,
         account: {
-          connect: { id: accountID },
+          connect: { id: user.accountId },
         },
       },
     });
