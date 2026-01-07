@@ -64,7 +64,7 @@ export async function createSearch(query: string) {
     (match) => match.similarity >= highestSimilarity - threshold
   );
 
-  // Transformiere expertiseArea zu einem String und entferne similarity
+  // Transform expertiseAreas to an array of strings and remove similarity
   const transformedMatches: Organization[] = filteredMatches.map((match) => {
     //eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { similarity, expertiseVector, ...rest } = match;
