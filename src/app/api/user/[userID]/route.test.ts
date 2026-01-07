@@ -111,6 +111,22 @@ describe('User Routen testen', () => {
     expect(res.status).toBe(400);
   });
 
+  test('PATCH User with invalid attributes', async () => {
+    const data = {
+      invalidAttr: 'invalid',
+    };
+    const patchReq = new NextRequest(baseUrl, {
+      headers: { 'content-type': 'application/json' },
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ userID: cUser.id }),
+    });
+    expect(res.status).toBe(400);
+  });
+
   test('DELETE User', async () => {
     const getReq = new NextRequest(baseUrl);
     const res = await DELETE(getReq, { params: Promise.resolve({ userID: cUser.id }) });
