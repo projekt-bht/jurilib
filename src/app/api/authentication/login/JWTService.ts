@@ -34,7 +34,7 @@ export const login = async (
       id: account.id,
       userId: account.user?.id,
       employeeId: account.employee?.id,
-      role: account.role,
+      type: account.type,
     };
 
     return accountRes;
@@ -62,7 +62,7 @@ export async function verifyPasswordAndCreateJWT(
     accountId: isLoggedIn.id,
     userId: isLoggedIn.userId,
     employeeId: isLoggedIn.employeeId,
-    role: isLoggedIn.role,
+    type: isLoggedIn.type,
   };
 
   const jwtString = jwt.sign(payload, secret, {
@@ -85,14 +85,14 @@ export function verifyJWT(jwtString: string | undefined): LoginResource {
   const accountId = payload.accountId;
   const userId = payload.userId;
   const employeeId = payload.employeeId;
-  const role = payload.role;
+  const type = payload.type;
   const exp = payload.exp;
 
   const ressource: LoginResource = {
     id: accountId,
     userId: userId,
     employeeId: employeeId,
-    role: role,
+    type: type,
     exp: exp!,
   };
   return ressource;
