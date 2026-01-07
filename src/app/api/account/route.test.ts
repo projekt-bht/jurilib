@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals';
-
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
