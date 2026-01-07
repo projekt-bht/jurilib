@@ -12,7 +12,9 @@ import type {
 } from '~/generated/prisma/models';
 
 import { createAccountTx } from '../../account/services';
+import { sendRegistrationCodeEmail } from '../../email/service';
 import { createEmployeeTx } from '../../employee/services';
+import { handleValidationError, headerSchema } from '../../helper';
 import { createUserTx } from '../../user/services';
 
 const registrationSchema = z.object({
@@ -30,10 +32,8 @@ const registrationSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     // validate header
-    // TODO: use helper function to check content-type
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    headerSchema.parse(req.headers);
+
     // validate body
     const body = registrationSchema.parse(await req.json());
 
@@ -47,6 +47,8 @@ export async function POST(req: NextRequest) {
 
       if (createdAccount.role === Role.USER) {
         const userInput = convertBodyToUserInput(body, createdAccount.id!);
+        // TODO: change to userInput.firstName, userInput.lastName when schema is updated
+        sendRegistrationCodeEmail(userInput.name, userInput.name, createdAccount.email);
         return await createUserTx(userInput, tx);
       } else if (createdAccount.role === Role.EMPLOYEE) {
         const employeeInput = convertBodyToEmployeeInput(body, createdAccount.id!);
@@ -58,12 +60,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    // TODO: use handleValidationError helper function
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      handleValidationError(error);
     } else {
       return NextResponse.json(
         { message: 'Creation failed: ' + (error as Error).message },

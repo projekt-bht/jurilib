@@ -40,16 +40,13 @@ export function Authentication() {
     try {
       if (isRegister) {
         const inputData: RegisterResource = {
-          account: {
-            email: data.email.toString(),
-            password: data.password.toString(),
-            role: 'USER',
-          },
-          entity: {
-            name: data.name.toString(),
-            address: data.address.toString(),
-            phone: data.phone.toString(),
-          },
+          email: data.email.toString(),
+          password: data.password.toString(),
+          role: 'USER',
+
+          name: data.name.toString(),
+          address: data.address.toString(),
+          phone: data.phone.toString(),
         };
 
         const reg = await register(inputData);

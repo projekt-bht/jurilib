@@ -8,16 +8,13 @@ export type AccountResource = {
 };
 
 export type RegisterResource = {
-  account: {
-    email: string;
-    password: string;
-    role: Role;
-  };
-  entity: {
-    name: string;
-    address: string;
-    phone: string;
-  };
+  email: string;
+  password: string;
+  role: Role;
+
+  name: string;
+  address: string;
+  phone: string;
 };
 
 export type LoginResource = {
