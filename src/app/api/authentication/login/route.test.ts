@@ -1,3 +1,4 @@
+import { Gender } from '~/generated/prisma/enums';
 import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
 
 import { createAccount } from '../../account/services';
@@ -17,13 +18,21 @@ describe('Login test', () => {
     const accountInput: AccountCreateInput = {
       email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
       password: '123456',
-      role: 'USER',
+      type: 'USER',
     };
 
     const account = await createAccount(accountInput);
 
     const userInput: UserCreateInput = {
-      name: 'PETER_USER_REGISTER',
+      firstname: 'PETER_USER_REGISTER',
+      lastname: 'TEST',
+      gender: Gender.Mann,
+      birthdate: new Date('1990-01-01'),
+      country: 'Germany',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Alexanderplatz',
+      houseNumber: '1A',
       account: {
         connect: undefined, // Wird später gesetzt (user Service),
       },
