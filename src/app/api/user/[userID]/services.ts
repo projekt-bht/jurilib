@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { User } from '~/generated/prisma/client';
 import type { UserUpdateInput } from '~/generated/prisma/models';
@@ -8,7 +9,7 @@ export const readUser = async (userID: string): Promise<User> => {
       where: { id: userID },
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new ValidationError('notFound', 'user', userID);
     }
     return user;
   } catch (error) {
@@ -20,11 +21,11 @@ export const updateUser = async (user: UserUpdateInput, userID: string): Promise
   try {
     const existingUser = await prisma.user.findUnique({ where: { id: userID } });
     if (!existingUser) {
-      throw new Error('User not found for update');
+      throw new ValidationError('notFound', 'user', userID);
     }
 
     if (Object.keys(user).length === 0) {
-      throw new Error('No valid fields provided for update');
+      throw new ValidationError('invalidInput', 'user', user);
     }
 
     const updatedUser = await prisma.user.update({
