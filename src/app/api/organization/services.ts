@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
@@ -8,13 +9,13 @@ import type { OrganizationCreateInput } from '~/generated/prisma/models';
 export const createOrganization = async (organization: Organization): Promise<Organization> => {
   try {
     if (!organization.expertiseAreas) {
-      throw new Error('Expertise area is required');
+      throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
     }
 
     // Iterate through expertiseArea and validate each area
     organization.expertiseAreas.forEach((area) => {
       if (!Object.values(Area).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+        throw new ValidationError('invalidInput', 'expertiseArea', area);
       }
     });
 
@@ -37,7 +38,7 @@ export const readOrganizations = async (): Promise<Organization[]> => {
   try {
     const orgas: Organization[] = await prisma.organization.findMany();
     if (!orgas) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organization', null);
     }
     return orgas;
   } catch (error) {
