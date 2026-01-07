@@ -2,10 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
+import type { Account } from '~/generated/prisma/client';
 import { AccountType } from '~/generated/prisma/enums';
 
 import { deleteAccount, readAccount, updateAccount } from './services';
-import { Account } from '~/generated/prisma/client';
 
 const UpdateSchema = z.object({
   id: z.string().min(36),
