@@ -10,18 +10,18 @@ export function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   switch (type) {
     case OrganizationType.LAW_FIRM:
       displayType = 'Kanzlei';
-      icon = <Building className="w-4 h-4 text-accent-gray" />;
+      icon = <Building className="w-4 h-4 text-muted-foreground" />;
       break;
     case OrganizationType.ASSOCIATION:
       displayType = 'Verein';
-      icon = <Building2 className="w-4 h-4 text-accent-gray" />;
+      icon = <Building2 className="w-4 h-4 text-muted-foreground" />;
       break;
     default:
       displayType = 'Keine Angabe';
-      icon = <Info className="w-4 h-4 text-accent-gray" />;
+      icon = <Info className="w-4 h-4 text-muted-foreground" />;
   }
   return (
-    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground inline-flex items-center gap-1 shadow-sm">
+    <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-muted border border-border text-foreground inline-flex items-center gap-1">
       {icon}
       {displayType}
     </span>
@@ -34,7 +34,7 @@ export function ExpertiseAreaItem({ areas }: { areas: Areas[] }) {
       {areas.map((area) => (
         <div
           key={area}
-          className="text-sm inline-block px-3 py-1 rounded-xl font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground shadow-sm"
+          className="text-xs inline-block px-2.5 py-1 rounded-md font-medium bg-muted border border-border text-foreground"
         >
           {area}
         </div>

@@ -52,21 +52,19 @@ export function OrganizationExplorer({ organizations }: { organizations: Organiz
       />
 
       <div className="flex-1 space-y-4">
-        <div className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-3 shadow-sm">
+        <div className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-primary/10 p-2 text-primary">
-              <Sparkles className="w-5 h-5" />
+            <div className="rounded-lg bg-muted p-2 text-muted-foreground">
+              <Sparkles className="w-4 h-4" />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-semibold text-foreground">
-                Passende Organisationen
-              </span>
+              <span className="text-sm font-semibold text-foreground">Passende Organisationen</span>
               <span className="text-xs text-muted-foreground">
                 Ergebnisse aktualisieren sich automatisch bei jeder Auswahl
               </span>
             </div>
           </div>
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-xs font-semibold text-foreground">
             {organizations.length} gesamt
           </span>
         </div>
