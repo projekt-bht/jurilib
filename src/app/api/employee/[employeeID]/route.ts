@@ -7,7 +7,7 @@ import { Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
 
 import { deleteEmployee, readEmployeeByEmployeeID, updateEmployee } from './services';
 
-const UpdateSchemaEmployee = z.object({
+const UpdateSchemaEmployee = z.strictObject({
   id: z.string().min(36),
   //organizationId: z.string().optional(), // organizationId should not be updated, maybe later
   firstName: z.string().min(1).optional(),
