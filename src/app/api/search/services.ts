@@ -71,12 +71,12 @@ export async function createSearch(query: string) {
     return {
       ...rest,
       expertiseAreas: Array.isArray(match.expertiseAreas)
-        ? match.expertiseAreas // Bereits Array: belasse es
+        ? match.expertiseAreas // Go ahead if it's already an array
         : (String(match.expertiseAreas)
-            .replace(/{|}/g, '') // Entferne {}
-            .split(',') // Splitte durch ,
-            .map((s: string) => s.trim()) // Trimme
-            .filter((s: string) => s) as Area[]), // Entferne leere Strings
+            .replace(/{|}/g, '') // remove { }
+            .split(',') // Split by comma,
+            .map((s: string) => s.trim()) // Trim
+            .filter((s: string) => s) as Area[]), // Remove empty strings
     };
   });
 
