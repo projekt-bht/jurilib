@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
@@ -9,7 +10,7 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
       where: { id: organizationID },
     });
     if (!orga) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organization', organizationID);
     }
     return orga;
   } catch (error) {
@@ -24,17 +25,17 @@ export const updateOrganization = async (
   try {
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
-      throw new Error('Organization not found for update');
+      throw new ValidationError('notFound', 'organization', organizationID);
     }
 
     if (!organization.expertiseAreas) {
-      throw new Error('Expertise area is required');
+      throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
     }
 
     // Iterate through expertiseArea and validate each area
     organization.expertiseAreas.forEach((area) => {
       if (!Object.values(Area).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+        throw new ValidationError('invalidInput', 'expertiseArea', area);
       }
     });
 
