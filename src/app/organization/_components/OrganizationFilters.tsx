@@ -58,6 +58,7 @@ export function OrganizationFilters({
 }) {
   const [openSections, setOpenSections] =
     useState<Record<keyof FilterOptions, boolean>>(collapsibleDefaults);
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
 
   const toggleSection = (section: keyof FilterOptions) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -118,94 +119,110 @@ export function OrganizationFilters({
               <X className="w-4 h-4" />
               Zurücksetzen
             </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsPanelOpen((prev) => !prev)}
+              className="h-8 w-8 p-0"
+              aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
+            >
+              <ChevronDown
+                className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                  isPanelOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </Button>
           </div>
         </div>
 
-        <div className="p-3 space-y-3">
-          <div className="rounded-lg border border-border/80">
-            {renderSectionHeader('Preisniveau', 'priceCategory')}
-            {openSections.priceCategory && (
-              <div className="px-3 pb-3 space-y-2">
-                {Object.values(PriceCategoryEnum).map((price) => (
-                  <label
-                    key={price}
-                    className="flex items-center justify-between rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        checked={filters.priceCategory.includes(price)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange('priceCategory', price, Boolean(checked))
-                        }
-                        aria-label={`Filter nach ${priceCategoryLabels[price]}`}
-                      />
-                      <span className="text-sm text-foreground font-medium">
-                        {priceCategoryLabels[price]}
-                      </span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-lg border border-border/80">
-            {renderSectionHeader('Organisationstyp', 'organizationType')}
-            {openSections.organizationType && (
-              <div className="px-3 pb-3 space-y-2">
-                {Object.values(OrganizationTypeEnum).map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center justify-between rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        checked={filters.organizationType.includes(type)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange('organizationType', type, Boolean(checked))
-                        }
-                        aria-label={`Filter nach ${organizationTypeMeta[type].label}`}
-                      />
-                      <span className="inline-flex items-center gap-2 text-sm text-foreground font-medium">
-                        {organizationTypeMeta[type].icon}
-                        {organizationTypeMeta[type].label}
-                      </span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-lg border border-border/80">
-            {renderSectionHeader('Fachgebiete', 'specialties')}
-            {openSections.specialties && (
-              <div className="px-3 pb-4 space-y-2">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground pb-1">
-                  <SlidersHorizontal className="w-3 h-3" />
-                  Mehrfachauswahl möglich
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
-                  {Object.values(AreasEnum).map((area) => (
+        {isPanelOpen && (
+          <div className="p-3 space-y-3">
+            <div className="rounded-lg border border-border/80">
+              {renderSectionHeader('Preisniveau', 'priceCategory')}
+              {openSections.priceCategory && (
+                <div className="px-3 pb-3 space-y-2">
+                  {Object.values(PriceCategoryEnum).map((price) => (
                     <label
-                      key={area}
-                      className="flex items-center gap-3 rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
+                      key={price}
+                      className="flex items-center justify-between rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
                     >
-                      <Checkbox
-                        checked={filters.specialties.includes(area)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange('specialties', area, Boolean(checked))
-                        }
-                        aria-label={`Filter nach ${area}`}
-                      />
-                      <span className="text-sm text-foreground font-medium">{area}</span>
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={filters.priceCategory.includes(price)}
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange('priceCategory', price, Boolean(checked))
+                          }
+                          aria-label={`Filter nach ${priceCategoryLabels[price]}`}
+                        />
+                        <span className="text-sm text-foreground font-medium">
+                          {priceCategoryLabels[price]}
+                        </span>
+                      </div>
                     </label>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+
+            <div className="rounded-lg border border-border/80">
+              {renderSectionHeader('Organisationstyp', 'organizationType')}
+              {openSections.organizationType && (
+                <div className="px-3 pb-3 space-y-2">
+                  {Object.values(OrganizationTypeEnum).map((type) => (
+                    <label
+                      key={type}
+                      className="flex items-center justify-between rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Checkbox
+                          checked={filters.organizationType.includes(type)}
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange('organizationType', type, Boolean(checked))
+                          }
+                          aria-label={`Filter nach ${organizationTypeMeta[type].label}`}
+                        />
+                        <span className="inline-flex items-center gap-2 text-sm text-foreground font-medium">
+                          {organizationTypeMeta[type].icon}
+                          {organizationTypeMeta[type].label}
+                        </span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-lg border border-border/80">
+              {renderSectionHeader('Fachgebiete', 'specialties')}
+              {openSections.specialties && (
+                <div className="px-3 pb-4 space-y-2">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground pb-1">
+                    <SlidersHorizontal className="w-3 h-3" />
+                    Mehrfachauswahl möglich
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
+                    {Object.values(AreasEnum).map((area) => (
+                      <label
+                        key={area}
+                        className="flex items-center gap-3 rounded-md border border-border/70 bg-background px-3 py-2 hover:border-primary/20 transition-colors"
+                      >
+                        <Checkbox
+                          checked={filters.specialties.includes(area)}
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange('specialties', area, Boolean(checked))
+                          }
+                          aria-label={`Filter nach ${area}`}
+                        />
+                        <span className="text-sm text-foreground font-medium">{area}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </aside>
   );
