@@ -42,6 +42,7 @@ async function main() {
         email: faker.internet.email(),
         password: faker.internet.password(),
         type: AccountType.USER,
+        isVerified: true,
       },
     });
 
@@ -126,11 +127,6 @@ async function main() {
         },
       });
 
-      const cvParagraphs = [];
-      for (let j = 0; j < 3; j++) {
-        cvParagraphs.push(faker.lorem.paragraph(1));
-      }
-
       const languages: Language[] = [];
       for (let k = 0; k < 2; k++) {
         languages.push(faker.helpers.enumValue(Language));
@@ -150,7 +146,6 @@ async function main() {
           position: faker.person.jobTitle(),
           account: { connect: { id: account.id } },
           expertiseAreas: [faker.helpers.enumValue(Area)],
-          cv: cvParagraphs,
           languages: languages,
         },
       });
