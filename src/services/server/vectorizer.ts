@@ -50,18 +50,6 @@ export async function vectorizeSearch(query: string) {
 
   const embedding = embeddingResponse.data[0].embedding;
 
-  const createdSearchLog = await prisma.searchLog.create({
-    data: {
-      searchString: query,
-      searchStringExpanded: expandedQuery,
-    },
-  });
-
-  if (embedding)
-    await prisma.$executeRaw`UPDATE "SearchLog"
-                SET "searchStringExpandedVector" = ${`[${embedding.join(',')}]`}::vector
-                WHERE "id" = ${createdSearchLog.id}`;
-
   // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.
   return `[${embedding.join(',')}]`;
