@@ -20,7 +20,6 @@ const UpdateSchemaEmployee = z.strictObject({
   phone: z.string().optional(),
   position: z.string().optional(),
   description: z.string().optional(),
-  cv: z.array(z.string()).optional(),
   languages: z.array(z.enum(Language)).optional(),
   expertiseAreas: z.array(z.enum(Area)).optional(),
 });
