@@ -17,7 +17,7 @@ describe('Login test', () => {
   test('Create Account and User', async () => {
     const accountInput: AccountCreateInput = {
       email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
-      password: '123456',
+      password: '123456789',
       type: 'USER',
     };
 
@@ -28,6 +28,7 @@ describe('Login test', () => {
       lastname: 'TEST',
       gender: Gender.Mann,
       birthdate: new Date('1990-01-01'),
+      placeOfBirth: 'Berlin',
       country: 'Germany',
       city: 'Berlin',
       zipCode: '10115',
@@ -38,8 +39,10 @@ describe('Login test', () => {
       },
     };
 
-    await createUser(userInput, account.id!);
+    const user = await createUser(userInput, account.id!);
 
+    expect(account).toBeDefined();
+    expect(user).toBeDefined();
     createdAccount = { email: accountInput.email, password: accountInput.password };
   });
 
