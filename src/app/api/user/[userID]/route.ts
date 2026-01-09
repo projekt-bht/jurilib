@@ -12,6 +12,7 @@ const UpdateSchema = z.strictObject({
   firstname: z.string().optional(),
   lastname: z.string().optional(),
   birthdate: z.string().optional(),
+  placeOfBirth: z.string().optional(),
   gender: z.string().optional(),
   genderText: z.string().optional(),
   pronoun: z.string().optional(),
@@ -23,7 +24,6 @@ const UpdateSchema = z.strictObject({
   zipCode: z.string().optional(),
   street: z.string().optional(),
   houseNumber: z.string().optional(),
-  password: z.string().min(6).optional(),
   type: z.enum(AccountType).optional(),
 });
 
