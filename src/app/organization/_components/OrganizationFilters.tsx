@@ -21,11 +21,11 @@ export type FilterOptions = {
 
 type FilterValue = PriceCategory | OrganizationType | Areas;
 
-const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; className: string }> = {
-  [PriceCategoryEnum.FREE]: { label: '€ - Niedrig', className: 'text-emerald-600' },
-  [PriceCategoryEnum.LOW]: { label: '€€ - Mittel', className: 'text-amber-600' },
-  [PriceCategoryEnum.MEDIUM]: { label: '€€€ - Hoch', className: 'text-red-600' },
-  [PriceCategoryEnum.HIGH]: { label: '€€€€ - Premium', className: 'text-rose-600' },
+const priceCategoryMeta: Record<PriceCategoryEnum, { label: string }> = {
+  [PriceCategoryEnum.FREE]: { label: '€ - Niedrig' },
+  [PriceCategoryEnum.LOW]: { label: '€€ - Mittel' },
+  [PriceCategoryEnum.MEDIUM]: { label: '€€€ - Hoch' },
+  [PriceCategoryEnum.HIGH]: { label: '€€€€ - Premium' },
 };
 
 const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
@@ -59,6 +59,11 @@ export function OrganizationFilters({
 }) {
   const [openSections, setOpenSections] =
     useState<Record<keyof FilterOptions, boolean>>(collapsibleDefaults);
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [sortedAreas] = useState(() =>
+    // Keep specialties deterministic and easy to scan.
+    [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
+  );
 
   const toggleSection = (section: keyof FilterOptions) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -72,9 +77,9 @@ export function OrganizationFilters({
     <button
       type="button"
       onClick={() => toggleSection(section)}
-      className="flex w-full items-center justify-between rounded-lg px-2 py-2 hover:bg-muted/50 transition-colors"
+      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 hover:bg-muted transition-colors"
     >
-      <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+      <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground">
         <span className="text-muted-foreground">{icon}</span>
         {title}
       </span>
@@ -97,14 +102,14 @@ export function OrganizationFilters({
   const isActiveFilters = activeFilterCount > 0;
 
   return (
-    <section className="w-full rounded-2xl border border-border bg-background p-4 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-3">
+    <section className="w-full rounded-lg border border-border bg-background p-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
         <div className="flex items-center gap-3">
-          <div className="rounded-full border border-border/60 bg-muted p-2">
+          <div className="rounded-full border border-border bg-muted p-1.5">
             <Filter className="w-4 h-4 text-muted-foreground" />
           </div>
           <div>
-            <h3 className="text-base font-semibold text-foreground">Filter</h3>
+            <h3 className="text-sm font-semibold text-foreground">Filter</h3>
             <p className="text-xs text-muted-foreground">
               Wähle Organisationstyp, Preisklasse und Fachbereich
             </p>
@@ -112,7 +117,7 @@ export function OrganizationFilters({
         </div>
         <div className="flex items-center gap-2">
           {isActiveFilters && (
-            <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-foreground">
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
               {activeFilterCount} aktiv
             </span>
           )}
@@ -122,21 +127,40 @@ export function OrganizationFilters({
             size="sm"
             disabled={!isActiveFilters}
             onClick={onReset}
-            className="h-8 px-2 text-xs font-semibold"
+            className="h-7 px-2 text-xs font-semibold"
           >
             <X className="w-4 h-4" />
             Zurücksetzen
           </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsPanelOpen((prev) => !prev)}
+            className="h-7 w-7 p-0"
+            aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
+          >
+            <ChevronDown
+              className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                isPanelOpen ? 'rotate-180' : ''
+              }`}
+            />
+          </Button>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="rounded-xl border border-border/80 bg-background px-3 pb-3 pt-2">
-          {renderSectionHeader('Organisationstyp', 'organizationType', <Building2 className="w-4 h-4" />)}
-          {openSections.organizationType && (
-            <div className="mt-2 space-y-2">
-              {Object.values(OrganizationTypeEnum).map((type) => (
-                <div key={type} className="flex items-center gap-3 rounded-md px-2 py-1.5">
+      {isPanelOpen && (
+        <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
+          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
+            {renderSectionHeader(
+              'Organisationstyp',
+              'organizationType',
+              <Building2 className="w-4 h-4" />
+            )}
+            {openSections.organizationType && (
+              <div className="mt-2 space-y-1.5">
+                {Object.values(OrganizationTypeEnum).map((type) => (
+                  <div key={type} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`org-type-${type}`}
                     checked={filters.organizationType.includes(type)}
@@ -147,23 +171,23 @@ export function OrganizationFilters({
                   />
                   <Label
                     htmlFor={`org-type-${type}`}
-                    className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-foreground"
+                    className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
                   >
                     {organizationTypeMeta[type].icon}
                     {organizationTypeMeta[type].label}
                   </Label>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-        <div className="rounded-xl border border-border/80 bg-background px-3 pb-3 pt-2">
-          {renderSectionHeader('Preisklasse', 'priceCategory', <Scale className="w-4 h-4" />)}
-          {openSections.priceCategory && (
-            <div className="mt-2 space-y-2">
-              {Object.values(PriceCategoryEnum).map((price) => (
-                <div key={price} className="flex items-center gap-3 rounded-md px-2 py-1.5">
+          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
+            {renderSectionHeader('Preisklasse', 'priceCategory', <Scale className="w-4 h-4" />)}
+            {openSections.priceCategory && (
+              <div className="mt-2 space-y-1.5">
+                {Object.values(PriceCategoryEnum).map((price) => (
+                  <div key={price} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`price-${price}`}
                     checked={filters.priceCategory.includes(price)}
@@ -174,22 +198,22 @@ export function OrganizationFilters({
                   />
                   <Label
                     htmlFor={`price-${price}`}
-                    className={`cursor-pointer text-sm font-semibold ${priceCategoryMeta[price].className}`}
+                    className="cursor-pointer text-xs font-semibold text-foreground"
                   >
                     {priceCategoryMeta[price].label}
                   </Label>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-        <div className="rounded-xl border border-border/80 bg-background px-3 pb-3 pt-2">
-          {renderSectionHeader('Fachbereich', 'specialties', <Tag className="w-4 h-4" />)}
-          {openSections.specialties && (
-            <div className="mt-2 space-y-2 max-h-56 overflow-y-auto pr-1">
-              {Object.values(AreasEnum).map((area) => (
-                <div key={area} className="flex items-center gap-3 rounded-md px-2 py-1.5">
+          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
+            {renderSectionHeader('Fachbereich', 'specialties', <Tag className="w-4 h-4" />)}
+            {openSections.specialties && (
+              <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                {sortedAreas.map((area) => (
+                  <div key={area} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`specialty-${area}`}
                     checked={filters.specialties.includes(area)}
@@ -200,16 +224,17 @@ export function OrganizationFilters({
                   />
                   <Label
                     htmlFor={`specialty-${area}`}
-                    className="cursor-pointer text-sm font-medium text-foreground"
+                    className="cursor-pointer text-xs font-medium text-foreground"
                   >
                     {area}
                   </Label>
                 </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }
