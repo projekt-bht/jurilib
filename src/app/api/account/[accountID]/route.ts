@@ -2,16 +2,17 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import type { Account } from '~/generated/prisma/client';
-import { AccountType } from '~/generated/prisma/enums';
+import { type Account, AccountType } from '~/generated/prisma/client';
 
 import { deleteAccount, readAccount, updateAccount } from './services';
 
-const UpdateSchema = z.object({
+const UpdateSchema = z.strictObject({
   id: z.string().min(36),
   email: z.string(),
-  password: z.string().min(6),
+  password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
   type: z.enum(AccountType),
+  // is this the right place to update this?
+  isVerified: z.boolean().optional(),
 });
 
 export async function GET(
