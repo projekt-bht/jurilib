@@ -16,6 +16,19 @@ datasource db {
     schemas = ["public"]
 }
 
+// -------- Playtest ------
+
+model SearchLog {
+    id        String   @id @default(uuid())
+    searchString     String
+    searchStringExpanded String
+    searchStringExpandedVector  Unsupported("vector(3072)")?
+
+    createdAt      DateTime     @default(now())
+
+    @@schema("public")
+}
+
 // -------- Models --------
 
 model Account {
@@ -57,9 +70,9 @@ model User {
     // address infos
     country   String
     city      String
-    zipCode   String
+    zipCode   String   
     street    String
-    houseNumber String
+    houseNumber String 
 
     // creation & update timestamps
     createdAt DateTime @default(now())
@@ -135,9 +148,9 @@ model Organization {
     // address infos
     country            String
     city               String
-    zipCode            String
+    zipCode            String 
     street             String
-    houseNumber        String
+    houseNumber        String 
 
     // vector for similarity search
     expertiseVector    Unsupported("vector(3072)")?
@@ -188,7 +201,7 @@ model Case {
     // case infos
     title          String
     description    String
-    // documentsURL   String[]  // Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
+    // documentsURL   String[]  // TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
     status         CaseStatus    @default(OPEN)
 
     // creation & update timestamps
@@ -206,7 +219,7 @@ model Case {
 model Appointment {
     id             String            @id @default(uuid()) // primary key
     caseId         String?          // foreign key to Case  
-    userId         String           // foreign key to User
+    userId         String?          // foreign key to User
     employeeId     String           // foreign key to Employee
 
     // appointment infos
@@ -255,6 +268,7 @@ enum OrganizationType {
     @@schema("public")
 }
 
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
 enum Gender {
   Agender           // without gender
   Bigender          // two identities simultaneously
@@ -269,6 +283,7 @@ enum Gender {
 @@schema("public")
 }
 
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
 enum Pronoun {
     ER_IHN
     SIE_IHR
@@ -287,6 +302,7 @@ enum Pronoun {
     @@schema("public")
 }
 
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
 enum Accessibility {
     Stufenloser_Zugang
     Rollstuhlgerecht
@@ -294,6 +310,7 @@ enum Accessibility {
     Aufzug_vorhanden
     Behinderten_WC
     Parkplätze_vorhanden
+    Behintertenparkplätze
     Blindenleitsystem
 
     Gebärdensprachliche_Begleitung
