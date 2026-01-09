@@ -42,7 +42,6 @@ const mockEmployees: Employee[] = [
     position: 'Rechtsanwalt',
     organizationId: '1',
     email: 'max.mustermann@rechtsberatum.de',
-    cv: ['Erfahrener Rechtsanwalt mit Schwerpunkt Arbeitsrecht.'],
     languages: ['DEUTSCH', 'ENGLISCH'],
     imageUrl: 'https://example.com/employee1.jpg',
     expertiseAreas: ['Steuerrecht'],
