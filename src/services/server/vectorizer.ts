@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 
-import prisma from '@/lib/db';
 import { Area } from '~/generated/prisma/enums';
 
 const openai = new OpenAI({
