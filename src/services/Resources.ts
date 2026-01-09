@@ -15,7 +15,20 @@ export type RegisterResource = {
   };
   entity: {
     name: string;
+    // firstname: string;
+    // lastname: string;
+    // title?: string;
+    // gender: Gender
+    // genderText?: string;
+    // pronoun: Pronoun
+    // pronounText?: string;
+    // brithdate: Date;
     address: string;
+    // country: string;
+    // city: string;
+    // zipCode: string;
+    // street: string;
+    // houseNumber: string;
     phone: string;
   };
 };
@@ -33,6 +46,19 @@ export type UserResource = {
   id: string;
   accountId: string;
   name: string;
+  // firstname: string;
+  // lastname: string;
+  // title?: string;
+  // gender: Gender
+  // genderText?: string;
+  // pronoun: Pronoun
+  // pronounText?: string;
+  // brithdate: Date;
   address?: string;
   phone?: string;
+  // country: string;
+  // city: string;
+  // zipCode: string;
+  // street: string;
+  // houseNumber: string;
 };
