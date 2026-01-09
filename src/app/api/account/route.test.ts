@@ -12,7 +12,7 @@ describe('Account Routen testen', () => {
   test('POST Account', async () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
-      password: '123456',
+      password: '123456789',
       type: 'USER',
     };
 
