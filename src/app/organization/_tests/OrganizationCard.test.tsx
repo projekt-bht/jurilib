@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
 import type { Organization } from '~/generated/prisma/client';
+import { Accessibility } from '~/generated/prisma/client';
 
 import { OrganizationCard } from '../_components/OrganizationCard';
 
@@ -11,12 +12,21 @@ const mockOrganization: Organization = {
   shortDescription: 'Ihr Partner für Arbeitsrecht.',
   description: 'Ihr aller bester Partner für Arbeitsrecht.',
   priceCategory: 'FREE',
+  type: 'LAW_FIRM',
   email: 'contact@rechtsberatum.de',
   phone: '+49 89 1234567',
-  address: 'München, Germany',
+  country: 'Germany',
+  city: 'Munich',
+  zipCode: '80331',
+  street: 'Marienplatz',
+  houseNumber: '1',
+  accessibility: [Accessibility.Parkplätze_vorhanden, Accessibility.Rollstuhlgerecht],
   website: 'https://rechtsberatum.de',
-  expertiseArea: ['Arbeitsrecht'],
-  type: 'LAW_FIRM',
+  expertiseAreas: ['Arbeitsrecht'],
+  imageUrl: 'https://example.com/image.jpg',
+  averageRating: 4.5,
+  numberOfRatings: 150,
+
   createdAt: new Date(),
   updatedAt: new Date(),
 };
