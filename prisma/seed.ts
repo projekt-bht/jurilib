@@ -9,6 +9,7 @@ import {
   Gender,
   Pronoun,
   Language,
+  Accessibility,
 } from '../generated/prisma/enums';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 
@@ -73,40 +74,44 @@ async function main() {
 
     const expertiseArea = [faker.helpers.enumValue(Area)];
     const type = faker.helpers.enumValue(OrganizationType);
+    const accessibility = [faker.helpers.enumValue(Accessibility)];
 
     let expertiseVector = null;
     if (process.env.OPENAI_API_KEY) {
       expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
     }
 
-    await prisma.$executeRawUnsafe(
-      `
-      INSERT INTO "Organization" (
-        "id", "name", "description", "shortDescription", "email",
-        "phone", "address", "website",
-        "expertiseArea", "expertiseVector", "type", "priceCategory",
-        "createdAt", "updatedAt"
-      )
-      VALUES (
-        $1, $2, $3, $4, $5,
-        $6, $7, $8,
-        $9::"Areas"[], $10::vector, $11::"OrganizationType", $12::"PriceCategory",
-        NOW(), NOW()
-      )
-      `,
-      orgId,
-      orgName,
-      faker.company.catchPhrase(),
-      faker.company.catchPhrase(),
-      faker.internet.email(),
-      faker.phone.number(),
-      faker.location.streetAddress(),
-      faker.internet.url(),
-      expertiseArea,
-      expertiseVector,
-      type,
-      faker.helpers.enumValue(PriceCategory)
-    );
+    const org = await prisma.organization.create({
+      data: {
+        id: orgId,
+        name: orgName,
+        description: faker.company.catchPhrase(),
+        shortDescription: faker.company.catchPhrase(),
+        email: faker.internet.email(),
+        phone: faker.phone.number(),
+        website: faker.internet.url(),
+        accessibility: accessibility,
+        expertiseAreas: expertiseArea,
+        type: type,
+        priceCategory: faker.helpers.enumValue(PriceCategory),
+        country: faker.location.country(),
+        city: faker.location.city(),
+        zipCode: faker.location.zipCode(),
+        street: faker.location.street(),
+        houseNumber: faker.location.buildingNumber(),
+        imageUrl: faker.image.url(),
+        averageRating: faker.number.int({ min: 1, max: 5 }),
+        numberOfRatings: faker.number.int({ min: 0, max: 1000 }),
+      },
+    });
+
+    if (expertiseVector) {
+      await prisma.$executeRawUnsafe(
+        `UPDATE "Organization" SET "expertiseVector" = $1 WHERE id = $2`,
+        expertiseVector,
+        orgId
+      );
+    }
 
     console.log(`created "${orgName}" (${orgId})`);
 
