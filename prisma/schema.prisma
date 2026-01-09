@@ -25,6 +25,7 @@ model Account {
     email     String @unique
     password  String
     type      AccountType
+    isVerified Boolean @default(false)
 
     // creation & update timestamps
     createdAt DateTime @default(now())
@@ -49,17 +50,20 @@ model User {
     genderText String? // in case the predefined genders do not fit
     pronoun  Pronoun?
     pronounText String? // in case the predefined pronouns do not fit
-    birthdate DateTime // should this be required?
+    birthdate DateTime
+    placeOfBirth String?
     phone     String?
 
     imageUrl  String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
 
     // address infos
-    country   String
-    city      String
-    zipCode   String   
-    street    String
-    houseNumber String 
+    // Optional? Might be useful for location-based services in the future
+    // or can be added later in user profile settings if needed
+    country   String?
+    city      String?
+    zipCode   String?   
+    street    String?
+    houseNumber String? 
 
     // creation & update timestamps
     createdAt DateTime @default(now())
@@ -83,7 +87,7 @@ model Employee {
     lastname       String
     pronoun       Pronoun?
     pronounText    String? // in case the predefined pronouns do not fit
-    gender         Gender // maybe use an Enum here?
+    gender         Gender 
     genderText     String? // in case the predefined genders do not fit
     imageUrl       String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
     phone          String?
@@ -97,7 +101,7 @@ model Employee {
     // profile infos
     description    String?
     expertiseAreas Area[]
-    cv             String[]
+    //cv             String[] // Not used yet. Maybe create a cv template for employees to fill out. Maybe wrong data type?
     languages      Language[] // languages spoken by the employee
 
 
@@ -128,7 +132,7 @@ model Organization {
     imageUrl           String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
     accessibility      Accessibility[]
 
-    expertiseAreas      Area[]
+    expertiseAreas     Area[]
     type               OrganizationType
     priceCategory      PriceCategory
 
@@ -188,7 +192,7 @@ model Case {
     // case infos
     title          String
     description    String
-    // documentsURL   String[]  // TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
+    documentsURL   String[]  // TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
     status         CaseStatus    @default(OPEN)
 
     // creation & update timestamps
@@ -263,7 +267,7 @@ enum Gender {
   Demigirl          // partially female
   Frau              // female
   Mann              // male
-  Nicht_binär       // non-binary
+  Nicht_binaer       // non-binary
   Keine_Angabe      // no indication
   Andere            // if "Andere" is selected, pronounText can be used to specify
   
@@ -272,17 +276,17 @@ enum Gender {
 
 // TODO: German or English? Uppercase or upper- + lowercase with underscores?
 enum Pronoun {
-    ER_IHN
-    SIE_IHR
-    HE_HIM
-    SHE_HER
-    THEY_THEM
-    ZE_ZIR
-    XE_XEM
-    FAE_FAER
-    VE_VER
-    PER_PER
-    E_EM
+    er_ihn
+    sie_ihr
+    he_him
+    she_her
+    they_them
+    ze_zir
+    xe_xem
+    fae_faer
+    ve_ver
+    per_per
+    e_em
     Keine_Angabe
     Andere // if "Andere" is selected, pronounText can be used to specify
 
