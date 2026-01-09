@@ -1,0 +1,182 @@
+<!-- Colors are defined explicitly, as using the global css would not work reliably in all email clients -->
+
+<html lang='de'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>E-Mail verifizieren</title>
+
+    <!--[if mso]>
+      <style>
+        body,
+        table,
+        td {
+          font-family: Arial, Helvetica, sans-serif !important;
+        }
+      </style>
+    <![endif]-->
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      color: #303030;
+    "
+  >
+    <table width='100%' cellpadding='0' cellspacing='0' role='presentation'>
+      <tr>
+        <td style='padding: 40px 20px'>
+          <table
+            width='100%'
+            cellpadding='0'
+            cellspacing='0'
+            role='presentation'
+            style='
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #f8f8f8;
+              border-radius: 10px;
+              border: 1px solid #e4e4e4;
+            '
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                style='
+                  padding: 48px 40px 32px;
+                  text-align: center;
+                  border-bottom: 1px solid #e4e4e4;
+                '
+              >
+                <!-- Logo -->
+                <!-- TODO: das Logo muss hier noch richtig eingebunden werden -->
+                <img
+                  src='../public/scale_logo.svg'
+                  width='96'
+                  height='96'
+                  alt='JuriLib Logo'
+                  style='margin-bottom: 12px'
+                />
+
+                <h1 style='margin: 0; font-size: 22px; font-weight: 600; color: #303030'>
+                  JuriLib
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Content -->
+            <tr>
+              <td style='padding: 40px'>
+                <h2
+                  style='
+                    margin: 0 0 16px;
+                    font-size: 26px;
+                    font-weight: 600;
+                    line-height: 1.25;
+                    color: #303030;
+                  '
+                >
+                  E-Mail-Adresse bestätigen
+                </h2>
+
+                <p style='margin: 0 0 20px; font-size: 16px; line-height: 1.6'>Hallo {{NAME}},</p>
+
+                <p style='margin: 0 0 32px; font-size: 16px; line-height: 1.6'>
+                  vielen Dank für deine Registrierung. Bitte bestätige deine E-Mail-Adresse, um dein
+                  Konto zu aktivieren.
+                </p>
+
+                <div
+                  style='
+                    margin: 0 auto 32px;
+                    width: fit-content;
+                    padding: 16px 32px;
+                    border: 1px solid #e4e4e4;
+                    border-radius: 10px;
+                    background-color: #ffffff;
+                    font-size: 24px;
+                    font-weight: 600;
+                    letter-spacing: 6px;
+                    font-family: monospace;
+                  '
+                >
+                  {{VERIFICATION_CODE}}
+                </div>
+
+                <!-- Info Box -->
+                <div
+                  style='
+                    background-color: #ffffff;
+                    border: 1px solid #e4e4e4;
+                    border-left: 4px solid #303030;
+                    border-radius: 8px;
+                    padding: 16px;
+                    margin-bottom: 24px;
+                  '
+                >
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Hinweis:</strong>
+                    Der Bestätigungscode ist
+                    {{EXPIRY_MINUTES}}
+                    Minuten gültig.
+                  </p>
+                </div>
+
+                <p style='margin: 0; font-size: 14px; color: #737373'>
+                  Falls du kein Konto erstellt hast, kannst du diese E-Mail ignorieren.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style='
+                  padding: 28px 40px;
+                  background-color: #ffffff;
+                  border-top: 1px solid #e4e4e4;
+                  border-radius: 0 0 10px 10px;
+                  text-align: center;
+                '
+              >
+                <p style='margin: 0 0 6px; font-size: 13px; color: #737373'>
+                  ©
+                  {{CURRENT_YEAR}}
+                  JuriLib
+                </p>
+                <p style='margin: 0; font-size: 12px; color: #a3a3a3'>
+                  Luxemburger Str. 10, 13353 Berlin
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Links -->
+          <table role='presentation' width='100%' style='max-width: 600px; margin: 20px auto 0'>
+            <tr>
+              <td align='center'>
+                <a
+                  href='mailto:jurilib@web.de'
+                  style='font-size: 12px; color: #737373; margin: 0 10px'
+                >Hilfe</a>
+                <!-- TODO: Datenschutz Link anpassen -->
+                <a
+                  href='{{params.PRIVACY_URL}}'
+                  style='font-size: 12px; color: #737373; margin: 0 10px'
+                >Datenschutz</a>
+                <a
+                  href='https://jurilib.de/tos'
+                  style='font-size: 12px; color: #737373; margin: 0 10px'
+                >AGB</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

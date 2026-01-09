@@ -17,13 +17,17 @@ export async function sendRegistrationCodeEmail(
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
+  // TODO: Store the verification code associated with the user in the database with an expiration time
+
   sendEmail({
     toEmail: userEmail,
-    subject: 'Dein JuriLib Registrierungscode',
-    templateFileName: 'registration_conformation_code.html',
+    subject: `${verificationCode} ist dein JuriLib Registrierungscode`,
+    templateFileName: 'registration_confirmation_code.html',
     templateVariables: {
       NAME: userFullName,
       VERIFICATION_CODE: verificationCode,
+      // TODO: Add expiration time variable as EXPIRY_MINUTES
+      CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
 }
@@ -35,8 +39,31 @@ export async function sendRegistrationCodeEmail(
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendPasswordResetEmail() {
-  // implementation here
+export async function sendPasswordResetEmail(
+  userFirstName: string,
+  userLastName: string,
+  userEmail: string
+) {
+  const userFullName = `${userFirstName} ${userLastName}`.trim();
+
+  // Generate a 6-digit verification code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // TODO: Store the verification code associated with the user in the database with an expiration time
+  // see if addig a password reset count is needed
+
+  sendEmail({
+    toEmail: userEmail,
+    subject: `${verificationCode} ist dein JuriLib Passwort-Zurücksetzungscode`,
+    templateFileName: 'password_reset_code.html',
+    templateVariables: {
+      NAME: userFullName,
+      VERIFICATION_CODE: verificationCode,
+      // TODO: Add expiration time variable as EXPIRY_MINUTES
+      EXPIRY_MINUTES: '30',
+      CURRENT_YEAR: new Date().getFullYear().toString(),
+    },
+  });
 }
 
 /**
