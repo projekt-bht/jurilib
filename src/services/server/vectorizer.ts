@@ -2,7 +2,7 @@
 import OpenAI from 'openai';
 
 import prisma from '@/lib/db';
-import { Areas } from '~/generated/prisma/enums';
+import { Area } from '~/generated/prisma/enums';
 
 const openai = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL ?? '',
@@ -20,7 +20,7 @@ export async function vectorizeSearch(query: string) {
     Gib bitte nur die Fachgebiete als antwort zurück, falls du nichts sinnvolles findest gib einfach '#' das zurück
     "${query}"
     `;
-  const possibleAnswers = Object.values(Areas).join(', ');
+  const possibleAnswers = Object.values(Area).join(', ');
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
       User role: Equivalent to the queries made by the user.
