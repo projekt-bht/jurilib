@@ -43,7 +43,7 @@ export function Authentication() {
           account: {
             email: data.email.toString(),
             password: data.password.toString(),
-            role: 'USER',
+            type: 'USER',
           },
           entity: {
             name: data.name.toString(),
