@@ -16,7 +16,7 @@ describe('Account Routen testen', () => {
   test('POST Account', async () => {
     const account: AccountCreateInput = {
       email: 'peter' + Math.random() + '@mail.de',
-      password: '123456',
+      password: '1234567890',
       type: AccountType.USER,
     };
 
@@ -56,7 +56,7 @@ describe('Account Routen testen', () => {
     const account: AccountCreateInput = {
       id: createdAcc.id,
       email: 'peter' + Math.random() + '@mail.de',
-      password: '5555555',
+      password: '5555555555',
       type: AccountType.EMPLOYEE,
     };
 
