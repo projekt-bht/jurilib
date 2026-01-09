@@ -6,9 +6,9 @@ import { AccountType } from '~/generated/prisma/enums';
 
 import { createAccount, readAccounts } from './services';
 
-const CreateSchema = z.object({
+const CreateSchema = z.strictObject({
   email: z.string(),
-  password: z.string().min(6),
+  password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
   type: z.enum(AccountType),
 });
 
