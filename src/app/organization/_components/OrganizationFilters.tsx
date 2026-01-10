@@ -47,7 +47,7 @@ export function OrganizationFilters({
   activeFilterCount,
 }: {
   filters: FilterOptions;
-  onFilterChange: (category: keyof FilterOptions, value: FilterValue, checked: boolean) => void;
+  onFilterChange: (category: keyof FilterOptions, value: FilterValue, isChecked: boolean) => void;
   onReset: () => void;
   activeFilterCount: number;
 }) {
@@ -57,19 +57,21 @@ export function OrganizationFilters({
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
 
-  const renderSectionHeader = (title: string, icon: React.ReactNode) => (
-    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-      <span className="text-muted-foreground">{icon}</span>
-      <span className="text-xs font-semibold text-foreground">{title}</span>
-    </div>
-  );
+  function SectionHeader({ title, icon }: { title: string; icon: React.ReactNode }) {
+    return (
+      <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+        <span className="text-muted-foreground">{icon}</span>
+        <span className="text-xs font-semibold text-foreground">{title}</span>
+      </div>
+    );
+  }
 
   const handleCheckboxChange = (
     category: keyof FilterOptions,
     value: FilterValue,
-    checked: boolean
+    isChecked: boolean
   ) => {
-    onFilterChange(category, value, checked);
+    onFilterChange(category, value, isChecked);
   };
 
   const isActiveFilters = activeFilterCount > 0;
@@ -125,15 +127,15 @@ export function OrganizationFilters({
       {isPanelOpen && (
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader('Organisationstyp', <Building2 className="w-4 h-4" />)}
+            <SectionHeader title="Organisationstyp" icon={<Building2 className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5">
               {Object.values(OrganizationTypeEnum).map((type) => (
                 <div key={type} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`org-type-${type}`}
                     checked={filters.organizationType.includes(type)}
-                    onCheckedChange={(checked) =>
-                      handleCheckboxChange('organizationType', type, Boolean(checked))
+                    onCheckedChange={(isChecked) =>
+                      handleCheckboxChange('organizationType', type, Boolean(isChecked))
                     }
                     aria-label={`Filter nach ${organizationTypeMeta[type].label}`}
                   />
@@ -150,15 +152,15 @@ export function OrganizationFilters({
           </div>
 
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader('Preisklasse', <Scale className="w-4 h-4" />)}
+            <SectionHeader title="Preisklasse" icon={<Scale className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5">
               {Object.values(PriceCategoryEnum).map((price) => (
                 <div key={price} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`price-${price}`}
                     checked={filters.priceCategory.includes(price)}
-                    onCheckedChange={(checked) =>
-                      handleCheckboxChange('priceCategory', price, Boolean(checked))
+                    onCheckedChange={(isChecked) =>
+                      handleCheckboxChange('priceCategory', price, Boolean(isChecked))
                     }
                     aria-label={`Filter nach ${priceCategoryMeta[price].label}`}
                   />
@@ -174,15 +176,15 @@ export function OrganizationFilters({
           </div>
 
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader('Fachbereich', <Tag className="w-4 h-4" />)}
+            <SectionHeader title="Fachbereich" icon={<Tag className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
               {sortedAreas.map((area) => (
                 <div key={area} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`specialty-${area}`}
                     checked={filters.specialties.includes(area)}
-                    onCheckedChange={(checked) =>
-                      handleCheckboxChange('specialties', area, Boolean(checked))
+                    onCheckedChange={(isChecked) =>
+                      handleCheckboxChange('specialties', area, Boolean(isChecked))
                     }
                     aria-label={`Filter nach ${area}`}
                   />
