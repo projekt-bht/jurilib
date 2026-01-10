@@ -36,19 +36,21 @@ export async function POST(req: NextRequest) {
     // validate body
     const body = registrationSchema.parse(await req.json());
 
+    // prepare createdAccount and createdUser to be used for sending registration email
+    let createdAccount;
+    let createdUser;
+
     /**
      * Create Account and associated User/Employee in a transaction
      * This ensures that either both records are created or none at all
      */
-    const result = await prisma.$transaction(async (tx) => {
+    let result = await prisma.$transaction(async (tx) => {
       const accountInput = convertBodyToAccountInput(body);
-      const createdAccount = await createAccountTx(accountInput, tx);
+      createdAccount = await createAccountTx(accountInput, tx);
 
       if (createdAccount.role === Role.USER) {
         const userInput = convertBodyToUserInput(body, createdAccount.id!);
-        // TODO: change to userInput.firstName, userInput.lastName when schema is updated
-        sendRegistrationCodeEmail(userInput.name, userInput.name, createdAccount.email);
-        return await createUserTx(userInput, tx);
+        createdUser = await createUserTx(userInput, tx);
       } else if (createdAccount.role === Role.EMPLOYEE) {
         const employeeInput = convertBodyToEmployeeInput(body, createdAccount.id!);
         return await createEmployeeTx(employeeInput, tx);
@@ -57,8 +59,15 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    // send registration email
+    if (createdAccount && createdUser) {
+      sendRegistrationCodeEmail(createdAccount, createdUser);
+      result = createdUser;
+    }
+
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
+    console.error('Registration error:', error);
     if (error instanceof z.ZodError) {
       handleValidationError(error);
     } else {

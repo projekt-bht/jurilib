@@ -1,5 +1,5 @@
 import prisma from '@/lib/db';
-import type { Appointment } from '~/generated/prisma/browser';
+import type { Account, Appointment, User } from '~/generated/prisma/browser';
 
 import { sendEmail } from './mailer';
 
@@ -10,26 +10,31 @@ import { sendEmail } from './mailer';
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendRegistrationCodeEmail(
-  userFirstName: string,
-  userLastName: string,
-  userEmail: string
-) {
-  const userFullName = `${userFirstName} ${userLastName}`.trim();
+export async function sendRegistrationCodeEmail(account: Account, user: User) {
+  // TODO: change to user.firstName, user.lastName when schema is updated
+  const userFullName = `${user.name} ${user.name}`.trim();
 
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // TODO: Store the verification code associated with the user in the database with an expiration time
+  // Store the verification code
+  await prisma.accountToken.create({
+    data: {
+      accountId: account.id!,
+      type: 'EMAIL_VERIFICATION',
+      token: verificationCode,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
+    },
+  });
 
   sendEmail({
-    toEmail: userEmail,
+    toEmail: account.email,
     subject: `${verificationCode} ist dein JuriLib Registrierungscode`,
     templateFileName: 'registration_confirmation_code.html',
     templateVariables: {
       NAME: userFullName,
       VERIFICATION_CODE: verificationCode,
-      // TODO: Add expiration time variable as EXPIRY_MINUTES
+      EXPIRY_MINUTES: '15',
       CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
