@@ -28,7 +28,7 @@ export async function sendRegistrationCodeEmail(account: Account, user: User) {
     },
   });
 
-  sendEmail({
+  await sendEmail({
     toEmail: account.email,
     subject: `${verificationCode} ist dein JuriLib Registrierungscode`,
     templateFileName: 'registration_confirmation_code.html',
@@ -74,7 +74,7 @@ export async function sendPasswordResetEmail(email: string) {
     },
   });
 
-  sendEmail({
+  await sendEmail({
     toEmail: email,
     subject: `${verificationCode} ist dein JuriLib Passwort-Zurücksetzungscode`,
     templateFileName: 'password_reset_code.html',
@@ -171,7 +171,7 @@ async function sendAppointmentInformationEmail(
   // TODO: set appt.administration url
   const apptAdministrationUrl = 'https://jurilib.de';
 
-  sendEmail({
+  await sendEmail({
     toEmail: account.email,
     subject: `${title} deines Termins bei ${organization?.name}`,
     templateFileName: 'appointment_information.html',
