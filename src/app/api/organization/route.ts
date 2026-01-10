@@ -1,7 +1,18 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+
 import { createOrganization, readOrganizations } from './services';
+
+// Validate query params and drop unknown values to avoid invalid Prisma filters.
+const parseEnumValues = <T extends Record<string, string>>(
+  values: string[],
+  enumObj: T
+): T[keyof T][] =>
+  values.filter((value): value is T[keyof T] =>
+    Object.values(enumObj).includes(value as T[keyof T])
+  );
 
 /*
 TODO:
@@ -34,9 +45,18 @@ export async function POST(req: NextRequest) {
 
 // GET /api/organization/
 // Retrieve all organizations
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const organization = await readOrganizations();
+    // Extract filters from the query string so each UI change can request filtered data.
+    const searchParams = req.nextUrl.searchParams;
+    const priceCategory = parseEnumValues(searchParams.getAll('priceCategory'), PriceCategory);
+    const organizationType = parseEnumValues(searchParams.getAll('organizationType'), OrganizationType);
+    const specialties = parseEnumValues(searchParams.getAll('specialties'), Areas);
+    const organization = await readOrganizations({
+      priceCategory,
+      organizationType,
+      specialties,
+    });
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });

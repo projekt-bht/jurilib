@@ -1,7 +1,7 @@
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import type { Organization } from '~/generated/prisma/client';
-import { Areas } from '~/generated/prisma/client';
+import type { Organization, Prisma } from '~/generated/prisma/client';
+import { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
@@ -33,9 +33,27 @@ export const createOrganization = async (organization: Organization): Promise<Or
 };
 
 // Read all organizations
-export const readOrganizations = async (): Promise<Organization[]> => {
+// Fetch organizations with optional filter arrays coming from the UI query params.
+// Each filter narrows the result set, and omitted/empty filters are ignored.
+export const readOrganizations = async (filters?: {
+  priceCategory?: PriceCategory[];
+  organizationType?: OrganizationType[];
+  specialties?: Areas[];
+}): Promise<Organization[]> => {
   try {
-    const orgas: Organization[] = await prisma.organization.findMany();
+    // Build a Prisma where clause that mirrors the UI filter selections.
+    const where: Prisma.OrganizationWhereInput = {};
+    if (filters?.priceCategory?.length) {
+      where.priceCategory = { in: filters.priceCategory };
+    }
+    if (filters?.organizationType?.length) {
+      where.type = { in: filters.organizationType };
+    }
+    if (filters?.specialties?.length) {
+      where.expertiseArea = { hasSome: filters.specialties };
+    }
+
+    const orgas: Organization[] = await prisma.organization.findMany({ where });
     if (!orgas) {
       throw new Error('Organization not found');
     }
