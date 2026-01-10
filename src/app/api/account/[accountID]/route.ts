@@ -10,12 +10,19 @@ import { deleteEmployeeTx } from '../../employee/[employeeID]/services';
 import { deleteUserTx } from '../../user/[userID]/services';
 import { deleteAccountTx, readAccount, updateAccount } from './services';
 
-const UpdateSchema = z.object({
-  id: z.string().min(36),
-  email: z.string(),
-  password: z.string().min(6),
-  role: z.enum(Role),
+const AccountUpdateValidationSchema = z.object({
+  id: z.string().min(36).optional(),
+  email: z.string().optional(),
+  password: z.string().min(6).optional(),
+  role: z.enum(Role).optional(),
+  isVerified: z.boolean().optional(),
 });
+
+export type AccountUpdateSchema = {
+  email?: string;
+  password?: string;
+  isVerified?: boolean;
+};
 
 export async function GET(
   _req: NextRequest,
@@ -52,7 +59,7 @@ export async function PATCH(
 
     // validate body
     const body = await req.json();
-    const data = UpdateSchema.parse(body);
+    const data = AccountUpdateValidationSchema.parse(body) as AccountUpdateSchema;
 
     // update account
     const updatedAccount = await updateAccount(data, accountID);

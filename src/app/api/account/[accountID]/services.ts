@@ -4,6 +4,8 @@ import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
 import type { Account, Prisma } from '~/generated/prisma/client';
+import { AccountUpdateSchema } from './route';
+import { AccountUpdateInput } from '~/generated/prisma/models';
 
 export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
@@ -33,7 +35,7 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
  * the account to other entities.
  */
 export const updateAccount = async (
-  account: Account,
+  account: AccountUpdateSchema,
   accountId: string
 ): Promise<AccountResource> => {
   try {
@@ -43,6 +45,9 @@ export const updateAccount = async (
     }
 
     if (account.password) account.password = await bcrypt.hash(account.password, 10);
+    // has to be checked this way, "account.isVerified ?? existingAccount.isVerified" would
+    // not when changing isVerified to false
+    if (!account.hasOwnProperty('isVerified')) account.isVerified = existingAccount.isVerified;
 
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },

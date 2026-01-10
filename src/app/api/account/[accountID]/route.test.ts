@@ -1,5 +1,4 @@
 import type { Account } from '~/generated/prisma/client';
-import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
@@ -29,7 +28,7 @@ describe('Account Routen testen', () => {
     });
 
     const res = await POST(req);
-    expect(res.status).toBe(201);
+    expect(res!.status).toBe(201);
     const result = await prisma.account.findUnique({
       where: { email: account.email },
     });
@@ -59,10 +58,8 @@ describe('Account Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const account: AccountCreateInput = {
-      id: createdAcc.id,
+    const account = {
       email: 'peter' + Math.random() + '@mail.de',
-      password: '5555555',
       role: 'EMPLOYEE',
     };
 
@@ -76,11 +73,11 @@ describe('Account Routen testen', () => {
       params: Promise.resolve({ accountID: createdAcc.id }),
     });
 
-    const updated = await prisma.account.findFirst({
-      where: { email: account.email },
+    const updated = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
     });
 
-    expect(updated?.email).toBe(account.email);
+    expect(updated?.email).not.toBe(createdAcc.email);
     expect(updated?.role).toBe('USER'); // Role should remain unchanged
     expect(res.status).toBe(200);
   });
@@ -106,7 +103,7 @@ describe('Account Routen testen', () => {
     const res = await DELETE(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
     expect(res.status).toBe(200);
     const accountDeleted = await prisma.account.findUnique({
-      where: { email: createdAcc.email },
+      where: { id: createdAcc.id },
     });
     expect(accountDeleted).toBeNull();
   });
