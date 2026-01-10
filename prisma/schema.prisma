@@ -32,13 +32,15 @@ model SearchLog {
 // -------- Models --------
 
 model Account {
-    id        String   @id @default(uuid())
-    email     String   @unique
-    password  String
-    role      Role
+    id           String   @id @default(uuid())
+    email        String   @unique
+    password     String
+    role         Role
+    accountToken AccountToken[]
+    isVerified   Boolean  @default(false)
     
-    user     User?
-    employee  Employee?
+    user         User?
+    employee     Employee?
 
     @@schema("public")
 }
@@ -174,6 +176,19 @@ model Appointment {
     @@schema("public")
 }
 
+model AccountToken{
+    id           String      @id @default(uuid())
+    accountId    String  
+    type         TokenType
+    token        String   
+    createdAt    DateTime    @default(now())         
+    expiresAt    DateTime
+    usedAt       DateTime?
+
+    account      Account     @relation(fields: [accountId], references: [id])
+
+    @@schema("public")
+}
 
 // -------- Enums --------
 
@@ -195,6 +210,13 @@ enum OrganizationType {
     LAW_FIRM
     ASSOCIATION
     
+    @@schema("public")
+}
+
+enum TokenType {
+    EMAIL_VERIFICATION
+    PASSWORD_RESET
+
     @@schema("public")
 }
 
