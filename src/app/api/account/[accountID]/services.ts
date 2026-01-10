@@ -49,6 +49,7 @@ export const updateAccount = async (
       data: {
         email: account.email ?? existingAccount.email,
         password: account.password ?? existingAccount.password,
+        isVerified: account.isVerified,
       },
     });
 
