@@ -1,3 +1,13 @@
+import { jest } from '@jest/globals';
+
+jest.mock('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+jest.mock('@/app/api/email/service', () => ({
+  sendRegistrationCodeEmail: jest.fn(),
+}));
+
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 

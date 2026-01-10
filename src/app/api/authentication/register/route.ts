@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     // send registration email
     if (createdAccount && createdUser) {
-      sendRegistrationCodeEmail(createdAccount, createdUser);
+      await sendRegistrationCodeEmail(createdAccount, createdUser);
       result = createdUser;
     }
 
