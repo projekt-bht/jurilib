@@ -5,7 +5,7 @@
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <title>Passwort zurücksetzen</title>
+    <title>Termin Bestätigung</title>
 
     <!--[if mso]>
       <style>
@@ -53,8 +53,9 @@
                 '
               >
                 <!-- Logo -->
+                <!-- TODO: das Logo muss hier noch richtig eingebunden werden -->
                 <img
-                  src='{{LOGO_URL}}'
+                  src='../public/scale_logo.svg'
                   width='96'
                   height='96'
                   alt='JuriLib Logo'
@@ -79,15 +80,18 @@
                     color: #303030;
                   '
                 >
-                  Passwort zurücksetzen
+                  Termin Bestätigung
                 </h2>
 
                 <p style='margin: 0 0 20px; font-size: 16px; line-height: 1.6'>Hallo {{NAME}},</p>
 
                 <p style='margin: 0 0 32px; font-size: 16px; line-height: 1.6'>
-                  es wurde eine Anfrage zum Zurücksetzen deines Passworts für dein JuriLib-Konto
-                  gestellt. Bitte verwende den folgenden Bestätigungscode, um dein Passwort
-                  zurückzusetzen:
+                  vielen Dank dass du einen Termin über JuriLib gebucht hast. Dein Termin wurde
+                  erfolgreich bestätigt.
+                </p>
+
+                <p style='margin: 0 0 32px; font-size: 16px; line-height: 1.6'>
+                  Hier sind die Details zu deinem Termin:
                 </p>
 
                 <div
@@ -98,13 +102,45 @@
                     border: 1px solid #e4e4e4;
                     border-radius: 10px;
                     background-color: #ffffff;
-                    font-size: 24px;
-                    font-weight: 600;
-                    letter-spacing: 6px;
-                    font-family: monospace;
                   '
                 >
-                  {{VERIFICATION_CODE}}
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Datum: </strong>{{APPT_DATE}}
+                  </p>
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Uhrzeit: </strong>{{APPT_TIME}}
+                    Uhr
+                  </p>
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Organisation: </strong>{{APPT_ORGANIZATION_NAME}}
+                  </p>
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Ort: </strong>{{APPT_LOCATION}}
+                  </p>
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Bei: </strong>{{APPT_EMPLOYEE_NAME}}
+                  </p>
+                  <p style='margin: 0; font-size: 14px; line-height: 1.6'>
+                    <strong>Fall: </strong>{{APPT_CASE_TITLE}}
+                  </p>
+                </div>
+
+                <div style='text-align: center; margin: 0 0 32px'>
+                  <a
+                    href='{{APPOINTMENT_MANAGEMENT_URL}}'
+                    style='
+                      display: inline-block;
+                      padding: 12px 32px;
+                      background-color: #303030;
+                      color: #ffffff;
+                      text-decoration: none;
+                      border-radius: 6px;
+                      font-size: 16px;
+                      font-weight: 600;
+                    '
+                  >
+                    Zur Terminverwaltung
+                  </a>
                 </div>
 
                 <!-- Info Box -->
@@ -119,16 +155,21 @@
                   '
                 >
                   <p style='margin: 0; font-size: 14px; line-height: 1.6'>
-                    <strong>Hinweis:</strong>
-                    Der Bestätigungscode ist
-                    {{EXPIRY_MINUTES}}
-                    Minuten gültig.
+                    <strong>Hinweis: </strong>
+                    Falls du den Termin nicht wahrnehmen kannst, informiere bitte die Organisation
+                    rechtzeitig.
                   </p>
                 </div>
 
                 <p style='margin: 0; font-size: 14px; color: #737373'>
-                  Solltest du keine Änderung deines Passworts angefordert haben, kannst du diese
-                  E-Mail ignorieren.
+                  Bei Fragen erreichst du die Organisation unter
+                  {{APPT_ORGANIZATION_EMAIL}}.
+                </p>
+                <p style='margin-top: 10px; font-size: 14px; color: #737373'>
+                  Du hast keinen Termin bei
+                  {{APPT_ORGANIZATION_NAME}}
+                  gebucht? Ändere bitte umgehend dein JuriLib Passwort und melde dich bei uns unter
+                  jurilib@web.de.
                 </p>
               </td>
             </tr>

@@ -1,3 +1,6 @@
+import prisma from '@/lib/db';
+import type { Appointment } from '~/generated/prisma/browser';
+
 import { sendEmail } from './mailer';
 
 /**
@@ -74,8 +77,61 @@ export async function sendPasswordResetEmail(
  * not yet sufficiently supported
  * later some form of notification to employee will be needed
  */
-export async function sendAppointmentConfirmationEmail() {
-  // implementation here
+export async function sendAppointmentConfirmationEmail(
+  userFirstName: string,
+  userLastName: string,
+  userEmail: string,
+  appt: Appointment
+) {
+  const userFullName = `${userFirstName} ${userLastName}`.trim();
+  const appointmentDate = appt.dateTimeStart.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+  const appointmentTime = appt.dateTimeStart.toLocaleTimeString('de-DE', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  const employee = await prisma.employee.findUnique({
+    where: { id: appt.employeeId },
+    select: { name: true, organizationId: true },
+  });
+
+  const organization = await prisma.organization.findUnique({
+    where: { id: employee?.organizationId },
+    select: { name: true, email: true },
+  });
+
+  let apptCase;
+  if (appt.caseId) {
+    apptCase = await prisma.case.findUnique({
+      where: { id: appt.caseId },
+      select: { title: true },
+    });
+  }
+
+  // TODO: set appt.administration url
+  const apptAdministrationUrl = 'https://jurilib.de';
+
+  sendEmail({
+    toEmail: userEmail,
+    subject: `Bestätigung Ihres Termins bei ${organization?.name}`,
+    templateFileName: 'appointment_confirmation.html',
+    templateVariables: {
+      NAME: userFullName,
+      APPT_DATE: appointmentDate,
+      APPT_TIME: appointmentTime,
+      APPT_ORGANIZATION_NAME: organization?.name ?? 'Nicht angegeben',
+      APPT_LOCATION: appt.location ?? 'Nicht angegeben',
+      APPT_EMPLOYEE_NAME: employee?.name ?? 'Nicht angegeben',
+      APPT_CASE_TITLE: apptCase?.title ?? 'Ohne Fallzuordnung',
+      APPOINTMENT_MANAGEMENT_URL: apptAdministrationUrl,
+      APPT_ORGANIZATION_EMAIL: organization?.email ?? '',
+      CURRENT_YEAR: new Date().getFullYear().toString(),
+    },
+  });
 }
 
 /**

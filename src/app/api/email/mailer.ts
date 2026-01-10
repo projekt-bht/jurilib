@@ -11,13 +11,26 @@ type SendEmailParams = {
   templateVariables: Record<string, string>;
 };
 
+function getLogoAsDataUri(): string {
+  const logoPath = path.join(process.cwd(), 'public', 'scale_logo.svg');
+  const logoBuffer = readFileSync(logoPath);
+  const base64Logo = logoBuffer.toString('base64');
+  return `data:image/svg+xml;base64,${base64Logo}`;
+}
+
 function compileTemplate(templateFileName: string, variables: Record<string, string>): string {
   const templatePath = path.join(process.cwd(), 'email_templates', `${templateFileName}.hbs`);
 
   const source = readFileSync(templatePath, 'utf-8');
   const compiled = Handlebars.compile(source);
 
-  return compiled(variables);
+  // Add logo as data URI to template variables
+  const enhancedVariables = {
+    ...variables,
+    LOGO_URL: getLogoAsDataUri(),
+  };
+
+  return compiled(enhancedVariables);
 }
 
 export async function sendEmail({
