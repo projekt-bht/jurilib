@@ -8,7 +8,11 @@ import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 
 // TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
 
-export function OrganizationCard({ organization }: { organization: Organization }) {
+type OrganizationCardProps = {
+  organization: Organization;
+};
+
+export function OrganizationCard({ organization }: OrganizationCardProps) {
   return (
     <div
       id={`OrganizationCard_${organization.id}`}
@@ -30,7 +34,7 @@ export function OrganizationCard({ organization }: { organization: Organization 
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <ExpertiseAreaItem areas={organization.expertiseArea} />
+          <ExpertiseAreaBadge areas={organization.expertiseArea} />
         </div>
 
         <div className="pt-3 border-t border-border/50">
