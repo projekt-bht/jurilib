@@ -38,11 +38,12 @@ export async function readOrganizations(filters: {
   take: number;
 }): Promise<Organization[]> {
   try {
+    // default behaviour, if no query params are provided
     if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
-      throw new Error(`'skip' Query Parameter needs to be provided`);
+      filters.skip = 0;
     }
     if (!Number.isInteger(filters.take) || filters.take! <= 0) {
-      throw new Error(`'take' Query Parameter needs to be provided`);
+      filters.take = 10;
     }
     const orgas: Organization[] = await prisma.organization.findMany({
       skip: filters.skip,

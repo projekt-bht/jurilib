@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
     const skip = Number(searchParams.get('skip'));
     const take = Number(searchParams.get('take'));
 
+    // defaults to skip=0 & take=10
     const organization = await readOrganizations({ skip, take });
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
