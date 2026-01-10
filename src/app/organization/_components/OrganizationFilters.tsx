@@ -21,11 +21,11 @@ export type FilterOptions = {
 
 type FilterValue = PriceCategory | OrganizationType | Areas;
 
-const priceCategoryMeta: Record<PriceCategoryEnum, { label: string }> = {
-  [PriceCategoryEnum.FREE]: { label: ' Kostenlos' },
-  [PriceCategoryEnum.LOW]: { label: '€ - Niedrig' },
-  [PriceCategoryEnum.MEDIUM]: { label: '€€ - Mittel' },
-  [PriceCategoryEnum.HIGH]: { label: '€€€ - Hoch' },
+const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
+  [PriceCategoryEnum.FREE]: { label: '€ - Niedrig', hoverClassName: 'hover:bg-accent-emerald-soft' },
+  [PriceCategoryEnum.LOW]: { label: '€€ - Mittel', hoverClassName: 'hover:bg-accent-amber-soft' },
+  [PriceCategoryEnum.MEDIUM]: { label: '€€€ - Hoch', hoverClassName: 'hover:bg-accent-amber-light' },
+  [PriceCategoryEnum.HIGH]: { label: '€€€€ - Premium', hoverClassName: 'hover:bg-accent-red/10' },
 };
 
 const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
@@ -130,7 +130,10 @@ export function OrganizationFilters({
             <SectionHeader title="Organisationstyp" icon={<Building2 className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5">
               {Object.values(OrganizationTypeEnum).map((type) => (
-                <div key={type} className="flex items-center gap-2 rounded-md px-2 py-1">
+                <div
+                  key={type}
+                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-accent-gray-soft"
+                >
                   <Checkbox
                     id={`org-type-${type}`}
                     checked={filters.organizationType.includes(type)}
@@ -155,7 +158,10 @@ export function OrganizationFilters({
             <SectionHeader title="Preisklasse" icon={<Scale className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5">
               {Object.values(PriceCategoryEnum).map((price) => (
-                <div key={price} className="flex items-center gap-2 rounded-md px-2 py-1">
+                <div
+                  key={price}
+                  className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${priceCategoryMeta[price].hoverClassName}`}
+                >
                   <Checkbox
                     id={`price-${price}`}
                     checked={filters.priceCategory.includes(price)}
@@ -179,7 +185,10 @@ export function OrganizationFilters({
             <SectionHeader title="Fachbereich" icon={<Tag className="w-4 h-4" />} />
             <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
               {sortedAreas.map((area) => (
-                <div key={area} className="flex items-center gap-2 rounded-md px-2 py-1">
+                <div
+                  key={area}
+                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-accent-gray-soft"
+                >
                   <Checkbox
                     id={`specialty-${area}`}
                     checked={filters.specialties.includes(area)}
