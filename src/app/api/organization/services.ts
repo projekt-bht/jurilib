@@ -5,7 +5,7 @@ import { Areas } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
-export const createOrganization = async (organization: Organization): Promise<Organization> => {
+export async function createOrganization(organization: Organization): Promise<Organization> {
   try {
     if (!organization.expertiseArea) {
       throw new Error('Expertise area is required');
@@ -30,12 +30,24 @@ export const createOrganization = async (organization: Organization): Promise<Or
   } catch (error) {
     throw new Error('Database insert failed: ' + (error as Error).message);
   }
-};
+}
 
 // Read all organizations
-export const readOrganizations = async (): Promise<Organization[]> => {
+export async function readOrganizations(filters: {
+  skip: number;
+  take: number;
+}): Promise<Organization[]> {
   try {
-    const orgas: Organization[] = await prisma.organization.findMany();
+    if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
+      throw new Error(`'skip' Query Parameter needs to be provided`);
+    }
+    if (!Number.isInteger(filters.take) || filters.take! <= 0) {
+      throw new Error(`'take' Query Parameter needs to be provided`);
+    }
+    const orgas: Organization[] = await prisma.organization.findMany({
+      skip: filters.skip,
+      take: filters.take,
+    });
     if (!orgas) {
       throw new Error('Organization not found');
     }
@@ -43,4 +55,4 @@ export const readOrganizations = async (): Promise<Organization[]> => {
   } catch (error) {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
-};
+}

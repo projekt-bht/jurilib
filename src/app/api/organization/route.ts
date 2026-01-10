@@ -33,10 +33,14 @@ export async function POST(req: NextRequest) {
 }
 
 // GET /api/organization/
-// Retrieve all organizations
-export async function GET(_req: NextRequest) {
+// Retrieve all organizations considering given query parameters
+export async function GET(req: NextRequest) {
   try {
-    const organization = await readOrganizations();
+    const { searchParams } = req.nextUrl;
+    const skip = Number(searchParams.get('skip'));
+    const take = Number(searchParams.get('take'));
+
+    const organization = await readOrganizations({ skip, take });
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });
