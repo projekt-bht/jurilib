@@ -40,12 +40,6 @@ const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: 
     },
   };
 
-const collapsibleDefaults: Record<keyof FilterOptions, boolean> = {
-  priceCategory: true,
-  organizationType: true,
-  specialties: true,
-};
-
 export function OrganizationFilters({
   filters,
   onFilterChange,
@@ -57,38 +51,17 @@ export function OrganizationFilters({
   onReset: () => void;
   activeFilterCount: number;
 }) {
-  const [openSections, setOpenSections] =
-    useState<Record<keyof FilterOptions, boolean>>(collapsibleDefaults);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [sortedAreas] = useState(() =>
     // Keep specialties deterministic and easy to scan.
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
 
-  const toggleSection = (section: keyof FilterOptions) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
-  const renderSectionHeader = (
-    title: string,
-    section: keyof FilterOptions,
-    icon: React.ReactNode
-  ) => (
-    <button
-      type="button"
-      onClick={() => toggleSection(section)}
-      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 hover:bg-muted transition-colors"
-    >
-      <span className="inline-flex items-center gap-2 text-xs font-semibold text-foreground">
-        <span className="text-muted-foreground">{icon}</span>
-        {title}
-      </span>
-      <ChevronDown
-        className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
-          openSections[section] ? 'rotate-180' : ''
-        }`}
-      />
-    </button>
+  const renderSectionHeader = (title: string, icon: React.ReactNode) => (
+    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+      <span className="text-muted-foreground">{icon}</span>
+      <span className="text-xs font-semibold text-foreground">{title}</span>
+    </div>
   );
 
   const handleCheckboxChange = (
@@ -152,15 +125,10 @@ export function OrganizationFilters({
       {isPanelOpen && (
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader(
-              'Organisationstyp',
-              'organizationType',
-              <Building2 className="w-4 h-4" />
-            )}
-            {openSections.organizationType && (
-              <div className="mt-2 space-y-1.5">
-                {Object.values(OrganizationTypeEnum).map((type) => (
-                  <div key={type} className="flex items-center gap-2 rounded-md px-2 py-1">
+            {renderSectionHeader('Organisationstyp', <Building2 className="w-4 h-4" />)}
+            <div className="mt-2 space-y-1.5">
+              {Object.values(OrganizationTypeEnum).map((type) => (
+                <div key={type} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`org-type-${type}`}
                     checked={filters.organizationType.includes(type)}
@@ -177,17 +145,15 @@ export function OrganizationFilters({
                     {organizationTypeMeta[type].label}
                   </Label>
                 </div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
           </div>
 
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader('Preisklasse', 'priceCategory', <Scale className="w-4 h-4" />)}
-            {openSections.priceCategory && (
-              <div className="mt-2 space-y-1.5">
-                {Object.values(PriceCategoryEnum).map((price) => (
-                  <div key={price} className="flex items-center gap-2 rounded-md px-2 py-1">
+            {renderSectionHeader('Preisklasse', <Scale className="w-4 h-4" />)}
+            <div className="mt-2 space-y-1.5">
+              {Object.values(PriceCategoryEnum).map((price) => (
+                <div key={price} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`price-${price}`}
                     checked={filters.priceCategory.includes(price)}
@@ -203,17 +169,15 @@ export function OrganizationFilters({
                     {priceCategoryMeta[price].label}
                   </Label>
                 </div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
           </div>
 
           <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            {renderSectionHeader('Fachbereich', 'specialties', <Tag className="w-4 h-4" />)}
-            {openSections.specialties && (
-              <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                {sortedAreas.map((area) => (
-                  <div key={area} className="flex items-center gap-2 rounded-md px-2 py-1">
+            {renderSectionHeader('Fachbereich', <Tag className="w-4 h-4" />)}
+            <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
+              {sortedAreas.map((area) => (
+                <div key={area} className="flex items-center gap-2 rounded-md px-2 py-1">
                   <Checkbox
                     id={`specialty-${area}`}
                     checked={filters.specialties.includes(area)}
@@ -229,9 +193,8 @@ export function OrganizationFilters({
                     {area}
                   </Label>
                 </div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         </div>
       )}
