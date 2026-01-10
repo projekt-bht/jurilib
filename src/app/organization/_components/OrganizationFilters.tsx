@@ -22,10 +22,10 @@ export type FilterOptions = {
 type FilterValue = PriceCategory | OrganizationType | Areas;
 
 const priceCategoryMeta: Record<PriceCategoryEnum, { label: string }> = {
-  [PriceCategoryEnum.FREE]: { label: '€ - Niedrig' },
-  [PriceCategoryEnum.LOW]: { label: '€€ - Mittel' },
-  [PriceCategoryEnum.MEDIUM]: { label: '€€€ - Hoch' },
-  [PriceCategoryEnum.HIGH]: { label: '€€€€ - Premium' },
+  [PriceCategoryEnum.FREE]: { label: ' Kostenlos' },
+  [PriceCategoryEnum.LOW]: { label: '€ - Niedrig' },
+  [PriceCategoryEnum.MEDIUM]: { label: '€€ - Mittel' },
+  [PriceCategoryEnum.HIGH]: { label: '€€€ - Hoch' },
 };
 
 const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
