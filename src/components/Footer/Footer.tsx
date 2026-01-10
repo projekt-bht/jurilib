@@ -1,5 +1,7 @@
-import { Scale } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+
+import scale_logo from '~/public/scale_logo.svg';
 
 export function Footer() {
   return (
@@ -8,13 +10,20 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-                <Scale className="w-5 h-5" />
+              <div className="bg-foreground p-2 rounded-lg">
+                <Image
+                  src={scale_logo}
+                  alt="JuriLib Logo"
+                  width={25}
+                  height={25}
+                  className="brightness-0 invert gray"
+                />
               </div>
               <span className="font-semibold text-foreground">JuriLib</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              Wir demokratisieren den Zugang zum Recht!
+              Wir demokratisieren <br />
+              den Zugang zum Recht!
             </p>
           </div>
           <div>
@@ -46,7 +55,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-foreground transition">
+                <Link href="/tos" className="hover:text-foreground transition">
                   Nutzungsbedingungen
                 </Link>
               </li>

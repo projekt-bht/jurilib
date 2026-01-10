@@ -1,6 +1,4 @@
-import type { NextConfig } from "next";
-
-
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -8,8 +6,25 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   // Basic TypeScript configuration
   typescript: {
-    tsconfigPath: "./tsconfig.json"
-  }
+    tsconfigPath: './tsconfig.json',
+  },
+  images: {
+    // Allow loading images from GitHub avatars
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/u/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: '',
+        pathname: '/devicons/devicon/blob/master/icons/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

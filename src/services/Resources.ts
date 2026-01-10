@@ -7,7 +7,7 @@ export type AccountResource = {
   role: Role;
 };
 
-export type RegisterRessource = {
+export type RegisterResource = {
   account: {
     email: string;
     password: string;

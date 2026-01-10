@@ -18,7 +18,7 @@ export const login = async (
     });
 
     if (!account) {
-      throw new ValidationError('notFound', 'accounts', email);
+      return false;
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, account.password);
