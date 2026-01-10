@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Account, Appointment, User } from '~/generated/prisma/browser';
 
@@ -47,28 +48,40 @@ export async function sendRegistrationCodeEmail(account: Account, user: User) {
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendPasswordResetEmail(
-  userFirstName: string,
-  userLastName: string,
-  userEmail: string
-) {
-  const userFullName = `${userFirstName} ${userLastName}`.trim();
+export async function sendPasswordResetEmail(email: string) {
+  const account = await prisma.account.findUnique({
+    where: { email },
+    include: { user: true },
+  });
+
+  if (!account || !account.user) {
+    throw new ValidationError('notFound', 'email', email, 404);
+  }
+  const user = account.user;
+  // TODO: change to user.firstName, user.lastName when schema is updated
+  const userFullName = `${user.name} ${user.name}`.trim();
 
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // TODO: Store the verification code associated with the user in the database with an expiration time
-  // see if addig a password reset count is needed
+  // Store the verification code
+  await prisma.accountToken.create({
+    data: {
+      accountId: account.id!,
+      type: 'PASSWORD_RESET',
+      token: verificationCode,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
+    },
+  });
 
   sendEmail({
-    toEmail: userEmail,
+    toEmail: email,
     subject: `${verificationCode} ist dein JuriLib Passwort-Zurücksetzungscode`,
     templateFileName: 'password_reset_code.html',
     templateVariables: {
       NAME: userFullName,
       VERIFICATION_CODE: verificationCode,
-      // TODO: Add expiration time variable as EXPIRY_MINUTES
-      EXPIRY_MINUTES: '30',
+      EXPIRY_MINUTES: '15',
       CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
