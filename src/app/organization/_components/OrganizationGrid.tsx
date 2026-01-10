@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
 
-export function OrganizationGrid({
-  organizations,
-}: {
+type OrganizationGridProps = {
   organizations: Organization[];
-}) {
+};
+
+export function OrganizationGrid({ organizations }: OrganizationGridProps) {
   if (organizations.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-border bg-background px-6 py-10 text-center">

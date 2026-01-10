@@ -26,11 +26,13 @@ const buildQueryString = (filters: FilterOptions) => {
   return params.toString();
 };
 
+type OrganizationExplorerProps = {
+  organizations: Organization[];
+};
+
 export function OrganizationExplorer({
   organizations: initialOrganizations,
-}: {
-  organizations: Organization[];
-}) {
+}: OrganizationExplorerProps) {
   const [filters, setFilters] = useState<FilterOptions>(createDefaultFilters());
   const [organizations, setOrganizations] = useState<Organization[]>(initialOrganizations);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +41,11 @@ export function OrganizationExplorer({
   const handleFilterChange = (
     category: keyof FilterOptions,
     value: FilterValue,
-    checked: boolean,
+    isChecked: boolean,
   ) => {
     setFilters((prev) => {
       const currentValues = prev[category];
-      const updatedValues = checked
+      const updatedValues = isChecked
         ? [...currentValues, value]
         : currentValues.filter((item) => item !== value);
 
@@ -51,7 +53,7 @@ export function OrganizationExplorer({
     });
   };
 
-  const resetFilters = () => {
+  const handleResetFilters = () => {
     setFilters(createDefaultFilters());
   };
 
@@ -98,7 +100,7 @@ export function OrganizationExplorer({
       <OrganizationFilters
         filters={filters}
         onFilterChange={handleFilterChange}
-        onReset={resetFilters}
+        onReset={handleResetFilters}
         activeFilterCount={activeFilterCount}
       />
 
