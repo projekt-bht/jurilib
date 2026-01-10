@@ -5,7 +5,7 @@
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <title>Termin Bestätigung</title>
+    <title>{{TITLE}}</title>
 
     <!--[if mso]>
       <style>
@@ -80,18 +80,21 @@
                     color: #303030;
                   '
                 >
-                  Termin Bestätigung
+                  {{TITLE}}
                 </h2>
 
                 <p style='margin: 0 0 20px; font-size: 16px; line-height: 1.6'>Hallo {{NAME}},</p>
 
                 <p style='margin: 0 0 32px; font-size: 16px; line-height: 1.6'>
-                  vielen Dank dass du einen Termin über JuriLib gebucht hast. Dein Termin wurde
-                  erfolgreich bestätigt.
+                  {{MAIN_MESSAGE}}
                 </p>
 
                 <p style='margin: 0 0 32px; font-size: 16px; line-height: 1.6'>
-                  Hier sind die Details zu deinem Termin:
+                  Hier sind die
+                  {{UPDATED}}
+                  Details zu dem
+                  {{CANCELLED}}
+                  Termin:
                 </p>
 
                 <div
@@ -139,7 +142,7 @@
                       font-weight: 600;
                     '
                   >
-                    Zur Terminverwaltung
+                    {{BUTTON_TEXT}}
                   </a>
                 </div>
 
@@ -156,8 +159,7 @@
                 >
                   <p style='margin: 0; font-size: 14px; line-height: 1.6'>
                     <strong>Hinweis: </strong>
-                    Falls du den Termin nicht wahrnehmen kannst, informiere bitte die Organisation
-                    rechtzeitig.
+                    {{HINT}}
                   </p>
                 </div>
 
