@@ -13,6 +13,7 @@ import type {
 
 import { createAccountTx } from '../../account/services';
 import { createEmployeeTx } from '../../employee/services';
+import { validateHeader } from '../../helper';
 import { createUserTx } from '../../user/services';
 
 const registrationSchema = z.object({
@@ -30,10 +31,7 @@ const registrationSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     // validate header
-    // TODO: use helper function to check content-type
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
     // validate body
     const body = registrationSchema.parse(await req.json());
 
