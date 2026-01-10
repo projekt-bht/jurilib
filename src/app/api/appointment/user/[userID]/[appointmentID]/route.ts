@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, headerSchema } from '../../../../helper';
+import { handleValidationError, validateHeader } from '../../../../helper';
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
 
 // GET /api/appointment/:userID/:appointmentID
@@ -14,7 +14,7 @@ export async function GET(
 ) {
   try {
     //validate header
-    headerSchema.parse(req.headers);
+    validateHeader(req.headers);
     // validate params
     const { userID, appointmentID } = await params;
     paramsSchema.parse({ userID, appointmentID });
@@ -42,7 +42,7 @@ export async function PATCH(
 ) {
   try {
     //validate header
-    headerSchema.parse(req.headers);
+    validateHeader(req.headers);
     // validate params
     const { userID, appointmentID } = await params;
     paramsSchema.parse({ userID, appointmentID });
@@ -79,7 +79,7 @@ export async function DELETE(
 ) {
   try {
     //validate header
-    headerSchema.parse(req.headers);
+    validateHeader(req.headers);
     // validate params
     const { userID, appointmentID } = await params;
     paramsSchema.parse({ userID, appointmentID });
