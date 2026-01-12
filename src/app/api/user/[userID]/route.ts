@@ -2,7 +2,6 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { AccountType } from '~/generated/prisma/enums';
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { deleteUser, readUser, updateUser } from './services';
@@ -24,7 +23,7 @@ const UpdateSchema = z.strictObject({
   zipCode: z.string().optional(),
   street: z.string().optional(),
   houseNumber: z.string().optional(),
-  type: z.enum(AccountType).optional(),
+  //type: z.enum(AccountType).optional(), // should it be changeable?
 });
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
