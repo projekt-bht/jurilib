@@ -1,4 +1,5 @@
-import { type Account, AccountType } from '~/generated/prisma/client';
+import type { RegisterResource } from '@/services/Resources';
+import { type Account, AccountType, Gender, Pronoun } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
@@ -15,22 +16,31 @@ describe('Account Routen testen', () => {
   let createdAcc: Account;
 
   test('POST Account', async () => {
-    const account = {
-      email: 'peter' + Math.random() + '@mail.de',
-      password: '1234567890',
-      type: AccountType.USER,
+    const registerInput: RegisterResource = {
+      account: {
+        email: 'peter' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Mustermann',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        birthdate: new Date('1990-01-01'),
+      },
     };
 
     const req = new NextRequest(baseUrlRegister, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(account),
+      body: JSON.stringify(registerInput),
     });
 
     const res = await POST(req);
     expect(res.status).toBe(201);
     const result = await prisma.account.findUnique({
-      where: { email: account.email },
+      where: { email: registerInput.account.email },
     });
     expect(result).not.toBeNull();
     createdAcc = result as Account;
@@ -50,7 +60,7 @@ describe('Account Routen testen', () => {
     expect(res.status).toBe(404);
   });
 
-  test('PATCH Account Role', async () => {
+  test('PATCH unchangeable Account Type', async () => {
     const getReq = new NextRequest(baseUrl);
     const getRes = await GET(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
     const getJSON = await getRes.json();
@@ -59,7 +69,6 @@ describe('Account Routen testen', () => {
     expect(getRes.status).toBe(200);
 
     const account: AccountCreateInput = {
-      id: createdAcc.id,
       email: 'peter' + Math.random() + '@mail.de',
       password: '5555555555',
       type: AccountType.EMPLOYEE,
@@ -79,7 +88,8 @@ describe('Account Routen testen', () => {
       where: { email: account.email },
     });
 
-    expect(updated?.type).toBe(AccountType.EMPLOYEE);
+    expect(updated?.email).toBe(account.email);
+    expect(updated?.type).toBe(AccountType.USER); // Type should remain unchanged
     expect(res.status).toBe(200);
   });
 
