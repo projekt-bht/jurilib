@@ -26,7 +26,15 @@ describe('Organization Routen testen', () => {
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
+
+      averageRating: 4.5,
+      numberOfRatings: 10,
     };
 
     const req = new NextRequest(baseUrl, {

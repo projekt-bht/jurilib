@@ -4,14 +4,13 @@ import jwt from 'jsonwebtoken';
 
 import prisma from '@/lib/db';
 import type { LoginResource } from '@/services/Resources';
+import type { AccountType } from '~/generated/prisma/enums';
 
 // Create a new Account
 export const login = async (
   email: string,
   password: string
-): Promise<
-  { id: string; userId?: string; employeeId?: string; role: 'USER' | 'EMPLOYEE' } | false
-> => {
+): Promise<{ id: string; userId?: string; employeeId?: string; type: AccountType } | false> => {
   try {
     /**  Include -> check if the account has a reference to the created User or Employee
          We need this information on the frontend to fetch User/Employee info
@@ -34,7 +33,7 @@ export const login = async (
       id: account.id,
       userId: account.user?.id,
       employeeId: account.employee?.id,
-      role: account.role,
+      type: account.type,
     };
 
     return accountRes;
@@ -62,7 +61,7 @@ export async function verifyPasswordAndCreateJWT(
     accountId: isLoggedIn.id,
     userId: isLoggedIn.userId,
     employeeId: isLoggedIn.employeeId,
-    role: isLoggedIn.role,
+    type: isLoggedIn.type,
   };
 
   const jwtString = jwt.sign(payload, secret, {
@@ -85,14 +84,14 @@ export function verifyJWT(jwtString: string | undefined): LoginResource {
   const accountId = payload.accountId;
   const userId = payload.userId;
   const employeeId = payload.employeeId;
-  const role = payload.role;
+  const type = payload.type;
   const exp = payload.exp;
 
   const ressource: LoginResource = {
     id: accountId,
     userId: userId,
     employeeId: employeeId,
-    role: role,
+    type: type,
     exp: exp!,
   };
   return ressource;

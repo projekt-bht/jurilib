@@ -29,6 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 /**
  * Validate parameter userID
  */
-const paramsSchema = z.object({
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
   userID: z.string().min(1, 'User ID is required'),
 });

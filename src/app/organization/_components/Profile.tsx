@@ -43,7 +43,7 @@ export function Profile({
               <PricingInfo id={organization.id} priceCategory={organization.priceCategory} />
             </div>
             <div className="flex flex-wrap items-start gap-2">
-              <ExpertiseAreaBadge areas={organization.expertiseArea} />
+              <ExpertiseAreaBadge areas={organization.expertiseAreas} />
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@ export function Profile({
             id={organization.id}
             website={organization.website}
             phone={organization.phone}
-            address={organization.address}
+            address={`${organization.zipCode} ${organization.city}, ${organization.street} ${organization.houseNumber}`}
             email={organization.email}
           />
         </div>

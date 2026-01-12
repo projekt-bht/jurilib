@@ -1,3 +1,6 @@
+import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
+
 const { POST: accountPOST } = await import('@/app/api/authentication/register/route');
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
@@ -12,11 +15,19 @@ describe('Login test', () => {
 
   test('Create Account and User', async () => {
     // Create both account and user through registration route
-    const registerInput = {
-      email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-      name: 'Peter Mustermann',
+    const registerInput: RegisterResource = {
+      account: {
+        email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
+        password: '123456789',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Mustermann',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        birthdate: new Date('1990-01-01'),
+      },
     };
 
     const req = new NextRequest(baseUrlRegister, {
@@ -28,7 +39,10 @@ describe('Login test', () => {
     const res = await accountPOST(req);
     expect(res.status).toBe(201);
 
-    createdAccount = { email: registerInput.email, password: registerInput.password };
+    createdAccount = {
+      email: registerInput.account.email,
+      password: registerInput.account.password,
+    };
   });
 
   test('Login with User', async () => {

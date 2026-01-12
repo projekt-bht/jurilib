@@ -1,3 +1,6 @@
+import { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
+
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
@@ -8,11 +11,19 @@ describe('Account Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
 
   test('POST Register User', async () => {
-    const registerInput = {
-      email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-      name: 'Peter Mustermann',
+    const registerInput: RegisterResource = {
+      account: {
+        email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Mustermann',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        birthdate: new Date('1990-01-01'),
+      },
     };
 
     const req = new NextRequest(baseUrl, {
