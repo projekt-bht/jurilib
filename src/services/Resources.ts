@@ -1,4 +1,4 @@
-import type { AccountType } from '~/generated/prisma/enums';
+import type { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
 
 export type AccountResource = {
   id?: string;
@@ -7,6 +7,7 @@ export type AccountResource = {
   type: AccountType;
 };
 
+// TODO: Split into AccountCreateResource and UserCreateResource
 export type RegisterResource = {
   account: {
     email: string;
@@ -14,22 +15,20 @@ export type RegisterResource = {
     type: AccountType;
   };
   entity: {
-    name: string;
-    // firstname: string;
-    // lastname: string;
-    // title?: string;
-    // gender: Gender
-    // genderText?: string;
-    // pronoun: Pronoun
-    // pronounText?: string;
-    // brithdate: Date;
-    address: string;
-    // country: string;
-    // city: string;
-    // zipCode: string;
-    // street: string;
-    // houseNumber: string;
-    phone: string;
+    firstname: string;
+    lastname: string;
+    title?: string;
+    gender: Gender;
+    genderText?: string;
+    pronoun?: Pronoun;
+    pronounText?: string;
+    birthdate: Date;
+    country?: string;
+    city?: string;
+    zipCode?: string;
+    street?: string;
+    houseNumber?: string;
+    phone?: string;
   };
 };
 
@@ -45,20 +44,39 @@ export type LoginResource = {
 export type UserResource = {
   id: string;
   accountId: string;
-  name: string;
-  // firstname: string;
-  // lastname: string;
-  // title?: string;
-  // gender: Gender
-  // genderText?: string;
-  // pronoun: Pronoun
-  // pronounText?: string;
-  // brithdate: Date;
-  address?: string;
+  firstname: string;
+  lastname: string;
+  title?: string;
+  gender: Gender;
+  genderText?: string;
+  pronoun?: Pronoun;
+  pronounText?: string;
+  birthdate: Date;
   phone?: string;
-  // country: string;
-  // city: string;
-  // zipCode: string;
-  // street: string;
-  // houseNumber: string;
+  country?: string;
+  city?: string;
+  zipCode?: string;
+  street?: string;
+  houseNumber?: string;
+  imageUrl?: string;
+  placeOfBirth?: string;
+};
+
+export type EmployeeResource = {
+  id: string;
+  accountId: string;
+  organizationId: string;
+  firstname: string;
+  lastname: string;
+  title?: string;
+  email: string;
+  gender: Gender;
+  genderText?: string;
+  pronoun?: Pronoun;
+  pronounText?: string;
+  phone?: string;
+  position?: string;
+  languages: string[];
+  expertiseAreas: string[];
+  imageUrl?: string;
 };
