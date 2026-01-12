@@ -276,7 +276,7 @@ enum Gender {
 
 // TODO: German or English? Uppercase or upper- + lowercase with underscores?
 enum Pronoun {
-    er_ihn
+    er_ihm
     sie_ihr
     he_him
     she_her
