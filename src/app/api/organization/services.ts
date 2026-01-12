@@ -6,7 +6,7 @@ import { Area } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
-export const createOrganization = async (organization: Organization): Promise<Organization> => {
+export async function createOrganization(organization: Organization): Promise<Organization> {
   try {
     if (!organization.expertiseAreas) {
       throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
@@ -31,12 +31,25 @@ export const createOrganization = async (organization: Organization): Promise<Or
   } catch (error) {
     throw new Error('Database insert failed: ' + (error as Error).message);
   }
-};
+}
 
 // Read all organizations
-export const readOrganizations = async (): Promise<Organization[]> => {
+export async function readOrganizations(filters: {
+  skip: number;
+  take: number;
+}): Promise<Organization[]> {
   try {
-    const orgas: Organization[] = await prisma.organization.findMany();
+    // default behaviour, if no query params are provided
+    if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
+      filters.skip = 0;
+    }
+    if (!Number.isInteger(filters.take) || filters.take! <= 0) {
+      filters.take = 10;
+    }
+    const orgas: Organization[] = await prisma.organization.findMany({
+      skip: filters.skip,
+      take: filters.take,
+    });
     if (!orgas) {
       throw new ValidationError('notFound', 'organization', null);
     }
@@ -44,4 +57,4 @@ export const readOrganizations = async (): Promise<Organization[]> => {
   } catch (error) {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
-};
+}
