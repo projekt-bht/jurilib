@@ -18,7 +18,7 @@ export const createAccountTx = async (
       data: {
         email: account.email,
         password: hashedPassword,
-        role: account.role,
+        type: account.type,
       },
     });
 
