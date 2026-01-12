@@ -10,12 +10,14 @@ import { deleteEmployee, readEmployeeByEmployeeID, updateEmployee } from './serv
 const UpdateSchemaEmployee = z.strictObject({
   id: z.string().min(36),
   //organizationId: z.string().optional(), // organizationId should not be updated, maybe later
+  title: z.string().min(1).optional(),
   firstName: z.string().min(1).optional(),
   lastName: z.string().min(1).optional(),
   pronoun: z.enum(Pronoun).optional(),
   pronounText: z.string().optional(),
   gender: z.enum(Gender).optional(),
   genderText: z.string().optional(),
+  imageUrl: z.string().url().optional(),
   email: z.email().optional(),
   phone: z.string().optional(),
   position: z.string().optional(),
