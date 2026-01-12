@@ -1,3 +1,11 @@
+// Prepare mocking for sending emails - must be defined before importing the route handlers
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+// Non-mock related implementation:
 const { POST: accountPOST } = await import('@/app/api/authentication/register/route');
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');

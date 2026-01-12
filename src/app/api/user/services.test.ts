@@ -1,3 +1,11 @@
+// Prepare mocking for sending emails - must be defined before importing the route handlers
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+// Non-mock related implementation:
 import { NextRequest } from 'next/server';
 
 import type { User } from '~/generated/prisma/browser';
