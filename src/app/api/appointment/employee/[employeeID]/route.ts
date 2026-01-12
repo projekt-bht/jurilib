@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, headerSchema } from '../../../helper';
+import { handleValidationError, validateHeader } from '../../../helper';
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
 
 /**
@@ -36,7 +36,7 @@ export async function POST(
 ) {
   try {
     // validate header
-    headerSchema.parse(req.headers);
+    validateHeader(req.headers);
     // validate params
     const { employeeID } = await params;
     paramsSchema.parse({ employeeID });

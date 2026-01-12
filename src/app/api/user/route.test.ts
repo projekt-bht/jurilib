@@ -1,47 +1,44 @@
-import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
+import type { User } from '~/generated/prisma/browser';
 
-import { createAccount } from '../account/services';
-import { createUser } from './services';
+const { prisma } = await import('@/lib/db');
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/user/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/user`;
+  const registrationURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
+  let cUser: User;
 
-  test('POST User', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
+  test('create User', async () => {
+    // create both account and user through registration
+    const registrationInput = {
+      email: 'petra' + Math.random() + '@mail.de',
       password: '123456',
       type: AccountType.USER,
+      name: 'Petra Muster',
     };
 
-    const createdAccount = await createAccount(account);
+    // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
+    const request = new NextRequest(registrationURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationInput),
+    });
 
-    const user: UserCreateInput = {
-      firstname: 'peter',
-      lastname: 'pan',
-      birthdate: new Date('1990-01-01'),
-      gender: Gender.Mann,
-      pronoun: Pronoun.er_ihm,
-      phone: '0123456789',
+    const resRegistration = await POST(request);
+    expect(resRegistration.status).toBe(201);
+    cUser = await resRegistration.json();
 
-      country: 'Germany',
-      city: 'Berlin',
-      zipCode: '12345',
-      street: 'Musterstraße',
-      houseNumber: '1A',
-      account: {
-        connect: { id: createdAccount.id },
-      },
-    };
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registrationInput.email },
+    });
 
-    const createdUser = await createUser(user, createdAccount.id!);
-    expect(createdAccount.id).toBe(createdUser.accountId);
+    expect(createdAccount?.id).toBe(cUser.accountId);
   });
 
   test('GET Accounts', async () => {

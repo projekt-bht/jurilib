@@ -1,22 +1,31 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { Employee } from '~/generated/prisma/client';
-import type { EmployeeCreateInput } from '~/generated/prisma/models';
+import type { Employee, Prisma } from '~/generated/prisma/client';
+import type { EmployeeUncheckedCreateInput } from '~/generated/prisma/models';
 
-// Create a new employee in the database
-export const createEmployee = async (
-  employee: EmployeeCreateInput,
-  accountID: string
+// Create a new employee without a transaction
+export const createEmployeeTx = async (
+  employee: EmployeeUncheckedCreateInput,
+  tx: Prisma.TransactionClient
 ): Promise<Employee> => {
   try {
     if (!employee) throw new ValidationError('invalidInput', 'employee', employee);
-    if (!accountID) throw new ValidationError('invalidInput', 'account', accountID);
+    if (!employee.accountId)
+      throw new ValidationError('invalidInput', 'account', employee.accountId);
+    if (!employee.organizationId)
+      throw new ValidationError('invalidInput', 'organization', employee.organizationId);
 
-    const createdEmployee = await prisma.employee.create({
+    const createdEmployee = await tx.employee.create({
       data: {
-        ...employee,
+        name: employee.name,
+        phone: employee.phone,
+        position: employee.position,
+        expertiseArea: employee.expertiseArea,
         account: {
-          connect: { id: accountID },
+          connect: { id: employee.accountId },
+        },
+        organization: {
+          connect: { id: employee.organizationId },
         },
       },
     });
