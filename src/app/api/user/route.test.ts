@@ -27,7 +27,7 @@ describe('User Routen testen', () => {
       lastname: 'pan',
       birthdate: new Date('1990-01-01'),
       gender: Gender.Mann,
-      pronoun: Pronoun.HE_HIM,
+      pronoun: Pronoun.er_ihm,
       phone: '0123456789',
 
       country: 'Germany',
