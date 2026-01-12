@@ -4,7 +4,7 @@ import z from 'zod';
 
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
-import { deleteUser, readUser, updateUser } from './services';
+import { readUser, updateUser } from './services';
 
 const UpdateSchema = z.strictObject({
   title: z.string().optional(),
