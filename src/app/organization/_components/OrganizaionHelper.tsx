@@ -1,6 +1,6 @@
 import { Briefcase, Building, Building2, Info } from 'lucide-react';
 
-import type { Areas, Employee } from '~/generated/prisma/browser';
+import type { Area, Employee } from '~/generated/prisma/browser';
 import { OrganizationType } from '~/generated/prisma/browser';
 
 // Function to create and format the Organisation Type Badge
@@ -28,7 +28,7 @@ export function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   );
 }
 // Function to create and format the Expertise Area items to badges
-export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
+export function ExpertiseAreaBadge({ areas }: { areas: Area[] }) {
   return (
     <>
       {areas.length === 0 && (
@@ -53,19 +53,21 @@ export function ExpertiseAreaBadge({ areas }: { areas: Areas[] }) {
 export function EmployeeCard({ employee }: { employee: Employee }) {
   return (
     <div
-      key={employee.name}
+      key={`EmployeeCard_${employee.id}`}
       className="bg-linear-to-br from-accent-purple-soft to-accent-blue/5 rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 hover:scale-101 animate-fade-in"
       id={`${employee.id}_EmployeeCard`}
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0">
-          {employee.name
+          {employee.firstname
             .split(' ')
             .map((n) => n[0])
             .join('')}
         </div>
         <div>
-          <h3 className="text-xl font-bold text-foreground">{employee.name}</h3>
+          <h3 className="text-xl font-bold text-foreground">
+            {employee.firstname} {employee.lastname}
+          </h3>
           <p className="text-sm text-accent-blue font-medium">{employee.position}</p>
         </div>
       </div>
@@ -76,7 +78,7 @@ export function EmployeeCard({ employee }: { employee: Employee }) {
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        <ExpertiseAreaBadge areas={employee.expertiseArea} />
+        <ExpertiseAreaBadge areas={employee.expertiseAreas} />
       </div>
     </div>
   );

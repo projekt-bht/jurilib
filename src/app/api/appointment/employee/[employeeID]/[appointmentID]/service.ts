@@ -6,7 +6,7 @@ import type { AppointmentStatus } from '~/generated/prisma/client';
 import { validateNotOverlapping } from '../services';
 
 type ZodUpdateAppointment = {
-  serviceID?: string;
+  //serviceID?: string;
   duration?: number;
   status?: AppointmentStatus;
   location?: string;
@@ -57,7 +57,7 @@ export async function updateAppointment(
     const updatedAppointment = await prisma.appointment.update({
       where: { id: appointmentID },
       data: {
-        serviceId: appointment.serviceID ?? existingAppointment.serviceId ?? undefined,
+        //serviceId: appointment.serviceID ?? existingAppointment.serviceId ?? undefined,
         duration: appointment.duration ?? existingAppointment.duration,
         status: appointment.status ?? existingAppointment.status,
         location: appointment.location ?? existingAppointment.location ?? undefined,

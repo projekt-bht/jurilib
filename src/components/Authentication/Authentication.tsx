@@ -17,8 +17,17 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+// Füge Select-Import hinzu, falls nicht vorhanden
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { deleteLogin, postLogin, register } from '@/services/api';
 import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
 
 //TODO Validate with customError
 
@@ -32,6 +41,9 @@ export function Authentication() {
 
   const router = useRouter();
 
+  const [selectedGender, setSelectedGender] = useState<string>('');
+  const [selectedPronoun, setSelectedPronoun] = useState<string>('');
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -40,13 +52,26 @@ export function Authentication() {
     try {
       if (isRegister) {
         const inputData: RegisterResource = {
-          email: data.email.toString(),
-          password: data.password.toString(),
-          role: 'USER',
-
-          name: data.name.toString(),
-          address: data.address.toString(),
-          phone: data.phone.toString(),
+          account: {
+            email: data.email.toString(),
+            password: data.password.toString(),
+            type: AccountType.USER,
+          },
+          entity: {
+            firstname: data.firstname.toString(),
+            lastname: data.lastname.toString(),
+            gender: data.gender.toString() as Gender, // Cast zu Gender
+            genderText: data.genderText?.toString(),
+            pronoun: data.pronoun?.toString() as Pronoun, // Optional, cast zu Pronoun
+            pronounText: data.pronounText?.toString(),
+            country: data.country?.toString(),
+            city: data.city?.toString(),
+            zipCode: data.zipCode?.toString(),
+            street: data.street?.toString(),
+            houseNumber: data.houseNumber?.toString(),
+            birthdate: new Date(data.birthdate.toString()),
+            phone: data.phone?.toString(),
+          },
         };
 
         const reg = await register(inputData);
@@ -112,7 +137,7 @@ export function Authentication() {
 
         <DialogOverlay className=" backdrop-blur-sm" />
 
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle className="text-center text-lg font-semibold">
@@ -129,13 +154,103 @@ export function Authentication() {
               {isRegister && (
                 <>
                   <div className="grid gap-3">
-                    <Label htmlFor="name">Name *</Label>
-                    <Input id="name" name="name" required minLength={3} />
+                    <Label htmlFor="firstname">Vorname *</Label>
+                    <Input id="firstname" name="firstname" required minLength={3} />
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="address">Adresse</Label>
-                    <Input id="address" name="address" />
+                    <Label htmlFor="lastname">Nachname *</Label>
+                    <Input id="lastname" name="lastname" required minLength={3} />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="birthdate">Geburtstag</Label>
+                    <Input id="birthdate" name="birthdate" type="date" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="gender">Geschlecht *</Label>
+                    <Select
+                      name="gender"
+                      value={selectedGender}
+                      onValueChange={setSelectedGender}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wähle Geschlecht" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(Gender).map((g) => (
+                          <SelectItem key={g} value={g}>
+                            {g.replace(/_/g, ' ')}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedGender === Gender.Andere && (
+                    <div className="grid gap-3">
+                      <Label htmlFor="genderText">Geschlecht Freitext</Label>
+                      <Input id="genderText" name="genderText" />
+                    </div>
+                  )}
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="pronoun">Pronomen</Label>
+                    <Select
+                      name="pronoun"
+                      value={selectedPronoun}
+                      onValueChange={setSelectedPronoun}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wähle Pronomen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(Pronoun).map((p) => (
+                          <SelectItem key={p} value={p}>
+                            {p.replace(/_/g, ' ')}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedPronoun === Pronoun.Andere && (
+                    <div className="grid gap-3">
+                      <Label htmlFor="pronounText">Pronomen Freitext</Label>
+                      <Input id="pronounText" name="pronounText" />
+                    </div>
+                  )}
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="city">Wohnort</Label>
+                    <Input id="city" name="city" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="country">Land</Label>
+                    <Input id="country" name="country" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="city">Ort</Label>
+                    <Input id="city" name="city" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="zipCode">Postleitzahl</Label>
+                    <Input id="zipCode" name="zipCode" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="street">Straße</Label>
+                    <Input id="street" name="street" />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="houseNumber">Hausnummer</Label>
+                    <Input id="houseNumber" name="houseNumber" />
                   </div>
 
                   <div className="grid gap-3">

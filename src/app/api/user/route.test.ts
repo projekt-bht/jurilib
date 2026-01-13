@@ -6,7 +6,8 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 }));
 
 // Non-mock related implementation:
-import type { User } from '~/generated/prisma/browser';
+import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/browser';
 
 const { prisma } = await import('@/lib/db');
 
@@ -24,11 +25,19 @@ describe('User Routen testen', () => {
 
   test('create User', async () => {
     // create both account and user through registration
-    const registrationInput = {
-      email: 'petra' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-      name: 'Petra Muster',
+    const registrationInput: RegisterResource = {
+      account: {
+        email: 'petra' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Petra',
+        lastname: 'Muster',
+        gender: Gender.Frau,
+        pronoun: Pronoun.sie_ihr,
+        birthdate: new Date('1992-05-15'),
+      },
     };
 
     // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
@@ -43,7 +52,7 @@ describe('User Routen testen', () => {
     cUser = await resRegistration.json();
 
     const createdAccount = await prisma.account.findUnique({
-      where: { email: registrationInput.email },
+      where: { email: registrationInput.account.email },
     });
 
     expect(createdAccount?.id).toBe(cUser.accountId);

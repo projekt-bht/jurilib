@@ -8,7 +8,9 @@ import { createAppointment, readAllAppointmentsByEmployee } from './services';
 /**
  * Validate parameter employeeID
  */
-const paramsSchema = z.object({
+
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
   employeeID: z.string().min(1, 'Employee ID is required'),
 });
 
@@ -17,8 +19,8 @@ const paramsSchema = z.object({
  * dateTimeEnd is not included, as it is calculated based on dateTimeStart and duration
  * dateTimeStart is validated by checking if it can be parsed to a valid Date object
  */
-const appointmentCreateSchema = z.object({
-  organizationId: z.string().min(1, 'Organization ID is required'),
+// const appointmentCreateSchema = z.object({
+const appointmentCreateSchema = z.strictObject({
   employeeId: z.string().min(1, 'Employee ID is required'),
   dateTimeStart: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
     message: 'Invalid date format',

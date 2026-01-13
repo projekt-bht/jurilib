@@ -8,9 +8,10 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 // Non-mock related implementation:
 import { NextRequest } from 'next/server';
 
-import type { User } from '~/generated/prisma/browser';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/client';
 
 import { readUsers } from './services';
+import { RegisterResource } from '@/services/Resources';
 const { POST } = await import('@/app/api/authentication/register/route');
 
 const { prisma } = await import('@/lib/db');
@@ -21,11 +22,19 @@ describe('User testen', () => {
 
   test('create User', async () => {
     // create both account and user through registration
-    const registrationInput = {
-      email: 'petra' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-      name: 'Petra Muster',
+    const registrationInput: RegisterResource = {
+      account: {
+        email: 'petra' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Petra',
+        lastname: 'Muster',
+        gender: Gender.Frau,
+        pronoun: Pronoun.sie_ihr,
+        birthdate: new Date('1992-05-15'),
+      },
     };
 
     const request = new NextRequest(registrationURL, {
@@ -39,7 +48,7 @@ describe('User testen', () => {
     cUser = await resRegistration.json();
 
     const createdAccount = await prisma.account.findUnique({
-      where: { email: registrationInput.email },
+      where: { email: registrationInput.account.email },
     });
 
     expect(createdAccount?.id).toBe(cUser.accountId);
