@@ -15,9 +15,19 @@ export const createUserTx = async (
     // TODO: Add more validations as needed and add phone and address as optional fields
     const createdUser = await tx.user.create({
       data: {
-        name: user.name,
+        title: user.title,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        gender: user.gender,
+        genderText: user.genderText,
+        birthdate: user.birthdate,
+        placeOfBirth: user.placeOfBirth,
         phone: user.phone,
-        address: user.address,
+        imageUrl: user.imageUrl,
+        country: user.country,
+        city: user.city,
+        street: user.street,
+        zipCode: user.zipCode,
         account: {
           connect: { id: user.accountId },
         },

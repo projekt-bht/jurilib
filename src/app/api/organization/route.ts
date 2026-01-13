@@ -1,18 +1,19 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
 
 // Validate query params and drop unknown values to avoid invalid Prisma filters.
-const parseEnumValues = <T extends Record<string, string>>(
+function parseEnumValues<T extends Record<string, string>>(
   values: string[],
   enumObj: T
-): T[keyof T][] =>
+): T[keyof T][] {
   values.filter((value): value is T[keyof T] =>
     Object.values(enumObj).includes(value as T[keyof T])
   );
+}
 
 /*
 TODO:
@@ -44,13 +45,22 @@ export async function POST(req: NextRequest) {
 }
 
 // GET /api/organization/
-// Retrieve all organizations
+// Retrieve all organizations considering given query parameters
 export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = req.nextUrl;
+    const skip = Number(searchParams.get('skip'));
+    const take = Number(searchParams.get('take'));
+
+    // defaults to skip=0 & take=10
+    const organization = await readOrganizations({ skip, take });
     // Extract filters from the query string so each UI change can request filtered data.
     const searchParams = req.nextUrl.searchParams;
     const priceCategory = parseEnumValues(searchParams.getAll('priceCategory'), PriceCategory);
-    const organizationType = parseEnumValues(searchParams.getAll('organizationType'), OrganizationType);
+    const organizationType = parseEnumValues(
+      searchParams.getAll('organizationType'),
+      OrganizationType
+    );
     const specialties = parseEnumValues(searchParams.getAll('specialties'), Areas);
     const organization = await readOrganizations({
       priceCategory,

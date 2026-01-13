@@ -1,24 +1,25 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type { Organization, Prisma } from '~/generated/prisma/client';
-import { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
-export const createOrganization = async (organization: Organization): Promise<Organization> => {
+export async function createOrganization(organization: Organization): Promise<Organization> {
   try {
-    if (!organization.expertiseArea) {
-      throw new Error('Expertise area is required');
+    if (!organization.expertiseAreas) {
+      throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
     }
 
     // Iterate through expertiseArea and validate each area
-    organization.expertiseArea.forEach((area) => {
-      if (!Object.values(Areas).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+    organization.expertiseAreas.forEach((area) => {
+      if (!Object.values(Area).includes(area)) {
+        throw new ValidationError('invalidInput', 'expertiseArea', area);
       }
     });
 
-    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
+    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseAreas.toString());
 
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
@@ -30,17 +31,26 @@ export const createOrganization = async (organization: Organization): Promise<Or
   } catch (error) {
     throw new Error('Database insert failed: ' + (error as Error).message);
   }
-};
+}
 
 // Read all organizations
 // Fetch organizations with optional filter arrays coming from the UI query params.
 // Each filter narrows the result set, and omitted/empty filters are ignored.
-export const readOrganizations = async (filters?: {
+export async function readOrganizations(filters: {
+  skip: number;
+  take: number;
   priceCategory?: PriceCategory[];
   organizationType?: OrganizationType[];
-  specialties?: Areas[];
-}): Promise<Organization[]> => {
+  specialties?: Area[];
+}): Promise<Organization[]> {
   try {
+    // default behaviour, if no query params are provided
+    if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
+      filters.skip = 0;
+    }
+    if (!Number.isInteger(filters.take) || filters.take! <= 0) {
+      filters.take = 10;
+    }
     // Build a Prisma where clause that mirrors the UI filter selections.
     const where: Prisma.OrganizationWhereInput = {};
     if (filters?.priceCategory?.length) {
@@ -50,15 +60,19 @@ export const readOrganizations = async (filters?: {
       where.type = { in: filters.organizationType };
     }
     if (filters?.specialties?.length) {
-      where.expertiseArea = { hasSome: filters.specialties };
+      where.expertiseAreas = { hasSome: filters.specialties };
     }
 
-    const orgas: Organization[] = await prisma.organization.findMany({ where });
+    const orgas: Organization[] = await prisma.organization.findMany({
+      skip: filters.skip,
+      take: filters.take,
+      where,
+    });
     if (!orgas) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organization', null);
     }
     return orgas;
   } catch (error) {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
-};
+}

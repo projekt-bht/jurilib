@@ -32,7 +32,7 @@ export function requiresAuthentication(req: NextRequest, res: NextResponse) {
 
     if (loginRes) {
       response.headers.set('userID', loginRes.id);
-      response.headers.set('role', loginRes.role);
+      response.headers.set('type', loginRes.type);
     }
 
     return response;
@@ -54,7 +54,7 @@ export function optionalAuthentication(req: NextRequest, res: NextResponse) {
 
     if (loginRes) {
       response.headers.set('userID', loginRes.id);
-      response.headers.set('role', loginRes.role);
+      response.headers.set('type', loginRes.type);
     }
     return response;
   } catch (err) {

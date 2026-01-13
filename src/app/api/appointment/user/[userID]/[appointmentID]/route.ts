@@ -102,7 +102,8 @@ export async function DELETE(
 /**
  * Validate parameter employeeID and appointmentID
  */
-const paramsSchema = z.object({
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
   userID: z.string().min(1, 'User ID is required'),
   appointmentID: z.string().min(1, 'Appointment ID is required'),
 });

@@ -4,7 +4,7 @@ import type { Appointment } from '~/generated/prisma/client';
 import type { AppointmentCreateInput } from '~/generated/prisma/models';
 
 type ZodCreateAppointment = {
-  organizationId: string;
+  // organizationId: string;
   employeeId: string;
   dateTimeStart: string;
   duration: number;
@@ -15,7 +15,8 @@ export async function createAppointment(
   employeeID: string,
   appointment: ZodCreateAppointment
 ): Promise<Appointment> {
-  await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
+  // await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
+  await validateReference(employeeID, appointment.employeeId);
 
   /**
    * determine appointment end time based on start time and duration
@@ -28,13 +29,22 @@ export async function createAppointment(
 
   try {
     const createdAppointment = await prisma.appointment.create({
+      // If there are errors here, try uncommenting the following line
+      // and maybe use AppointmentCreateInput type assertion
+      // employee object is required for foreign key relation
+
+      // data: {
+      //   employeeId: appointment.employeeId,
+      //   duration: appointment.duration,
+      //   dateTimeStart: startTime,
+      //   dateTimeEnd: endTime,
+      // } as AppointmentCreateInput
       data: {
-        organizationId: appointment.organizationId,
         employeeId: appointment.employeeId,
         duration: appointment.duration,
-        dateTimeStart: appointment.dateTimeStart,
+        dateTimeStart: startTime,
         dateTimeEnd: endTime,
-      } as AppointmentCreateInput,
+      },
     });
     return createdAppointment;
   } catch (error) {
@@ -62,7 +72,8 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
  * ####################################################
  */
 
-async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
+// async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
+async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string) {
   // check if employee exists
   if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
     throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
@@ -72,9 +83,9 @@ async function validateReference(paramEmployeeID: string, bodyEmployeeID?: strin
     throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
   }
   // check if organization exists
-  else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
-    throw new ValidationError('notFound', 'organizationId', orgID);
-  }
+  // else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
+  //   throw new ValidationError('notFound', 'organizationId', orgID);
+  // }
 }
 
 /**

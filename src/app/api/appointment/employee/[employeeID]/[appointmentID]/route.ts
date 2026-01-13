@@ -9,7 +9,8 @@ import { deleteAppointment, readAppointment, updateAppointment } from './service
 /**
  * Validate parameter employeeID and appointmentID
  */
-const paramsSchema = z.object({
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
   employeeID: z.string().min(1, 'Employee ID is required'),
   appointmentID: z.string().min(1, 'Appointment ID is required'),
 });
@@ -19,8 +20,9 @@ const paramsSchema = z.object({
  * attributes not included here cannot be updated
  * dateTimeEnd is not included, as it is calculated based on dateTimeStart and duration
  */
-export const appointmentUpdateSchema = z.object({
-  serviceID: z.string().min(1, 'Service ID is required').optional(),
+// export const appointmentUpdateSchema = z.object({
+export const appointmentUpdateSchema = z.strictObject({
+  //serviceID: z.string().min(1, 'Service ID is required').optional(),
   duration: z.number().min(1, 'Duration must be at least 1 minute').optional(),
   status: z.enum(AppointmentStatus, { message: 'Invalid status value' }).optional(),
   location: z.string().optional(),

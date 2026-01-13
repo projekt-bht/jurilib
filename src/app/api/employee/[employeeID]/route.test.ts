@@ -1,6 +1,17 @@
+import { RegisterResource } from '@/services/Resources';
 import { jest } from '@jest/globals';
 
-import type { Employee } from '~/generated/prisma/client';
+import {
+  Accessibility,
+  AccountType,
+  Area,
+  type Employee,
+  Gender,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  Pronoun,
+} from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
@@ -33,9 +44,17 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       description: 'Org Description',
       shortDescription: 'Org Short Desc',
       email: 'orgemail_test' + Math.random() + '@mail.de',
-      type: 'LAW_FIRM',
-      priceCategory: 'MEDIUM',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      type: OrganizationType.LAW_FIRM,
+      priceCategory: PriceCategory.LOW,
+      expertiseAreas: [Area.Vergaberecht, Area.Arbeitsrecht],
+      accessibility: [Accessibility.Aufzug_vorhanden, Accessibility.Rampe_vorhanden],
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
+      averageRating: 4.5,
+      numberOfRatings: 10,
     };
 
     const reqOrga = new NextRequest(baseUrl, {
@@ -49,13 +68,24 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     expect(resOrga.status).toBe(201);
 
     // Create both account and employee through registration route
+    // TODO: Cannot use RegisterResource here because of
+    // missmatching attributes. Need to refactor RegisterResource first.
     const registerInput = {
-      email: 'EMPLOYEE_TEST_' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'EMPLOYEE',
-      name: 'Peter Mustermann',
-      organizationId: createdOrga.id,
-      expertiseArea: ['Arbeitsrecht', 'Familienrecht'],
+      account: {
+        email: 'EMPLOYEE_TEST_' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.EMPLOYEE,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Muster',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        languages: [Language.DEUTSCH, Language.ENGLISCH],
+        organizationId: createdOrga.id,
+        expertiseArea: [Area.Arbeitsrecht, Area.Familienrecht],
+        email: 'peter.muster@mail.de',
+      },
     };
 
     const reqRegister = new NextRequest(baseUrl, {
@@ -69,14 +99,15 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
 
     const createdEmployee = await resRegister.json();
     cEmployee = createdEmployee;
-    expect(createdEmployee.name).toBe(registerInput.name);
+    expect(createdEmployee.firstname).toBe(registerInput.entity.firstname);
+    expect(createdEmployee.lastname).toBe(registerInput.entity.lastname);
 
     const createdAccount = await prisma.account.findUnique({
-      where: { email: registerInput.email },
+      where: { email: registerInput.account.email },
     });
     expect(createdAccount).not.toBeNull();
     expect(createdAccount?.id).toBe(createdEmployee.accountId);
-    expect(createdAccount?.email).toBe(registerInput.email);
+    expect(createdAccount?.email).toBe(registerInput.account.email);
   });
 
   test('GET Employee', async () => {
@@ -102,8 +133,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     expect(getRes.status).toBe(200);
 
     const employee = {
-      id: cEmployee.id,
-      name: 'updatedPeter',
+      firstname: 'updatedPeter',
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -116,16 +146,20 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       params: Promise.resolve({ employeeID: cEmployee.id }),
     });
 
+    expect(res.status).toBe(200);
+
     const updated = await prisma.employee.findFirst({
-      where: { name: employee.name },
+      where: { id: cEmployee.id },
     });
 
-    expect(updated?.name).toBe('updatedPeter');
+    expect(updated?.firstname).toBe('updatedPeter');
     expect(res.status).toBe(200);
   });
 
   test('PATCH User with invalid data', async () => {
-    const data = {};
+    const data = {
+      id: 12345,
+    };
     const patchReq = new NextRequest(baseUrl, {
       headers: { 'content-type': 'application/json' },
       method: 'PATCH',
