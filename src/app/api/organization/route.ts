@@ -1,19 +1,23 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
 import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
 
-// Validate query params and drop unknown values to avoid invalid Prisma filters.
-function parseEnumValues<T extends Record<string, string>>(
-  values: string[],
-  enumObj: T
-): T[keyof T][] {
-  values.filter((value): value is T[keyof T] =>
-    Object.values(enumObj).includes(value as T[keyof T])
-  );
-}
+/**
+ * Validate parameters
+ * defaults to skip=0 & take=10
+ */
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
+  skip: z.int().nonnegative().default(0),
+  take: z.int().nonnegative().max(100, 'Take can not be more than 100').default(10),
+  priceCategory: z.array(z.enum(PriceCategory)),
+  organizationType: z.array(z.enum(OrganizationType)),
+  area: z.array(z.enum(Area)),
+});
 
 /*
 TODO:
@@ -49,24 +53,23 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
+
     const skip = Number(searchParams.get('skip'));
     const take = Number(searchParams.get('take'));
-
-    // defaults to skip=0 & take=10
-    const organization = await readOrganizations({ skip, take });
     // Extract filters from the query string so each UI change can request filtered data.
-    const searchParams = req.nextUrl.searchParams;
-    const priceCategory = parseEnumValues(searchParams.getAll('priceCategory'), PriceCategory);
-    const organizationType = parseEnumValues(
-      searchParams.getAll('organizationType'),
-      OrganizationType
-    );
-    const specialties = parseEnumValues(searchParams.getAll('specialties'), Areas);
-    const organization = await readOrganizations({
-      priceCategory,
-      organizationType,
-      specialties,
+    const priceCategory = searchParams.getAll('priceCategory');
+    const organizationType = searchParams.getAll('organizationType');
+    const area = searchParams.getAll('area');
+
+    const validatedParams = paramsSchema.parse({
+      skip: skip,
+      take: take,
+      priceCategory: priceCategory,
+      organizationType: organizationType,
+      area: area,
     });
+
+    const organization = await readOrganizations(validatedParams);
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: (error as Error).message }, { status: 404 });

@@ -1,8 +1,13 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import type { Organization, Prisma } from '~/generated/prisma/client';
-import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+import type {
+  Organization,
+  OrganizationType,
+  PriceCategory,
+  Prisma,
+} from '~/generated/prisma/client';
+import { Area } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
@@ -41,16 +46,9 @@ export async function readOrganizations(filters: {
   take: number;
   priceCategory?: PriceCategory[];
   organizationType?: OrganizationType[];
-  specialties?: Area[];
+  area?: Area[];
 }): Promise<Organization[]> {
   try {
-    // default behaviour, if no query params are provided
-    if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
-      filters.skip = 0;
-    }
-    if (!Number.isInteger(filters.take) || filters.take! <= 0) {
-      filters.take = 10;
-    }
     // Build a Prisma where clause that mirrors the UI filter selections.
     const where: Prisma.OrganizationWhereInput = {};
     if (filters?.priceCategory?.length) {
@@ -59,8 +57,8 @@ export async function readOrganizations(filters: {
     if (filters?.organizationType?.length) {
       where.type = { in: filters.organizationType };
     }
-    if (filters?.specialties?.length) {
-      where.expertiseAreas = { hasSome: filters.specialties };
+    if (filters?.area?.length) {
+      where.expertiseAreas = { hasSome: filters.area };
     }
 
     const orgas: Organization[] = await prisma.organization.findMany({
