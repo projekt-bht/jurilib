@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
+import { handleValidationError } from '../helper';
 
 /**
  * Validate parameters
@@ -80,6 +81,13 @@ export async function GET(req: NextRequest) {
     const organization = await readOrganizations(validatedParams);
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    } else {
+      return NextResponse.json(
+        { message: 'Read failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
   }
 }
