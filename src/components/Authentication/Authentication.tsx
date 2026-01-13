@@ -41,36 +41,68 @@ export function Authentication() {
 
   const router = useRouter();
 
-  const [selectedGender, setSelectedGender] = useState<string>('');
-  const [selectedPronoun, setSelectedPronoun] = useState<string>('');
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const initialRegisterData = {
+    firstname: '',
+    lastname: '',
+    email: '',
+    password: '',
+    birthdate: '',
+    gender: '',
+    genderText: '',
+    pronoun: '',
+    pronounText: '',
+    city: '',
+    country: '',
+    zipCode: '',
+    street: '',
+    houseNumber: '',
+    phone: '',
+  };
+
+  const [registerData, setRegisterData] = useState(initialRegisterData);
+
+  function update(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+  }
+
+  function updateLoginData(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form);
 
     try {
       if (isRegister) {
         const inputData: RegisterResource = {
           account: {
-            email: data.email.toString(),
-            password: data.password.toString(),
+            email: registerData.email.toString(),
+            password: registerData.password.toString(),
             type: AccountType.USER,
           },
           entity: {
-            firstname: data.firstname.toString(),
-            lastname: data.lastname.toString(),
-            gender: data.gender.toString() as Gender, // Cast zu Gender
-            genderText: data.genderText?.toString(),
-            pronoun: data.pronoun?.toString() as Pronoun, // Optional, cast zu Pronoun
-            pronounText: data.pronounText?.toString(),
-            country: data.country?.toString(),
-            city: data.city?.toString(),
-            zipCode: data.zipCode?.toString(),
-            street: data.street?.toString(),
-            houseNumber: data.houseNumber?.toString(),
-            birthdate: new Date(data.birthdate.toString()),
-            phone: data.phone?.toString(),
+            firstname: registerData.firstname.toString(),
+            lastname: registerData.lastname.toString(),
+            gender: registerData.gender.toString() as Gender, // Cast zu Gender
+            genderText: registerData.genderText?.toString(),
+            pronoun: registerData.pronoun?.toString() as Pronoun, // Optional, cast zu Pronoun
+            pronounText: registerData.pronounText?.toString(),
+            country: registerData.country?.toString(),
+            city: registerData.city?.toString(),
+            zipCode: registerData.zipCode?.toString(),
+            street: registerData.street?.toString(),
+            houseNumber: registerData.houseNumber?.toString(),
+            birthdate: new Date(registerData.birthdate.toString()),
+            phone: registerData.phone?.toString(),
           },
         };
 
@@ -83,11 +115,20 @@ export function Authentication() {
           //setSuccessDialog(true);
 
           //Login user after successful registration
-          const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
+          //Clear registerData
+          setRegisterData(initialRegisterData);
+
+          const loginFromServer = await postLogin(
+            registerData.email.toString(),
+            registerData.password.toString()
+          );
           setLogin(loginFromServer);
         }
       } else {
-        const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
+        const loginFromServer = await postLogin(
+          loginData.email.toString(),
+          loginData.password.toString()
+        );
         if (loginFromServer) {
           setLogin(loginFromServer);
           setShowDialog(false);
@@ -155,25 +196,47 @@ export function Authentication() {
                 <>
                   <div className="grid gap-3">
                     <Label htmlFor="firstname">Vorname *</Label>
-                    <Input id="firstname" name="firstname" required minLength={3} />
+                    <Input
+                      id="firstname"
+                      name="firstname"
+                      value={registerData.firstname}
+                      onChange={update}
+                      required
+                      minLength={3}
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="lastname">Nachname *</Label>
-                    <Input id="lastname" name="lastname" required minLength={3} />
+                    <Input
+                      id="lastname"
+                      name="lastname"
+                      value={registerData.lastname}
+                      onChange={update}
+                      required
+                      minLength={3}
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="birthdate">Geburtstag</Label>
-                    <Input id="birthdate" name="birthdate" type="date" />
+                    <Input
+                      id="birthdate"
+                      name="birthdate"
+                      value={registerData.birthdate}
+                      onChange={update}
+                      type="date"
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="gender">Geschlecht *</Label>
                     <Select
                       name="gender"
-                      value={selectedGender}
-                      onValueChange={setSelectedGender}
+                      value={registerData.gender}
+                      onValueChange={(value) =>
+                        setRegisterData((prev) => ({ ...prev, gender: value }))
+                      }
                       required
                     >
                       <SelectTrigger>
@@ -189,10 +252,15 @@ export function Authentication() {
                     </Select>
                   </div>
 
-                  {selectedGender === Gender.Andere && (
+                  {registerData.gender === Gender.Andere && (
                     <div className="grid gap-3">
                       <Label htmlFor="genderText">Geschlecht Freitext</Label>
-                      <Input id="genderText" name="genderText" />
+                      <Input
+                        id="genderText"
+                        name="genderText"
+                        value={registerData.genderText}
+                        onChange={update}
+                      />
                     </div>
                   )}
 
@@ -200,8 +268,10 @@ export function Authentication() {
                     <Label htmlFor="pronoun">Pronomen</Label>
                     <Select
                       name="pronoun"
-                      value={selectedPronoun}
-                      onValueChange={setSelectedPronoun}
+                      value={registerData.pronoun}
+                      onValueChange={(value) =>
+                        setRegisterData((prev) => ({ ...prev, pronoun: value }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Wähle Pronomen" />
@@ -216,51 +286,79 @@ export function Authentication() {
                     </Select>
                   </div>
 
-                  {selectedPronoun === Pronoun.Andere && (
+                  {registerData.pronoun === Pronoun.Andere && (
                     <div className="grid gap-3">
                       <Label htmlFor="pronounText">Pronomen Freitext</Label>
-                      <Input id="pronounText" name="pronounText" />
+                      <Input
+                        id="pronounText"
+                        name="pronounText"
+                        value={registerData.pronounText}
+                        onChange={update}
+                      />
                     </div>
                   )}
 
                   <div className="grid gap-3">
                     <Label htmlFor="city">Wohnort</Label>
-                    <Input id="city" name="city" />
+                    <Input id="city" value={registerData.city} onChange={update} name="city" />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="country">Land</Label>
-                    <Input id="country" name="country" />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="city">Ort</Label>
-                    <Input id="city" name="city" />
+                    <Input
+                      id="country"
+                      value={registerData.country}
+                      onChange={update}
+                      name="country"
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="zipCode">Postleitzahl</Label>
-                    <Input id="zipCode" name="zipCode" />
+                    <Input
+                      id="zipCode"
+                      value={registerData.zipCode}
+                      onChange={update}
+                      name="zipCode"
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="street">Straße</Label>
-                    <Input id="street" name="street" />
+                    <Input
+                      id="street"
+                      value={registerData.street}
+                      onChange={update}
+                      name="street"
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="houseNumber">Hausnummer</Label>
-                    <Input id="houseNumber" name="houseNumber" />
+                    <Input
+                      id="houseNumber"
+                      value={registerData.houseNumber}
+                      onChange={update}
+                      name="houseNumber"
+                    />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="phone">Telefon</Label>
-                    <Input id="phone" name="phone" />
+                    <Input id="phone" value={registerData.phone} onChange={update} name="phone" />
                   </div>
 
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email-Adresse *</Label>
-                    <Input id="email" name="email" type="email" required minLength={3} />
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={registerData.email}
+                      onChange={update}
+                      required
+                      minLength={3}
+                    />
                   </div>
 
                   <div className="grid gap-3">
@@ -269,6 +367,8 @@ export function Authentication() {
                       id="password"
                       name="password"
                       type="password"
+                      value={registerData.password}
+                      onChange={update}
                       required
                       minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
@@ -281,7 +381,15 @@ export function Authentication() {
                 <>
                   <div className="grid gap-3">
                     <Label htmlFor="loginEmail">Email-Adresse</Label>
-                    <Input id="loginEmail" name="email" type="email" required minLength={3} />
+                    <Input
+                      id="loginEmail"
+                      name="email"
+                      type="email"
+                      value={loginData.email}
+                      onChange={updateLoginData}
+                      required
+                      minLength={3}
+                    />
                   </div>
 
                   <div className="grid gap-3">
@@ -290,6 +398,8 @@ export function Authentication() {
                       id="loginPassword"
                       name="password"
                       type="password"
+                      value={loginData.password}
+                      onChange={updateLoginData}
                       required
                       minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
                     />
