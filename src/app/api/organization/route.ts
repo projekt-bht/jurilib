@@ -8,12 +8,18 @@ import { createOrganization, readOrganizations } from './services';
 
 /**
  * Validate parameters
- * defaults to skip=0 & take=10
+ * defaults to skip=0 & take=10 even if the values are nullish
  */
 // const paramsSchema = z.object({
 const paramsSchema = z.strictObject({
-  skip: z.int().nonnegative().default(0),
-  take: z.int().nonnegative().max(100, 'Take can not be more than 100').default(10),
+  skip: z.preprocess(
+    (v) => (v === null || v === undefined ? undefined : Number(v)),
+    z.int().nonnegative().default(0)
+  ),
+  take: z.preprocess(
+    (v) => (v === null || v === undefined ? undefined : Number(v)),
+    z.int().nonnegative().max(100, 'Take can not be more than 100').default(10)
+  ),
   priceCategory: z.array(z.enum(PriceCategory)),
   organizationType: z.array(z.enum(OrganizationType)),
   area: z.array(z.enum(Area)),
@@ -53,10 +59,12 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
-
-    const skip = Number(searchParams.get('skip'));
-    const take = Number(searchParams.get('take'));
-    // Extract filters from the query string so each UI change can request filtered data.
+    // pagination
+    // values can be null and need to be validated later on
+    const skip = searchParams.get('skip');
+    const take = searchParams.get('take');
+    // filter
+    // values will always be an array
     const priceCategory = searchParams.getAll('priceCategory');
     const organizationType = searchParams.getAll('organizationType');
     const area = searchParams.getAll('area');
