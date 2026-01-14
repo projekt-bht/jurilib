@@ -241,7 +241,7 @@ model AccountToken{
     type         TokenType
     token        String   
     createdAt    DateTime    @default(now())         
-    expiresAt    DateTime
+    expiresAt    DateTime    // TODO: Add calculation for expiration 
     usedAt       DateTime?
 
     account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)

@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": ".",
     "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
@@ -21,9 +20,12 @@
       }
     ],
     "paths": {
+      // A new catch-all that replaces the baseUrl:
+      "*": ["."],
       "@/*": ["./src/*"],
-      "~/*": ["./*"],
-      "@helper/*": ["helper/*"]
+      "~/*": ["./*"]
+      // TODO: Was not used and throwing errors, uncomment when needed (see jest.config.ts)
+      // "@helper/*": ["helper/*"]
     }
   },
   "include": [

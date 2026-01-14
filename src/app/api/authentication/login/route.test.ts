@@ -45,7 +45,7 @@ describe('Login test', () => {
     });
 
     const res = await accountPOST(req);
-    expect(res.status).toBe(201);
+    expect(res!.status).toBe(201);
 
     createdAccount = {
       email: registerInput.account.email,

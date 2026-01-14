@@ -4,8 +4,8 @@ import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
 import type { Account, Prisma } from '~/generated/prisma/client';
-import { AccountUpdateSchema } from './route';
-import { AccountUpdateInput } from '~/generated/prisma/models';
+
+import type { AccountUpdateSchema } from './route';
 
 export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
@@ -31,7 +31,7 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
 
 /**
  * Update an existing account in the database by accountID
- * Only mail and password can be updated.
+ * Only mail, password and isVerifiedcan be updated.
  * Role and id are immutable, since they are used to connect
  * the account to other entities.
  */

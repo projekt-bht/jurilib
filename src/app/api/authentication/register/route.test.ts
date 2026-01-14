@@ -6,7 +6,7 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 }));
 
 // Non-mock related implementation:
-import { RegisterResource } from '@/services/Resources';
+import type { RegisterResource } from '@/services/Resources';
 import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
 
 // Alle Imports per await:

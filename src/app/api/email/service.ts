@@ -13,7 +13,7 @@ import { sendEmail } from './mailer';
  */
 export async function sendRegistrationCodeEmail(account: Account, user: User) {
   // TODO: change to user.firstName, user.lastName when schema is updated
-  const userFullName = `${user.name} ${user.name}`.trim();
+  const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -59,7 +59,7 @@ export async function sendPasswordResetEmail(email: string) {
   }
   const user = account.user;
   // TODO: change to user.firstName, user.lastName when schema is updated
-  const userFullName = `${user.name} ${user.name}`.trim();
+  const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -167,7 +167,7 @@ async function sendAppointmentInformationEmail(
   // construct missing variables
   const fullTitle = `Termin ${title}`;
   // TODO: change to user.firstName, user.lastName when schema is updated
-  const userFullName = `${user.name} ${user.name}`.trim();
+  const userFullName = `${user.firstname} ${user.lastname}`.trim();
   // TODO: set appt.administration url
   const apptAdministrationUrl = 'https://jurilib.de';
 

@@ -60,7 +60,7 @@ export async function PATCH(
 
     // validate body
     const body = await req.json();
-    const data = AccountUpdateValidationSchema.parse(body) as AccountUpdateSchema;
+    const data = UpdateSchema.parse(body) as AccountUpdateSchema;
 
     const updatedAccount = await updateAccount(data as Account, accountID);
     return NextResponse.json(updatedAccount, { status: 200 });

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { email, z } from 'zod';
+import { z } from 'zod';
 
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
@@ -99,9 +99,9 @@ export async function POST(req: NextRequest) {
      * Create Account and associated User/Employee in a transaction
      * This ensures that either both records are created or none at all
      */
-    const result = await prisma.$transaction(async (tx) => {
+    let result = await prisma.$transaction(async (tx) => {
       const accountInput = convertBodyToAccountInput(body.account);
-      const createdAccount = await createAccountTx(accountInput, tx);
+      createdAccount = await createAccountTx(accountInput, tx);
 
       if (createdAccount.type === AccountType.USER) {
         const userInput = convertBodyToUserInput(
@@ -128,7 +128,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error('Registration error:', error);
     if (error instanceof z.ZodError) {
       handleValidationError(error);
     } else {

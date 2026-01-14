@@ -8,6 +8,7 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 // Non-mock related implementation:
 import type { RegisterResource } from '@/services/Resources';
 import { type Account, AccountType, Gender, Pronoun } from '~/generated/prisma/client';
+import type { AccountCreateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');

@@ -1,33 +1,84 @@
+import { AccountType, Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
+
+import { POST as RegisterPOST } from '../authentication/register/route';
+import { POST as OrgPOST } from '../organization/route';
+
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
+const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/employee/route');
 
 describe('Globale Employee Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee`;
+  const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
+  const baseUrlOrganization = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
 
-  // Currently, there is no Account creation functionality for Employees
+  test('POST Employee through Register Route', async () => {
+    // create organization
+    const organization: OrganizationCreateInput = {
+      name: 'Max Mustermann Kanzlei',
+      description: 'Kanzlei test',
+      shortDescription: 'Kanzlei shortTest',
+      email: Math.random() + '@mail.de',
+      type: 'LAW_FIRM',
+      priceCategory: 'FREE',
+      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
 
-  //   test('POST Employee', async () => {
-  //     const account: AccountCreateInput = {
-  //       email: 'peter' + Math.random() + '@mail.de',
-  //       password: '123456',
-  //       role: 'EMPLOYEE',
-  //     };
+      averageRating: 4.5,
+      numberOfRatings: 10,
+    };
 
-  //     const createdAccount = await createAccount(account);
+    const orgReq = new NextRequest(baseUrlOrganization, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(organization),
+    });
 
-  //     const employee: EmployeeCreateInput = {
-  //       name: 'peter',
-  //       account: {
-  //         connect: { id: createdAccount.id },
-  //       },
-  //     };
+    const orgRes = await OrgPOST(orgReq);
 
-  //     const createdEmployee = await createEmployee(employee, createdAccount.id!);
-  //     expect(createdAccount.id).toBe(createdEmployee.accountId);
-  //   });
+    const organizationData = await orgRes.json();
+
+    // create employee account
+    const registerInput = {
+      account: {
+        email: 'peter' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.EMPLOYEE,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Mustermann',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        organizationId: organizationData.id,
+        expertiseArea: [Area.Arbeitsrecht, Area.Familienrecht],
+        languages: [Language.DEUTSCH, Language.ENGLISCH],
+        email: 'peter@contacting.de',
+      },
+    };
+
+    const req = new NextRequest(baseUrlRegister, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerInput),
+    });
+
+    const res = await RegisterPOST(req);
+    expect(res!.status).toBe(201);
+
+    const result = await prisma.account.findUnique({
+      where: { email: registerInput.account.email },
+    });
+    expect(result).not.toBeNull();
+  });
 
   test('GET all Employees in DB', async () => {
     const req = new NextRequest(baseUrl);
