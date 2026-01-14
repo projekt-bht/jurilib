@@ -14,7 +14,17 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
 
 // Non-mock related implementation:
 
-import { AccountType, Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
+import type { Employee } from '~/generated/prisma/browser';
+import {
+  Accessibility,
+  AccountType,
+  Area,
+  Gender,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  Pronoun,
+} from '~/generated/prisma/enums';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 import { POST as RegisterPOST } from '../authentication/register/route';
@@ -27,74 +37,81 @@ const { prisma } = await import('@/lib/db');
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/employee/route');
 
-// TODO: remove - THIS IS A PIPELINE TEST
 describe('Globale Employee Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee`;
-  const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
-  const baseUrlOrganization = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization`;
+  let cEmployee: Employee;
 
-  test('POST Employee through Register Route', async () => {
-    // create organization
+  test('Create Account and Employee', async () => {
+    // Create Organization first
     const organization: OrganizationCreateInput = {
-      name: 'Max Mustermann Kanzlei',
-      description: 'Kanzlei test',
-      shortDescription: 'Kanzlei shortTest',
-      email: Math.random() + '@mail.de',
-      type: 'LAW_FIRM',
-      priceCategory: 'FREE',
-      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
+      name: 'Test Org for Employee',
+      description: 'Org Description',
+      shortDescription: 'Org Short Desc',
+      email: 'orgemail_test' + Math.random() + '@mail.de',
+      type: OrganizationType.LAW_FIRM,
+      priceCategory: PriceCategory.LOW,
+      expertiseAreas: [Area.Vergaberecht, Area.Arbeitsrecht],
+      accessibility: [Accessibility.Aufzug_vorhanden, Accessibility.Rampe_vorhanden],
       country: 'Deutschland',
       city: 'Berlin',
       zipCode: '10115',
       street: 'Musterstraße',
       houseNumber: '1A',
-
       averageRating: 4.5,
       numberOfRatings: 10,
     };
 
-    const orgReq = new NextRequest(baseUrlOrganization, {
+    const reqOrga = new NextRequest(baseUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(organization),
     });
 
-    const orgRes = await OrgPOST(orgReq);
+    const resOrga = await OrgPOST(reqOrga);
+    const createdOrga = await resOrga.json();
+    expect(resOrga.status).toBe(201);
 
-    const organizationData = await orgRes.json();
-
-    // create employee account
+    // Create both account and employee through registration route
+    // TODO: Cannot use RegisterResource here because of
+    // missmatching attributes. Need to refactor RegisterResource first.
     const registerInput = {
       account: {
-        email: 'peter' + Math.random() + '@mail.de',
+        email: 'EMPLOYEE_TEST_' + Math.random() + '@mail.de',
         password: '1234567890',
         type: AccountType.EMPLOYEE,
       },
       entity: {
         firstname: 'Peter',
-        lastname: 'Mustermann',
+        lastname: 'Muster',
         gender: Gender.Mann,
         pronoun: Pronoun.er_ihm,
-        organizationId: organizationData.id,
-        expertiseArea: [Area.Arbeitsrecht, Area.Familienrecht],
         languages: [Language.DEUTSCH, Language.ENGLISCH],
-        email: 'peter@contacting.de',
+        organizationId: createdOrga.id,
+        expertiseArea: [Area.Arbeitsrecht, Area.Familienrecht],
+        email: 'peter.muster@mail.de',
       },
     };
 
-    const req = new NextRequest(baseUrlRegister, {
+    const reqRegister = new NextRequest(baseUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registerInput),
     });
 
-    const res = await RegisterPOST(req);
-    expect(res!.status).toBe(201);
+    const resRegister = await RegisterPOST(reqRegister);
+    expect(resRegister?.status).toBe(201);
 
-    const result = await prisma.account.findUnique({
+    const createdEmployee = await resRegister?.json();
+    cEmployee = createdEmployee;
+    expect(createdEmployee.firstname).toBe(registerInput.entity.firstname);
+    expect(createdEmployee.lastname).toBe(registerInput.entity.lastname);
+
+    const createdAccount = await prisma.account.findUnique({
       where: { email: registerInput.account.email },
     });
-    expect(result).not.toBeNull();
+    expect(createdAccount).not.toBeNull();
+    expect(createdAccount?.id).toBe(createdEmployee.accountId);
+    expect(createdAccount?.email).toBe(registerInput.account.email);
   });
 
   test('GET all Employees in DB', async () => {
@@ -102,6 +119,7 @@ describe('Globale Employee Routen testen', () => {
     const res = await GET(req);
     const json = await res.json();
     expect(json.length).not.toBe(0);
+    expect(json.find((e: Employee) => e.id === cEmployee.id)).toBeDefined();
     expect(res.status).toBe(200);
   });
 });
