@@ -17,7 +17,8 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
     const accountRes = {
       id: account.id,
       email: account.email,
-      role: account.role,
+      type: account.type,
+      isVerified: account.isVerified,
     };
 
     return accountRes;
@@ -55,7 +56,8 @@ export const updateAccount = async (
     const accountRes = {
       id: updatedAccount.id,
       email: updatedAccount.email,
-      role: updatedAccount.role,
+      type: updatedAccount.type,
+      isVerified: updatedAccount.isVerified,
     };
 
     return accountRes;

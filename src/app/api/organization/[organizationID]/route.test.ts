@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import type { OrganizationCreateInput } from '~/generated/prisma/models';
+import type { OrganizationCreateInput, OrganizationUpdateInput } from '~/generated/prisma/models';
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   vectorizeExpertiseArea: jest.fn(async () => {
@@ -28,9 +28,17 @@ describe('Organization Routen testen', () => {
       description: 'Kanzlei test',
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
       shortDescription: '',
       priceCategory: 'FREE',
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
+
+      averageRating: 4.5,
+      numberOfRatings: 10,
     };
 
     const req = new NextRequest(baseUrl, {
@@ -66,13 +74,13 @@ describe('Organization Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const organization: OrganizationCreateInput = {
+    const organization: OrganizationUpdateInput = {
       id: getJSON.id,
       name: 'updated',
       description: 'Kanzlei test',
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
       shortDescription: '',
       priceCategory: 'FREE',
     };

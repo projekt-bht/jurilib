@@ -32,6 +32,7 @@ export async function GET(
 /**
  * Validate parameter organizationID
  */
-const paramsSchema = z.object({
+// const paramsSchema = z.object({
+const paramsSchema = z.strictObject({
   organizationID: z.string().min(1, 'Organization ID is required'),
 });

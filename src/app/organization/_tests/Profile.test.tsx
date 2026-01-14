@@ -1,23 +1,33 @@
 import { jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 
+import type { Employee } from '~/generated/prisma/browser';
+import { Accessibility, Gender } from '~/generated/prisma/browser';
 import type { Organization } from '~/generated/prisma/client';
 
 import { Profile } from '../_components/Profile';
-import { Employee } from '~/generated/prisma/browser';
 
 const mockOrganization: Organization = {
-  name: 'Rechtsberatum München',
   id: '1',
-  description: 'In Ansprechpartner für Arbeitsrecht und Vertragsrecht.',
-  shortDescription: 'test.',
+  name: 'Rechtsberatum München',
+  shortDescription: 'Ihr Partner für Arbeitsrecht.',
+  description: 'Ihr aller bester Partner für Arbeitsrecht.',
+  priceCategory: 'FREE',
+  type: 'LAW_FIRM',
   email: 'contact@rechtsberatum.de',
   phone: '+49 89 1234567',
-  address: 'München, Germany',
+  country: 'Germany',
+  city: 'Munich',
+  zipCode: '80331',
+  street: 'Marienplatz',
+  houseNumber: '1',
+  accessibility: [Accessibility.Parkplätze_vorhanden, Accessibility.Rollstuhlgerecht],
   website: 'https://rechtsberatum.de',
-  expertiseArea: ['Steuerrecht'],
-  type: 'LAW_FIRM',
-  priceCategory: 'MEDIUM',
+  expertiseAreas: ['Arbeitsrecht'],
+  imageUrl: 'https://example.com/image.jpg',
+  averageRating: 4.5,
+  numberOfRatings: 150,
+
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -25,14 +35,24 @@ const mockOrganization: Organization = {
 const mockEmployees: Employee[] = [
   {
     id: 'e1',
-    name: 'Max Mustermann',
+    accountId: 'a1',
+    firstname: 'Max',
+    lastname: 'Mustermann',
+    gender: Gender.Mann,
     position: 'Rechtsanwalt',
     organizationId: '1',
-    accountId: 'a1',
-    expertiseArea: ['Steuerrecht'],
+    email: 'max.mustermann@rechtsberatum.de',
+    languages: ['DEUTSCH', 'ENGLISCH'],
+    imageUrl: 'https://example.com/employee1.jpg',
+    expertiseAreas: ['Steuerrecht'],
     createdAt: new Date(),
     updatedAt: new Date(),
     phone: '+49 01231231323',
+    description: null,
+    title: null,
+    pronoun: null,
+    pronounText: null,
+    genderText: null,
   },
 ];
 
@@ -66,14 +86,9 @@ describe('Organization Profile Component', () => {
     expect(document.getElementById(`${mockOrganization.id}_Employees`)).toBeInTheDocument();
   });
 
-  it('reders profile emplyee card by id', () => {
+  it('renders profile employee card by id', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
     expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).toBeInTheDocument();
-  });
-
-  it('renders profile employee section by id', () => {
-    render(<Profile organization={mockOrganization} employees={mockEmployees} />);
-    expect(document.getElementById(`${mockOrganization.id}_Employees`)).toBeInTheDocument();
   });
 
   it('renders employee name in profile', () => {
@@ -93,14 +108,12 @@ describe('Organization Profile Component', () => {
 
   it('renders profile organization description', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
-    expect(
-      screen.getByText('In Ansprechpartner für Arbeitsrecht und Vertragsrecht.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Ihr aller bester Partner für Arbeitsrecht.')).toBeInTheDocument();
   });
 
   it('renders profile organization short description', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
-    expect(screen.getByText('test.')).toBeInTheDocument();
+    expect(screen.getByText('Ihr Partner für Arbeitsrecht.')).toBeInTheDocument();
   });
 
   it('renders profile expertise area', () => {
@@ -125,6 +138,25 @@ describe('Organization Profile Component', () => {
 
   it('renders profile address info', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
-    expect(screen.getByText(mockOrganization.address!)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `${mockOrganization.zipCode} ${mockOrganization.city}, ${mockOrganization.street} ${mockOrganization.houseNumber}`
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('renders profile email info', () => {
+    render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    expect(screen.getByText(mockOrganization.email!)).toBeInTheDocument();
+  });
+
+  it('renders organization logo initial', () => {
+    render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    expect(screen.getByText('R')).toBeInTheDocument();
+  });
+
+  it('does not render employees section when employees array is empty', () => {
+    render(<Profile organization={mockOrganization} employees={[]} />);
+    expect(document.getElementById(`${mockOrganization.id}_Employees`)).not.toBeInTheDocument();
   });
 });
