@@ -27,6 +27,7 @@ const { prisma } = await import('@/lib/db');
 // Dynamisch die API-Funktionen importieren
 const { GET } = await import('@/app/api/employee/route');
 
+// TODO: remove - THIS IS A PIPELINE TEST
 describe('Globale Employee Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee`;
   const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
