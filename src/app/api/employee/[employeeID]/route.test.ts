@@ -1,4 +1,3 @@
-import { RegisterResource } from '@/services/Resources';
 import { jest } from '@jest/globals';
 
 import {
@@ -95,9 +94,9 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     });
 
     const resRegister = await POST(reqRegister);
-    expect(resRegister.status).toBe(201);
+    expect(resRegister?.status).toBe(201);
 
-    const createdEmployee = await resRegister.json();
+    const createdEmployee = await resRegister?.json();
     cEmployee = createdEmployee;
     expect(createdEmployee.firstname).toBe(registerInput.entity.firstname);
     expect(createdEmployee.lastname).toBe(registerInput.entity.lastname);

@@ -166,8 +166,8 @@ async function sendAppointmentInformationEmail(
 
   // construct missing variables
   const fullTitle = `Termin ${title}`;
-  // TODO: change to user.firstName, user.lastName when schema is updated
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
+  const employeeFullName = `${employee.firstname} ${employee.lastname}`.trim();
   // TODO: set appt.administration url
   const apptAdministrationUrl = 'https://jurilib.de';
 
@@ -185,7 +185,7 @@ async function sendAppointmentInformationEmail(
       APPT_TIME: appointmentTime,
       APPT_ORGANIZATION_NAME: organization?.name ?? 'Nicht angegeben',
       APPT_LOCATION: appt.location ?? 'Nicht angegeben',
-      APPT_EMPLOYEE_NAME: employee?.name ?? 'Nicht angegeben',
+      APPT_EMPLOYEE_NAME: employeeFullName ?? 'Nicht angegeben',
       APPT_CASE_TITLE: caseTitle ?? 'Ohne Fallzuordnung',
       APPOINTMENT_MANAGEMENT_URL: apptAdministrationUrl,
       BUTTON_TEXT: cancelled ? 'Neuen Termin buchen' : 'Zur Terminverwaltung',
@@ -239,7 +239,7 @@ function getDateTimeString(date: Date): { appointmentDate: string; appointmentTi
 async function getEmployee(employeeId: string) {
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { name: true, organizationId: true },
+    select: { firstname: true, lastname: true, organizationId: true },
   });
 
   if (!employee) {
