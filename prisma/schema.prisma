@@ -334,6 +334,8 @@ enum CaseStatus {
 }
 
 enum AppointmentStatus {
+    OPEN
+    REQUESTED
     CONFIRMED
     CANCELED
     OPEN
