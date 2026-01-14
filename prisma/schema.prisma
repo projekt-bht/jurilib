@@ -185,14 +185,13 @@ model Service {
 }
 
 model Case {
-    id             String        @id @default(uuid())
-    userId         String        // foreign key to User
+    id             String        @id @unique @default(uuid())
     employeeId     String        // foreign key to Employee
 
     // case infos
     title          String
     description    String
-    documentsURL   String[]  // TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
+    documentsURL   String[]      @default([])// TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
     status         CaseStatus    @default(OPEN)
 
     // creation & update timestamps
@@ -200,7 +199,6 @@ model Case {
     updatedAt      DateTime      @updatedAt
 
     // relations
-    user         User          @relation(fields: [userId], references: [id])
     employee     Employee     @relation(fields: [employeeId], references: [id])
     appointments Appointment[]
 
