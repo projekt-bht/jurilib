@@ -20,12 +20,9 @@
       }
     ],
     "paths": {
-      // A new catch-all that replaces the baseUrl:
-      "*": ["."],
       "@/*": ["./src/*"],
-      "~/*": ["./*"]
-      // TODO: Was not used and throwing errors, uncomment when needed (see jest.config.ts)
-      // "@helper/*": ["helper/*"]
+      "~/*": ["./*"],
+      "@helper/*": ["helper/*"]
     }
   },
   "include": [

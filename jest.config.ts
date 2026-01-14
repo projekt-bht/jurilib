@@ -13,8 +13,7 @@ const testPathIgnore = [
 const baseMappers = {
   '^@/(.*)$': '<rootDir>/src/$1',
   '^~/(.*)$': '<rootDir>/$1',
-  // TODO: Was not used and throwing errors, uncomment when needed (see tsconfig.json)
-  // '^@helper/(.*)$': '<rootDir>/helper/$1',
+  '^@helper/(.*)$': '<rootDir>/helper/$1',
   '\\.(css|less|sass|scss)$': '<rootDir>/test/styleMock.ts',
 };
 
