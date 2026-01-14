@@ -19,7 +19,7 @@ datasource db {
 // -------- Models --------
 
 model Account {
-    id        String @id @default(uuid())
+    id        String @id @unique @default(uuid())
 
     // authentication infos
     email     String @unique
@@ -39,7 +39,7 @@ model Account {
 }
 
 model User {
-    id        String @id @default(uuid())
+    id        String @id @unique @default(uuid())
     accountId String @unique // foreign key to Account
 
     // personal infos
@@ -71,14 +71,13 @@ model User {
 
     // relations
     account Account @relation(fields: [accountId], references: [id])
-    cases   Case[]
     appointments Appointment[]
 
     @@schema("public")
 }
     
 model Employee {
-    id             String @id @default(uuid()) // primary key
+    id             String @id @unique @default(uuid()) // primary key
     accountId      String @unique // foreign key to Account
 
     // personal infos
@@ -120,7 +119,7 @@ model Employee {
 
 
 model Organization {
-    id                 String @id @default(uuid()) // primary key
+    id                 String @id @unique @default(uuid()) // primary key
 
     // organization infos
     name               String
@@ -163,7 +162,7 @@ model Organization {
 }
 
 model Service {
-    id                  String       @id @default(uuid()) // primary key
+    id                  String       @id @unique @default(uuid()) // primary key
     organizationId      String       // foreign key to Organization
 
     // service infos
@@ -206,7 +205,7 @@ model Case {
 }
 
 model Appointment {
-    id             String            @id @default(uuid()) // primary key
+    id             String            @id @unique @default(uuid()) // primary key
     caseId         String?          // foreign key to Case  
     userId         String?          // foreign key to User
     employeeId     String           // foreign key to Employee
@@ -338,7 +337,6 @@ enum AppointmentStatus {
     REQUESTED
     CONFIRMED
     CANCELED
-    OPEN
     COMPLETED
 
     @@schema("public")
