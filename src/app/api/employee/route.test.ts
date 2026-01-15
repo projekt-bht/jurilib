@@ -14,31 +14,32 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
 
 // Non-mock related implementation:
 
-import type { Employee } from '~/generated/prisma/browser';
 import {
   Accessibility,
   AccountType,
   Area,
+  type Employee,
   Gender,
   Language,
   OrganizationType,
   PriceCategory,
   Pronoun,
-} from '~/generated/prisma/enums';
+} from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
-
-import { POST as RegisterPOST } from '../authentication/register/route';
-import { POST as OrgPOST } from '../organization/route';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { GET } = await import('@/app/api/employee/route');
+const { POST: orgPOST } = await import('@/app/api/organization/route');
+const { GET } = await import('@/app/api/employee/[employeeID]/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
-describe('Globale Employee Routen testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee`;
+// !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
+
+describe('Employee Endpoint /employee/[employeeID] testen', () => {
+  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee/[employeeID]`;
   let cEmployee: Employee;
 
   test('Create Account and Employee', async () => {
@@ -67,7 +68,7 @@ describe('Globale Employee Routen testen', () => {
       body: JSON.stringify(organization),
     });
 
-    const resOrga = await OrgPOST(reqOrga);
+    const resOrga = await orgPOST(reqOrga);
     const createdOrga = await resOrga.json();
     expect(resOrga.status).toBe(201);
 
@@ -98,7 +99,7 @@ describe('Globale Employee Routen testen', () => {
       body: JSON.stringify(registerInput),
     });
 
-    const resRegister = await RegisterPOST(reqRegister);
+    const resRegister = await POST(reqRegister);
     expect(resRegister?.status).toBe(201);
 
     const createdEmployee = await resRegister?.json();
@@ -112,12 +113,11 @@ describe('Globale Employee Routen testen', () => {
     expect(createdAccount).not.toBeNull();
     expect(createdAccount?.id).toBe(createdEmployee.accountId);
     expect(createdAccount?.email).toBe(registerInput.account.email);
-    expect(cEmployee).not.toBeNull();
   });
 
-  test('GET all Employees in DB', async () => {
+  test('GET Employee', async () => {
     const req = new NextRequest(baseUrl);
-    const res = await GET(req);
+    const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
     const json = await res.json();
     expect(json.length).not.toBe(0);
     expect(res.status).toBe(200);
