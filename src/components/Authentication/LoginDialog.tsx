@@ -12,11 +12,12 @@ import { isValidEmail } from '@/services/validator/validationHelper';
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
 };
-interface LoginDialogProps {
+
+type LoginDialogProps = {
   onSuccess: () => void;
   loginData: typeof initialLoginData;
   setLoginData: (data: typeof initialLoginData) => void;
-}
+};
 
 export const initialLoginData = {
   email: '',
