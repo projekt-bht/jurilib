@@ -1,6 +1,8 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { Account, Appointment, User } from '~/generated/prisma/browser';
+import type { AccountResource } from '@/services/Resources';
+import type { Account } from '~/generated/prisma/browser';
+import { type Appointment, TokenType, type User } from '~/generated/prisma/browser';
 
 import { sendEmail } from './mailer';
 
@@ -11,10 +13,12 @@ import { sendEmail } from './mailer';
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendRegistrationCodeEmail(account: Account, user: User) {
-  // TODO: change to user.firstName, user.lastName when schema is updated
+export async function sendRegistrationCodeEmail(account: AccountResource, user: User) {
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
+  // TODO: ggf. Bib verwenden (siehe PR kommentar)
+  // TODO: Auslagern in Helper, damit sowohl hier als auch bei Passwort-Zurücksetzung verwendet werden kann
+  // ggf. die Ablaufzeit als Parameter übergeben, damit es flexibler ist
   // Generate a 6-digit verification code
   const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -22,7 +26,7 @@ export async function sendRegistrationCodeEmail(account: Account, user: User) {
   await prisma.accountToken.create({
     data: {
       accountId: account.id!,
-      type: 'EMAIL_VERIFICATION',
+      type: TokenType.EMAIL_VERIFICATION,
       token: verificationCode,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
     },
@@ -160,20 +164,20 @@ async function sendAppointmentInformationEmail(
   const user = await getUser(userId);
   const account = await getAccount(user.accountId);
   const { appointmentDate, appointmentTime } = getDateTimeString(appt.dateTimeStart);
-  const employee = await getEmployee(appt.employeeId);
-  const organization = await getOrganization(employee.organizationId);
+  const { empFirstname, empLastname, organizationId } = await getEmployee(appt.employeeId);
+  const { orgName, orgEmail } = await getOrganization(organizationId);
   const caseTitle = await getCaseTitle(appt.caseId!);
 
   // construct missing variables
   const fullTitle = `Termin ${title}`;
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
-  const employeeFullName = `${employee.firstname} ${employee.lastname}`.trim();
+  const employeeFullName = `${empFirstname} ${empLastname}`.trim();
   // TODO: set appt.administration url
   const apptAdministrationUrl = 'https://jurilib.de';
 
   await sendEmail({
     toEmail: account.email,
-    subject: `${title} deines Termins bei ${organization?.name}`,
+    subject: `${title} deines Termins bei ${orgName}`,
     templateFileName: 'appointment_information.html',
     templateVariables: {
       TITLE: fullTitle,
@@ -183,14 +187,14 @@ async function sendAppointmentInformationEmail(
       CANCELLED: cancelled ? 'abgesagten ' : '',
       APPT_DATE: appointmentDate,
       APPT_TIME: appointmentTime,
-      APPT_ORGANIZATION_NAME: organization?.name ?? 'Nicht angegeben',
+      APPT_ORGANIZATION_NAME: orgName,
       APPT_LOCATION: appt.location ?? 'Nicht angegeben',
       APPT_EMPLOYEE_NAME: employeeFullName ?? 'Nicht angegeben',
       APPT_CASE_TITLE: caseTitle ?? 'Ohne Fallzuordnung',
       APPOINTMENT_MANAGEMENT_URL: apptAdministrationUrl,
       BUTTON_TEXT: cancelled ? 'Neuen Termin buchen' : 'Zur Terminverwaltung',
       HINT: hint,
-      APPT_ORGANIZATION_EMAIL: organization?.email ?? '',
+      APPT_ORGANIZATION_EMAIL: orgEmail,
       CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
@@ -200,7 +204,7 @@ async function sendAppointmentInformationEmail(
  * ########## helper functions ##########
  */
 
-async function getUser(userId: string) {
+async function getUser(userId: string): Promise<User> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -211,7 +215,7 @@ async function getUser(userId: string) {
   return user;
 }
 
-async function getAccount(accountId: string) {
+async function getAccount(accountId: string): Promise<Account> {
   const account = await prisma.account.findUnique({
     where: { id: accountId },
   });
@@ -236,7 +240,9 @@ function getDateTimeString(date: Date): { appointmentDate: string; appointmentTi
   return { appointmentDate, appointmentTime };
 }
 
-async function getEmployee(employeeId: string) {
+async function getEmployee(
+  employeeId: string
+): Promise<{ empFirstname: string; empLastname: string; organizationId: string }> {
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
     select: { firstname: true, lastname: true, organizationId: true },
@@ -245,10 +251,16 @@ async function getEmployee(employeeId: string) {
   if (!employee) {
     throw new ValidationError('notFound', 'employeeId', employeeId, 404);
   }
-  return employee;
+  return {
+    empFirstname: employee.firstname,
+    empLastname: employee.lastname,
+    organizationId: employee.organizationId,
+  };
 }
 
-async function getOrganization(organizationId: string) {
+async function getOrganization(
+  organizationId: string
+): Promise<{ orgName: string; orgEmail: string }> {
   const organization = await prisma.organization.findUnique({
     where: { id: organizationId },
     select: { name: true, email: true },
@@ -257,10 +269,10 @@ async function getOrganization(organizationId: string) {
   if (!organization) {
     throw new ValidationError('notFound', 'organizationId', organizationId, 404);
   }
-  return organization;
+  return { orgName: organization.name, orgEmail: organization.email };
 }
 
-async function getCaseTitle(caseId: string) {
+async function getCaseTitle(caseId: string): Promise<string | null> {
   const apptCase = await prisma.case.findUnique({
     where: { id: caseId },
     select: { title: true },
