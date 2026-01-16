@@ -19,6 +19,7 @@ import { deleteLogin } from '@/services/api';
 
 import { LoginDialog } from './LoginDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
+import { VerifyDialog } from './VerifyDialog';
 
 export function Authentication() {
   const { login, setLogin } = useLoginContext();
@@ -27,6 +28,7 @@ export function Authentication() {
   const [registerStep, setRegisterStep] = useState(1);
   const [registerData, setRegisterData] = useState(initialRegisterData);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [showVerification, setShowVerification] = useState(false);
 
   const router = useRouter();
 
@@ -45,63 +47,70 @@ export function Authentication() {
   }
 
   return (
-    <Dialog
-      open={showDialog}
-      onOpenChange={(open) => {
-        setShowDialog(open);
-        if (open) {
-          setIsRegister(false);
-        }
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button>Einloggen</Button>
-      </DialogTrigger>
+    <>
+      <Dialog
+        open={showDialog}
+        onOpenChange={(open) => {
+          setShowDialog(open);
+          if (open) {
+            setIsRegister(false);
+          }
+        }}
+      >
+        <DialogTrigger asChild>
+          <Button>Einloggen</Button>
+        </DialogTrigger>
 
-      <DialogOverlay className="backdrop-blur-sm" />
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">
-            {isRegister ? 'Registrierung' : 'Einloggen'}
-          </DialogTitle>
-          <DialogDescription>
-            {isRegister
-              ? `Schritt ${registerStep} von 3 – Erstelle dein Konto`
-              : 'Melde dich mit deinen Zugangsdaten an'}
-          </DialogDescription>
-        </DialogHeader>
+        <DialogOverlay className="backdrop-blur-sm" />
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">
+              {isRegister ? 'Registrierung' : 'Einloggen'}
+            </DialogTitle>
+            <DialogDescription>
+              {isRegister
+                ? `Schritt ${registerStep} von 3 – Erstelle dein Konto`
+                : 'Melde dich mit deinen Zugangsdaten an'}
+            </DialogDescription>
+          </DialogHeader>
 
-        {isRegister ? (
-          <RegisterDialog
-            step={registerStep}
-            setStep={setRegisterStep}
-            registerData={registerData}
-            setRegisterData={setRegisterData}
-            onSuccess={() => {
-              setShowDialog(false);
-              setRegisterData(initialRegisterData);
-              setRegisterStep(1);
-            }}
-          />
-        ) : (
-          <LoginDialog
-            onSuccess={() => setShowDialog(false)}
-            loginData={loginData}
-            setLoginData={setLoginData}
-          />
-        )}
+          {isRegister ? (
+            <RegisterDialog
+              step={registerStep}
+              setStep={setRegisterStep}
+              registerData={registerData}
+              setRegisterData={setRegisterData}
+              setShowVerification={setShowVerification}
+              onSuccess={() => {
+                setShowDialog(false);
+                setRegisterData(initialRegisterData);
+                setRegisterStep(1);
+              }}
+            />
+          ) : (
+            <LoginDialog
+              onSuccess={() => setShowDialog(false)}
+              loginData={loginData}
+              setLoginData={setLoginData}
+            />
+          )}
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="link"
-            className="w-full"
-            onClick={() => setIsRegister(!isRegister)}
-          >
-            {isRegister ? 'Zurück zum Login' : 'Noch kein Konto? Registrieren'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="link"
+              className="w-full"
+              onClick={() => setIsRegister(!isRegister)}
+            >
+              {isRegister ? 'Zurück zum Login' : 'Noch kein Konto? Registrieren'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {showVerification && (
+        <VerifyDialog open={showVerification} onOpenChange={setShowVerification} />
+      )}
+    </>
   );
 }
