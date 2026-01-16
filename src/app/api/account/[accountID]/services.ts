@@ -5,8 +5,6 @@ import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
 import type { Account, Prisma } from '~/generated/prisma/client';
 
-import type { AccountUpdateSchema } from './route';
-
 export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
     const account: Account | null = await prisma.account.findUnique({
@@ -31,13 +29,17 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
 
 /**
  * Update an existing account in the database by accountID
+ *
  * Only mail, password and isVerifiedcan be updated.
- * Role and id are immutable, since they are used to connect
- * the account to other entities.
+ * Role and id are immutable, since they are used to connect the account to other entities.
+ *
+ * @param accountId - The ID of the account to update
+ * @param data - Partial account data to update (it can include email, password, isVerified)
+ * @returns The updated account resource
  */
 export const updateAccount = async (
-  account: AccountUpdateSchema,
-  accountId: string
+  accountId: string,
+  data: Partial<Account>
 ): Promise<AccountResource> => {
   try {
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
@@ -45,21 +47,16 @@ export const updateAccount = async (
       throw new ValidationError('notFound', 'accounts', accountId);
     }
 
-    if (account.password) account.password = await bcrypt.hash(account.password, 10);
-    // has to be checked this way, "account.isVerified ?? existingAccount.isVerified" would
-    // not when changing isVerified to false
-    if (!account.hasOwnProperty('isVerified')) account.isVerified = existingAccount.isVerified;
+    if (data.password !== undefined) data.password = await bcrypt.hash(data.password, 10);
 
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },
       data: {
-        email: account.email ?? existingAccount.email,
-        password: account.password ?? existingAccount.password,
-        isVerified: account.isVerified,
+        ...data,
       },
     });
 
-    const accountRes = {
+    const accountRes: AccountResource = {
       id: updatedAccount.id,
       email: updatedAccount.email,
       type: updatedAccount.type,

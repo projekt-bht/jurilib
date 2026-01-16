@@ -4,26 +4,21 @@ import * as z from 'zod';
 
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { type Account, AccountType } from '~/generated/prisma/client';
+import type { Account } from '~/generated/prisma/client';
+import { AccountType } from '~/generated/prisma/client';
 
 import { deleteEmployeeTx } from '../../employee/[employeeID]/services';
 import { deleteUserTx } from '../../user/[userID]/services';
 import { deleteAccountTx, readAccount, updateAccount } from './services';
 
 const UpdateSchema = z.strictObject({
-  //id: z.string().min(36),
-  email: z.string(),
-  password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
-  type: z.enum(AccountType),
-  // is this the right place to update this?
+  email: z.email().optional(),
+  password: z
+    .string()
+    .min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8)
+    .optional(),
   isVerified: z.boolean().optional(),
 });
-
-export type AccountUpdateSchema = {
-  email?: string;
-  password?: string;
-  isVerified?: boolean;
-};
 
 export async function GET(
   _req: NextRequest,
@@ -60,9 +55,9 @@ export async function PATCH(
 
     // validate body
     const body = await req.json();
-    const data = UpdateSchema.parse(body) as AccountUpdateSchema;
+    const data = UpdateSchema.parse(body) as Partial<Account>;
 
-    const updatedAccount = await updateAccount(data as Account, accountID);
+    const updatedAccount = await updateAccount(accountID, data);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {

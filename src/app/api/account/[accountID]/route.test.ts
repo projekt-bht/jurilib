@@ -75,7 +75,7 @@ describe('Account Routen testen', () => {
     expect(res.status).toBe(404);
   });
 
-  test('PATCH unchangeable Account Type', async () => {
+  test('PATCH email', async () => {
     const getReq = new NextRequest(baseUrl);
     const getRes = await GET(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
     const getJSON = await getRes.json();
@@ -83,10 +83,8 @@ describe('Account Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const account: AccountCreateInput = {
+    const account: Partial<AccountCreateInput> = {
       email: 'peter' + Math.random() + '@mail.de',
-      password: '5555555555',
-      type: AccountType.EMPLOYEE,
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -104,13 +102,48 @@ describe('Account Routen testen', () => {
     });
 
     expect(updated?.email).toBe(account.email);
-    expect(updated?.type).toBe(AccountType.USER); // Type should remain unchanged
     expect(res.status).toBe(200);
+
+    // Save new email for further tests
+    createdAcc.email = updated?.email ?? createdAcc.email;
+  });
+
+  test('PATCH unchangeable Account Type', async () => {
+    const getReq = new NextRequest(baseUrl);
+    const getRes = await GET(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
+    const getJSON = await getRes.json();
+
+    expect(getJSON.length).not.toBe(0);
+    expect(getRes.status).toBe(200);
+
+    const account: Partial<AccountCreateInput> = {
+      email: 'peter' + Math.random() + '@mail.de',
+      type: AccountType.EMPLOYEE,
+    };
+
+    const patchReq = new NextRequest(baseUrl, {
+      headers: { 'content-type': 'application/json' },
+      method: 'PATCH',
+      body: JSON.stringify(account),
+    });
+
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ accountID: createdAcc.id }),
+    });
+
+    const updated = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+
+    expect(res.status).toBe(400);
+    expect(updated?.email).not.toBe(account.email);
+    expect(updated?.email).toBe(createdAcc.email);
+    expect(updated?.type).toBe(AccountType.USER); // Type should remain unchanged
   });
 
   test('PATCH Account with invalid data', async () => {
     const data = {
-      id: '123456',
+      email: 'peter' + Math.random() + '@mail.de',
     };
     const patchReq = new NextRequest(baseUrl, {
       headers: { 'content-type': 'application/json' },
@@ -119,9 +152,15 @@ describe('Account Routen testen', () => {
     });
 
     const res = await PATCH(patchReq, {
-      params: Promise.resolve({ accountID: createdAcc.id }),
+      params: Promise.resolve({ accountID: '7453959384' }),
     });
+
+    const account = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+
     expect(res.status).toBe(400);
+    expect(account?.email).toBe(createdAcc.email);
   });
 
   test('DELETE Account', async () => {
