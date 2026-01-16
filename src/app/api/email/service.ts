@@ -4,6 +4,7 @@ import type { AccountResource } from '@/services/Resources';
 import type { Account } from '~/generated/prisma/browser';
 import { type Appointment, TokenType, type User } from '~/generated/prisma/browser';
 
+import { generateCode } from '../authentication/codeVerification/service';
 import { sendEmail } from './mailer';
 
 /**
@@ -16,9 +17,7 @@ import { sendEmail } from './mailer';
 export async function sendRegistrationCodeEmail(account: AccountResource, user: User) {
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
-  // TODO: ggf. Bib verwenden (siehe PR kommentar)
-
-  const verificationCode = await generateAndStoreVerificationCode(
+  const { token: verificationCode, expiryMinutes } = await generateCode(
     account.id!,
     TokenType.EMAIL_VERIFICATION
   );
@@ -30,7 +29,7 @@ export async function sendRegistrationCodeEmail(account: AccountResource, user: 
     templateVariables: {
       NAME: userFullName,
       VERIFICATION_CODE: verificationCode,
-      EXPIRY_MINUTES: '15',
+      EXPIRY_MINUTES: expiryMinutes.toString(),
       CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
@@ -56,20 +55,10 @@ export async function sendPasswordResetEmail(email: string) {
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
   // Generate a 6-digit verification code
-  const verificationCode = await generateAndStoreVerificationCode(
+  const { token: verificationCode, expiryMinutes } = await generateCode(
     account.id!,
     TokenType.PASSWORD_RESET
   );
-
-  // Store the verification code
-  await prisma.accountToken.create({
-    data: {
-      accountId: account.id!,
-      type: 'PASSWORD_RESET',
-      token: verificationCode,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
-    },
-  });
 
   await sendEmail({
     toEmail: email,
@@ -78,7 +67,7 @@ export async function sendPasswordResetEmail(email: string) {
     templateVariables: {
       NAME: userFullName,
       VERIFICATION_CODE: verificationCode,
-      EXPIRY_MINUTES: '15',
+      EXPIRY_MINUTES: expiryMinutes.toString(),
       CURRENT_YEAR: new Date().getFullYear().toString(),
     },
   });
@@ -273,24 +262,4 @@ async function getCaseTitle(caseId: string): Promise<string | null> {
 
   if (apptCase) return apptCase.title;
   else return null;
-}
-
-async function generateAndStoreVerificationCode(
-  accountId: string,
-  tokenType: TokenType
-): Promise<string> {
-  // Generate a 6-digit verification code
-  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-  // Store the verification code
-  await prisma.accountToken.create({
-    data: {
-      accountId: accountId,
-      type: tokenType,
-      token: verificationCode,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
-    },
-  });
-
-  return verificationCode;
 }
