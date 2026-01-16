@@ -1,0 +1,574 @@
+'use client';
+
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+
+import { useLoginContext } from '@/app/LoginContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { postLogin, register } from '@/services/api';
+import type { RegisterResource } from '@/services/Resources';
+import {
+  isOnlyLetter,
+  isOnlyNumber,
+  isStrongPassword,
+  isValidEmail,
+  isValidGermanPhone,
+} from '@/services/validator/validationHelper';
+import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
+
+type ValidationMessages<Type> = {
+  [Property in keyof Type]?: string;
+};
+
+interface RegisterDialogProps {
+  onSuccess: () => void;
+  step: number;
+  setStep: (step: number) => void;
+  registerData: typeof initialRegisterData;
+  setRegisterData: (data: typeof initialRegisterData) => void;
+}
+
+export const initialRegisterData = {
+  firstname: '',
+  lastname: '',
+  email: '',
+  password: '',
+  passwordRepeat: '',
+  birthdate: '',
+  gender: '',
+  genderText: '',
+  pronoun: '',
+  pronounText: '',
+  city: '',
+  country: '',
+  zipCode: '',
+  street: '',
+  houseNumber: '',
+  phone: '',
+};
+
+export function RegisterDialog({
+  onSuccess,
+  step,
+  setStep,
+  registerData,
+  setRegisterData,
+}: RegisterDialogProps) {
+  const { setLogin } = useLoginContext();
+  const [error, setError] = useState('');
+
+  function update(e: React.ChangeEvent<HTMLInputElement>) {
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+  }
+
+  //Pilgrim Style :P
+  const [validationErrors, setValidationErrors] = React.useState<
+    ValidationMessages<typeof initialRegisterData>
+  >({});
+
+  function validate(e: React.FocusEvent<HTMLInputElement>) {
+    switch (e.target.name) {
+      case 'firstname':
+        setValidationErrors({
+          ...validationErrors,
+          firstname:
+            registerData.firstname.length < 3
+              ? 'Dein Vorname muss aus mindestens 3 Zeichen bestehen.'
+              : undefined,
+        });
+        break;
+      case 'lastname':
+        setValidationErrors({
+          ...validationErrors,
+          lastname:
+            registerData.lastname.length < 3
+              ? 'Dein Nachname muss aus mindestens 3 Zeichen bestehen.'
+              : undefined,
+        });
+        break;
+      case 'birthdate':
+        const today = new Date();
+        const minDate = new Date('1900-01-01');
+        setValidationErrors({
+          ...validationErrors,
+          birthdate:
+            new Date(registerData.birthdate) > today
+              ? 'Dein Geburtsdatum darf nicht in der Zukunft liegen.'
+              : new Date(registerData.birthdate) < minDate
+              ? 'Bitte gib ein realistisches Geburtsdatum ein.'
+              : undefined,
+        });
+        break;
+      case 'country':
+        setValidationErrors({
+          ...validationErrors,
+          country: !isOnlyLetter(registerData.country) ? 'Bitte gib nur Buchstaben an.' : undefined,
+        });
+        break;
+      case 'street':
+        setValidationErrors({
+          ...validationErrors,
+          street: !isOnlyLetter(registerData.street) ? 'Bitte gib nur Buchstaben an.' : undefined,
+        });
+        break;
+      case 'city':
+        setValidationErrors({
+          ...validationErrors,
+          city: !isOnlyLetter(registerData.city) ? 'Bitte gib nur Buchstaben an.' : undefined,
+        });
+        break;
+      case 'zipCode':
+        setValidationErrors({
+          ...validationErrors,
+          zipCode: !isOnlyNumber(registerData.zipCode) ? 'Bitte gib nur Zahlen an.' : undefined,
+        });
+        break;
+      case 'email':
+        setValidationErrors({
+          ...validationErrors,
+          email:
+            registerData.email.length < 3 ||
+            registerData.email.length > 100 ||
+            !isValidEmail(registerData.email)
+              ? 'Bitte gib eine gültige E-Mail-Adresse ein.'
+              : undefined,
+        });
+        break;
+      case 'password':
+        setValidationErrors({
+          ...validationErrors,
+          password: !isStrongPassword(registerData.password)
+            ? 'Dein Passwort muss mindestens 8 Zeichen lang sein, eine Ziffer, einen Groß- sowie Kleinbuchstaben und ein Sonderzeichen enthalten.'
+            : undefined,
+        });
+        break;
+      case 'passwordRepeat':
+        setValidationErrors({
+          ...validationErrors,
+          passwordRepeat:
+            registerData.passwordRepeat !== registerData.password
+              ? 'Die eingegebenen Passwörter stimmen nicht überein.'
+              : undefined,
+        });
+        break;
+      case 'phone':
+        setValidationErrors({
+          ...validationErrors,
+          phone:
+            registerData.phone.length > 0 && !isValidGermanPhone(registerData.phone)
+              ? 'Bitte gib eine gültige deutsche Mobilfunknummer ein (+49 oder 0157...)'
+              : undefined,
+        });
+        break;
+    }
+  }
+
+  function isStep1Valid() {
+    if (registerData.firstname.length < 3) return false;
+    if (registerData.lastname.length < 3) return false;
+    if (!registerData.birthdate) return false;
+
+    const birth = new Date(registerData.birthdate);
+    const today = new Date();
+    const minDate = new Date('1900-01-01');
+
+    if (birth > today || birth < minDate) return false;
+    if (!registerData.gender) return false;
+    if (registerData.gender === Gender.Andere && !registerData.genderText) return false;
+    if (registerData.pronoun === Pronoun.Andere && !registerData.pronounText) return false;
+    return true;
+  }
+
+  function isStep2Valid() {
+    if (registerData.country && !isOnlyLetter(registerData.country)) return false;
+    if (registerData.city && !isOnlyLetter(registerData.city)) return false;
+    if (registerData.street && !isOnlyLetter(registerData.street)) return false;
+    if (registerData.zipCode && !isOnlyNumber(registerData.zipCode)) return false;
+    return true;
+  }
+  function isStep3Valid() {
+    if (!isValidEmail(registerData.email)) return false;
+    if (!registerData.password) return false;
+    if (registerData.password !== registerData.passwordRepeat) return false;
+    if (registerData.phone && !isValidGermanPhone(registerData.phone)) return false;
+    return true;
+  }
+
+  function isCurrentStepValid() {
+    switch (step) {
+      case 1:
+        return isStep1Valid();
+      case 2:
+        return isStep2Valid();
+      case 3:
+        return isStep3Valid();
+      default:
+        return false;
+    }
+  }
+
+  async function handleRegister() {
+    try {
+      const inputData: RegisterResource = {
+        account: {
+          email: registerData.email,
+          password: registerData.password,
+          type: AccountType.USER,
+        },
+        entity: {
+          firstname: registerData.firstname,
+          lastname: registerData.lastname,
+          gender: registerData.gender as Gender,
+          genderText: registerData.genderText,
+          pronoun: registerData.pronoun ? (registerData.pronoun as Pronoun) : undefined,
+          pronounText: registerData.pronounText,
+          country: registerData.country,
+          city: registerData.city,
+          zipCode: registerData.zipCode,
+          street: registerData.street,
+          houseNumber: registerData.houseNumber,
+          birthdate: new Date(registerData.birthdate),
+          phone: registerData.phone,
+        },
+      };
+
+      const reg = await register(inputData);
+
+      //Check more specific for custom errors
+      if (!reg) {
+        setError('Ein Konto mit der angegebenen E-Mail-Adresse existiert bereits.');
+        return;
+      }
+
+      const loginFromServer = await postLogin(registerData.email, registerData.password);
+      setLogin(loginFromServer);
+      setRegisterData(initialRegisterData);
+      onSuccess();
+    } catch (err) {
+      setError(String(err));
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* STEP 1 */}
+      {step === 1 && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Geschlecht *</Label>
+              <Select
+                value={registerData.gender}
+                onValueChange={(v) => setRegisterData({ ...registerData, gender: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(Gender).map((g) => (
+                    <SelectItem key={g} value={g}>
+                      {g.replace(/_/g, ' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Pronomen</Label>
+              <Select
+                value={registerData.pronoun}
+                onValueChange={(v) => setRegisterData({ ...registerData, pronoun: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(Pronoun).map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p.replace(/_/g, ' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {registerData.gender === Gender.Andere && (
+            <div className="space-y-2">
+              <Label>Geschlecht (Text) *</Label>
+              <Input
+                name="genderText"
+                value={registerData.genderText}
+                onChange={update}
+                placeholder="Geschlecht"
+              />
+            </div>
+          )}
+          {registerData.pronoun === Pronoun.Andere && (
+            <div className="space-y-2">
+              <Label>Pronomen (Text)</Label>
+              <Input
+                name="pronounText"
+                value={registerData.pronounText}
+                onChange={update}
+                placeholder="Pronomen"
+              />
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Vorname *</Label>
+              <Input
+                name="firstname"
+                placeholder="Vorname"
+                value={registerData.firstname}
+                onChange={update}
+                onBlur={validate}
+                className={
+                  validationErrors.firstname
+                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    : ''
+                }
+              />
+              {validationErrors.firstname && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.firstname}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label>Nachname *</Label>
+              <Input
+                name="lastname"
+                placeholder="Nachname"
+                value={registerData.lastname}
+                onChange={update}
+                onBlur={validate}
+                className={
+                  validationErrors.lastname
+                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    : ''
+                }
+              />
+              {validationErrors.lastname && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.lastname}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Geburtsdatum *</Label>
+            <Input
+              type="date"
+              name="birthdate"
+              value={registerData.birthdate}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.birthdate ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+              }
+            />
+          </div>
+          {validationErrors.birthdate && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.birthdate}</p>
+          )}
+        </div>
+      )}
+      {/* STEP 2 */}
+      {step === 2 && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Land</Label>
+            <Input
+              name="country"
+              placeholder="Land"
+              value={registerData.country}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.country ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+              }
+            />
+          </div>
+          {validationErrors.country && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.country}</p>
+          )}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="space-y-2 col-span-3">
+              <Label>Straße</Label>
+              <Input
+                name="street"
+                placeholder="Straße"
+                value={registerData.street}
+                onChange={update}
+                onBlur={validate}
+                className={
+                  validationErrors.street ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                }
+              />
+            </div>
+            <div className="space-y-2 col-span-1">
+              <Label>Nr.</Label>
+              <Input
+                name="houseNumber"
+                placeholder="1"
+                value={registerData.houseNumber}
+                onChange={update}
+              />
+            </div>
+          </div>
+          {validationErrors.street && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.street}</p>
+          )}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>PLZ</Label>
+              <Input
+                name="zipCode"
+                placeholder="12345"
+                value={registerData.zipCode}
+                onChange={update}
+                onBlur={validate}
+                className={
+                  validationErrors.zipCode ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Stadt</Label>
+              <Input
+                name="city"
+                value={registerData.city}
+                placeholder="Stadt"
+                onChange={update}
+                onBlur={validate}
+                className={
+                  validationErrors.city ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                }
+              />
+            </div>
+            {validationErrors.zipCode && (
+              <p className="text-sm text-red-500 mt-1">{validationErrors.zipCode}</p>
+            )}
+            {validationErrors.city && (
+              <p className="text-sm text-red-500 mt-1">{validationErrors.city}</p>
+            )}
+          </div>
+        </div>
+      )}
+      {/* STEP 3 */}
+      {step === 3 && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Telefon</Label>
+            <Input
+              name="phone"
+              placeholder="+49123456789"
+              value={registerData.phone}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.phone ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+              }
+            />
+          </div>
+          {validationErrors.phone && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.phone}</p>
+          )}
+          <div className="space-y-2">
+            <Label>E-Mail *</Label>
+            <Input
+              name="email"
+              placeholder="deine@email.com"
+              type="email"
+              value={registerData.email}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.email ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+              }
+            />
+          </div>
+          {validationErrors.email && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>
+          )}
+          <div className="space-y-2">
+            <Label>Passwort *</Label>
+            <Input
+              name="password"
+              type="password"
+              placeholder="********"
+              value={registerData.password}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.password ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+              }
+            />
+            {validationErrors.password && (
+              <p className="text-sm text-red-500 mt-1">{validationErrors.password}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label>Passwort wiederholen *</Label>
+            <Input
+              name="passwordRepeat"
+              type="password"
+              placeholder="********"
+              value={registerData.passwordRepeat}
+              onChange={update}
+              onBlur={validate}
+              className={
+                validationErrors.passwordRepeat
+                  ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                  : ''
+              }
+            />
+          </div>
+          {validationErrors.passwordRepeat && (
+            <p className="text-sm text-red-500 mt-1">{validationErrors.passwordRepeat}</p>
+          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+        </div>
+      )}
+
+      {/* Navigation to progress */}
+      <div className="flex gap-2">
+        {step > 1 && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setStep(step - 1)}
+            className="flex-1"
+          >
+            <ChevronLeft className="w-4 h-4 mr-1" /> Zurück
+          </Button>
+        )}
+        <Button
+          type="button"
+          disabled={!isCurrentStepValid()}
+          onClick={() => {
+            if (step < 3) {
+              setStep(step + 1);
+            } else {
+              handleRegister();
+            }
+          }}
+          className="flex-1"
+        >
+          {step < 3 ? 'Weiter' : 'Registrieren'}
+          {step < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
+        </Button>
+      </div>
+    </div>
+  );
+}
