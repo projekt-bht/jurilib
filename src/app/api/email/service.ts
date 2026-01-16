@@ -17,20 +17,11 @@ export async function sendRegistrationCodeEmail(account: AccountResource, user: 
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
   // TODO: ggf. Bib verwenden (siehe PR kommentar)
-  // TODO: Auslagern in Helper, damit sowohl hier als auch bei Passwort-Zurücksetzung verwendet werden kann
-  // ggf. die Ablaufzeit als Parameter übergeben, damit es flexibler ist
-  // Generate a 6-digit verification code
-  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // Store the verification code
-  await prisma.accountToken.create({
-    data: {
-      accountId: account.id!,
-      type: TokenType.EMAIL_VERIFICATION,
-      token: verificationCode,
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
-    },
-  });
+  const verificationCode = await generateAndStoreVerificationCode(
+    account.id!,
+    TokenType.EMAIL_VERIFICATION
+  );
 
   await sendEmail({
     toEmail: account.email,
@@ -62,11 +53,13 @@ export async function sendPasswordResetEmail(email: string) {
     throw new ValidationError('notFound', 'email', email, 404);
   }
   const user = account.user;
-  // TODO: change to user.firstName, user.lastName when schema is updated
   const userFullName = `${user.firstname} ${user.lastname}`.trim();
 
   // Generate a 6-digit verification code
-  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const verificationCode = await generateAndStoreVerificationCode(
+    account.id!,
+    TokenType.PASSWORD_RESET
+  );
 
   // Store the verification code
   await prisma.accountToken.create({
@@ -280,4 +273,24 @@ async function getCaseTitle(caseId: string): Promise<string | null> {
 
   if (apptCase) return apptCase.title;
   else return null;
+}
+
+async function generateAndStoreVerificationCode(
+  accountId: string,
+  tokenType: TokenType
+): Promise<string> {
+  // Generate a 6-digit verification code
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Store the verification code
+  await prisma.accountToken.create({
+    data: {
+      accountId: accountId,
+      type: tokenType,
+      token: verificationCode,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000), // expires in 15 minutes
+    },
+  });
+
+  return verificationCode;
 }
