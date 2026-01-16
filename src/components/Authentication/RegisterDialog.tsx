@@ -29,13 +29,14 @@ type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
 };
 
-interface RegisterDialogProps {
+type RegisterDialogProps = {
   onSuccess: () => void;
   step: number;
   setStep: (step: number) => void;
   registerData: typeof initialRegisterData;
   setRegisterData: (data: typeof initialRegisterData) => void;
-}
+  setShowVerification: (data: boolean) => void;
+};
 
 export const initialRegisterData = {
   firstname: '',
@@ -62,6 +63,7 @@ export function RegisterDialog({
   setStep,
   registerData,
   setRegisterData,
+  setShowVerification,
 }: RegisterDialogProps) {
   const { setLogin } = useLoginContext();
   const [error, setError] = useState('');
@@ -249,10 +251,15 @@ export function RegisterDialog({
         return;
       }
 
+      setRegisterData(initialRegisterData);
+      setShowVerification(true);
+      onSuccess();
+
+      //Auto Login after verifying OTP
+      /*
       const loginFromServer = await postLogin(registerData.email, registerData.password);
       setLogin(loginFromServer);
-      setRegisterData(initialRegisterData);
-      onSuccess();
+      */
     } catch (err) {
       setError(String(err));
     }
