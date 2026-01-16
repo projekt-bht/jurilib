@@ -18,3 +18,11 @@ export function isStrongPassword(password: string): boolean {
     /[^A-Za-z0-9]/.test(password) // Specials
   );
 }
+
+//https://stackoverflow.com/questions/3617797/regex-to-match-only-letters
+export function isOnlyLetter(str: string) {
+  return str.length > 0 && /^[a-zA-ZäöüßÄÖÜ]+$/.test(str);
+}
+export function isOnlyNumber(str: string) {
+  return str.length > 0 && /^[0-9]+$/.test(str);
+}
