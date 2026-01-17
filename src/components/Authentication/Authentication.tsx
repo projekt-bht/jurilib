@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { deleteLogin } from '@/services/api';
 
+import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
 import { VerifyDialog } from './VerifyDialog';
@@ -28,8 +29,9 @@ export function Authentication() {
   const [registerStep, setRegisterStep] = useState(1);
   const [registerData, setRegisterData] = useState(initialRegisterData);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [showVerification, setShowVerification] = useState(false);
 
+  const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
   const router = useRouter();
 
   if (login) {
@@ -88,11 +90,24 @@ export function Authentication() {
               }}
             />
           ) : (
-            <LoginDialog
-              onSuccess={() => setShowDialog(false)}
-              loginData={loginData}
-              setLoginData={setLoginData}
-            />
+            <>
+              <LoginDialog
+                onSuccess={() => setShowDialog(false)}
+                loginData={loginData}
+                setLoginData={setLoginData}
+              />
+              <Button
+                type="button"
+                variant="link"
+                className="w-full"
+                onClick={() => {
+                  setShowDialog(false);
+                  setShowForgetPasswordDialog(true);
+                }}
+              >
+                Passwort vergessen?
+              </Button>
+            </>
           )}
 
           <DialogFooter>
@@ -110,6 +125,15 @@ export function Authentication() {
 
       {showVerification && (
         <VerifyDialog open={showVerification} onOpenChange={setShowVerification} />
+      )}
+
+      {showForgetPasswordDialog && (
+        <ForgotPasswordDialog
+          open={showForgetPasswordDialog}
+          onOpenChange={setShowForgetPasswordDialog}
+          showLogin={setShowDialog}
+          showVerification={setShowVerification}
+        />
       )}
     </>
   );
