@@ -17,8 +17,6 @@ import {
 import { postLogin, register } from '@/services/api';
 import type { RegisterResource } from '@/services/Resources';
 import {
-  isOnlyLetter,
-  isOnlyNumber,
   isStrongPassword,
   isValidEmail,
   isValidGermanPhone,
@@ -110,30 +108,6 @@ export function RegisterDialog({
               : undefined,
         });
         break;
-      case 'country':
-        setValidationErrors({
-          ...validationErrors,
-          country: !isOnlyLetter(registerData.country) ? 'Bitte gib nur Buchstaben an.' : undefined,
-        });
-        break;
-      case 'street':
-        setValidationErrors({
-          ...validationErrors,
-          street: !isOnlyLetter(registerData.street) ? 'Bitte gib nur Buchstaben an.' : undefined,
-        });
-        break;
-      case 'city':
-        setValidationErrors({
-          ...validationErrors,
-          city: !isOnlyLetter(registerData.city) ? 'Bitte gib nur Buchstaben an.' : undefined,
-        });
-        break;
-      case 'zipCode':
-        setValidationErrors({
-          ...validationErrors,
-          zipCode: !isOnlyNumber(registerData.zipCode) ? 'Bitte gib nur Zahlen an.' : undefined,
-        });
-        break;
       case 'email':
         setValidationErrors({
           ...validationErrors,
@@ -191,13 +165,6 @@ export function RegisterDialog({
   }
 
   function isStep2Valid() {
-    if (registerData.country && !isOnlyLetter(registerData.country)) return false;
-    if (registerData.city && !isOnlyLetter(registerData.city)) return false;
-    if (registerData.street && !isOnlyLetter(registerData.street)) return false;
-    if (registerData.zipCode && !isOnlyNumber(registerData.zipCode)) return false;
-    return true;
-  }
-  function isStep3Valid() {
     if (!isValidEmail(registerData.email)) return false;
     if (!registerData.password) return false;
     if (registerData.password !== registerData.passwordRepeat) return false;
@@ -211,8 +178,6 @@ export function RegisterDialog({
         return isStep1Valid();
       case 2:
         return isStep2Valid();
-      case 3:
-        return isStep3Valid();
       default:
         return false;
     }
@@ -393,89 +358,6 @@ export function RegisterDialog({
       {step === 2 && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Land</Label>
-            <Input
-              name="country"
-              placeholder="Land"
-              value={registerData.country}
-              onChange={update}
-              onBlur={validate}
-              className={
-                validationErrors.country ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
-              }
-            />
-          </div>
-          {validationErrors.country && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.country}</p>
-          )}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="space-y-2 col-span-3">
-              <Label>Straße</Label>
-              <Input
-                name="street"
-                placeholder="Straße"
-                value={registerData.street}
-                onChange={update}
-                onBlur={validate}
-                className={
-                  validationErrors.street ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
-                }
-              />
-            </div>
-            <div className="space-y-2 col-span-1">
-              <Label>Nr.</Label>
-              <Input
-                name="houseNumber"
-                placeholder="1"
-                value={registerData.houseNumber}
-                onChange={update}
-              />
-            </div>
-          </div>
-          {validationErrors.street && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.street}</p>
-          )}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>PLZ</Label>
-              <Input
-                name="zipCode"
-                placeholder="12345"
-                value={registerData.zipCode}
-                onChange={update}
-                onBlur={validate}
-                className={
-                  validationErrors.zipCode ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Stadt</Label>
-              <Input
-                name="city"
-                value={registerData.city}
-                placeholder="Stadt"
-                onChange={update}
-                onBlur={validate}
-                className={
-                  validationErrors.city ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
-                }
-              />
-            </div>
-            {validationErrors.zipCode && (
-              <p className="text-sm text-red-500 mt-1">{validationErrors.zipCode}</p>
-            )}
-            {validationErrors.city && (
-              <p className="text-sm text-red-500 mt-1">{validationErrors.city}</p>
-            )}
-          </div>
-        </div>
-      )}
-      {/* STEP 3 */}
-      {step === 3 && (
-        <div className="space-y-4">
-          <div className="space-y-2">
             <Label>Telefon</Label>
             <Input
               name="phone"
@@ -564,7 +446,7 @@ export function RegisterDialog({
           type="button"
           disabled={!isCurrentStepValid()}
           onClick={() => {
-            if (step < 3) {
+            if (step < 2) {
               setStep(step + 1);
             } else {
               handleRegister();
@@ -572,8 +454,8 @@ export function RegisterDialog({
           }}
           className="flex-1"
         >
-          {step < 3 ? 'Weiter' : 'Registrieren'}
-          {step < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
+          {step < 2 ? 'Weiter' : 'Registrieren'}
+          {step < 2 && <ChevronRight className="w-4 h-4 ml-1" />}
         </Button>
       </div>
     </div>

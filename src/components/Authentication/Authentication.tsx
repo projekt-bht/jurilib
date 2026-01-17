@@ -69,7 +69,7 @@ export function Authentication() {
             </DialogTitle>
             <DialogDescription>
               {isRegister
-                ? `Schritt ${registerStep} von 3 – Erstelle dein Konto`
+                ? `Schritt ${registerStep} von 2 – Erstelle dein Konto`
                 : 'Melde dich mit deinen Zugangsdaten an'}
             </DialogDescription>
           </DialogHeader>
