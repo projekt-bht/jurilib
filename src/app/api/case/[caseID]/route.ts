@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { CaseStatus } from '~/generated/prisma/enums';
-import type { CaseUpdateInput } from '~/generated/prisma/models';
 
 import { verifyJWT } from '../../authentication/login/JWTService';
 import { handleValidationError, validateHeader } from '../../helper';
