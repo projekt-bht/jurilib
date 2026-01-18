@@ -26,6 +26,7 @@ model Account {
     password  String
     type      AccountType
     isVerified Boolean @default(false)
+    accountToken AccountToken[]
 
     // creation & update timestamps
     createdAt DateTime @default(now())
@@ -234,6 +235,19 @@ model Appointment {
     @@schema("public")
 }
 
+model AccountToken{
+    id           String      @id @default(uuid())
+    accountId    String  
+    type         TokenType
+    token        String   
+    createdAt    DateTime    @default(now())         
+    expiresAt    DateTime    // TODO: Add calculation for expiration 
+    usedAt       DateTime?
+
+    account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+    @@schema("public")
+}
 
 // -------- Enums --------
 
@@ -256,6 +270,13 @@ enum OrganizationType {
     LAW_FIRM
     ASSOCIATION
     
+    @@schema("public")
+}
+
+enum TokenType {
+    EMAIL_VERIFICATION
+    PASSWORD_RESET
+
     @@schema("public")
 }
 

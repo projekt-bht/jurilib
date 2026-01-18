@@ -1,5 +1,18 @@
-import { RegisterResource } from '@/services/Resources';
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
 import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+// Non-mock related implementation:
 
 import {
   Accessibility,
@@ -95,9 +108,9 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     });
 
     const resRegister = await POST(reqRegister);
-    expect(resRegister.status).toBe(201);
+    expect(resRegister?.status).toBe(201);
 
-    const createdEmployee = await resRegister.json();
+    const createdEmployee = await resRegister?.json();
     cEmployee = createdEmployee;
     expect(createdEmployee.firstname).toBe(registerInput.entity.firstname);
     expect(createdEmployee.lastname).toBe(registerInput.entity.lastname);
