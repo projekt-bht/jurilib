@@ -1,8 +1,4 @@
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
-
-import { createAccount } from '../../account/services';
-import { createUser } from '../../user/services';
-
+const { POST: accountPOST } = await import('@/app/api/authentication/register/route');
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 
@@ -10,28 +6,29 @@ const { NextRequest } = await import('next/server');
 const { POST, DELETE } = await import('@/app/api/authentication/login/route');
 
 describe('Login test', () => {
+  const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
   const loginURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/login`;
   let createdAccount = {};
 
   test('Create Account and User', async () => {
-    const accountInput: AccountCreateInput = {
+    // Create both account and user through registration route
+    const registerInput = {
       email: 'PETER_USER_REGISTERE' + Math.random() + '@mail.de',
       password: '123456',
       role: 'USER',
+      name: 'Peter Mustermann',
     };
 
-    const account = await createAccount(accountInput);
+    const req = new NextRequest(baseUrlRegister, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerInput),
+    });
 
-    const userInput: UserCreateInput = {
-      name: 'PETER_USER_REGISTER',
-      account: {
-        connect: undefined, // Wird später gesetzt (user Service),
-      },
-    };
+    const res = await accountPOST(req);
+    expect(res.status).toBe(201);
 
-    await createUser(userInput, account.id!);
-
-    createdAccount = { email: accountInput.email, password: accountInput.password };
+    createdAccount = { email: registerInput.email, password: registerInput.password };
   });
 
   test('Login with User', async () => {
@@ -58,3 +55,4 @@ describe('Login test', () => {
     expect(res!.status).toBe(200);
   });
 });
+export {};
