@@ -196,8 +196,8 @@ export default function OrganizationCalendar({
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
-      <div className="pr-4 sm:pr-6 lg:pr-8">
-        <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start mx-auto max-w-5xl border border-border">
+      <div className="px-0 xl:pr-8">
+        <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
           <div className="space-y-1">
             <h2 className="text-3xl font-bold">Termin buchen</h2>
             <p className="text-base text-muted-foreground">
@@ -272,17 +272,19 @@ export default function OrganizationCalendar({
               /* https://daypicker.dev/docs/styling */
               classNames={{
                 months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-                month: 'w-full',
+                month: 'w-full px-1',
                 caption: '',
                 caption_label: 'mb-15 font-bold text-xl',
                 nav: 'w-full flex justify-between pl-1 pr-6',
                 button_previous: ' hover:bg-accent-white rounded-lg p-2',
                 button_next: ' hover:bg-accent-white rounded-lg p-2',
                 table: 'w-full max-w-full',
-                row: 'flex justify-between',
-                day: 'm-1 h-10 w-10 flex items-center justify-center rounded-lg bg-accent-white text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+                weekdays: 'flex w-full justify-between px-1',
+                weekday: 'w-8 sm:w-10 text-center text-muted-foreground',
+                row: 'flex justify-between px-1',
+                day: 'm-0.5 sm:m-1 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
                 today:
-                  'm-1 h-10 w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
+                  'm-0.5 sm:m-1 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
 
                 disabled:
                   '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
