@@ -24,9 +24,9 @@ export async function createCaseWithAppointment(caseBody: CaseCreateWithAppointm
     });
     await prisma.appointment.update({
       where: { id: appointmentId },
-      data: { caseId: caseBody.id },
+      data: { caseId: createdCase.id },
     });
-    return await prisma.case.findUnique({ where: { id: createdCase.id } });
+    return createdCase;
   } catch (error) {
     throw new Error('Database insert failed: ' + (error as Error).message);
   }

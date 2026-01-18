@@ -18,14 +18,6 @@ export async function confirmAppointmentCreateCase(
     });
     // only continue, if userId is given!
     if (appointment?.userId) {
-      // confirm appointment
-      await prisma.appointment.update({
-        where: { id: appointmentId },
-        data: {
-          status: AppointmentStatus.CONFIRMED,
-        },
-      });
-
       // get user information to
       const user = await prisma.user.findUnique({
         where: { id: appointment.userId },
@@ -42,12 +34,17 @@ export async function confirmAppointmentCreateCase(
         appointmentId: appointmentId,
       };
       const createdCase = await createCaseWithAppointment(caseCreationData);
-      const returnCase = await prisma.case.findUnique({
-        where: { id: createdCase?.id },
+      // confirm appointment
+      const updatedAppointment = await prisma.appointment.update({
+        where: { id: appointmentId },
+        data: {
+          status: AppointmentStatus.CONFIRMED,
+        },
       });
-      if (!returnCase) {
-        throw new Error('Case not found');
-      }
+      const returnCase = {
+        ...createdCase,
+        appointment: updatedAppointment,
+      };
       return returnCase;
     }
     throw new Error('Appointment is not assigned to any user');
