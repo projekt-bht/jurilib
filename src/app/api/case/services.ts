@@ -1,7 +1,7 @@
 import prisma from '@/lib/db';
 import type { CaseCreateInput } from '~/generated/prisma/models';
 
-type CaseCreateWithAppointmentInput = CaseCreateInput & {
+export type CaseCreateWithAppointmentInput = CaseCreateInput & {
   appointmentId: string;
 };
 
@@ -20,7 +20,7 @@ export async function createCaseWithAppointment(caseBody: CaseCreateWithAppointm
   try {
     const { appointmentId, ...createCaseInput } = caseBody;
     const createdCase = await prisma.case.create({
-      data: createCaseInput as CaseCreateInput,
+      data: createCaseInput,
     });
     await prisma.appointment.update({
       where: { id: appointmentId },

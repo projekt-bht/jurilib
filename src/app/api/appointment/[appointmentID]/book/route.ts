@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleValidationError } from '@/app/api/helper';
 
-import { bookAppointment } from './service';
+import { bookAppointment } from './services';
 
 /**
  * Validate parameter appointmentID as uuid
