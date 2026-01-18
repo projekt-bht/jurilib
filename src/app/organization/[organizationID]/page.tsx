@@ -46,8 +46,8 @@ export default async function OrganizationDetailPage({
   console.log(appointments);
 
   return (
-    {/* //neu */}
     <div className="flex flex-col xl:flex-row justify-center bg-card items-start gap-2 p-2">
+      {/* //neu */}
       {/* Left Column - Profile Info */}
       {/* //neu */}
       <div className="w-full xl:w-4/6">
