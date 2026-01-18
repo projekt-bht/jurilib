@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
 import { handleValidationError } from '@/app/api/helper';
 
+import { isAppointmentEmployeeMatch } from './helpers';
 import { confirmAppointmentCreateCase } from './services';
 
 /**
@@ -27,10 +28,13 @@ export async function POST(
     const { employeeID, appointmentID } = await params;
     paramsSchema.parse({ appointmentID, employeeID });
 
-    // verify user is logged in
+    // verify employee is logged in
     const jwtString = _req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
-    if (loginRes.employeeId) {
+    if (
+      loginRes.employeeId &&
+      (await isAppointmentEmployeeMatch(appointmentID, loginRes.employeeId))
+    ) {
       // book apppointment
       const bookedAppointment = await confirmAppointmentCreateCase(appointmentID, employeeID);
       return NextResponse.json(bookedAppointment, { status: 200 });
