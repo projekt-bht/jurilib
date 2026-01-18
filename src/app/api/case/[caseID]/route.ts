@@ -6,6 +6,7 @@ import { CaseStatus } from '~/generated/prisma/enums';
 
 import { verifyJWT } from '../../authentication/login/JWTService';
 import { handleValidationError, validateHeader } from '../../helper';
+import { isCaseEmployeeMatch } from './helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';
 
@@ -23,14 +24,14 @@ const caseUpdateSchema = z.strictObject({
 // PATCH /api/case/:caseID
 // Update a case
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ caseID: string }> }) {
-  // verify user is logged in
-  const jwtString = req.cookies.get('access_token')?.value;
-  const loginRes = verifyJWT(jwtString);
-  if (loginRes.employeeId) {
-    try {
-      // validate URL Param
-      const { caseID } = await params;
-      paramsSchema.parse({ caseID });
+  try {
+    // validate URL Param
+    const { caseID } = await params;
+    paramsSchema.parse({ caseID });
+    // verify user is logged in
+    const jwtString = req.cookies.get('access_token')?.value;
+    const loginRes = verifyJWT(jwtString);
+    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
       // validate header
       validateHeader(req.headers);
       // validate body
@@ -39,19 +40,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ ca
       // handle update/patch
       const updatedCase = await updateCase(caseID, body);
       return NextResponse.json(updatedCase, { status: 200 });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return handleValidationError(error);
-      } else {
-        return NextResponse.json(
-          { message: 'Update failed: ' + (error as Error).message },
-          { status: 400 }
-        );
-      }
+    } else {
+      // unauthorized
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-  } else {
-    // unauthorized
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    } else {
+      return NextResponse.json(
+        { message: 'Update failed: ' + (error as Error).message },
+        { status: 400 }
+      );
+    }
   }
 }
 
@@ -61,25 +62,25 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ caseID: string }> }
 ) {
-  // verify user is logged in
-  const jwtString = _req.cookies.get('access_token')?.value;
-  const loginRes = verifyJWT(jwtString);
-  if (loginRes.employeeId) {
-    try {
-      const { caseID } = await params;
-      if (!caseID) {
-        return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
-      }
+  try {
+    const { caseID } = await params;
+    if (!caseID) {
+      return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
+    }
+    // verify user is logged in
+    const jwtString = _req.cookies.get('access_token')?.value;
+    const loginRes = verifyJWT(jwtString);
+    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
       await deleteCase(caseID);
       return NextResponse.json({ status: 204 });
-    } catch (error) {
-      return NextResponse.json(
-        { message: 'Failed to delete organization: ' + (error as Error).message },
-        { status: 400 }
-      );
+    } else {
+      // unauthorized
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-  } else {
-    // unauthorized
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Failed to delete organization: ' + (error as Error).message },
+      { status: 400 }
+    );
   }
 }
