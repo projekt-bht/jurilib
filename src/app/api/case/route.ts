@@ -7,6 +7,7 @@ import type { CaseCreateInput } from '~/generated/prisma/models';
 
 import { handleValidationError, validateHeader } from '../helper';
 import { createCase } from './services';
+import { verifyJWT } from '../authentication/login/JWTService';
 
 const caseCreateSchema = z.strictObject({
   employeeId: z.uuid('Employee ID is required'),
@@ -22,21 +23,29 @@ export async function POST(req: NextRequest) {
   try {
     // validate header
     validateHeader(req.headers);
-    // validate body
-    const body = caseCreateSchema.parse(await req.json());
-    // links to existing Employee
-    const caseInput: CaseCreateInput = {
-      title: body.title,
-      description: body.description,
-      status: body.status,
-      documentsURL: body.documentsURL ?? [],
-      employee: {
-        connect: { id: body.employeeId },
-      },
-    };
+    // verify employee is logged in
+    const jwtString = req.cookies.get('access_token')?.value;
+    const loginRes = verifyJWT(jwtString);
+    if (loginRes.employeeId) {
+      // validate body
+      const body = caseCreateSchema.parse(await req.json());
+      // links to existing Employee
+      const caseInput: CaseCreateInput = {
+        title: body.title,
+        description: body.description,
+        status: body.status,
+        documentsURL: body.documentsURL ?? [],
+        employee: {
+          connect: { id: body.employeeId },
+        },
+      };
 
-    const createdAppointment = await createCase(caseInput);
-    return NextResponse.json(createdAppointment, { status: 201 });
+      const createdAppointment = await createCase(caseInput);
+      return NextResponse.json(createdAppointment, { status: 201 });
+    } else {
+      // unauthorized
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
