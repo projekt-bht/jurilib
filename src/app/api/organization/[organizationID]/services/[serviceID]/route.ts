@@ -27,7 +27,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ serviceID: string }> }
 ) {
-  // verify user is logged in
+  // verify employee is logged in
   const jwtString = req.cookies.get('access_token')?.value;
   const loginRes = verifyJWT(jwtString);
   if (loginRes.employeeId) {
@@ -65,7 +65,7 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ serviceID: string }> }
 ) {
-  // verify user is logged in
+  // verify employee is logged in
   const jwtString = _req.cookies.get('access_token')?.value;
   const loginRes = verifyJWT(jwtString);
   if (loginRes.employeeId) {
