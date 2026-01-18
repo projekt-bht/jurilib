@@ -44,7 +44,7 @@ export async function generateCode(
     });
   }
 
-  return { token: hash, expiryMinutes: EXPIRY_MINUTES };
+  return { token: token, expiryMinutes: EXPIRY_MINUTES };
 }
 
 /**
