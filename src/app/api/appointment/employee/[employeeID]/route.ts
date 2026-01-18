@@ -21,14 +21,13 @@ const paramsSchema = z.strictObject({
  */
 // const appointmentCreateSchema = z.object({
 const appointmentCreateSchema = z.strictObject({
-  employeeId: z.string().min(1, 'Employee ID is required'),
   dateTimeStart: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
     message: 'Invalid date format',
   }),
   duration: z.number().min(1, 'Duration must be at least 1 minute'),
 });
 
-// POST /api/appointment/:employeeID
+// POST /api/appointment/employee/:employeeID
 // Create a new appointment
 export async function POST(
   req: NextRequest,

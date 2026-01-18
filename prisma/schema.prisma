@@ -72,7 +72,6 @@ model User {
 
     // relations
     account Account @relation(fields: [accountId], references: [id])
-    cases   Case[]
     appointments Appointment[]
 
     @@schema("public")
@@ -187,13 +186,12 @@ model Service {
 
 model Case {
     id             String        @id @default(uuid())
-    userId         String        // foreign key to User
     employeeId     String        // foreign key to Employee
 
     // case infos
     title          String
     description    String
-    documentsURL   String[]  // TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
+    documentsURL   String[]      @default([])// TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
     status         CaseStatus    @default(OPEN)
 
     // creation & update timestamps
@@ -201,7 +199,6 @@ model Case {
     updatedAt      DateTime      @updatedAt
 
     // relations
-    user         User          @relation(fields: [userId], references: [id])
     employee     Employee     @relation(fields: [employeeId], references: [id])
     appointments Appointment[]
 
@@ -357,9 +354,10 @@ enum CaseStatus {
 }
 
 enum AppointmentStatus {
+    OPEN
+    REQUESTED
     CONFIRMED
     CANCELED
-    OPEN
     COMPLETED
 
     @@schema("public")

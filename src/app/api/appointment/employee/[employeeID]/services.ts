@@ -5,7 +5,7 @@ import type { AppointmentCreateInput } from '~/generated/prisma/models';
 
 type ZodCreateAppointment = {
   // organizationId: string;
-  employeeId: string;
+  // employeeId: string;
   dateTimeStart: string;
   duration: number;
 };
@@ -15,9 +15,6 @@ export async function createAppointment(
   employeeID: string,
   appointment: ZodCreateAppointment
 ): Promise<Appointment> {
-  // await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
-  await validateReference(employeeID, appointment.employeeId);
-
   /**
    * determine appointment end time based on start time and duration
    * end time ALWAYS has to be calculated, to avoid overlapping appointments
@@ -25,7 +22,7 @@ export async function createAppointment(
    */
   const startTime = new Date(appointment.dateTimeStart);
   const endTime = new Date(startTime.getTime() + (appointment.duration ?? 30) * 60000);
-  await validateNotOverlapping(startTime, endTime, appointment.employeeId);
+  await validateNotOverlapping(startTime, endTime, employeeID);
 
   try {
     const createdAppointment = await prisma.appointment.create({
@@ -40,7 +37,7 @@ export async function createAppointment(
       //   dateTimeEnd: endTime,
       // } as AppointmentCreateInput
       data: {
-        employeeId: appointment.employeeId,
+        employeeId: employeeID,
         duration: appointment.duration,
         dateTimeStart: startTime,
         dateTimeEnd: endTime,
