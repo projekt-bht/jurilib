@@ -3,11 +3,11 @@ import type { CaseUpdateInput } from '~/generated/prisma/models';
 
 export async function updateCase(caseID: string, caseBody: CaseUpdateInput) {
   try {
-    const createdCase = await prisma.case.update({
+    const updatedCase = await prisma.case.update({
       where: { id: caseID },
       data: caseBody,
     });
-    return createdCase;
+    return updatedCase;
   } catch (error) {
     throw new Error('Database insert failed: ' + (error as Error).message);
   }
