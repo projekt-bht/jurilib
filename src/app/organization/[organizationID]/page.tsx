@@ -46,13 +46,13 @@ export default async function OrganizationDetailPage({
   console.log(appointments);
 
   return (
-    <div className="flex justify-center bg-card items-start gap-2 p-2">
+    <div className="flex flex-col xl:flex-row justify-center bg-card items-start gap-2 p-2">
       {/* Left Column - Profile Info */}
-      <div className="w-4/6">
+      <div className="w-full xl:w-4/6">
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      <div className="w-2/6">
+      <div className="w-full xl:w-2/6 sticky top-6 h-fit">
         <OrganizationCalendar appointments={appointments} employees={employees} />
       </div>
     </div>

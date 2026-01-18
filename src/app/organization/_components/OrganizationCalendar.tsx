@@ -197,7 +197,7 @@ export default function OrganizationCalendar({
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
       <div className="pr-4 sm:pr-6 lg:pr-8">
-        <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start mx-auto max-w-4xl border border-border">
+        <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mt-8 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start mx-auto max-w-5xl border border-border">
           <div className="space-y-1">
             <h2 className="text-3xl font-bold">Termin buchen</h2>
             <p className="text-base text-muted-foreground">
