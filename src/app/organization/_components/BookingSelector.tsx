@@ -80,7 +80,7 @@ export default function BookingSelector({
       </button>
 
       {isOpen && (
-        <ItemGroup className="grid grid-cols-2 gap-4 l:grid-cols-2">
+        <ItemGroup className="grid grid-cols-1 gap-4">
           <Item
             onClick={() => handleSetBookingMode(BookingMode.QUICK)}
             className={cn(
