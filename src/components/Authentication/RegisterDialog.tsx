@@ -17,6 +17,7 @@ import {
 import { postLogin, register } from '@/services/api';
 import type { RegisterResource } from '@/services/Resources';
 import {
+  isOnlyLetter,
   isStrongPassword,
   isValidEmail,
   isValidGermanPhone,
@@ -81,8 +82,8 @@ export function RegisterDialog({
         setValidationErrors({
           ...validationErrors,
           firstname:
-            registerData.firstname.length < 3
-              ? 'Dein Vorname muss aus mindestens 3 Zeichen bestehen.'
+            registerData.firstname.length < 3 || !isOnlyLetter(registerData.firstname)
+              ? 'Dein Vorname muss aus mindestens 3 Buchstaben bestehen.'
               : undefined,
         });
         break;
@@ -90,9 +91,26 @@ export function RegisterDialog({
         setValidationErrors({
           ...validationErrors,
           lastname:
-            registerData.lastname.length < 3
-              ? 'Dein Nachname muss aus mindestens 3 Zeichen bestehen.'
+            registerData.lastname.length < 3 || !isOnlyLetter(registerData.lastname)
+              ? 'Dein Nachname muss aus mindestens 3 Buchstaben bestehen.'
               : undefined,
+        });
+        break;
+      case 'genderText':
+        setValidationErrors({
+          ...validationErrors,
+          genderText:
+            registerData.genderText.length < 3 || !isOnlyLetter(registerData.genderText)
+              ? 'Deine Geschlechtsangabe muss aus mindestens 3 Buchstaben bestehen.'
+              : undefined,
+        });
+        break;
+      case 'pronounText':
+        setValidationErrors({
+          ...validationErrors,
+          pronounText: !isOnlyLetter(registerData.pronounText)
+            ? 'Deine Pronomen dürfen nur aus Buchstaben bestehen.'
+            : undefined,
         });
         break;
       case 'birthdate':
@@ -149,8 +167,8 @@ export function RegisterDialog({
   }
 
   function isStep1Valid() {
-    if (registerData.firstname.length < 3) return false;
-    if (registerData.lastname.length < 3) return false;
+    if (registerData.firstname.length < 3 || !isOnlyLetter(registerData.firstname)) return false;
+    if (registerData.lastname.length < 3 || !isOnlyLetter(registerData.lastname)) return false;
     if (!registerData.birthdate) return false;
 
     const birth = new Date(registerData.birthdate);
@@ -159,8 +177,13 @@ export function RegisterDialog({
 
     if (birth > today || birth < minDate) return false;
     if (!registerData.gender) return false;
-    if (registerData.gender === Gender.Andere && !registerData.genderText) return false;
-    if (registerData.pronoun === Pronoun.Andere && !registerData.pronounText) return false;
+    if (
+      registerData.gender === Gender.Andere &&
+      (!isOnlyLetter(registerData.genderText) || registerData.genderText.length < 3)
+    )
+      return false;
+    if (registerData.pronoun === Pronoun.Andere && !isOnlyLetter(registerData.pronounText))
+      return false;
     return true;
   }
 
@@ -240,7 +263,13 @@ export function RegisterDialog({
               <Label>Geschlecht *</Label>
               <Select
                 value={registerData.gender}
-                onValueChange={(v) => setRegisterData({ ...registerData, gender: v })}
+                onValueChange={(v) =>
+                  setRegisterData({
+                    ...registerData,
+                    gender: v,
+                    genderText: v === Gender.Andere ? registerData.genderText : '',
+                  })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Auswählen" />
@@ -258,7 +287,13 @@ export function RegisterDialog({
               <Label>Pronomen</Label>
               <Select
                 value={registerData.pronoun}
-                onValueChange={(v) => setRegisterData({ ...registerData, pronoun: v })}
+                onValueChange={(v) =>
+                  setRegisterData({
+                    ...registerData,
+                    pronoun: v,
+                    pronounText: v === Pronoun.Andere ? registerData.pronounText : '',
+                  })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Auswählen" />
@@ -282,7 +317,16 @@ export function RegisterDialog({
                 value={registerData.genderText}
                 onChange={update}
                 placeholder="Geschlecht"
+                onBlur={validate}
+                className={
+                  validationErrors.genderText
+                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    : ''
+                }
               />
+              {validationErrors.genderText && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.genderText}</p>
+              )}
             </div>
           )}
           {registerData.pronoun === Pronoun.Andere && (
@@ -293,7 +337,16 @@ export function RegisterDialog({
                 value={registerData.pronounText}
                 onChange={update}
                 placeholder="Pronomen"
+                onBlur={validate}
+                className={
+                  validationErrors.pronounText
+                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    : ''
+                }
               />
+              {validationErrors.pronounText && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.pronounText}</p>
+              )}
             </div>
           )}
 
