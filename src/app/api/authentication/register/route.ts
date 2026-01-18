@@ -1,9 +1,11 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { email, z } from 'zod';
+import { z } from 'zod';
 
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
+import type { AccountResource } from '@/services/Resources';
+import type { User } from '~/generated/prisma/browser';
 import { AccountType, Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
 import type {
   AccountCreateInput,
@@ -12,38 +14,13 @@ import type {
 } from '~/generated/prisma/models';
 
 import { createAccountTx } from '../../account/services';
+import { sendRegistrationCodeEmail } from '../../email/service';
 import { createEmployeeTx } from '../../employee/services';
-import { validateHeader } from '../../helper';
+import { handleValidationError, validateHeader } from '../../helper';
 import { createUserTx } from '../../user/services';
 
-// const registrationSchema = z.strictObject({
-//   email: z.string().min(5), // TODO: add email regex validation and mybe move to helper file
-//   password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8), // TODO: ask what our password policy should be
-//   type: z.enum(AccountType),
-
-//   firstname: z.string(),
-//   lastname: z.string(),
-//   title: z.string().optional(),
-//   gender: z.enum(Gender),
-//   genderText: z.string().optional(),
-//   pronoun: z.enum(Pronoun).optional(),
-//   pronounText: z.string().optional(),
-//   birthdate: z.string(), // TODO: add date validation and mybe move to helper file
-//   phone: z.string().optional(), // TODO: add phone regex validation and mybe move to helper file
-//   country: z.string().optional(),
-//   city: z.string().optional(),
-//   zipCode: z.string().optional(),
-//   street: z.string().optional(),
-//   houseNumber: z.string().optional(),
-
-//   organizationId: z.string().optional(), // only for EMPLOYEE registration
-//   position: z.string().optional(), // only for EMPLOYEE registration
-//   expertiseArea: z.array(z.enum(Area)).optional(), // only for EMPLOYEE registration
-//   languages: z.array(z.enum(Language)).optional(), // only for EMPLOYEE registration
-// });
-
 const accountSchema = z.strictObject({
-  email: z.string().min(5), // TODO: add email regex validation and maybe move to helper file
+  email: z.email(),
   password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8), // TODO: ask what our password policy should be
   type: z.enum(AccountType),
 });
@@ -71,11 +48,11 @@ const userRegistrationSchema = baseRegistrationSchema.extend({
 
 const employeeRegistrationSchema = baseRegistrationSchema.extend({
   description: z.string().optional(),
-  email: z.string().min(5), // TODO: add email regex validation and maybe move to helper file
+  email: z.email(),
   organizationId: z.string().min(1), // Erforderlich und nicht leer
   position: z.string().optional(),
-  expertiseArea: z.array(z.enum(Area)).min(1), // Mindestens 1 Element
-  languages: z.array(z.enum(Language)).min(1), // Mindestens 1 Element
+  expertiseArea: z.array(z.enum(Area)).min(1), // at least 1 element
+  languages: z.array(z.enum(Language)).min(1), // at least 1 element
 });
 
 const registrationSchema = z.strictObject({
@@ -90,20 +67,25 @@ export async function POST(req: NextRequest) {
     // validate body
     const body = registrationSchema.parse(await req.json());
 
+    // prepare createdAccount and createdUser to be used for sending registration email
+    let createdAccount: AccountResource | undefined;
+    let createdUser: User | undefined;
+
     /**
      * Create Account and associated User/Employee in a transaction
      * This ensures that either both records are created or none at all
      */
     const result = await prisma.$transaction(async (tx) => {
       const accountInput = convertBodyToAccountInput(body.account);
-      const createdAccount = await createAccountTx(accountInput, tx);
+      createdAccount = await createAccountTx(accountInput, tx);
 
       if (createdAccount.type === AccountType.USER) {
         const userInput = convertBodyToUserInput(
           body.entity as z.infer<typeof userRegistrationSchema>,
           createdAccount.id!
         );
-        return await createUserTx(userInput, tx);
+        createdUser = await createUserTx(userInput, tx);
+        return createdUser;
       } else if (createdAccount.type === AccountType.EMPLOYEE) {
         const employeeInput = convertBodyToEmployeeInput(
           body.entity as z.infer<typeof employeeRegistrationSchema>,
@@ -115,14 +97,15 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    // send registration email
+    if (createdAccount && createdUser) {
+      await sendRegistrationCodeEmail(createdAccount, createdUser);
+    }
+
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    // TODO: use handleValidationError helper function
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      handleValidationError(error);
     } else {
       return NextResponse.json(
         { message: 'Creation failed: ' + (error as Error).message },

@@ -1,7 +1,12 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import type { Organization } from '~/generated/prisma/client';
+import type {
+  Organization,
+  OrganizationType,
+  PriceCategory,
+  Prisma,
+} from '~/generated/prisma/client';
 import { Area } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
@@ -34,21 +39,32 @@ export async function createOrganization(organization: Organization): Promise<Or
 }
 
 // Read all organizations
+// Fetch organizations with optional filter arrays coming from the UI query params.
+// Each filter narrows the result set, and omitted/empty filters are ignored.
 export async function readOrganizations(filters: {
   skip: number;
   take: number;
+  priceCategory?: PriceCategory[];
+  organizationType?: OrganizationType[];
+  area?: Area[];
 }): Promise<Organization[]> {
   try {
-    // default behaviour, if no query params are provided
-    if (!Number.isInteger(filters.skip) || filters.skip! < 0) {
-      filters.skip = 0;
+    // Build a Prisma where clause that mirrors the UI filter selections.
+    const where: Prisma.OrganizationWhereInput = {};
+    if (filters?.priceCategory?.length) {
+      where.priceCategory = { in: filters.priceCategory };
     }
-    if (!Number.isInteger(filters.take) || filters.take! <= 0) {
-      filters.take = 10;
+    if (filters?.organizationType?.length) {
+      where.type = { in: filters.organizationType };
     }
+    if (filters?.area?.length) {
+      where.expertiseAreas = { hasSome: filters.area };
+    }
+
     const orgas: Organization[] = await prisma.organization.findMany({
       skip: filters.skip,
       take: filters.take,
+      where,
     });
     if (!orgas) {
       throw new ValidationError('notFound', 'organization', null);
