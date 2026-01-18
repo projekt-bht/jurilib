@@ -268,7 +268,7 @@ export default function OrganizationCalendar({
                 handleChange(date, null);
               }}
               disabled={isDisabledDay}
-              className="bg-transparent w-full max-w-sm mx-auto justify-center items-center "
+              className="bg-transparent w-full max-w-full mx-auto flex flex-col items-center justify-center"
               /* https://daypicker.dev/docs/styling */
               classNames={{
                 months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
@@ -282,9 +282,9 @@ export default function OrganizationCalendar({
                 weekdays: 'flex w-full justify-between px-1',
                 weekday: 'w-8 sm:w-10 text-center text-muted-foreground',
                 row: 'flex justify-between px-1',
-                day: 'm-0.5 sm:m-1 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+                day: 'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
                 today:
-                  'm-0.5 sm:m-1 h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
+                  'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
 
                 disabled:
                   '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
