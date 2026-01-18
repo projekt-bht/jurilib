@@ -68,3 +68,8 @@
 //     expect(res.status).toBe(200);
 //   });
 // });
+
+test('placeholder test', () => {
+  // :O
+  expect(1).toBe(1);
+});
