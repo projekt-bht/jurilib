@@ -5,6 +5,7 @@ export type AccountResource = {
   email: string;
   password?: string;
   type: AccountType;
+  isVerified?: boolean;
 };
 
 // TODO: Split into AccountCreateResource and UserCreateResource

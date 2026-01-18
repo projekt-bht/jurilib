@@ -1,3 +1,18 @@
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+// Non-mock related implementation:
 import type { RegisterResource } from '@/services/Resources';
 import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
 
@@ -37,7 +52,7 @@ describe('Login test', () => {
     });
 
     const res = await accountPOST(req);
-    expect(res.status).toBe(201);
+    expect(res!.status).toBe(201);
 
     createdAccount = {
       email: registerInput.account.email,
