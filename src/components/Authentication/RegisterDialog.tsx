@@ -79,38 +79,64 @@ export function RegisterDialog({
   function validate(e: React.FocusEvent<HTMLInputElement>) {
     switch (e.target.name) {
       case 'firstname':
+        let errorMsgFirst: string | undefined = '';
+
+        if (registerData.firstname.length < 1) {
+          errorMsgFirst = 'Dein Vorname muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(registerData.firstname)) {
+          errorMsgFirst = 'Dein Vorname darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgFirst = undefined;
+        }
+
         setValidationErrors({
           ...validationErrors,
-          firstname:
-            registerData.firstname.length < 3 || !isOnlyLetter(registerData.firstname)
-              ? 'Dein Vorname muss aus mindestens 3 Buchstaben bestehen.'
-              : undefined,
+          firstname: errorMsgFirst,
         });
         break;
       case 'lastname':
+        let errorMsgLast: string | undefined = '';
+
+        if (registerData.lastname.length < 1) {
+          errorMsgLast = 'Dein Nachname muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(registerData.lastname)) {
+          errorMsgLast = 'Dein Nachname darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgLast = undefined;
+        }
         setValidationErrors({
           ...validationErrors,
-          lastname:
-            registerData.lastname.length < 3 || !isOnlyLetter(registerData.lastname)
-              ? 'Dein Nachname muss aus mindestens 3 Buchstaben bestehen.'
-              : undefined,
+          lastname: errorMsgLast,
         });
         break;
       case 'genderText':
+        let errorMsgGender: string | undefined = '';
+
+        if (registerData.genderText.length < 1) {
+          errorMsgGender = 'Deine Geschlechtsangabe muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(registerData.genderText)) {
+          errorMsgGender = 'Deine Geschlechtsangabe darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgGender = undefined;
+        }
         setValidationErrors({
           ...validationErrors,
-          genderText:
-            registerData.genderText.length < 3 || !isOnlyLetter(registerData.genderText)
-              ? 'Deine Geschlechtsangabe muss aus mindestens 3 Buchstaben bestehen.'
-              : undefined,
+          genderText: errorMsgGender,
         });
         break;
       case 'pronounText':
+        let errorMsgPronoun: string | undefined = '';
+
+        if (registerData.pronounText.length < 1) {
+          errorMsgPronoun = 'Deine Pronomen müssen aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(registerData.pronounText)) {
+          errorMsgPronoun = 'Deine Pronomen dürfen nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgPronoun = undefined;
+        }
         setValidationErrors({
           ...validationErrors,
-          pronounText: !isOnlyLetter(registerData.pronounText)
-            ? 'Deine Pronomen dürfen nur aus Buchstaben bestehen.'
-            : undefined,
+          pronounText: errorMsgPronoun,
         });
         break;
       case 'birthdate':
@@ -122,8 +148,8 @@ export function RegisterDialog({
             new Date(registerData.birthdate) > today
               ? 'Dein Geburtsdatum darf nicht in der Zukunft liegen.'
               : new Date(registerData.birthdate) < minDate
-              ? 'Bitte gib ein realistisches Geburtsdatum ein.'
-              : undefined,
+                ? 'Bitte gib ein realistisches Geburtsdatum ein.'
+                : undefined,
         });
         break;
       case 'email':
