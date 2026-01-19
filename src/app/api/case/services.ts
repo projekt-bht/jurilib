@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import prisma from '@/lib/db';
 import type { CaseCreateInput } from '~/generated/prisma/models';
 

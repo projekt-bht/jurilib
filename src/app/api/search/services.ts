@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import prisma from '@/lib/db';
 import { vectorizeSearch } from '@/services/server/vectorizer';
 import type {

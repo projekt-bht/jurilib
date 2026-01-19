@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import path from 'path';

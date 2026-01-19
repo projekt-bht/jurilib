@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import crypto from 'crypto';
 
 import prisma from '@/lib/db';

@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import prisma from '@/lib/db';
 import type { Appointment } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/client';

@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import prisma from '@/lib/db';
 export async function isCaseEmployeeMatch(caseID: string, employeeID: string): Promise<boolean> {
   try {

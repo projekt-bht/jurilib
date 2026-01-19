@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import bcrypt from 'bcryptjs';
 import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';

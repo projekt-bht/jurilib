@@ -1,3 +1,5 @@
+// TODO: check ZOD validation
+
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Employee } from '~/generated/prisma/client';
