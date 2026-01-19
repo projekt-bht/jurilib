@@ -72,9 +72,11 @@ export default function ForgotPasswordDialog({
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
               onBlur={validate}
-              className={validationErrors ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''}
+              className={
+                validationErrors ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200' : ''
+              }
             />
-            {validationErrors && <p className="text-sm text-red-500 mt-1">{validationErrors}</p>}
+            {validationErrors && <p className="text-sm text-accent-red mt-1">{validationErrors}</p>}
           </div>
           <Button type="submit" className="w-full" disabled={!isForgotPasswordDialogValid()}>
             Code senden
