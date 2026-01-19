@@ -1,5 +1,3 @@
-// TODO: check ZOD validation
-
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 

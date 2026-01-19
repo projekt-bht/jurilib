@@ -1,20 +1,10 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader } from '../../../helper';
+import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
-
-/**
- * Validate parameter employeeID
- */
-
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  employeeID: z.string().min(1, 'Employee ID is required'),
-});
 
 /**
  * Validate the attributes needed to create an appointment
@@ -38,9 +28,11 @@ export async function POST(
   try {
     // validate header
     validateHeader(req.headers);
+
     // validate params
     const { employeeID } = await params;
-    paramsSchema.parse({ employeeID });
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
+
     // validate body
     const body = appointmentCreateSchema.parse(await req.json());
 
@@ -61,13 +53,14 @@ export async function POST(
 // GET /api/appointment/:employeeID
 // Retrieve all appointments of employee
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ employeeID: string }> }
 ) {
   try {
     // validate employeeID
     const { employeeID } = await params;
-    paramsSchema.parse({ employeeID });
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
+
     const appointments = await readAllAppointmentsByEmployee(employeeID);
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
