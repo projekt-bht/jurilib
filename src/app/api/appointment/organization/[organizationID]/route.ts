@@ -1,22 +1,22 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError } from '../../../helper';
+import { handleValidationError, validateIds } from '@/app/api/helper';
+
 import { readAllAppointmentsByOrganization } from './service';
 
-// GET /api/appointment/:organizationID
+// GET /api/appointment/organization/:organizationID
 // Retrieve all appointments of organization
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ organizationID: string }> }
 ) {
   try {
     // validate organizationID
     const { organizationID } = await params;
-    paramsSchema.parse({ organizationID });
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
+
     const appointments = await readAllAppointmentsByOrganization(organizationID);
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
@@ -30,11 +30,3 @@ export async function GET(
     }
   }
 }
-
-/**
- * Validate parameter organizationID
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  organizationID: z.string().min(1, 'Organization ID is required'),
-});
