@@ -1,0 +1,23 @@
+meta {
+  name: Update Case
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3000/api/case/53c4d131-7821-4e68-9972-dbbc0a10de3b
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "description": 123,
+    "title":23
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Login User
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/authentication/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "mail@max-uden.de",
+    "password": "Lachs!123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

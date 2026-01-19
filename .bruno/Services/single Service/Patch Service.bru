@@ -1,0 +1,22 @@
+meta {
+  name: Patch Service
+  type: http
+  seq: 1
+}
+
+patch {
+  url: http://localhost:3000/api/organization/{{organization}}/services/03d92032-c938-45e1-b9c2-d497eeda9a66
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "bla keks, irgendein Service"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
