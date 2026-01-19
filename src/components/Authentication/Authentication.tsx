@@ -64,7 +64,7 @@ export function Authentication() {
         </DialogTrigger>
 
         <DialogOverlay className="backdrop-blur-sm" />
-        <DialogContent className="max-w-md">
+        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl">
               {isRegister ? 'Registrierung' : 'Einloggen'}
