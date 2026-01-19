@@ -23,7 +23,7 @@ export function validateHeader(headers: Headers): void {
  * Validate that given params contain valid UUIDs
  * @param params id is the value to validate, identifier is a descriptive name for error messages
  */
-export function validateIds(params: [{ id: string; identifier: string }]): void {
+export function validateIds(params: { id: string; identifier: string }[]): void {
   for (const param of params) {
     const idSchema = z.strictObject({
       id: z.uuid({ message: 'Invalid UUID format for ' + param.identifier }),
