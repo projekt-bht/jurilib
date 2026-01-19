@@ -92,11 +92,13 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
           onBlur={validate}
           placeholder="deine@email.com"
           className={
-            validationErrors.email ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+            validationErrors.email
+              ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+              : ''
           }
         />
         {validationErrors.email && (
-          <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>
+          <p className="text-sm text-accent-red mt-1">{validationErrors.email}</p>
         )}
       </div>
       <div className="space-y-2">
@@ -109,15 +111,16 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
           onChange={updateLogin}
           onBlur={validate}
           className={
-            validationErrors.password ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+            validationErrors.password
+              ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+              : ''
           }
         />
-        {validationErrors.email && (
-          <p className="text-sm text-red-500 mt-1">{validationErrors.password}</p>
+        {validationErrors.password && (
+          <p className="text-sm text-accent-red mt-1">{validationErrors.password}</p>
         )}
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
+      {error && <p className="text-accent-red text-sm">{error}</p>}
       <Button type="submit" className="w-full" disabled={!isLoginDialogValid()}>
         Anmelden
       </Button>
