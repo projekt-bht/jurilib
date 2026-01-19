@@ -1,21 +1,11 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError } from '@/app/api/helper';
+import { handleValidationError, validateIds } from '@/app/api/helper';
 
 import { bookAppointment } from './services';
-
-/**
- * Validate parameter appointmentID as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'Employee ID is required' }),
-});
 
 // POST /api/appointment/:appointmentID/book
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "REQUESTED"
@@ -26,7 +16,7 @@ export async function POST(
   try {
     // get appointmentID from URL params
     const { appointmentID } = await params;
-    paramsSchema.parse({ appointmentID });
+    validateIds([{ id: appointmentID, identifier: 'appointmentID' }]);
 
     // verify user is logged in
     const jwtString = _req.cookies.get('access_token')?.value;
