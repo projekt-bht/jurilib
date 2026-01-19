@@ -297,12 +297,12 @@ export function RegisterDialog({
                   })
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Auswählen" />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(Gender).map((g) => (
-                    <SelectItem key={g} value={g}>
+                    <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
                       {g.replace(/_/g, ' ')}
                     </SelectItem>
                   ))}
@@ -321,13 +321,13 @@ export function RegisterDialog({
                   })
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-[150px]">
                   <SelectValue placeholder="Auswählen" />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(Pronoun).map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {p.replace(/_/g, ' ')}
+                    <SelectItem key={p} value={p} className="hover:bg-accent-gray-light">
+                      {p.replace(/_/g, '/')}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -346,12 +346,12 @@ export function RegisterDialog({
                 onBlur={validate}
                 className={
                   validationErrors.genderText
-                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
                     : ''
                 }
               />
               {validationErrors.genderText && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.genderText}</p>
+                <p className="text-sm text-accent-red mt-1">{validationErrors.genderText}</p>
               )}
             </div>
           )}
@@ -366,12 +366,12 @@ export function RegisterDialog({
                 onBlur={validate}
                 className={
                   validationErrors.pronounText
-                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
                     : ''
                 }
               />
               {validationErrors.pronounText && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.pronounText}</p>
+                <p className="text-sm text-accent-red mt-1">{validationErrors.pronounText}</p>
               )}
             </div>
           )}
@@ -387,12 +387,12 @@ export function RegisterDialog({
                 onBlur={validate}
                 className={
                   validationErrors.firstname
-                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
                     : ''
                 }
               />
               {validationErrors.firstname && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.firstname}</p>
+                <p className="text-sm text-accent-red mt-1">{validationErrors.firstname}</p>
               )}
             </div>
             <div className="space-y-2">
@@ -405,12 +405,12 @@ export function RegisterDialog({
                 onBlur={validate}
                 className={
                   validationErrors.lastname
-                    ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                    ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
                     : ''
                 }
               />
               {validationErrors.lastname && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.lastname}</p>
+                <p className="text-sm text-accent-red mt-1">{validationErrors.lastname}</p>
               )}
             </div>
           </div>
@@ -424,12 +424,14 @@ export function RegisterDialog({
               onChange={update}
               onBlur={validate}
               className={
-                validationErrors.birthdate ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                validationErrors.birthdate
+                  ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+                  : ''
               }
             />
           </div>
           {validationErrors.birthdate && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.birthdate}</p>
+            <p className="text-sm text-accent-red mt-1">{validationErrors.birthdate}</p>
           )}
         </div>
       )}
@@ -445,12 +447,14 @@ export function RegisterDialog({
               onChange={update}
               onBlur={validate}
               className={
-                validationErrors.phone ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                validationErrors.phone
+                  ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+                  : ''
               }
             />
           </div>
           {validationErrors.phone && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.phone}</p>
+            <p className="text-sm text-accent-red mt-1">{validationErrors.phone}</p>
           )}
           <div className="space-y-2">
             <Label>E-Mail *</Label>
@@ -462,12 +466,14 @@ export function RegisterDialog({
               onChange={update}
               onBlur={validate}
               className={
-                validationErrors.email ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                validationErrors.email
+                  ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+                  : ''
               }
             />
           </div>
           {validationErrors.email && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>
+            <p className="text-sm text-accent-red mt-1">{validationErrors.email}</p>
           )}
           <div className="space-y-2">
             <Label>Passwort *</Label>
@@ -479,11 +485,13 @@ export function RegisterDialog({
               onChange={update}
               onBlur={validate}
               className={
-                validationErrors.password ? 'border-red-500 border-[0.5px] focus:ring-red-200' : ''
+                validationErrors.password
+                  ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
+                  : ''
               }
             />
             {validationErrors.password && (
-              <p className="text-sm text-red-500 mt-1">{validationErrors.password}</p>
+              <p className="text-sm text-accent-red mt-1">{validationErrors.password}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -497,15 +505,15 @@ export function RegisterDialog({
               onBlur={validate}
               className={
                 validationErrors.passwordRepeat
-                  ? 'border-red-500 border-[0.5px] focus:ring-red-200'
+                  ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200'
                   : ''
               }
             />
           </div>
           {validationErrors.passwordRepeat && (
-            <p className="text-sm text-red-500 mt-1">{validationErrors.passwordRepeat}</p>
+            <p className="text-sm text-accent-red mt-1">{validationErrors.passwordRepeat}</p>
           )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-accent-red text-sm">{error}</p>}
         </div>
       )}
 
