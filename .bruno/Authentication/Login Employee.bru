@@ -16,8 +16,8 @@ headers {
 
 body:json {
   {
-    "email": "EMPLOYEE_TEST_0.6421955046451635@mail.de",
-    "password": "1234567890"
+    "email": "{{process.env.EMPLOYEE_MAIL}}",
+    "password": "{{process.env.EMPLOYEE_PASSWORD}}"
   }
 }
 

@@ -16,8 +16,8 @@ headers {
 
 body:json {
   {
-    "email": "mail@max-uden.de",
-    "password": "Lachs!123"
+    "email": "{{process.env.USER_MAIL}}",
+    "password": "{{process.env.USER_PASSWORD}}"
   }
 }
 
