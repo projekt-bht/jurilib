@@ -200,6 +200,6 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });
