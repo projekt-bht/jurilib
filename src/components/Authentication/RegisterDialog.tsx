@@ -193,8 +193,8 @@ export function RegisterDialog({
   }
 
   function isStep1Valid() {
-    if (registerData.firstname.length < 3 || !isOnlyLetter(registerData.firstname)) return false;
-    if (registerData.lastname.length < 3 || !isOnlyLetter(registerData.lastname)) return false;
+    if (registerData.firstname.length < 1 || !isOnlyLetter(registerData.firstname)) return false;
+    if (registerData.lastname.length < 1 || !isOnlyLetter(registerData.lastname)) return false;
     if (!registerData.birthdate) return false;
 
     const birth = new Date(registerData.birthdate);
@@ -205,10 +205,13 @@ export function RegisterDialog({
     if (!registerData.gender) return false;
     if (
       registerData.gender === Gender.Andere &&
-      (!isOnlyLetter(registerData.genderText) || registerData.genderText.length < 3)
+      (!isOnlyLetter(registerData.genderText) || registerData.genderText.length < 1)
     )
       return false;
-    if (registerData.pronoun === Pronoun.Andere && !isOnlyLetter(registerData.pronounText))
+    if (
+      registerData.pronoun === Pronoun.Andere &&
+      (!isOnlyLetter(registerData.pronounText) || registerData.pronounText.length < 1)
+    )
       return false;
     return true;
   }
