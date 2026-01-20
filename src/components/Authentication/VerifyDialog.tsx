@@ -1,5 +1,6 @@
 'use client';
 
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -11,17 +12,31 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { postVerify } from '@/services/api';
 
 import { CancelDialog } from './CancelDialog';
 
 type VerifyDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  setSuccessOpen: (open: boolean) => void;
+  email: string;
 };
 
 //https://shadcnstudio.com/docs/components/input-otp
-export function VerifyDialog({ open, onOpenChange }: VerifyDialogProps) {
+export function VerifyDialog({ open, onOpenChange, setSuccessOpen, email }: VerifyDialogProps) {
+  const [code, setCode] = useState('');
   const [cancelOpen, setCancelOpen] = useState(false);
+
+  async function handleVerify() {
+    const verify = await postVerify(email, 'EMAIL_VERIFICATION', code);
+
+    if (verify) {
+      setSuccessOpen(true);
+      onOpenChange(false);
+    }
+  }
+
   return (
     <>
       <Dialog
@@ -41,7 +56,14 @@ export function VerifyDialog({ open, onOpenChange }: VerifyDialogProps) {
           </DialogHeader>
 
           <div className="flex justify-center mt-4 gap-2">
-            <InputOTP maxLength={6}>
+            <InputOTP
+              maxLength={6}
+              pattern={REGEXP_ONLY_DIGITS}
+              value={code}
+              onChange={(value) => {
+                setCode(value);
+              }}
+            >
               <InputOTPGroup className="*:data-[slot=input-otp-slot]:bg-muted gap-2 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:border-transparent *:data-[slot=input-otp-slot]:shadow-sm">
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -53,7 +75,7 @@ export function VerifyDialog({ open, onOpenChange }: VerifyDialogProps) {
             </InputOTP>
           </div>
 
-          <Button type="submit" className="w-full mt-5">
+          <Button type="submit" className="w-full h-12 text-xl" onClick={handleVerify}>
             Bestätigen
           </Button>
 
