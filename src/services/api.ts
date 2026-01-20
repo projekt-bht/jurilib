@@ -1,4 +1,5 @@
 import type { LoginResource, RegisterResource, UserResource } from '@/services/Resources';
+import { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/register`;
@@ -12,7 +13,7 @@ export async function register(inputData: RegisterResource): Promise<RegisterRes
 }
 
 export async function getLogin(): Promise<LoginResource> {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
@@ -20,7 +21,7 @@ export async function getLogin(): Promise<LoginResource> {
 }
 
 export async function postLogin(email: string, password: string): Promise<LoginResource | false> {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login`;
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify({ email: email, password: password }),
@@ -37,7 +38,7 @@ export async function postLogin(email: string, password: string): Promise<LoginR
 }
 
 export async function deleteLogin() {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login/`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login`;
   await fetch(url, {
     method: 'DELETE',
     credentials: 'include' as RequestCredentials,
@@ -51,4 +52,21 @@ export async function getUser(userID: string): Promise<UserResource> {
     credentials: 'include' as RequestCredentials,
   });
   return (await response.json()) as UserResource;
+}
+
+export async function postVerify(email: string, type: TokenType, code: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/codeVerification`;
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ email: email, type: type, code: code }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
 }
