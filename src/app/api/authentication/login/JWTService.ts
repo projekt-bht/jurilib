@@ -20,7 +20,7 @@ export const login = async (
 
     //only verified accounts can login
     const account = await prisma.account.findUnique({
-      where: { email: email, isVerified: true },
+      where: { email: email },
       include: { user: true, employee: true },
     });
 
@@ -30,6 +30,8 @@ export const login = async (
 
     const isPasswordCorrect = await bcrypt.compare(password, account.password);
     if (!isPasswordCorrect) return false;
+
+    if (!account.isVerified) throw new Error('Account not verified');
 
     const accountRes = {
       id: account.id,
