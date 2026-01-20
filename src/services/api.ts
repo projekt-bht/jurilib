@@ -20,7 +20,7 @@ export async function getLogin(): Promise<LoginResource> {
   return (await response.json()) as LoginResource;
 }
 
-export async function postLogin(email: string, password: string): Promise<LoginResource | false> {
+export async function postLogin(email: string, password: string): Promise<LoginResource | string> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/login`;
   const response = await fetch(url, {
     method: 'POST',
@@ -32,9 +32,13 @@ export async function postLogin(email: string, password: string): Promise<LoginR
     credentials: 'include' as RequestCredentials,
   });
 
-  if (!response.ok) return false;
+  const data = await response.json();
 
-  return (await response.json()) as LoginResource;
+  if (!response.ok) {
+    return data.error;
+  }
+
+  return data as LoginResource;
 }
 
 export async function deleteLogin() {
@@ -55,6 +59,23 @@ export async function getUser(userID: string): Promise<UserResource> {
 }
 
 export async function postVerify(email: string, type: TokenType, code: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/codeVerification`;
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({ email: email, type: type, code: code }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
+}
+
+export async function postResendCode(email: string, type: TokenType, code: string) {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/codeVerification`;
   const response = await fetch(url, {
     method: 'POST',
