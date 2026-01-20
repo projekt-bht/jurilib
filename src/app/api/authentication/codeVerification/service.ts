@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import prisma from '@/lib/db';
 import { TokenType } from '~/generated/prisma/enums';
 
-const EXPIRY_MINUTES = 15;
+const EXPIRY_MINUTES = 2000000;
 
 /**
  * Generates a secure 6-digit code. And stores it in the database. Either creates a new
@@ -54,7 +54,7 @@ export async function generateCode(
  * @returns true
  */
 export async function verifyCode(
-  accountId: string,
+  email: string,
   type: TokenType,
   inputToken: string
 ): Promise<boolean> {
@@ -66,8 +66,12 @@ export async function verifyCode(
      * There should only be one token of each type per account, since existing
      * tokens are overwritten when a new token is generated.
      */
+    const account = await prisma.account.findUnique({ where: { email: email } });
+
+    if (!account) return false;
+
     const savedTokenHash = await prisma.accountToken.findMany({
-      where: { accountId: accountId, type: type },
+      where: { accountId: account.id, type: type },
     });
 
     if (!savedTokenHash || savedTokenHash.length === 0) return false;
@@ -82,7 +86,7 @@ export async function verifyCode(
       });
       if (type === TokenType.EMAIL_VERIFICATION) {
         await prisma.account.update({
-          where: { id: accountId },
+          where: { id: account.id },
           data: { isVerified: true },
         });
       }
