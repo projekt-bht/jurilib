@@ -17,8 +17,10 @@ export const login = async (
          ofc, we could just send the accountId and then check if a User exists in that context, but thats kinda cursed
          Also, this logic makes more sense because we are only validating a login if an account includes a User or Employee
     */
+
+    //only verified accounts can login
     const account = await prisma.account.findUnique({
-      where: { email: email },
+      where: { email: email, isVerified: true },
       include: { user: true, employee: true },
     });
 
