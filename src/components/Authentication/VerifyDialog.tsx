@@ -28,12 +28,17 @@ export function VerifyDialog({ open, onOpenChange, setSuccessOpen, email }: Veri
   const [code, setCode] = useState('');
   const [cancelOpen, setCancelOpen] = useState(false);
 
+  const [error, setError] = useState('');
+
   async function handleVerify() {
     const verify = await postVerify(email, 'EMAIL_VERIFICATION', code);
 
     if (verify) {
+      setError('');
       setSuccessOpen(true);
       onOpenChange(false);
+    } else {
+      setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
     }
   }
 
@@ -62,6 +67,7 @@ export function VerifyDialog({ open, onOpenChange, setSuccessOpen, email }: Veri
               value={code}
               onChange={(value) => {
                 setCode(value);
+                setError('');
               }}
             >
               <InputOTPGroup className="*:data-[slot=input-otp-slot]:bg-muted gap-2 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:border-transparent *:data-[slot=input-otp-slot]:shadow-sm">
@@ -74,6 +80,8 @@ export function VerifyDialog({ open, onOpenChange, setSuccessOpen, email }: Veri
               </InputOTPGroup>
             </InputOTP>
           </div>
+
+          <p className="text-sm text-center text-accent-red mt-1">{error}</p>
 
           <Button type="submit" className="w-full h-12 text-xl" onClick={handleVerify}>
             Bestätigen
