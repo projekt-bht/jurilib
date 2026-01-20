@@ -15,22 +15,23 @@ type ValidationMessages<Type> = {
 
 type LoginDialogProps = {
   onSuccess: () => void;
-  loginData: typeof initialLoginData;
-  setLoginData: (data: typeof initialLoginData) => void;
+  password: string;
+  setPassword: (password: string) => void;
+  showVerifyDialog: (open: boolean) => void;
+  email: string;
+  setEmail: (email: string) => void;
 };
 
-export const initialLoginData = {
-  email: '',
-  password: '',
-};
-
-export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogProps) {
+export function LoginDialog({
+  onSuccess,
+  password,
+  setPassword,
+  showVerifyDialog,
+  email,
+  setEmail,
+}: LoginDialogProps) {
   const { setLogin } = useLoginContext();
   const [error, setError] = useState('');
-
-  function updateLogin(e: React.ChangeEvent<HTMLInputElement>) {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  }
 
   //Pilgrim Style :P
   const [validationErrors, setValidationErrors] = React.useState<
@@ -43,9 +44,7 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
         setValidationErrors({
           ...validationErrors,
           email:
-            loginData.email.length < 3 ||
-            loginData.email.length > 100 ||
-            !isValidEmail(loginData.email)
+            email.length < 3 || email.length > 100 || !isValidEmail(email)
               ? 'Bitte gib eine gültige E-Mail-Adresse ein.'
               : undefined,
         });
@@ -53,28 +52,31 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
       case 'password':
         setValidationErrors({
           ...validationErrors,
-          password: loginData.password.length < 1 ? 'Bitte gib ein Passwort ein.' : undefined,
+          password: password.length < 1 ? 'Bitte gib ein Passwort ein.' : undefined,
         });
         break;
     }
   }
   function isLoginDialogValid() {
-    return (
-      loginData.email.length > 0 && loginData.password.length > 0 && isValidEmail(loginData.email)
-    );
+    return email.length > 0 && password.length > 0 && isValidEmail(email);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-      const loginFromServer = await postLogin(loginData.email, loginData.password);
-      if (!loginFromServer) {
+      const loginFromServer = await postLogin(email, password);
+      if (typeof loginFromServer === 'string') {
+        if (loginFromServer.includes('not verified')) {
+          showVerifyDialog(true);
+          return;
+        }
         setError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.');
         return;
+      } else {
+        setLogin(loginFromServer);
+        onSuccess();
       }
-      setLogin(loginFromServer);
-      onSuccess();
     } catch (err) {
       setError(String(err));
     }
@@ -87,8 +89,10 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
         <Input
           name="email"
           type="email"
-          value={loginData.email}
-          onChange={updateLogin}
+          value={email}
+          onChange={(value) => {
+            setEmail(value.target.value);
+          }}
           onBlur={validate}
           placeholder="deine@email.com"
           className={
@@ -107,8 +111,10 @@ export function LoginDialog({ onSuccess, loginData, setLoginData }: LoginDialogP
           name="password"
           type="password"
           placeholder="********"
-          value={loginData.password}
-          onChange={updateLogin}
+          value={password}
+          onChange={(value) => {
+            setPassword(value.target.value);
+          }}
           onBlur={validate}
           className={
             validationErrors.password
