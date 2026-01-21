@@ -47,14 +47,14 @@ export default async function OrganizationDetailPage({
 
   return (
     <div className="flex flex-col xl:flex-row justify-center bg-card items-start gap-2 p-2">
-      {/* //neu */}
+      {/*  */}
       {/* Left Column - Profile Info */}
-      {/* //neu */}
+      {/*  */}
       <div className="w-full xl:w-4/6">
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      {/* //neu */}
+      {/*  */}
       <div className="w-full xl:w-2/6 sticky top-20 h-fit self-start pt-8 px-10 xl:px-0">
         <OrganizationCalendar appointments={appointments} employees={employees} />
       </div>

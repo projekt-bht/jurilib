@@ -196,9 +196,7 @@ export default function OrganizationCalendar({
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
-      {/* //neu */}
       <div className="px-0 xl:pr-8">
-        {/* //neu */}
         <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
           <div className="space-y-1">
             <h2 className="text-3xl font-bold">Termin buchen</h2>
@@ -244,7 +242,8 @@ export default function OrganizationCalendar({
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-foreground mb-1 break-words"> //neu
+                        <h4 className="font-bold text-foreground mb-1 break-words">
+                          {' '}
                           {employee.name}
                         </h4>
                       </div>
@@ -255,12 +254,13 @@ export default function OrganizationCalendar({
             </div>
           )}
 
-          <div className="flex items-center gap-2 flex-wrap"> //neu
+          <div className="flex items-center gap-2 flex-wrap">
+            {' '}
             <CalendarIcon className="h-5 w-5 text-accent-blue" />
             <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
           </div>
           <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4">
-            {/* //neu */}
+            {/*  */}
             <Calendar
               mode="single"
               today={new Date()}
@@ -271,30 +271,31 @@ export default function OrganizationCalendar({
                 handleChange(date, null);
               }}
               disabled={isDisabledDay}
-              className="bg-transparent w-full max-w-full mx-auto flex flex-col items-center justify-center" //neu
+              className="bg-transparent w-full max-w-full mx-auto flex flex-col items-center justify-center"
               /* https://daypicker.dev/docs/styling */
               classNames={{
                 months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-                month: 'w-full px-1', //neu
+                month: 'w-full px-1',
                 caption: '',
                 caption_label: 'mb-15 font-bold text-xl',
                 nav: 'w-full flex justify-between pl-1 pr-6',
                 button_previous: ' hover:bg-accent-white rounded-lg p-2',
                 button_next: ' hover:bg-accent-white rounded-lg p-2',
                 table: 'w-full max-w-full',
-                weekdays: 'flex w-full justify-between px-1', //neu
-                weekday: 'w-8 sm:w-10 text-center text-muted-foreground', //neu
-                row: 'flex justify-between px-1', //neu
-                day: 'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer', //neu
+                weekdays: 'flex w-full justify-between px-1',
+                weekday: 'w-8 sm:w-10 text-center text-muted-foreground',
+                row: 'flex justify-between px-1',
+                day: 'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
                 today:
-                  'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ', //neu
+                  'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
 
                 disabled:
                   '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
               }}
             />
 
-            <div className="flex items-center gap-6 px-2 pb-2 flex-wrap"> //neu
+            <div className="flex items-center gap-6 px-2 pb-2 flex-wrap">
+              {' '}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
                 <span>Heute</span>
@@ -312,13 +313,15 @@ export default function OrganizationCalendar({
 
           {selectedDate && (
             <div className="space-y-3">
-              <div className="flex items-center gap-2 flex-wrap"> //neu
+              <div className="flex items-center gap-2 flex-wrap">
+                {' '}
                 <Clock className="h-5 w-5 text-accent-blue" />
                 <h2 className="text-2xl font-semibold">Wählen eine Uhrzeit</h2>
               </div>
               <p className="text-sm font-medium text-muted-foreground">Verfügbare Zeiten</p>
 
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2"> //neu
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {' '}
                 {(() => {
                   const slotsForSelectedDate: SlotOption[] =
                     availableSlots[selectedDate?.toDateString() || ''] || [];
@@ -332,12 +335,12 @@ export default function OrganizationCalendar({
                         key={slot.appointmentId}
                         variant="outline"
                         className={cn(
-                          'rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug', //neu
+                          'rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug',
                           isBooked
                             ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                             : isSelected
-                            ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
-                            : 'border-border hover:bg-accent-gray-light'
+                              ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
+                              : 'border-border hover:bg-accent-gray-light'
                         )}
                         disabled={isBooked}
                         onClick={() => {
