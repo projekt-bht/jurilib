@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, withUserAuth } from '@/app/api/helper';
+import { handleValidationError, unauthorized } from '@/app/api/helper';
 
 import { isAppointmentUserMatch } from '../helpers';
 import { cancelAppointment } from './services';
@@ -15,12 +15,17 @@ const paramsSchema = z.strictObject({
   appointmentID: z.uuid({ error: 'Appointment ID is required' }),
 });
 
+// POST /api/appointment/:appointmentID/cancel
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "OPEN"
-async function cancelPOST(
-  _req: NextRequest,
-  { params, userId }: { params: Promise<{ appointmentID: string }>; userId: string }
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ appointmentID: string }> }
 ) {
   try {
+    // get userId from Header
+    const userId = req.headers.get('userID');
+    if (!userId) throw unauthorized;
+
     // get appointmentID from URL params
     const { appointmentID } = await params;
     paramsSchema.parse({ appointmentID });
@@ -45,6 +50,3 @@ async function cancelPOST(
     }
   }
 }
-
-// POST /api/appointment/:appointmentID/cancel
-export const POST = withUserAuth(cancelPOST);

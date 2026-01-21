@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, withUserAuth } from '@/app/api/helper';
+import { handleValidationError, unauthorized } from '@/app/api/helper';
 
 import { bookAppointment } from './services';
 
@@ -16,14 +16,19 @@ const paramsSchema = z.strictObject({
 
 // POST /api/appointment/:appointmentID/request
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "REQUESTED"
-async function requestPOST(
-  _req: NextRequest,
-  { params, userId }: { params: Promise<{ appointmentID: string }>; userId: string }
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ appointmentID: string }> }
 ) {
   try {
+    // get userId from Header
+    const userId = req.headers.get('userID');
+    if (!userId) throw unauthorized();
+
     // get appointmentID from URL params
     const { appointmentID } = await params;
     paramsSchema.parse({ appointmentID });
+
     // book apppointment
     const bookedAppointment = await bookAppointment(appointmentID, userId);
     return NextResponse.json(bookedAppointment, { status: 200 });
@@ -38,5 +43,3 @@ async function requestPOST(
     }
   }
 }
-
-export const POST = withUserAuth(requestPOST);
