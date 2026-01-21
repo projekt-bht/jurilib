@@ -70,6 +70,7 @@ export function LoginDialog({
       const loginFromServer = await postLogin(email, password);
       if (typeof loginFromServer === 'string') {
         if (loginFromServer.includes('not verified')) {
+          onSuccess();
           showVerifyDialog(true);
           return;
         }
