@@ -6,6 +6,8 @@ import prisma from '@/lib/db';
 import type { LoginResource } from '@/services/Resources';
 import type { AccountType } from '~/generated/prisma/enums';
 
+import { sendRegistrationCodeEmail } from '../../email/service';
+
 // Create a new Account
 export const login = async (
   email: string,
@@ -31,7 +33,13 @@ export const login = async (
     const isPasswordCorrect = await bcrypt.compare(password, account.password);
     if (!isPasswordCorrect) return false;
 
-    if (!account.isVerified) throw new Error('Account not verified');
+    if (!account.isVerified) {
+      const user = await prisma.user.findUnique({
+        where: { id: account.user?.id },
+      });
+      await sendRegistrationCodeEmail(account, user!);
+      throw new Error('Account not verified');
+    }
 
     const accountRes = {
       id: account.id,
