@@ -20,6 +20,7 @@ type LoginDialogProps = {
   showVerifyDialog: (open: boolean) => void;
   email: string;
   setEmail: (email: string) => void;
+  setSuccessOpen: (open: boolean) => void;
 };
 
 export function LoginDialog({
@@ -29,6 +30,7 @@ export function LoginDialog({
   showVerifyDialog,
   email,
   setEmail,
+  setSuccessOpen,
 }: LoginDialogProps) {
   const { setLogin } = useLoginContext();
   const [error, setError] = useState('');
@@ -74,8 +76,11 @@ export function LoginDialog({
         setError('Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.');
         return;
       } else {
-        setLogin(loginFromServer);
         onSuccess();
+        setSuccessOpen(true);
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+        setLogin(loginFromServer);
+        setSuccessOpen(false);
       }
     } catch (err) {
       setError(String(err));
