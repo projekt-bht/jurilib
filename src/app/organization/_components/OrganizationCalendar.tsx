@@ -238,7 +238,8 @@ export default function OrganizationCalendar({
               handleChange(date, null);
             }}
             disabled={isDisabledDay}
-            startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // disables previous button before current month
+            startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
+            endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year
             className="bg-transparent mx-auto flex-col"
             /* https://daypicker.dev/docs/styling */
             classNames={{
