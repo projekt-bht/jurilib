@@ -43,19 +43,15 @@ export default async function OrganizationDetailPage({
   // Upcomming errors are also handled by the Error Boundary
   const resAppointments = await fetchBackendData('appointment/organization/', organizationID);
   const appointments: Appointment[] = await resAppointments.json();
-  console.log(appointments);
 
   return (
     <div className="flex flex-col xl:flex-row justify-center bg-card items-start gap-2 p-2">
-      {/*  */}
       {/* Left Column - Profile Info */}
-      {/*  */}
-      <div className="w-full xl:w-4/6">
+      <div className="w-full xl:w-4/7">
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      {/*  */}
-      <div className="w-full xl:w-2/6 sticky top-20 h-fit self-start pt-8 px-10 xl:px-0">
+      <div className="w-full xl:w-3/7 sticky top-20 h-fit self-start pt-8 px-10 xl:px-0">
         <OrganizationCalendar appointments={appointments} employees={employees} />
       </div>
     </div>
