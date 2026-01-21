@@ -43,13 +43,13 @@ export async function GET(_req: NextRequest) {
     const loginRes = verifyJWT(jwtString);
     return NextResponse.json(loginRes, { status: 200 });
   } catch (error) {
-    const response = NextResponse.json(false, { status: 200 });
+    const response = NextResponse.json(false, { status: 400 });
     response.cookies.delete('access_token');
     return response;
   }
 }
 export async function DELETE(_req: NextRequest) {
-  const response = NextResponse.json({ status: 200 });
+  const response = NextResponse.json({ status: 204 });
   response.cookies.delete('access_token');
   return response;
 }

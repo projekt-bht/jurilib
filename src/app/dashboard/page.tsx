@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 import { getUser } from '@/services/api';
 import type { UserResource } from '@/services/Resources';
-import type { User } from '~/generated/prisma/client';
 
 import { useLoginContext } from '../LoginContext';
 
@@ -40,10 +39,12 @@ export default function Dashboard() {
       <h1 className="text-4xl font-bold mb-6 text-center">Dashboard</h1>
       {user && (
         <div className="mt-10">
-          <h1 className="text-4xl font-bold ml-6 mb-6">Willkommen, {user.name}</h1>
+          <h1 className="text-4xl font-bold ml-6 mb-6">Willkommen, {user.firstname}</h1>
           <div className="ml-6">
             <p>Telefon: {user.phone}</p>
-            <p>Adresse: {user.address}</p>
+            <p>
+              Adresse: {user.zipCode} {user.city}, {user.street} {user.houseNumber}
+            </p>
           </div>
           <h1 className="text-4xl font-bold ml-6 mt-20">Deine Anfragen: </h1>
         </div>

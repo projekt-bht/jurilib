@@ -4,17 +4,20 @@ import * as z from 'zod';
 
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { Role } from '~/generated/prisma/enums';
+import type { Account } from '~/generated/prisma/client';
+import { AccountType } from '~/generated/prisma/client';
 
 import { deleteEmployeeTx } from '../../employee/[employeeID]/services';
 import { deleteUserTx } from '../../user/[userID]/services';
 import { deleteAccountTx, readAccount, updateAccount } from './services';
 
-const UpdateSchema = z.object({
-  id: z.string().min(36),
-  email: z.string(),
-  password: z.string().min(6),
-  role: z.enum(Role),
+const UpdateSchema = z.strictObject({
+  email: z.email().optional(),
+  password: z
+    .string()
+    .min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8)
+    .optional(),
+  isVerified: z.boolean().optional(),
 });
 
 export async function GET(
@@ -52,10 +55,9 @@ export async function PATCH(
 
     // validate body
     const body = await req.json();
-    const data = UpdateSchema.parse(body);
+    const data = UpdateSchema.parse(body) as Partial<Account>;
 
-    // update account
-    const updatedAccount = await updateAccount(data, accountID);
+    const updatedAccount = await updateAccount(accountID, data);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -91,19 +93,18 @@ export async function DELETE(
       // First, delete any associated User or Employee record
       const account = await tx.account.findUnique({
         where: { id: accountID },
-        //select: { role: true },
       });
 
       if (!account) {
         throw new ValidationError('notFound', 'account', accountID, 404);
       }
 
-      if (account.role === Role.USER) {
+      if (account.type === AccountType.USER) {
         await deleteUserTx(accountID, tx);
-      } else if (account.role === Role.EMPLOYEE) {
+      } else if (account.type === AccountType.EMPLOYEE) {
         await deleteEmployeeTx(accountID, tx);
       } else {
-        throw new ValidationError('invalidInput', 'role', account.role);
+        throw new ValidationError('invalidInput', 'type', account.type);
       }
 
       await deleteAccountTx(accountID, tx);

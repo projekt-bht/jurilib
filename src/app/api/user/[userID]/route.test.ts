@@ -1,5 +1,21 @@
-import type { User } from '~/generated/prisma/browser';
-import type { UserCreateInput } from '~/generated/prisma/models';
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+// Non-mock related implementation:
+import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/client';
+import type { UserUpdateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
@@ -17,11 +33,19 @@ describe('User Routen testen', () => {
 
   test('create User', async () => {
     // create both account and user through registration
-    const registrationInput = {
-      email: 'petra' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-      name: 'Petra Muster',
+    const registrationInput: RegisterResource = {
+      account: {
+        email: 'petra' + Math.random() + '@mail.de',
+        password: '123456789',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Petra',
+        lastname: 'Muster',
+        gender: Gender.Frau,
+        pronoun: Pronoun.sie_ihr,
+        birthdate: new Date('1992-05-15'),
+      },
     };
 
     // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
@@ -36,7 +60,7 @@ describe('User Routen testen', () => {
     cUser = await resRegistration.json();
 
     const createdAccount = await prisma.account.findUnique({
-      where: { email: registrationInput.email },
+      where: { email: registrationInput.account.email },
     });
 
     expect(createdAccount?.id).toBe(cUser.accountId);
@@ -64,12 +88,8 @@ describe('User Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const user: UserCreateInput = {
-      id: cUser.id,
-      name: 'updatedPeter',
-      account: {
-        connect: { id: cUser.accountId },
-      },
+    const user: UserUpdateInput = {
+      firstname: 'updatedPeter',
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -83,15 +103,33 @@ describe('User Routen testen', () => {
     });
 
     const updated = await prisma.user.findFirst({
-      where: { name: user.name },
+      where: { id: cUser.id },
     });
 
-    expect(updated?.name).toBe('updatedPeter');
+    expect(updated?.firstname).toBe('updatedPeter');
     expect(res.status).toBe(200);
   });
 
   test('PATCH User with invalid data', async () => {
-    const data = {};
+    const data = {
+      id: 12345,
+    };
+    const patchReq = new NextRequest(baseUrl, {
+      headers: { 'content-type': 'application/json' },
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ userID: cUser.id }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('PATCH User with invalid attributes', async () => {
+    const data = {
+      invalidAttr: 'invalid',
+    };
     const patchReq = new NextRequest(baseUrl, {
       headers: { 'content-type': 'application/json' },
       method: 'PATCH',

@@ -17,10 +17,20 @@ export const createEmployeeTx = async (
 
     const createdEmployee = await tx.employee.create({
       data: {
-        name: employee.name,
+        title: employee.title,
+        firstname: employee.firstname,
+        lastname: employee.lastname,
+        pronoun: employee.pronoun,
+        pronounText: employee.pronounText,
+        gender: employee.gender,
+        genderText: employee.genderText,
+        imageUrl: employee.imageUrl,
         phone: employee.phone,
         position: employee.position,
-        expertiseArea: employee.expertiseArea,
+        email: employee.email,
+        description: employee.description,
+        expertiseAreas: employee.expertiseAreas,
+        languages: employee.languages,
         account: {
           connect: { id: employee.accountId },
         },

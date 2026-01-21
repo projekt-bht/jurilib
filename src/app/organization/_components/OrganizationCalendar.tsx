@@ -21,7 +21,7 @@ type OrganizationCalendarProps = {
   employees: Employee[];
 };
 // Placeholder employee data
-export type EmployeeCard = Pick<Employee, 'id' | 'name' | 'position'> & {
+export type EmployeeCard = Pick<Employee, 'id' | 'lastname' | 'position'> & {
   expertiseAreas: string[];
   avatar?: string | null;
 };

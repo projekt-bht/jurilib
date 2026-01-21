@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 
-import prisma from '@/lib/db';
-import { Areas } from '~/generated/prisma/enums';
+import { Area } from '~/generated/prisma/enums';
 
 const openai = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL ?? '',
@@ -20,7 +19,7 @@ export async function vectorizeSearch(query: string) {
     Gib bitte nur die Fachgebiete als antwort zurück, falls du nichts sinnvolles findest gib einfach '#' das zurück
     "${query}"
     `;
-  const possibleAnswers = Object.values(Areas).join(', ');
+  const possibleAnswers = Object.values(Area).join(', ');
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
       User role: Equivalent to the queries made by the user.
@@ -49,18 +48,6 @@ export async function vectorizeSearch(query: string) {
   });
 
   const embedding = embeddingResponse.data[0].embedding;
-
-  const createdSearchLog = await prisma.searchLog.create({
-    data: {
-      searchString: query,
-      searchStringExpanded: expandedQuery,
-    },
-  });
-
-  if (embedding)
-    await prisma.$executeRaw`UPDATE "SearchLog"
-                SET "searchStringExpandedVector" = ${`[${embedding.join(',')}]`}::vector
-                WHERE "id" = ${createdSearchLog.id}`;
 
   // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.

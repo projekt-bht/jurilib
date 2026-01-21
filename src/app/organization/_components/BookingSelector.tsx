@@ -48,7 +48,7 @@ export default function BookingSelector({
     bookingMode === 'quick'
       ? 'Nächster verfügbarer Termin'
       : selectedEmployee
-      ? selectedEmployee.name
+      ? selectedEmployee.lastname
       : 'Person auswählen';
 
   return (
