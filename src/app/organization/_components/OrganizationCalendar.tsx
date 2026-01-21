@@ -33,11 +33,6 @@ type SlotOption = {
 
 // TODO (future): Ampelsystem für Terminstatus (OPEN=grün, REQUESTED=gelb, CONFIRMED=rot) direkt im Kalender visualisieren.
 
-// export enum BookingMode {
-//   QUICK = 'quick',
-//   EMPLOYEE = 'employee',
-// }
-
 /**
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
  */
