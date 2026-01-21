@@ -19,7 +19,6 @@ import { deleteLogin } from '@/services/api';
 
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
-import NewPasswordDialog from './NewPasswordDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
 import { SuccessDialog } from './SuccessDialog';
 import { VerifyDialog } from './VerifyDialog';
@@ -43,15 +42,23 @@ export function Authentication() {
 
   if (login) {
     return (
-      <Button
-        onClick={async () => {
-          await deleteLogin();
-          setLogin(false);
-          router.push('/');
-        }}
-      >
-        Abmelden
-      </Button>
+      <>
+        <Button
+          onClick={async () => {
+            setSuccessOpen(true);
+            await new Promise((resolve) => setTimeout(resolve, 2500));
+
+            await deleteLogin();
+            setLogin(false);
+            setSuccessOpen(false);
+            router.push('/');
+          }}
+        >
+          Abmelden
+        </Button>
+
+        {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
+      </>
     );
   }
 
@@ -105,6 +112,7 @@ export function Authentication() {
                 showVerifyDialog={setShowVerification}
                 email={email}
                 setEmail={setEmail}
+                setSuccessOpen={setSuccessOpen}
               />
               <Button
                 type="button"
@@ -154,13 +162,7 @@ export function Authentication() {
         />
       )}
 
-      {successOpen && (
-        <SuccessDialog
-          open={successOpen}
-          onOpenChange={setSuccessOpen}
-          message="Dein Konto ist nun verifiziert."
-        />
-      )}
+      {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
     </>
   );
 }
