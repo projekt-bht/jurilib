@@ -19,7 +19,9 @@ import { deleteLogin } from '@/services/api';
 
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
+import NewPasswordDialog from './NewPasswordDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
+import { SuccessDialog } from './SuccessDialog';
 import { VerifyDialog } from './VerifyDialog';
 
 export function Authentication() {
@@ -32,6 +34,11 @@ export function Authentication() {
 
   const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const router = useRouter();
 
   if (login) {
@@ -93,8 +100,11 @@ export function Authentication() {
             <>
               <LoginDialog
                 onSuccess={() => setShowDialog(false)}
-                loginData={loginData}
-                setLoginData={setLoginData}
+                password={password}
+                setPassword={setPassword}
+                showVerifyDialog={setShowVerification}
+                email={email}
+                setEmail={setEmail}
               />
               <Button
                 type="button"
@@ -124,7 +134,13 @@ export function Authentication() {
       </Dialog>
 
       {showVerification && (
-        <VerifyDialog open={showVerification} onOpenChange={setShowVerification} />
+        <VerifyDialog
+          open={showVerification}
+          onOpenChange={setShowVerification}
+          setSuccessOpen={setSuccessOpen}
+          email={email}
+          password={password}
+        />
       )}
 
       {showForgetPasswordDialog && (
@@ -133,6 +149,16 @@ export function Authentication() {
           onOpenChange={setShowForgetPasswordDialog}
           showLogin={setShowDialog}
           showVerification={setShowVerification}
+          email={email}
+          setEmail={setEmail}
+        />
+      )}
+
+      {successOpen && (
+        <SuccessDialog
+          open={successOpen}
+          onOpenChange={setSuccessOpen}
+          message="Dein Konto ist nun verifiziert."
         />
       )}
     </>
