@@ -360,7 +360,7 @@ export default function OrganizationCalendar({
             </div>
           </div>
         )}
-        {login && (
+        {!login && (
           <div className="p-4 bg-accent-red-light border border-accent-red rounded-lg text-center animate-fade-in">
             <p className="text-accent-red font-medium">
               Du musst eingeloggt sein, um einen Termin zu buchen.
