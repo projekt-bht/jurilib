@@ -48,6 +48,8 @@ export function VerifyDialog({
         setError('');
         setSuccessOpen(true);
         onOpenChange(false);
+
+        await new Promise((resolve) => setTimeout(resolve, 2500));
         const loginFromServer = await postLogin(email, password);
         if (typeof loginFromServer !== 'string') setLogin(loginFromServer);
       } else {
