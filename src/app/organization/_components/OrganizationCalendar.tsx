@@ -232,7 +232,7 @@ export default function OrganizationCalendar({
           <CalendarIcon className="h-5 w-5 text-accent-blue" />
           <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
         </div>
-        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full">
+        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
           <Calendar
             mode="single"
             today={new Date()}
