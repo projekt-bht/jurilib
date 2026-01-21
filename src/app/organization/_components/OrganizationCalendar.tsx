@@ -152,6 +152,11 @@ export default function OrganizationCalendar({
       );
       setSelectedSlot(null);
       setSelectedTime(null);
+      //TODO: find better solution instead of refreshing the whole page. Didn't want to migrate fetching the appointment in here now
+      // reload page so appointments list is refetched and reflects updated booking status
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
     } finally {
