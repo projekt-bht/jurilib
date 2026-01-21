@@ -12,10 +12,10 @@ import { bookAppointment } from './services';
  */
 // const paramsSchema = z.object({
 const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'Employee ID is required' }),
+  appointmentID: z.uuid({ error: 'Appointment ID is required' }),
 });
 
-// POST /api/appointment/:appointmentID/book
+// POST /api/appointment/:appointmentID/request
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "REQUESTED"
 export async function POST(
   _req: NextRequest,
