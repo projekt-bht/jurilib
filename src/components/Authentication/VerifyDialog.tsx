@@ -3,6 +3,7 @@
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { useState } from 'react';
 
+import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { postVerify } from '@/services/api';
+import { postLogin, postVerify } from '@/services/api';
 
 import { CancelDialog } from './CancelDialog';
 
@@ -21,24 +22,39 @@ type VerifyDialogProps = {
   onOpenChange: (open: boolean) => void;
   setSuccessOpen: (open: boolean) => void;
   email: string;
+  password: string;
 };
 
 //https://shadcnstudio.com/docs/components/input-otp
-export function VerifyDialog({ open, onOpenChange, setSuccessOpen, email }: VerifyDialogProps) {
+export function VerifyDialog({
+  open,
+  onOpenChange,
+  setSuccessOpen,
+  email,
+  password,
+}: VerifyDialogProps) {
+  const { login, setLogin } = useLoginContext();
+
   const [code, setCode] = useState('');
   const [cancelOpen, setCancelOpen] = useState(false);
 
   const [error, setError] = useState('');
 
   async function handleVerify() {
-    const verify = await postVerify(email, 'EMAIL_VERIFICATION', code);
+    try {
+      const verify = await postVerify(email, 'EMAIL_VERIFICATION', code);
 
-    if (verify) {
-      setError('');
-      setSuccessOpen(true);
-      onOpenChange(false);
-    } else {
-      setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
+      if (verify) {
+        setError('');
+        setSuccessOpen(true);
+        onOpenChange(false);
+        const loginFromServer = await postLogin(email, password);
+        if (typeof loginFromServer !== 'string') setLogin(loginFromServer);
+      } else {
+        setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
+      }
+    } catch (error) {
+      setError(String(error));
     }
   }
 
