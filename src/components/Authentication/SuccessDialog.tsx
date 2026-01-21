@@ -1,23 +1,51 @@
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader2, LogOutIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../ui/dialog';
+import { useLoginContext } from '@/app/LoginContext';
+
+import { Dialog, DialogContent } from '../ui/dialog';
 
 type SuccessDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  message: string;
 };
-export function SuccessDialog({ open, onOpenChange, message }: SuccessDialogProps) {
+
+export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
+  const { login, setLogin } = useLoginContext();
+
+  useEffect(() => {
+    if (!open) return;
+
+    const timer = setTimeout(() => {
+      onOpenChange(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [open, onOpenChange]);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+    <Dialog open={open} onOpenChange={() => {}}>
+      <DialogContent
+        className="max-w-md"
+        showCloseButton={false}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <div className="flex flex-col items-center justify-center py-8 space-y-6">
-          <div className="p-4 bg-green-100 rounded-full">
-            <CheckCircle className="w-16 h-16 text-green-600" />
+          <div
+            className={login ? ' bg-orange-100 p-4 rounded-full' : 'bg-green-100 p-4 rounded-full'}
+          >
+            {login ? (
+              <LogOutIcon className="w-16 h-16 text-orange-400" />
+            ) : (
+              <CheckCircle className="w-16 h-16 text-green-600" />
+            )}
           </div>
-          <div className="text-center space-y-3">
-            <DialogTitle className="text-2xl font-semibold">Erfolgreich verifiziert!</DialogTitle>
-            <DialogDescription className="text-base">{message}</DialogDescription>
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+          <div className="text-center space-y-2">
+            <h3 className="text-xl font-semibold">
+              {login ? 'Du wirst automatisch abgemeldet!' : 'Du wirst automatisch angemeldet!'}
+            </h3>
+            <p className="text-sm text-muted-foreground">Bitte warte einen Augenblick.</p>
           </div>
         </div>
       </DialogContent>
