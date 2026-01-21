@@ -344,23 +344,25 @@ export default function OrganizationCalendar({
               </div>
             )}
 
-            <div className="space-y-2 pt-2">
-              <Button
-                className="bg-primary text-primary-foreground text-lg font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
-                disabled={!selectedDate || !selectedTime || isBooking || !login}
-                onClick={login ? confirmBooking : undefined}
-              >
-                {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
-              </Button>
-              {showStatusMessage && (
-                <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
-                  <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
-                </div>
-              )}
-            </div>
+            {login && (
+              <div className="space-y-2 pt-2">
+                <Button
+                  className="bg-primary text-primary-foreground text-lg font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
+                  disabled={!selectedDate || !selectedTime || isBooking}
+                  onClick={confirmBooking}
+                >
+                  {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
+                </Button>
+                {showStatusMessage && (
+                  <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
+                    <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
-        {login && (
+        {!login && (
           <div className="p-4 bg-accent-red-light border border-accent-red rounded-lg text-center animate-fade-in">
             <p className="text-accent-red font-medium">
               Du musst eingeloggt sein, um einen Termin zu buchen.
