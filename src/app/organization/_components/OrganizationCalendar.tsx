@@ -1,7 +1,7 @@
 'use client';
 
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Clock, User } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react'; //User icons
 import { useEffect, useState } from 'react';
 
 import { LoginContext } from '@/app/LoginContext';
@@ -13,7 +13,7 @@ import type { LoginResource } from '@/services/Resources';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import BookingSelector from './BookingSelector';
+// import BookingSelector from './BookingSelector';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -35,10 +35,10 @@ type SlotOption = {
 
 // TODO (future): Ampelsystem für Terminstatus (OPEN=grün, REQUESTED=gelb, CONFIRMED=rot) direkt im Kalender visualisieren.
 
-export enum BookingMode {
-  QUICK = 'quick',
-  EMPLOYEE = 'employee',
-}
+// export enum BookingMode {
+//   QUICK = 'quick',
+//   EMPLOYEE = 'employee',
+// }
 
 /**
  * Calendar widget with date/time selection plus booking flow state; emits combined selection via onChange.
@@ -58,8 +58,8 @@ export default function OrganizationCalendar({
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
-  const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+  // const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
+  // const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
   // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
 
   const setDate = (date: Date | undefined) => {
@@ -198,6 +198,7 @@ export default function OrganizationCalendar({
             </p>
           </div>
 
+          {/*
           <BookingSelector
             bookingMode={bookingMode}
             onBookingModeChange={(mode) => setBookingMode(mode)}
@@ -241,6 +242,7 @@ export default function OrganizationCalendar({
               </div>
             </div>
           )}
+          */}
 
           <div className="flex items-center gap-2 flex-wrap">
             {' '}
