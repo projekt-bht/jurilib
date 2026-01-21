@@ -44,7 +44,6 @@ type SlotOption = {
 export default function OrganizationCalendar({
   onChange,
   appointments,
-  employees,
 }: OrganizationCalendarProps) {
   const { login } = useLoginContext();
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
@@ -177,6 +176,7 @@ export default function OrganizationCalendar({
           </p>
         </div>
 
+        {/* save this for later use */}
         {/*
           <BookingSelector
             bookingMode={bookingMode}
@@ -211,7 +211,7 @@ export default function OrganizationCalendar({
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-foreground mb-1 break-words">
-                          {' '}
+                          
                           {employee.firstname} {employee.lastname}
                         </h4>
                       </div>
@@ -224,12 +224,10 @@ export default function OrganizationCalendar({
           */}
 
         <div className="flex items-center gap-2 flex-wrap">
-          {' '}
           <CalendarIcon className="h-5 w-5 text-accent-blue" />
           <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
         </div>
-        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4">
-          {/*  */}
+        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full">
           <Calendar
             mode="single"
             today={new Date()}
@@ -240,31 +238,20 @@ export default function OrganizationCalendar({
               handleChange(date, null);
             }}
             disabled={isDisabledDay}
-            className="bg-transparent w-full max-w-full mx-auto flex flex-col items-center justify-center"
+            startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // disables previous button before current month
+            className="bg-transparent mx-auto flex-col"
             /* https://daypicker.dev/docs/styling */
             classNames={{
-              months: '', // keep empty to preserve layout spacing; removing it shifts the nav arrows
-              month: 'w-full px-1',
-              caption: '',
-              caption_label: 'mb-15 font-bold text-xl',
-              nav: 'w-full flex justify-between pl-1 pr-6',
-              button_previous: ' hover:bg-accent-white rounded-lg p-2',
-              button_next: ' hover:bg-accent-white rounded-lg p-2',
-              table: 'w-full max-w-full',
-              weekdays: 'flex w-full justify-between px-1',
-              weekday: 'w-8 sm:w-10 text-center text-muted-foreground',
-              row: 'flex justify-between px-1',
-              day: 'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+              caption_label: 'font-bold text-xl',
+              day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
               today:
-                'h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
-
+                ' flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
               disabled:
-                '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground !cursor-not-allowed hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
+                '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
             }}
           />
 
-          <div className="flex items-center gap-6 px-2 pb-2 flex-wrap">
-            {' '}
+          <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
               <span>Heute</span>
@@ -283,14 +270,11 @@ export default function OrganizationCalendar({
         {selectedDate && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
-              {' '}
               <Clock className="h-5 w-5 text-accent-blue" />
-              <h2 className="text-2xl font-semibold">Wählen eine Uhrzeit</h2>
+              <h2 className="text-2xl font-semibold">Wähle eine Uhrzeit</h2>
             </div>
-            <p className="text-sm font-medium text-muted-foreground">Verfügbare Zeiten</p>
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {' '}
               {(() => {
                 const slotsForSelectedDate: SlotOption[] =
                   availableSlots[selectedDate?.toDateString() || ''] || [];
@@ -327,20 +311,16 @@ export default function OrganizationCalendar({
             </div>
 
             {selectedDate && selectedTime && (
-              <div className="mb-6">
-                <div className="mb-6 p-4 bg-accent-blue-soft border border-accent-blue-light rounded-lg animate-fade-in">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Ihr Termin</h3>
-
-                  <p className="mb-1 text-xl font-bold text-foreground">
-                    {selectedDate.toLocaleDateString('de-DE', {
-                      weekday: 'long',
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                    })}
-                  </p>
-                  <p className="text-xl font-bold text-accent-blue">{selectedTime} Uhr</p>
-                </div>
+              <div className="flex justify-center gap-6 mt-6 p-4 bg-accent-blue-soft border border-accent-blue-light rounded-lg animate-fade-in">
+                <p className=" text-xl font-bold text-foreground">
+                  {selectedDate.toLocaleDateString('de-DE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </p>
+                <p className="text-xl font-bold text-accent-blue">{selectedTime} Uhr</p>
               </div>
             )}
 
@@ -351,7 +331,7 @@ export default function OrganizationCalendar({
                   disabled={!selectedDate || !selectedTime || isBooking}
                   onClick={confirmBooking}
                 >
-                  {isBooking ? 'Termin wird bestätigt...' : 'Termin bestätigen'}
+                  {isBooking ? 'Termin wird bestätigt...' : 'Termin anfragen'}
                 </Button>
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
