@@ -57,7 +57,6 @@ export default function OrganizationCalendar({
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
   // const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
   // const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
-  // TODO: when backend is ready, lift bookingMode/employee selection to persisted state and load employees dynamically.
 
   const setDate = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -121,7 +120,6 @@ export default function OrganizationCalendar({
     return !isAvailable;
   }
   async function confirmBooking() {
-    // Simulate booking process
     if (!selectedDate || !selectedSlot) {
       setStatusMessage('Bitte Datum und Uhrzeit auswählen.');
       return;
@@ -129,11 +127,9 @@ export default function OrganizationCalendar({
 
     setIsBooking(true);
     setStatusMessage(null);
-    //patchCall to backend to confirm booking
-    //neu
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${selectedSlot.appointmentId}/book`, //book statt request
+        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${selectedSlot.appointmentId}/book`, //TODO: book statt request
         {
           method: 'POST',
           credentials: 'include' as RequestCredentials,
