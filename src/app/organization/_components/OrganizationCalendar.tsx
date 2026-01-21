@@ -151,20 +151,13 @@ export default function OrganizationCalendar({
     setIsBooking(true);
     setStatusMessage(null);
     //patchCall to backend to confirm booking
+    //neu
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/employee/${selectedSlot.employeeId}/${selectedSlot.appointmentId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${selectedSlot.appointmentId}/request`, //book statt request
         {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: 'POST',
           credentials: 'include' as RequestCredentials,
-          body: JSON.stringify({
-            // attach user and close slot in backend so it no longer appears as OPEN
-            userId: login.id,
-            appointmentStatus: AppointmentStatus.CONFIRMED,
-          }),
         }
       );
 
