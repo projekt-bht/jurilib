@@ -1,11 +1,11 @@
 meta {
-  name: book appointment
+  name: request appointment
   type: http
   seq: 1
 }
 
 post {
-  url: http://localhost:3000/api/appointment/{{process.env.APPOINTMENT_ID}}/book
+  url: http://localhost:3000/api/appointment/{{process.env.APPOINTMENT_ID}}/request
   body: none
   auth: none
 }
@@ -18,9 +18,4 @@ body:json {
   {
     
   }
-}
-
-settings {
-  encodeUrl: true
-  timeout: 0
 }
