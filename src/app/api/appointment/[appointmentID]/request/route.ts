@@ -2,8 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError } from '@/app/api/helper';
+import { handleValidationError, withUserAuth } from '@/app/api/helper';
 
 import { bookAppointment } from './services';
 
@@ -17,26 +16,17 @@ const paramsSchema = z.strictObject({
 
 // POST /api/appointment/:appointmentID/request
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "REQUESTED"
-export async function POST(
+async function requestPOST(
   _req: NextRequest,
-  { params }: { params: Promise<{ appointmentID: string }> }
+  { params, userId }: { params: Promise<{ appointmentID: string }>; userId: string }
 ) {
   try {
     // get appointmentID from URL params
     const { appointmentID } = await params;
     paramsSchema.parse({ appointmentID });
-
-    // verify user is logged in
-    const jwtString = _req.cookies.get('access_token')?.value;
-    const loginRes = verifyJWT(jwtString);
-    if (loginRes.userId) {
-      // book apppointment
-      const bookedAppointment = await bookAppointment(appointmentID, loginRes.userId);
-      return NextResponse.json(bookedAppointment, { status: 200 });
-    } else {
-      // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
+    // book apppointment
+    const bookedAppointment = await bookAppointment(appointmentID, userId);
+    return NextResponse.json(bookedAppointment, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
@@ -48,3 +38,5 @@ export async function POST(
     }
   }
 }
+
+export const POST = withUserAuth(requestPOST);
