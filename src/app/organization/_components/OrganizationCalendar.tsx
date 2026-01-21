@@ -143,9 +143,7 @@ export default function OrganizationCalendar({
       setShowStatusMessage(true);
       setStatusMessage('Termin erfolgreich gebucht!');
       // mark slot as booked locally so it disappears/appears disabled without reload
-      setBookedSlotIds((prev) =>
-        prev.includes(selectedSlot.appointmentId) ? prev : [...prev, selectedSlot.appointmentId]
-      );
+      setBookedSlotIds((prev) => [...prev, selectedSlot.appointmentId]);
       setSelectedSlot(null);
       setSelectedTime(null);
       //TODO: find better solution instead of refreshing the whole page. Didn't want to migrate fetching the appointment in here now
