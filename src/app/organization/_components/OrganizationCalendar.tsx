@@ -159,6 +159,7 @@ export default function OrganizationCalendar({
       }
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
+      setShowStatusMessage(true);
     } finally {
       setIsBooking(false);
     }
