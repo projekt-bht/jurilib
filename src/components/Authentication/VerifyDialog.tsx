@@ -24,6 +24,8 @@ type VerifyDialogProps = {
   setSuccessOpen: (open: boolean) => void;
   email: string;
   password: string;
+  type: TokenType;
+  setShowNewPasswordDialog: (open: boolean) => void;
 };
 
 //https://shadcnstudio.com/docs/components/input-otp
@@ -33,6 +35,8 @@ export function VerifyDialog({
   setSuccessOpen,
   email,
   password,
+  type,
+  setShowNewPasswordDialog,
 }: VerifyDialogProps) {
   const { login, setLogin } = useLoginContext();
 
@@ -64,12 +68,22 @@ export function VerifyDialog({
 
   async function handleVerify() {
     try {
-      const verify = await postVerify(email, 'EMAIL_VERIFICATION', code);
+      const verify = await postVerify(email, type, code);
 
-      if (verify) {
-        setError('');
+      if (!verify) {
+        setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
+        return;
+      }
+
+      setError('');
+      onOpenChange(false);
+
+      if (type === TokenType.PASSWORD_RESET) {
+        setShowNewPasswordDialog(true);
+      }
+
+      if (type === TokenType.EMAIL_VERIFICATION) {
         setSuccessOpen(true);
-        onOpenChange(false);
 
         await new Promise((resolve) => setTimeout(resolve, 2500));
         const loginFromServer = await postLogin(email, password);
