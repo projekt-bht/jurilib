@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     validateHeader(req.headers);
 
     const body = resendCodeSchema.parse(await req.json());
-    if (body.type === 'EMAIL_VERIFICATION') {
+    if (body.type === TokenType.EMAIL_VERIFICATION) {
       await sendRegistrationCodeEmail(body.email);
     } else {
       await sendPasswordResetEmail(body.email);
