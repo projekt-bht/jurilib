@@ -16,9 +16,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { deleteLogin } from '@/services/api';
+import { TokenType } from '~/generated/prisma/enums';
 
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
+import NewPasswordDialog from './NewPasswordDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
 import { SuccessDialog } from './SuccessDialog';
 import { VerifyDialog } from './VerifyDialog';
@@ -34,6 +36,9 @@ export function Authentication() {
   const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [showNewPasswordDialog, setShowNewPasswordDialog] = useState(false);
+
+  const [tokenType, setTokenType] = useState<TokenType>(TokenType.EMAIL_VERIFICATION);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,7 +62,13 @@ export function Authentication() {
           Abmelden
         </Button>
 
-        {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
+        {successOpen && (
+          <SuccessDialog
+            open={successOpen}
+            onOpenChange={setSuccessOpen}
+            setPassword={setPassword}
+          />
+        )}
       </>
     );
   }
@@ -102,6 +113,9 @@ export function Authentication() {
                 setRegisterData(initialRegisterData);
                 setRegisterStep(1);
               }}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              setTokenType={setTokenType}
             />
           ) : (
             <>
@@ -113,6 +127,7 @@ export function Authentication() {
                 email={email}
                 setEmail={setEmail}
                 setSuccessOpen={setSuccessOpen}
+                setTokenType={setTokenType}
               />
               <Button
                 type="button"
@@ -121,6 +136,7 @@ export function Authentication() {
                 onClick={() => {
                   setShowDialog(false);
                   setShowForgetPasswordDialog(true);
+                  setTokenType(TokenType.PASSWORD_RESET);
                 }}
               >
                 Passwort vergessen?
@@ -145,9 +161,11 @@ export function Authentication() {
         <VerifyDialog
           open={showVerification}
           onOpenChange={setShowVerification}
+          setShowNewPasswordDialog={setShowNewPasswordDialog}
           setSuccessOpen={setSuccessOpen}
           email={email}
           password={password}
+          type={tokenType}
         />
       )}
 
@@ -162,7 +180,18 @@ export function Authentication() {
         />
       )}
 
-      {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
+      {showNewPasswordDialog && (
+        <NewPasswordDialog
+          open={showNewPasswordDialog}
+          onOpenChange={setShowNewPasswordDialog}
+          email={email}
+          setSuccessOpen={setSuccessOpen}
+        />
+      )}
+
+      {successOpen && (
+        <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} setPassword={setPassword} />
+      )}
     </>
   );
 }
