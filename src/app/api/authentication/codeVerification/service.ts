@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import prisma from '@/lib/db';
 import { TokenType } from '~/generated/prisma/enums';
 
-const EXPIRY_MINUTES = 2000000;
+const EXPIRY_MINUTES = 15;
 
 /**
  * Generates a secure 6-digit code. And stores it in the database. Either creates a new
