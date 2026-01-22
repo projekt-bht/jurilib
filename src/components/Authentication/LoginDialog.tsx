@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { postLogin } from '@/services/api';
 import { isValidEmail } from '@/services/validator/validationHelper';
+import { TokenType } from '~/generated/prisma/enums';
 
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
@@ -21,6 +22,7 @@ type LoginDialogProps = {
   email: string;
   setEmail: (email: string) => void;
   setSuccessOpen: (open: boolean) => void;
+  setTokenType: (token: TokenType) => void;
 };
 
 export function LoginDialog({
@@ -31,6 +33,7 @@ export function LoginDialog({
   email,
   setEmail,
   setSuccessOpen,
+  setTokenType,
 }: LoginDialogProps) {
   const { setLogin } = useLoginContext();
   const [error, setError] = useState('');
@@ -65,6 +68,7 @@ export function LoginDialog({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setTokenType(TokenType.EMAIL_VERIFICATION);
 
     try {
       const loginFromServer = await postLogin(email, password);
