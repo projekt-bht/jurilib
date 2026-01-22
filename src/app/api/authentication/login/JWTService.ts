@@ -34,10 +34,7 @@ export const login = async (
     if (!isPasswordCorrect) return false;
 
     if (!account.isVerified) {
-      const user = await prisma.user.findUnique({
-        where: { id: account.user?.id },
-      });
-      await sendRegistrationCodeEmail(account, user!);
+      await sendRegistrationCodeEmail(email);
       throw new Error('Account not verified');
     }
 
