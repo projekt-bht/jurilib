@@ -75,11 +75,11 @@ export async function postVerify(email: string, type: TokenType, code: string) {
   return true;
 }
 
-export async function postResendCode(email: string, type: TokenType, code: string) {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/codeVerification`;
+export async function postResendCode(email: string, type: TokenType) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/resendCode`;
   const response = await fetch(url, {
     method: 'POST',
-    body: JSON.stringify({ email: email, type: type, code: code }),
+    body: JSON.stringify({ email: email, type: type }),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
