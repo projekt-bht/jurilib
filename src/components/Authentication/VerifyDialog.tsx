@@ -1,7 +1,7 @@
 'use client';
 
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
@@ -36,10 +36,31 @@ export function VerifyDialog({
 }: VerifyDialogProps) {
   const { login, setLogin } = useLoginContext();
 
+  const cdTime = 120;
+  const [resendCooldown, setResendCooldown] = useState(0);
+
   const [code, setCode] = useState('');
   const [cancelOpen, setCancelOpen] = useState(false);
 
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [resendCooldown]);
+
+  function isVerifyDialogValid() {
+    return code.length === 6;
+  }
+
+  function canResendCode() {
+    return resendCooldown === 0;
+  }
 
   async function handleVerify() {
     try {
@@ -62,9 +83,12 @@ export function VerifyDialog({
   }
 
   async function resendCode() {
+    if (!canResendCode()) return;
+
     try {
       //Distinguish between token types later
       await postResendCode(email, TokenType.EMAIL_VERIFICATION);
+      setResendCooldown(cdTime);
     } catch (error) {
       setError(String(error));
     }
@@ -90,6 +114,7 @@ export function VerifyDialog({
 
           <div className="flex justify-center mt-4 gap-2">
             <InputOTP
+              name="code"
               maxLength={6}
               pattern={REGEXP_ONLY_DIGITS}
               value={code}
@@ -111,7 +136,12 @@ export function VerifyDialog({
 
           <p className="text-sm text-center text-accent-red mt-1">{error}</p>
 
-          <Button type="submit" className="w-full h-12 text-xl" onClick={handleVerify}>
+          <Button
+            type="submit"
+            className="w-full h-12 text-xl"
+            onClick={handleVerify}
+            disabled={!isVerifyDialogValid()}
+          >
             Bestätigen
           </Button>
 
@@ -122,10 +152,17 @@ export function VerifyDialog({
                 variant="link"
                 className="pl-1 text-primary hover:underline"
                 onClick={resendCode}
+                disabled={!canResendCode()}
               >
                 Code erneut senden
               </Button>
             </p>
+            {!canResendCode() && (
+              <p className="text-red-600 text-sm">
+                Erneutes senden möglich in:{' '}
+                {new Date(resendCooldown * 1000).toISOString().slice(14, 19)}
+              </p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
