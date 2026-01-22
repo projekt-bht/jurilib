@@ -91,3 +91,20 @@ export async function postResendCode(email: string, type: TokenType) {
 
   return true;
 }
+
+export async function patchAccountPasswordWithEmail(email: string, password: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    body: JSON.stringify({ email: email, password }),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
+}
