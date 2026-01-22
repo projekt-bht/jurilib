@@ -7,12 +7,16 @@ import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { TokenType } from '~/generated/prisma/enums';
+import { postResendCode } from '@/services/api';
 
 type ForgotPasswordDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   showLogin: (open: boolean) => void;
   showVerification: (open: boolean) => void;
+  email: string;
+  setEmail: (email: string) => void;
 };
 
 export default function ForgotPasswordDialog({
@@ -20,16 +24,16 @@ export default function ForgotPasswordDialog({
   onOpenChange,
   showLogin,
   showVerification,
+  email,
+  setEmail,
 }: ForgotPasswordDialogProps) {
-  const [resetEmail, setResetEmail] = useState('');
-
   const [validationErrors, setValidationErrors] = useState<string | undefined>('');
 
   function validate(e: React.FocusEvent<HTMLInputElement>) {
     switch (e.target.name) {
       case 'email':
         const error =
-          resetEmail.length < 3 || resetEmail.length > 100 || !isValidEmail(resetEmail)
+          email.length < 3 || email.length > 100 || !isValidEmail(email)
             ? 'Bitte gib eine gültige E-Mail-Adresse ein.'
             : undefined;
         setValidationErrors(error);
@@ -37,14 +41,13 @@ export default function ForgotPasswordDialog({
     }
   }
   function isForgotPasswordDialogValid() {
-    return resetEmail.length > 0 && isValidEmail(resetEmail);
+    return email.length > 0 && isValidEmail(email);
   }
 
-  function handlePasswordResetEmailSubmit(e: React.FormEvent) {
+  async function handlePasswordResetEmailSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    //TODO LOGIC
-    //check if email exists in DB
+    await postResendCode(email, TokenType.PASSWORD_RESET);
 
     //Close this dialog
     onOpenChange(false);
@@ -69,8 +72,8 @@ export default function ForgotPasswordDialog({
               name="email"
               type="email"
               placeholder="ihre.email@beispiel.de"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               onBlur={validate}
               className={
                 validationErrors ? 'border-accent-red border-[0.5px] focus:ring-accent-red/200' : ''
