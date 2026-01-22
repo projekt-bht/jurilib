@@ -13,7 +13,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { postLogin, postVerify } from '@/services/api';
+import { postLogin, postResendCode, postVerify } from '@/services/api';
+import { TokenType } from '~/generated/prisma/enums';
 
 import { CancelDialog } from './CancelDialog';
 
@@ -55,6 +56,15 @@ export function VerifyDialog({
       } else {
         setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
       }
+    } catch (error) {
+      setError(String(error));
+    }
+  }
+
+  async function resendCode() {
+    try {
+      //Distinguish between token types later
+      await postResendCode(email, TokenType.EMAIL_VERIFICATION);
     } catch (error) {
       setError(String(error));
     }
@@ -107,10 +117,14 @@ export function VerifyDialog({
 
           <div className="text-center">
             <p className="text-muted-foreground text-sm">
-              Du hast keinen Code erhalten?{' '}
-              <a href="#" className="text-primary hover:underline">
+              Du hast keinen Code erhalten?
+              <Button
+                variant="link"
+                className="pl-1 text-primary hover:underline"
+                onClick={resendCode}
+              >
                 Code erneut senden
-              </a>
+              </Button>
             </p>
           </div>
         </DialogContent>
