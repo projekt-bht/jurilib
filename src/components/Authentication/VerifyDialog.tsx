@@ -100,8 +100,11 @@ export function VerifyDialog({
     if (!canResendCode()) return;
 
     try {
-      //Distinguish between token types later
-      await postResendCode(email, TokenType.EMAIL_VERIFICATION);
+      if (type === TokenType.EMAIL_VERIFICATION) {
+        await postResendCode(email, TokenType.EMAIL_VERIFICATION);
+      } else {
+        await postResendCode(email, TokenType.PASSWORD_RESET);
+      }
       setResendCooldown(cdTime);
     } catch (error) {
       setError(String(error));
