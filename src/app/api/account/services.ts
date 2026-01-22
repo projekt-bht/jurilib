@@ -55,3 +55,23 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
     throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
+
+export const updatePasswordWithEmail = async (email: string, password: string) => {
+  try {
+    const existingAccount = await prisma.account.findUnique({ where: { email: email } });
+    if (!existingAccount) {
+      throw new ValidationError('notFound', 'accounts', email);
+    }
+
+    if (password !== undefined) password = await bcrypt.hash(password, 10);
+
+    await prisma.account.update({
+      where: { email: email },
+      data: {
+        password: password,
+      },
+    });
+  } catch (error) {
+    throw new Error('Database update failed' + (error as Error).message);
+  }
+};
