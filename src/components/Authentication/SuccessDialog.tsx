@@ -8,9 +8,10 @@ import { Dialog, DialogContent } from '../ui/dialog';
 type SuccessDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  setPassword: (password: string) => void;
 };
 
-export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
+export function SuccessDialog({ open, onOpenChange, setPassword }: SuccessDialogProps) {
   const { login, setLogin } = useLoginContext();
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
 
     const timer = setTimeout(() => {
       onOpenChange(false);
+      setPassword('');
     }, 2500);
 
     return () => clearTimeout(timer);
