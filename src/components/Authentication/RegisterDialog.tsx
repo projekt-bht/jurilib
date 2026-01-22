@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { postLogin, register } from '@/services/api';
+import { register } from '@/services/api';
 import type { RegisterResource } from '@/services/Resources';
 import {
   isOnlyLetter,
@@ -22,7 +22,7 @@ import {
   isValidEmail,
   isValidGermanPhone,
 } from '@/services/validator/validationHelper';
-import { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
+import { AccountType, Gender, Pronoun, TokenType } from '~/generated/prisma/enums';
 
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
@@ -35,6 +35,9 @@ type RegisterDialogProps = {
   registerData: typeof initialRegisterData;
   setRegisterData: (data: typeof initialRegisterData) => void;
   setShowVerification: (data: boolean) => void;
+  setEmail: (email: string) => void;
+  setPassword: (password: string) => void;
+  setTokenType: (type: TokenType) => void;
 };
 
 export const initialRegisterData = {
@@ -63,12 +66,17 @@ export function RegisterDialog({
   registerData,
   setRegisterData,
   setShowVerification,
+  setEmail,
+  setPassword,
+  setTokenType,
 }: RegisterDialogProps) {
   const { setLogin } = useLoginContext();
   const [error, setError] = useState('');
 
   function update(e: React.ChangeEvent<HTMLInputElement>) {
     setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+    setEmail(registerData.email);
+    setPassword(registerData.password);
   }
 
   //Pilgrim Style :P
@@ -237,6 +245,7 @@ export function RegisterDialog({
 
   async function handleRegister() {
     try {
+      setTokenType(TokenType.EMAIL_VERIFICATION);
       const inputData: RegisterResource = {
         account: {
           email: registerData.email,
