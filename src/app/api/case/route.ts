@@ -1,5 +1,3 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -7,9 +5,9 @@ import { z } from 'zod';
 import { CaseStatus } from '~/generated/prisma/enums';
 import type { CaseCreateInput } from '~/generated/prisma/models';
 
+import { verifyJWT } from '../authentication/login/JWTService';
 import { handleValidationError, validateHeader } from '../helper';
 import { createCase } from './services';
-import { verifyJWT } from '../authentication/login/JWTService';
 
 const caseCreateSchema = z.strictObject({
   employeeId: z.uuid('Employee ID is required'),
