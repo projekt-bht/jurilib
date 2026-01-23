@@ -3,9 +3,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from './app/api/authentication/login/JWTService';
-
-// TODO: implement slug route interpreter
-
 /**
  *
  * If a route contains a slug route, e.g. /api/appointment/[appointmentID], the route will still be resolved/interpreted
