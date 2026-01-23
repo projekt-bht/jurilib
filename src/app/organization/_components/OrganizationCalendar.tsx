@@ -124,7 +124,7 @@ export default function OrganizationCalendar({
     setStatusMessage(null);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${selectedSlot.appointmentId}/book`, //TODO: book statt request
+        `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${selectedSlot.appointmentId}/request`,
         {
           method: 'POST',
           credentials: 'include' as RequestCredentials,
@@ -327,7 +327,7 @@ export default function OrganizationCalendar({
                   disabled={!selectedDate || !selectedTime || isBooking}
                   onClick={confirmBooking}
                 >
-                  {isBooking ? 'Termin wird bestätigt...' : 'Termin anfragen'}
+                  {isBooking ? 'Termin wird angefragt...' : 'Termin anfragen'}
                 </Button>
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">

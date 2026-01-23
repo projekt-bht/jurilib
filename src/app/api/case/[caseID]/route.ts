@@ -6,7 +6,7 @@ import { CaseStatus } from '~/generated/prisma/enums';
 
 import { verifyJWT } from '../../authentication/login/JWTService';
 import { handleValidationError, validateHeader } from '../../helper';
-import { isCaseEmployeeMatch } from './helpers';
+import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';
 

@@ -1,0 +1,21 @@
+meta {
+  name: cancel appointment
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/appointment/{{process.env.APPOINTMENT_ID}}/cancel
+  body: none
+  auth: none
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    
+  }
+}
