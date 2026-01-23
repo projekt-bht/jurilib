@@ -1,5 +1,3 @@
-// TODO: check ZOD validation
-
 import prisma from '@/lib/db';
 import type { ServiceUpdateInput } from '~/generated/prisma/models';
 

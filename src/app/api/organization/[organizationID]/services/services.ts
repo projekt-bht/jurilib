@@ -1,5 +1,4 @@
-// TODO: check ZOD validation
-
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Service } from '~/generated/prisma/client';
 import type { ServiceCreateInput } from '~/generated/prisma/models';
@@ -21,7 +20,7 @@ export async function readServices(organizationID: string): Promise<Service[]> {
       where: { organizationId: organizationID },
     });
     if (!services) {
-      throw new Error('No Services for given organization found.');
+      throw new ValidationError('notFound', 'services', organizationID);
     }
     return services;
   } catch (error) {
