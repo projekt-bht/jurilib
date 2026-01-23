@@ -1,5 +1,3 @@
-// TODO: check ZOD validation
-
 import bcrypt from 'bcryptjs';
 
 import { ValidationError } from '@/error/validationErrors';
