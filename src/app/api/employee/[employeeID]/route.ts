@@ -1,9 +1,8 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
+import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import type { Employee } from '~/generated/prisma/client';
 import { Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
 
@@ -33,9 +32,7 @@ export async function GET(
 ) {
   try {
     const { employeeID } = await params;
-    if (!employeeID) {
-      return NextResponse.json({ message: 'Employee ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
 
     const employee = await readEmployeeByEmployeeID(employeeID);
     return NextResponse.json(employee, { status: 200 });
@@ -49,13 +46,10 @@ export async function PATCH(
   { params }: { params: Promise<{ employeeID: string }> }
 ) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
+
     const { employeeID } = await params;
-    if (!employeeID) {
-      return NextResponse.json({ message: 'Employee ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
 
     const body = await req.json();
     const validatedBody = UpdateSchemaEmployee.parse(body);
@@ -64,10 +58,7 @@ export async function PATCH(
     return NextResponse.json(updatedEmployee, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleValidationError(error);
     }
     return NextResponse.json(
       { message: 'Failed to update Employee: ' + (error as Error).message },
