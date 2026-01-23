@@ -1,19 +1,18 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError } from '../../../helper';
+import { handleValidationError, validateIds } from '../../../helper';
 import { readAllAppointmentsByUser } from './service';
 
-// GET api/appointment/:userID
+// GET api/appointment/user/:userID
 // Retrieve all appointments of user
 export async function GET(req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
   try {
     // validate userID
     const { userID } = await params;
-    paramsSchema.parse({ userID });
+    validateIds([{ id: userID, identifier: 'userID' }]);
+
     const appointments = await readAllAppointmentsByUser(userID);
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
@@ -27,11 +26,3 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     }
   }
 }
-
-/**
- * Validate parameter userID
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  userID: z.string().min(1, 'User ID is required'),
-});
