@@ -1,9 +1,6 @@
-// TODO: check ZOD validation
-
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Appointment } from '~/generated/prisma/client';
-import type { AppointmentCreateInput } from '~/generated/prisma/models';
 
 type ZodCreateAppointment = {
   // organizationId: string;

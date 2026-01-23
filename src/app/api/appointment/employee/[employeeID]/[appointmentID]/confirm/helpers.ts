@@ -1,5 +1,3 @@
-// TODO: check ZOD validation
-
 import prisma from '@/lib/db';
 export async function isAppointmentEmployeeMatch(
   appointmentID: string,

@@ -1,9 +1,8 @@
-// TODO: check ZOD validation
-
 import {
   type CaseCreateWithAppointmentInput,
   createCaseWithAppointment,
 } from '@/app/api/case/services';
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Case } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/client';
@@ -18,14 +17,17 @@ export async function confirmAppointmentCreateCase(
     const appointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
+    if (!appointment) {
+      throw new ValidationError('notFound', 'appointment', appointmentId);
+    }
     // only continue, if userId is given!
-    if (appointment?.userId) {
+    if (appointment.userId) {
       // get user information to
       const user = await prisma.user.findUnique({
         where: { id: appointment.userId },
       });
       if (!user) {
-        throw new Error('User not found');
+        throw new ValidationError('notFound', 'user', appointment.userId);
       }
       const { firstname, lastname } = user;
 
