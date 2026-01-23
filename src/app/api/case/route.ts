@@ -2,11 +2,11 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleValidationError, validateHeader } from '@/app/api/helper';
 import { CaseStatus } from '~/generated/prisma/enums';
 import type { CaseCreateInput } from '~/generated/prisma/models';
 
 import { verifyJWT } from '../authentication/login/JWTService';
-import { handleValidationError, validateHeader } from '../helper';
 import { createCase } from './services';
 
 const caseCreateSchema = z.strictObject({

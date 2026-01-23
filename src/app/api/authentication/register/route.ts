@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleValidationError, validateHeader } from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
@@ -16,7 +17,6 @@ import type {
 import { createAccountTx } from '../../account/services';
 import { sendRegistrationCodeEmail } from '../../email/service';
 import { createEmployeeTx } from '../../employee/services';
-import { handleValidationError, validateHeader } from '../../helper';
 import { createUserTx } from '../../user/services';
 
 const accountSchema = z.strictObject({
