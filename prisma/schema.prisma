@@ -73,6 +73,7 @@ model User {
     // relations
     account Account @relation(fields: [accountId], references: [id])
     appointments Appointment[]
+    cases Case[]
 
     @@schema("public")
 }
@@ -187,6 +188,7 @@ model Service {
 model Case {
     id             String        @id @default(uuid())
     employeeId     String        // foreign key to Employee
+    userId         String        // foreign key to User
 
     // case infos
     title          String
@@ -200,6 +202,7 @@ model Case {
 
     // relations
     employee     Employee     @relation(fields: [employeeId], references: [id])
+    user         User         @relation(fields: [userId], references: [id])
     appointments Appointment[]
 
     @@schema("public")
