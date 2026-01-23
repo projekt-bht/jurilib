@@ -14,7 +14,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { Employee } from '~/generated/prisma/client';
 
-enum BookingMode {
+export enum BookingMode {
   QUICK = 'quick',
   EMPLOYEE = 'employee',
 }
