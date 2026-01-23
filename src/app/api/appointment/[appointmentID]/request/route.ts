@@ -23,7 +23,7 @@ export async function POST(
   try {
     // get userId from Header
     const userId = req.headers.get('userID');
-    if (!userId) throw unauthorized();
+    if (!userId) return unauthorized();
 
     // get appointmentID from URL params
     const { appointmentID } = await params;
