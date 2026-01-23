@@ -60,6 +60,8 @@ const requiresAuthRoutes = [
   '/api/user/',
   '/api/appointment/[appointmentID]/request',
   '/api/appointment/[appointmentID]/cancel',
+  '/api/case/user/[userID]',
+  '/api/case/employee/[employeeID]',
 ];
 const optionalAuthRoutes = ['/api/authentication/login'];
 
