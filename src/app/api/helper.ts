@@ -27,6 +27,6 @@ export function handleValidationError(error: z.ZodError) {
   return NextResponse.json({ message: 'Validation error', errors: error }, { status: 400 });
 }
 
-export function unauthorized(): never {
-  throw NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+export function unauthorized() {
+  return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 }
