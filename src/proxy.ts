@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from './app/api/authentication/login/JWTService';
-import { error } from 'console';
 
 // TODO: implement slug route interpreter
 

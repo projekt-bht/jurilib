@@ -1,9 +1,5 @@
-import { JsonWebTokenError } from 'jsonwebtoken';
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-
-import { verifyJWT } from './authentication/login/JWTService';
 
 /**
  * Validate the 'content-type' of the request header is 'application/json'
