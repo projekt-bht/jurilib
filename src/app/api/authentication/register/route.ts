@@ -51,7 +51,7 @@ const userRegistrationSchema = baseRegistrationSchema.extend({
 const employeeRegistrationSchema = baseRegistrationSchema.extend({
   description: z.string().optional(),
   email: z.email(),
-  organizationId: z.string().min(1), // Erforderlich und nicht leer
+  organizationId: z.uuid(),
   position: z.string().optional(),
   expertiseArea: z.array(z.enum(Area)).min(1), // at least 1 element
   languages: z.array(z.enum(Language)).min(1), // at least 1 element
@@ -152,7 +152,7 @@ function convertBodyToEmployeeInput(
   body: z.infer<typeof employeeRegistrationSchema>,
   accountId: string
 ): EmployeeUncheckedCreateInput {
-  // Manuelle Checks entfernt, da Zod die Validierung übernimmt
+  // manual checks removed, as Zod handles validation
   return {
     accountId: accountId,
     organizationId: body.organizationId,
