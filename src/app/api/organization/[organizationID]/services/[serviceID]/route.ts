@@ -1,21 +1,15 @@
-// TODO: check ZOD validation
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 
 import { isOrganizationEmployeeMatch } from '../helpers';
 import { deleteService } from './services';
 import { updateService } from './services';
 
-const paramsSchema = z.strictObject({
-  serviceID: z.uuid({ error: 'Service ID is required' }),
-  organizationID: z.uuid({ error: 'Organization ID is required' }),
-});
 const serviceUpdateSchema = z.strictObject({
   title: z.string('title is required').optional(),
   description: z.string('description is required').optional(),
@@ -34,7 +28,10 @@ export async function PATCH(
   try {
     // validate URL Param
     const { serviceID, organizationID } = await params;
-    paramsSchema.parse({ serviceID, organizationID });
+    validateIds([
+      { id: serviceID, identifier: 'serviceID' },
+      { id: organizationID, identifier: 'organizationID' },
+    ]);
     // verify employee is logged in
     const jwtString = req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
@@ -74,7 +71,10 @@ export async function DELETE(
 ) {
   try {
     const { serviceID, organizationID } = await params;
-    paramsSchema.parse({ serviceID, organizationID });
+    validateIds([
+      { id: serviceID, identifier: 'serviceID' },
+      { id: organizationID, identifier: 'organizationID' },
+    ]);
     // verify employee is logged in
     const jwtString = _req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
@@ -89,6 +89,9 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleValidationError(error);
+    }
     return NextResponse.json(
       { message: 'Failed to delete organization: ' + (error as Error).message },
       { status: 400 }
