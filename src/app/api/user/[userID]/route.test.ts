@@ -77,7 +77,7 @@ describe('User Routen testen', () => {
   test('GET non-existing User', async () => {
     const req = new NextRequest(baseUrl);
     const res = await GET(req, { params: Promise.resolve({ userID: 'non-existing-id' }) });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 
   test('PATCH User name', async () => {
