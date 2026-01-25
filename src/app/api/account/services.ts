@@ -6,7 +6,7 @@ import type { AccountResource } from '@/services/Resources';
 import type { Account, Prisma } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
-// TODO: Create a new Account within a transaction
+//Create a new Account within a transaction
 export const createAccountTx = async (
   account: AccountCreateInput,
   tx: Prisma.TransactionClient
@@ -56,7 +56,7 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
   }
 };
 
-//Check if OTP is correct otherwise dont change password
+// TODO: Check if OTP is correct otherwise dont change password
 export const updatePasswordWithEmail = async (email: string, password: string) => {
   try {
     const existingAccount = await prisma.account.findUnique({ where: { email: email } });
