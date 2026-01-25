@@ -99,7 +99,7 @@ export default function OrganizationsPage() {
             Deine Anfrage wird vertraulich behandelt.
           </div>
         </div>
-        ) : (
+
         <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
           <p className="text-5xl font-bold text-foreground">
             Leider konnten wir keine passende Organisation finden.

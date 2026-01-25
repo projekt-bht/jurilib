@@ -4,12 +4,12 @@ import { Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import type { Organization } from '~/generated/prisma/client';
-import type { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/enums';
+import type { Area, OrganizationType, PriceCategory } from '~/generated/prisma/enums';
 
 import { OrganizationFilters, type FilterOptions } from './OrganizationFilters';
 import { OrganizationGrid } from './OrganizationGrid';
 
-type FilterValue = PriceCategory | OrganizationType | Areas;
+type FilterValue = PriceCategory | OrganizationType | Area;
 
 const createDefaultFilters = (): FilterOptions => ({
   priceCategory: [],
@@ -41,7 +41,7 @@ export function OrganizationExplorer({
   const handleFilterChange = (
     category: keyof FilterOptions,
     value: FilterValue,
-    isChecked: boolean,
+    isChecked: boolean
   ) => {
     setFilters((prev) => {
       const currentValues = prev[category];
