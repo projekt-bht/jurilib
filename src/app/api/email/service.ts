@@ -1,6 +1,5 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { AccountResource } from '@/services/Resources';
 import type { Account } from '~/generated/prisma/browser';
 import { type Appointment, TokenType, type User } from '~/generated/prisma/browser';
 
@@ -14,8 +13,15 @@ import { sendEmail } from './mailer';
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendRegistrationCodeEmail(account: AccountResource, user: User) {
-  const userFullName = `${user.firstname} ${user.lastname}`.trim();
+export async function sendRegistrationCodeEmail(email: string) {
+  const account = await prisma.account.findUnique({
+    where: { email },
+    include: { user: true },
+  });
+
+  if (!account || !account.user) return;
+
+  const userFullName = `${account.user.firstname} ${account.user.lastname}`.trim();
 
   const { token: verificationCode, expiryMinutes } = await generateCode(
     account.id!,

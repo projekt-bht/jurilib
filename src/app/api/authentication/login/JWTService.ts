@@ -6,6 +6,8 @@ import prisma from '@/lib/db';
 import type { LoginResource } from '@/services/Resources';
 import type { AccountType } from '~/generated/prisma/enums';
 
+import { sendRegistrationCodeEmail } from '../../email/service';
+
 // Create a new Account
 export const login = async (
   email: string,
@@ -17,6 +19,8 @@ export const login = async (
          ofc, we could just send the accountId and then check if a User exists in that context, but thats kinda cursed
          Also, this logic makes more sense because we are only validating a login if an account includes a User or Employee
     */
+
+    //only verified accounts can login
     const account = await prisma.account.findUnique({
       where: { email: email },
       include: { user: true, employee: true },
@@ -28,6 +32,11 @@ export const login = async (
 
     const isPasswordCorrect = await bcrypt.compare(password, account.password);
     if (!isPasswordCorrect) return false;
+
+    if (!account.isVerified) {
+      await sendRegistrationCodeEmail(email);
+      throw new Error('Account not verified');
+    }
 
     const accountRes = {
       id: account.id,

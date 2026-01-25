@@ -17,6 +17,9 @@ jest.unstable_mockModule('@/services/api', () => ({
   deleteLogin: async () => {},
   postLogin: async () => {},
   register: async () => {},
+  postResendCode: async () => {},
+  patchAccountPasswordWithEmail: async () => {},
+  postVerify: async () => {},
 }));
 
 jest.unstable_mockModule('next/navigation', () => ({

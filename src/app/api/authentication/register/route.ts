@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
 
     // send registration email
     if (createdAccount && createdUser) {
-      await sendRegistrationCodeEmail(createdAccount, createdUser);
+      await sendRegistrationCodeEmail(body.account.email);
     }
 
     return NextResponse.json(result, { status: 201 });
