@@ -6,7 +6,7 @@ import type { AccountResource } from '@/services/Resources';
 import type { Account, Prisma } from '~/generated/prisma/client';
 import type { AccountCreateInput } from '~/generated/prisma/models';
 
-// Create a new Account within a transaction
+// TODO: Create a new Account within a transaction
 export const createAccountTx = async (
   account: AccountCreateInput,
   tx: Prisma.TransactionClient
