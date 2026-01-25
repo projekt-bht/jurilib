@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useLoginContext } from '@/app/LoginContext';
 
 import { Dialog, DialogContent } from '../ui/dialog';
+import { authTimeoutDuration } from './Authentication';
 
 type SuccessDialogProps = {
   open: boolean;
@@ -20,7 +21,7 @@ export function SuccessDialog({ open, onOpenChange, setPassword }: SuccessDialog
     const timer = setTimeout(() => {
       onOpenChange(false);
       setPassword('');
-    }, 2500);
+    }, authTimeoutDuration);
 
     return () => clearTimeout(timer);
   }, [open, onOpenChange]);

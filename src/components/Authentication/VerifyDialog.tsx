@@ -17,6 +17,7 @@ import { postLogin, postResendCode, postVerify } from '@/services/api';
 import { TokenType } from '~/generated/prisma/enums';
 
 import { CancelDialog } from './CancelDialog';
+import { authTimeoutDuration } from './Authentication';
 
 type VerifyDialogProps = {
   open: boolean;
@@ -85,7 +86,7 @@ export function VerifyDialog({
       if (type === TokenType.EMAIL_VERIFICATION) {
         setSuccessOpen(true);
 
-        await new Promise((resolve) => setTimeout(resolve, 2500));
+        await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
         const loginFromServer = await postLogin(email, password);
         if (typeof loginFromServer !== 'string') setLogin(loginFromServer);
       } else {

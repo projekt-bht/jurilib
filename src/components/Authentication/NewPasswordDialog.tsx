@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { CancelDialog } from './CancelDialog';
+import { authTimeoutDuration } from './Authentication';
 
 type NewPasswordDialogProps = {
   open: boolean;
@@ -77,7 +78,7 @@ export default function NewPasswordDialog({
       if (updatePassword) {
         onOpenChange(false);
         setSuccessOpen(true);
-        await new Promise((resolve) => setTimeout(resolve, 2500));
+        await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
         const loginFromServer = await postLogin(email, newPassword);
         if (typeof loginFromServer !== 'string') setLogin(loginFromServer);
       }

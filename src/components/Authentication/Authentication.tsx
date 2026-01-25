@@ -25,13 +25,14 @@ import { initialRegisterData, RegisterDialog } from './RegisterDialog';
 import { SuccessDialog } from './SuccessDialog';
 import { VerifyDialog } from './VerifyDialog';
 
+export const authTimeoutDuration: number = 1000;
+
 export function Authentication() {
   const { login, setLogin } = useLoginContext();
   const [showDialog, setShowDialog] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [registerStep, setRegisterStep] = useState(1);
   const [registerData, setRegisterData] = useState(initialRegisterData);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
 
   const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
@@ -51,7 +52,7 @@ export function Authentication() {
         <Button
           onClick={async () => {
             setSuccessOpen(true);
-            await new Promise((resolve) => setTimeout(resolve, 2500));
+            await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
 
             await deleteLogin();
             setLogin(false);

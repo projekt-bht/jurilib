@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { postLogin } from '@/services/api';
 import { isValidEmail } from '@/services/validator/validationHelper';
 import { TokenType } from '~/generated/prisma/enums';
+import { authTimeoutDuration } from './Authentication';
 
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
@@ -83,7 +84,7 @@ export function LoginDialog({
       } else {
         onSuccess();
         setSuccessOpen(true);
-        await new Promise((resolve) => setTimeout(resolve, 2500));
+        await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
         setLogin(loginFromServer);
         setSuccessOpen(false);
       }
