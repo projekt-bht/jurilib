@@ -11,6 +11,7 @@ const resendCodeSchema = z.strictObject({
   type: z.enum(TokenType),
 });
 
+// TODO: Rate Limiting
 export async function POST(req: NextRequest) {
   try {
     validateHeader(req.headers);
