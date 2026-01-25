@@ -18,7 +18,10 @@ export async function POST(req: NextRequest) {
     const body = codeVerificationSchema.parse(await req.json());
 
     const verify = await verifyCode(body.email, body.type, body.code);
-    return verify ? new Response(null, { status: 200 }) : new Response(null, { status: 400 });
+    if (verify) {
+      return new Response(null, { status: 200 });
+    }
+    throw new Error('Code Verification failed');
   } catch (error) {
     return new Response((error as Error).message, { status: 400 });
   }
