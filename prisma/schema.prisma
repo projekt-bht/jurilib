@@ -16,170 +16,242 @@ datasource db {
     schemas = ["public"]
 }
 
-// -------- Playtest ------
-
-model SearchLog {
-    id        String   @id @default(uuid())
-    searchString     String
-    searchStringExpanded String
-    searchStringExpandedVector  Unsupported("vector(3072)")?
-
-    createdAt      DateTime     @default(now())
-
-    @@schema("public")
-}
-
 // -------- Models --------
 
 model Account {
-    id        String   @id @default(uuid())
-    email     String   @unique
+    id        String @id @default(uuid())
+
+    // authentication infos
+    email     String @unique
     password  String
-    role      Role
-    
+    type      AccountType
+    isVerified Boolean @default(false)
+    accountToken AccountToken[]
+
+    // creation & update timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // relations
     user     User?
-    employee  Employee?
+    employee Employee?
 
     @@schema("public")
 }
 
 model User {
-    id        String   @id @default(uuid())
-    accountId String   @unique
-    name      String
+    id        String @id @default(uuid())
+    accountId String @unique // foreign key to Account
+
+    // personal infos
+    title     String?
+    firstname String
+    lastname  String
+    gender    Gender
+    genderText String? // in case the predefined genders do not fit
+    pronoun  Pronoun?
+    pronounText String? // in case the predefined pronouns do not fit
+    birthdate DateTime
+    placeOfBirth String?
     phone     String?
-    address   String?
+
+    imageUrl  String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
+
+    // address infos
+    // Optional? Might be useful for location-based services in the future
+    // or can be added later in user profile settings if needed
+    country   String?
+    city      String?
+    zipCode   String?   
+    street    String?
+    houseNumber String? 
+
+    // creation & update timestamps
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    cases          Case[]
-    appointments   Appointment[]
 
+    // relations
     account Account @relation(fields: [accountId], references: [id])
+    appointments Appointment[]
 
     @@schema("public")
 }
-
+    
 model Employee {
-    id             String       @id @default(uuid())
-    accountId      String       @unique
-    organizationId String
-    name           String
-    phone          String?
-    position       String?
-    expertiseArea  Areas[]
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
+    id             String @id @default(uuid()) // primary key
+    accountId      String @unique // foreign key to Account
 
+    // personal infos
+    title          String?
+    firstname      String
+    lastname       String
+    pronoun       Pronoun?
+    pronounText    String? // in case the predefined pronouns do not fit
+    gender         Gender 
+    genderText     String? // in case the predefined genders do not fit
+    imageUrl       String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
+    phone          String?
+
+
+    // organization infos
+    organizationId String
+    position       String?
+    email          String // used for contacting purposes (not for Authentication)
+
+    // profile infos
+    description    String?
+    expertiseAreas Area[]
+    //cv             String[] // Not used yet. Maybe create a cv template for employees to fill out. Maybe wrong data type?
+    languages      Language[] // languages spoken by the employee
+
+
+    // creation & update timestamps
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    // relations
     account      Account @relation(fields: [accountId], references: [id])
     organization Organization @relation(fields: [organizationId], references: [id])
-    appointments Appointment[]
     cases        Case[]
+    appointments Appointment[]
 
     @@schema("public")
 }
 
 
 model Organization {
-    id                 String                       @id @default(uuid())
+    id                 String @id @default(uuid()) // primary key
+
+    // organization infos
     name               String
-    description        String?
+    description        String
     shortDescription   String
-    //Orga Email for contacting purposes (not for Authentication)
-    email              String                       @unique
+    email              String @unique   // Orga Email for contacting purposes (not for Authentication)
     phone              String?
-    address            String?
     website            String?
-    expertiseArea      Areas[]
-    expertiseVector    Unsupported("vector(3072)")?
+    imageUrl           String? // maybe store images in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger images
+    accessibility      Accessibility[]
+
+    expertiseAreas     Area[]
     type               OrganizationType
     priceCategory      PriceCategory
-  
+
+    // address infos
+    country            String
+    city               String
+    zipCode            String 
+    street             String
+    houseNumber        String 
+
+    // vector for similarity search
+    expertiseVector    Unsupported("vector(3072)")?
+
+    // rating infos
+    averageRating      Float      @default(0)
+    numberOfRatings    Int        @default(0)
+
+    // creation & update timestamps
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
   
+    // relations
     services     Service[]
-    appointments Appointment[]
-    cases        Case[] // nur dem Employee der Org zugeordnet?
     employees    Employee[]
   
-    @@index([expertiseArea(ops: ArrayOps)], type: Gin)
+    @@index([expertiseAreas(ops: ArrayOps)], type: Gin)
     @@schema("public")
 }
 
-//Evtl hier Enum für Dienstleistungstyp (Erstgespräch etc.) und duration als Attribut, sodass Termintypen default Dauer haben?
 model Service {
-    id             String       @id @default(uuid())
-    organizationId String
-    title          String
-    description    String
-    type           ServiceType
-    pricingModel   PricingModel @default(FIXED)
+    id                  String       @id @default(uuid()) // primary key
+    organizationId      String       // foreign key to Organization
+
+    // service infos
+    title               String
+    description         String
+    type                ServiceType
+    pricingModel        PricingModel @default(FIXED) // default pricing model is fixed pricing
+    price               Float
+    defaultDuration     Int @default(30) // default duration in minutes
+
+    // creation & update timestamps
     createdAt      DateTime     @default(now())
     updatedAt      DateTime     @updatedAt
 
+    // relations
     organization Organization   @relation(fields: [organizationId], references: [id])
-    cases        Case[]
-    appointments Appointment[]
 
     @@schema("public")
 }
 
 model Case {
     id             String        @id @default(uuid())
-    userId         String
-    organizationId String
-    employeeId     String
-    serviceId      String
+    employeeId     String        // foreign key to Employee
+
+    // case infos
     title          String
     description    String
-    documents      String?
+    documentsURL   String[]      @default([])// TODO: Are we sure we want to implement this now? Maybe store documents in a separate service like AWS S3 or Cloudinary? Byte is also possible, but not recommended for larger files
     status         CaseStatus    @default(OPEN)
+
+    // creation & update timestamps
     createdAt      DateTime      @default(now())
     updatedAt      DateTime      @updatedAt
 
-    user         User          @relation(fields: [userId], references: [id])
-    //maybe multiple services? 
-    organization Organization? @relation(fields: [organizationId], references: [id])
-    service      Service?      @relation(fields: [serviceId], references: [id])
-    employee     Employee?     @relation(fields: [employeeId], references: [id])
+    // relations
+    employee     Employee     @relation(fields: [employeeId], references: [id])
     appointments Appointment[]
 
     @@schema("public")
 }
 
 model Appointment {
-    id             String            @id @default(uuid())
-    caseId         String?
-    userId         String?
-    organizationId String
-    employeeId     String
-    //serviceID oder reicht ServiceType?
-    serviceId      String?
+    id             String            @id @default(uuid()) // primary key
+    caseId         String?          // foreign key to Case  
+    userId         String?          // foreign key to User
+    employeeId     String           // foreign key to Employee
+
+    // appointment infos
     duration       Int
     status         AppointmentStatus @default(OPEN)
+    location       String?         // physical location or online meeting
+    meetingLink    String?         // link for online meeting
+    dateTimeStart  DateTime        // start date and time
+    dateTimeEnd    DateTime        // end date and time
+    notes          String?         // notes for the appointment
+
+    // creation & update timestamps
     createdAt      DateTime          @default(now())
     updatedAt      DateTime          @updatedAt
-    location       String?
-    meetingLink    String?
-    dateTimeStart  DateTime
-    dateTimeEnd    DateTime
-    notes          String?
 
+    // relations
     case         Case?         @relation(fields: [caseId], references: [id])
     user         User?         @relation(fields: [userId], references: [id])
-    organization Organization? @relation(fields: [organizationId], references: [id])
-    service      Service?      @relation(fields: [serviceId], references: [id])
-    employee     Employee?     @relation(fields: [employeeId], references: [id])
+    employee     Employee     @relation(fields: [employeeId], references: [id])
 
     @@schema("public")
 }
 
+model AccountToken{
+    id           String      @id @default(uuid())
+    accountId    String  
+    type         TokenType
+    token        String   
+    createdAt    DateTime    @default(now())         
+    expiresAt    DateTime    // TODO: Add calculation for expiration 
+    usedAt       DateTime?
+
+    account      Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+    @@schema("public")
+}
 
 // -------- Enums --------
 
-enum Role {
+enum AccountType {
     USER
     EMPLOYEE
+
     @@schema("public")
 }
 
@@ -194,6 +266,65 @@ enum UserType {
 enum OrganizationType {
     LAW_FIRM
     ASSOCIATION
+    
+    @@schema("public")
+}
+
+enum TokenType {
+    EMAIL_VERIFICATION
+    PASSWORD_RESET
+
+    @@schema("public")
+}
+
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
+enum Gender {
+  Agender           // without gender
+  Bigender          // two identities simultaneously
+  Demiboy           // partially male
+  Demigirl          // partially female
+  Frau              // female
+  Mann              // male
+  Nicht_binaer       // non-binary
+  Keine_Angabe      // no indication
+  Andere            // if "Andere" is selected, pronounText can be used to specify
+  
+@@schema("public")
+}
+
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
+enum Pronoun {
+    er_ihm
+    sie_ihr
+    he_him
+    she_her
+    they_them
+    ze_zir
+    xe_xem
+    fae_faer
+    ve_ver
+    per_per
+    e_em
+    Keine_Angabe
+    Andere // if "Andere" is selected, pronounText can be used to specify
+
+    @@schema("public")
+}
+
+// TODO: German or English? Uppercase or upper- + lowercase with underscores?
+enum Accessibility {
+    Stufenloser_Zugang
+    Rollstuhlgerecht
+    Rampe_vorhanden
+    Aufzug_vorhanden
+    Behinderten_WC
+    Parkplätze_vorhanden
+    Behintertenparkplätze
+    Blindenleitsystem
+
+    Gebärdensprachliche_Begleitung
+    Leichte_Sprache
+    Assistenztiere_erlaubt
     
     @@schema("public")
 }
@@ -223,9 +354,10 @@ enum CaseStatus {
 }
 
 enum AppointmentStatus {
+    OPEN
+    REQUESTED
     CONFIRMED
     CANCELED
-    OPEN
     COMPLETED
 
     @@schema("public")
@@ -247,7 +379,7 @@ enum PriceCategory {
     @@schema("public")
 }
 
-enum Areas {
+enum Area {
     // // Liste der Berliner Rechtsanwaltskammer https://www.rak-berlin.de/anwaltssuche/ (unter Schlagwortkatalog)
     // //  --- A ---
     // Adoptionsrecht
@@ -506,5 +638,87 @@ enum Areas {
 
     @@schema("public")
 }
+
+enum Language {
+  // Europa & Westeuropa
+  BOSNISCH
+  BULGARISCH
+  CZECH
+  CROATISCH
+  DÄNISCH
+  DEUTSCH
+  ENGLISCH
+  FINNISCH
+  FRANZÖSISCH
+  GRIECHISCH
+  HUNGARISCH
+  IRISCH
+  ITALIENISCH
+  NIEDERLÄNDISCH
+  NORWEGISCH
+  POLNISCH
+  PORTUGIESISCH
+  RUMÄNISCH
+  SCHWEDISCH
+  SERBISCH
+  SLOWAKISCH
+  SPANISCH
+  UNGARISCH
+
+  // Naher Osten & Zentralasien
+  ARABISCH
+  DARI
+  HEBRÄISCH
+  KURDISCH
+  PASCHTO
+  PERSISCH      // Farsi
+  TÜRKISCH
+
+  // Asien
+  BENGALI
+  FILIPINO
+  GUJARATI
+  HINDI
+  JAPANISCH
+  KANNADA
+  KHMER
+  KOREANISCH
+  LAOTISCH
+  MALAY
+  MALAYALAM
+  MARATHI
+  SINHALA
+  TAMIL
+  TELUGU
+  THAILÄNDISCH
+  URDU
+  VIETNAMESISCH
+  CHINESISCH
+
+  // Afrika
+  AMHARISCH
+  HAUSA
+  IGBO
+  SOMALI
+  SWAHILI
+  XHOSA
+  YORUBA
+  ZULU
+
+  // Amerika
+  GUARANI
+  HAITIANISCH_CREOLE
+  NAHUATL
+  QUECHUA
+
+  // Ozeanien
+  MAORI
+  SAMOAANISCH
+  TONGA
+
+  @@schema("public")
+}
+
+
 
 

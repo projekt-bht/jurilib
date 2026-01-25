@@ -1,5 +1,8 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
+import type { Prisma } from '~/generated/prisma/browser';
 import type { User } from '~/generated/prisma/client';
+import type { UserUpdateInput } from '~/generated/prisma/models';
 
 export const readUser = async (userID: string): Promise<User> => {
   try {
@@ -7,7 +10,7 @@ export const readUser = async (userID: string): Promise<User> => {
       where: { id: userID },
     });
     if (!user) {
-      throw new Error('User not found');
+      throw new ValidationError('notFound', 'user', userID);
     }
     return user;
   } catch (error) {
@@ -15,11 +18,15 @@ export const readUser = async (userID: string): Promise<User> => {
   }
 };
 
-export const updateUser = async (user: User, userID: string): Promise<User> => {
+export const updateUser = async (user: UserUpdateInput, userID: string): Promise<User> => {
   try {
     const existingUser = await prisma.user.findUnique({ where: { id: userID } });
     if (!existingUser) {
-      throw new Error('User not found for update');
+      throw new ValidationError('notFound', 'user', userID);
+    }
+
+    if (Object.keys(user).length === 0) {
+      throw new ValidationError('invalidInput', 'user', user);
     }
 
     const updatedUser = await prisma.user.update({
@@ -35,10 +42,23 @@ export const updateUser = async (user: User, userID: string): Promise<User> => {
   }
 };
 
-export const deleteUser = async (userID: string): Promise<void> => {
+/**
+ * Delete a user from the database by accountID within a transaction
+ * This function is always called through the account endpoint when an account is deleted.
+ */
+export const deleteUserTx = async (
+  accountID: string,
+  tx: Prisma.TransactionClient
+): Promise<void> => {
   try {
-    await prisma.user.delete({ where: { id: userID } });
+    // validate accountID
+    if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
+    // find user by accountID
+    const user = await tx.user.findUnique({ where: { accountId: accountID } });
+    if (!user) throw new ValidationError('notFound', 'user', accountID);
+    // delete user
+    await tx.user.delete({ where: { id: user.id } });
   } catch (error) {
-    throw new Error('Internal Server Error: ' + (error as Error).message);
+    throw new Error('Internal Server Error while deleting user: ' + (error as Error).message);
   }
 };

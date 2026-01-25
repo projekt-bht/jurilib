@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
-import type { Account } from '~/generated/prisma/client';
+import type { Account, Prisma } from '~/generated/prisma/client';
 
 export const readAccount = async (accountID: string): Promise<AccountResource> => {
   try {
@@ -17,7 +17,8 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
     const accountRes = {
       id: account.id,
       email: account.email,
-      role: account.role,
+      type: account.type,
+      isVerified: account.isVerified,
     };
 
     return accountRes;
@@ -26,9 +27,19 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
   }
 };
 
+/**
+ * Update an existing account in the database by accountID
+ *
+ * Only mail, password and isVerifiedcan be updated.
+ * Role and id are immutable, since they are used to connect the account to other entities.
+ *
+ * @param accountId - The ID of the account to update
+ * @param data - Partial account data to update (it can include email, password, isVerified)
+ * @returns The updated account resource
+ */
 export const updateAccount = async (
-  account: Account,
-  accountId: string
+  accountId: string,
+  data: Partial<Account>
 ): Promise<AccountResource> => {
   try {
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
@@ -36,19 +47,20 @@ export const updateAccount = async (
       throw new ValidationError('notFound', 'accounts', accountId);
     }
 
-    if (account.password) account.password = await bcrypt.hash(account.password, 10);
+    if (data.password !== undefined) data.password = await bcrypt.hash(data.password, 10);
 
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },
       data: {
-        ...account,
+        ...data,
       },
     });
 
-    const accountRes = {
+    const accountRes: AccountResource = {
       id: updatedAccount.id,
       email: updatedAccount.email,
-      role: updatedAccount.role,
+      type: updatedAccount.type,
+      isVerified: updatedAccount.isVerified,
     };
 
     return accountRes;
@@ -57,10 +69,16 @@ export const updateAccount = async (
   }
 };
 
-export const deleteAccount = async (accountID: string): Promise<void> => {
+export const deleteAccountTx = async (
+  accountID: string,
+  tx: Prisma.TransactionClient
+): Promise<void> => {
   try {
-    await prisma.account.delete({ where: { id: accountID } });
+    // validate accountID
+    if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
+    // delete account
+    await tx.account.delete({ where: { id: accountID } });
   } catch (error) {
-    throw new Error('Internal Server Error: ' + (error as Error).message);
+    throw new Error('Internal Server Error while deleting account: ' + (error as Error).message);
   }
 };

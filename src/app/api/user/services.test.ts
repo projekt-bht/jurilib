@@ -1,29 +1,64 @@
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
 import { jest } from '@jest/globals';
 
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
 
-import { createAccount } from '../account/services';
-import { createUser, readUsers } from './services';
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+// Non-mock related implementation:
+import { NextRequest } from 'next/server';
+
+import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/client';
+
+import { readUsers } from './services';
+const { POST } = await import('@/app/api/authentication/register/route');
+
+const { prisma } = await import('@/lib/db');
 
 describe('User testen', () => {
-  test('POST User', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-    };
+  const registrationURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
+  let cUser: User;
 
-    const createdAccount = await createAccount(account);
-
-    const user: UserCreateInput = {
-      name: 'peter',
+  test('create User', async () => {
+    // create both account and user through registration
+    const registrationInput: RegisterResource = {
       account: {
-        connect: { id: createdAccount.id },
+        email: 'petra' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Petra',
+        lastname: 'Muster',
+        gender: Gender.Frau,
+        pronoun: Pronoun.sie_ihr,
+        birthdate: new Date('1992-05-15'),
       },
     };
 
-    const createdUser = await createUser(user, createdAccount.id!);
-    expect(createdAccount.id).toBe(createdUser.accountId);
+    const request = new NextRequest(registrationURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationInput),
+    });
+
+    const resRegistration = await POST(request);
+    expect(resRegistration?.status).toBe(201);
+    cUser = await resRegistration?.json();
+
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registrationInput.account.email },
+    });
+
+    expect(createdAccount?.id).toBe(cUser.accountId);
   });
 
   test('GET Users', async () => {

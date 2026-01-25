@@ -1,42 +1,69 @@
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
 import { jest } from '@jest/globals';
 
-import type { User } from '~/generated/prisma/browser';
-import type { AccountCreateInput, UserCreateInput } from '~/generated/prisma/models';
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
 
-import { createAccount } from '../../account/services';
-import { createUser } from '../services';
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  vectorizeExpertiseArea: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+// Non-mock related implementation:
+import type { RegisterResource } from '@/services/Resources';
+import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/client';
+import type { UserUpdateInput } from '~/generated/prisma/models';
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { GET, PATCH, DELETE } = await import('@/app/api/user/[userID]/route');
-const { POST } = await import('@/app/api/account/route');
+const { GET, PATCH } = await import('@/app/api/user/[userID]/route');
+const { DELETE } = await import('@/app/api/account/[accountID]/route');
+const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/[userID]`;
+  const registrationURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account/register`;
   let cUser: User;
 
-  test('POST User', async () => {
-    const account: AccountCreateInput = {
-      email: 'peter' + Math.random() + '@mail.de',
-      password: '123456',
-      role: 'USER',
-    };
-
-    const createdAccount = await createAccount(account);
-
-    const user: UserCreateInput = {
-      name: 'peter',
+  test('create User', async () => {
+    // create both account and user through registration
+    const registrationInput: RegisterResource = {
       account: {
-        connect: { id: createdAccount.id },
+        email: 'petra' + Math.random() + '@mail.de',
+        password: '123456789',
+        type: AccountType.USER,
+      },
+      entity: {
+        firstname: 'Petra',
+        lastname: 'Muster',
+        gender: Gender.Frau,
+        pronoun: Pronoun.sie_ihr,
+        birthdate: new Date('1992-05-15'),
       },
     };
 
-    const createdUser = await createUser(user, createdAccount.id!);
-    cUser = createdUser;
-    expect(createdAccount.id).toBe(createdUser.accountId);
+    // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
+    const request = new NextRequest(registrationURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationInput),
+    });
+
+    const resRegistration = await POST(request);
+    expect(resRegistration.status).toBe(201);
+    cUser = await resRegistration.json();
+
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registrationInput.account.email },
+    });
+
+    expect(createdAccount?.id).toBe(cUser.accountId);
   });
 
   test('GET User', async () => {
@@ -61,12 +88,8 @@ describe('User Routen testen', () => {
     expect(getJSON.length).not.toBe(0);
     expect(getRes.status).toBe(200);
 
-    const user: UserCreateInput = {
-      id: cUser.id,
-      name: 'updatedPeter',
-      account: {
-        connect: { id: cUser.accountId },
-      },
+    const user: UserUpdateInput = {
+      firstname: 'updatedPeter',
     };
 
     const patchReq = new NextRequest(baseUrl, {
@@ -80,15 +103,17 @@ describe('User Routen testen', () => {
     });
 
     const updated = await prisma.user.findFirst({
-      where: { name: user.name },
+      where: { id: cUser.id },
     });
 
-    expect(updated?.name).toBe('updatedPeter');
+    expect(updated?.firstname).toBe('updatedPeter');
     expect(res.status).toBe(200);
   });
 
   test('PATCH User with invalid data', async () => {
-    const data = {};
+    const data = {
+      id: 12345,
+    };
     const patchReq = new NextRequest(baseUrl, {
       headers: { 'content-type': 'application/json' },
       method: 'PATCH',
@@ -101,17 +126,35 @@ describe('User Routen testen', () => {
     expect(res.status).toBe(400);
   });
 
-  test('DELETE User', async () => {
+  test('PATCH User with invalid attributes', async () => {
+    const data = {
+      invalidAttr: 'invalid',
+    };
+    const patchReq = new NextRequest(baseUrl, {
+      headers: { 'content-type': 'application/json' },
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ userID: cUser.id }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('DELETE User through account', async () => {
     const getReq = new NextRequest(baseUrl);
-    const res = await DELETE(getReq, { params: Promise.resolve({ userID: cUser.id }) });
+    const res = await DELETE(getReq, { params: Promise.resolve({ accountID: cUser.accountId }) });
     expect(res.status).toBe(200);
+    const deleted = await prisma.user.findUnique({ where: { id: cUser.id } });
+    expect(deleted).toBeNull();
   });
 
   test('DELETE non-existing User', async () => {
     const getReq = new NextRequest(baseUrl);
     const res = await DELETE(getReq, {
-      params: Promise.resolve({ userID: 'non-existing-id' }),
+      params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 });

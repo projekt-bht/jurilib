@@ -38,7 +38,7 @@ export function OrganizationCard({ organization }: OrganizationCardProps) {
         </p>
 
         <div className="flex flex-wrap gap-2 mb-6">
-          <ExpertiseAreaBadge areas={organization.expertiseArea} />
+          <ExpertiseAreaBadge areas={organization.expertiseAreas} />
         </div>
 
         <div className="mt-auto pt-6 border-t border-border/50">
@@ -46,7 +46,10 @@ export function OrganizationCard({ organization }: OrganizationCardProps) {
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-4 h-4" />
-                <span>{organization.address}</span>
+                <span>
+                  {organization.zipCode} {organization.city}, {organization.street}{' '}
+                  {organization.houseNumber}
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4" />
