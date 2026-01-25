@@ -56,6 +56,7 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
   }
 };
 
+//Check if OTP is correct otherwise dont change password
 export const updatePasswordWithEmail = async (email: string, password: string) => {
   try {
     const existingAccount = await prisma.account.findUnique({ where: { email: email } });
