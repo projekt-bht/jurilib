@@ -22,10 +22,16 @@ export type FilterOptions = {
 type FilterValue = PriceCategory | OrganizationType | Area;
 
 const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
-  [PriceCategoryEnum.FREE]: { label: '€ - Niedrig', hoverClassName: 'hover:bg-accent-emerald-soft' },
-  [PriceCategoryEnum.LOW]: { label: '€€ - Mittel', hoverClassName: 'hover:bg-accent-amber-soft' },
-  [PriceCategoryEnum.MEDIUM]: { label: '€€€ - Hoch', hoverClassName: 'hover:bg-accent-amber-light' },
-  [PriceCategoryEnum.HIGH]: { label: '€€€€ - Premium', hoverClassName: 'hover:bg-accent-red/10' },
+  [PriceCategoryEnum.FREE]: {
+    label: 'Kostenlos',
+    hoverClassName: 'hover:bg-accent-emerald-soft',
+  },
+  [PriceCategoryEnum.LOW]: { label: '€ - Niedrig', hoverClassName: 'hover:bg-accent-amber-soft' },
+  [PriceCategoryEnum.MEDIUM]: {
+    label: '€€ - Mittel',
+    hoverClassName: 'hover:bg-accent-amber-light',
+  },
+  [PriceCategoryEnum.HIGH]: { label: '€€€ - Hoch', hoverClassName: 'hover:bg-accent-red/10' },
 };
 
 const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
