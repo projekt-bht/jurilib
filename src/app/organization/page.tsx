@@ -1,7 +1,10 @@
+'use client';
 import Link from 'next/link';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
+import { OrganizationExplorer } from './_components/OrganizationExplorer';
+import { useEffect, useState } from 'react';
 
 async function fetchOrganizations(skip: number, take: number): Promise<Organization[]> {
   try {
@@ -95,16 +98,14 @@ export default function OrganizationsPage() {
           <div className="mb-8 text-muted-foreground pt-6">
             Deine Anfrage wird vertraulich behandelt.
           </div>
-        </>
-      ) : (
+        </div>
+        ) : (
         <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
           <p className="text-5xl font-bold text-foreground">
             Leider konnten wir keine passende Organisation finden.
           </p>
         </div>
-
         <OrganizationExplorer organizations={organizations} />
-
         <div className="mb-4 text-muted-foreground pt-2 text-sm">
           Deine Anfrage wird vertraulich behandelt.
         </div>

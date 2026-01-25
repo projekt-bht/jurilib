@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import type { Areas, OrganizationType, PriceCategory } from '~/generated/prisma/enums';
+import type { Area, OrganizationType, PriceCategory } from '~/generated/prisma/enums';
 import {
-  Areas as AreasEnum,
+  Area as AreasEnum,
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
@@ -16,10 +16,10 @@ import {
 export type FilterOptions = {
   priceCategory: PriceCategory[];
   organizationType: OrganizationType[];
-  specialties: Areas[];
+  specialties: Area[];
 };
 
-type FilterValue = PriceCategory | OrganizationType | Areas;
+type FilterValue = PriceCategory | OrganizationType | Area;
 
 const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
   [PriceCategoryEnum.FREE]: { label: '€ - Niedrig', hoverClassName: 'hover:bg-accent-emerald-soft' },
