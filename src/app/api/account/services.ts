@@ -40,7 +40,7 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
   try {
     const accounts: Account[] = await prisma.account.findMany();
     if (!accounts) {
-      throw new ValidationError('notFound', 'accounts', accounts);
+      throw new ValidationError('notFound', 'accounts', accounts, 404);
     }
 
     const accRes = accounts.map((account) => ({

@@ -51,7 +51,7 @@ export const readAllEmployees = async (): Promise<Employee[]> => {
   try {
     const employees: Employee[] = await prisma.employee.findMany();
     if (!employees) {
-      throw new ValidationError('notFound', 'employees', employees);
+      throw new ValidationError('notFound', 'employees', employees, 404);
     }
 
     return employees;

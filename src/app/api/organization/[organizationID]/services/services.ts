@@ -20,7 +20,7 @@ export async function readServices(organizationID: string): Promise<Service[]> {
       where: { organizationId: organizationID },
     });
     if (!services) {
-      throw new ValidationError('notFound', 'services', organizationID);
+      throw new ValidationError('notFound', 'services', organizationID, 404);
     }
     return services;
   } catch (error) {

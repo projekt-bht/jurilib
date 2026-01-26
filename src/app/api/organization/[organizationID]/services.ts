@@ -10,7 +10,7 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
       where: { id: organizationID },
     });
     if (!orga) {
-      throw new ValidationError('notFound', 'organization', organizationID);
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
     return orga;
   } catch (error) {
@@ -25,7 +25,7 @@ export const updateOrganization = async (
   try {
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
-      throw new ValidationError('notFound', 'organization', organizationID);
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
 
     if (!organization.expertiseAreas) {

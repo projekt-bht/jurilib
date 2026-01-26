@@ -18,7 +18,7 @@ export async function confirmAppointmentCreateCase(
       where: { id: appointmentId },
     });
     if (!appointment) {
-      throw new ValidationError('notFound', 'appointment', appointmentId);
+      throw new ValidationError('notFound', 'appointment', appointmentId, 404);
     }
     // only continue, if userId is given!
     if (appointment.userId) {
@@ -27,7 +27,7 @@ export async function confirmAppointmentCreateCase(
         where: { id: appointment.userId },
       });
       if (!user) {
-        throw new ValidationError('notFound', 'user', appointment.userId);
+        throw new ValidationError('notFound', 'user', appointment.userId, 404);
       }
       const { firstname, lastname } = user;
 

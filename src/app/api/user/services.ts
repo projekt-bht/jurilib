@@ -44,7 +44,7 @@ export const readUsers = async (): Promise<User[]> => {
   try {
     const users: User[] = await prisma.user.findMany();
     if (!users) {
-      throw new ValidationError('notFound', 'users', users);
+      throw new ValidationError('notFound', 'users', users, 404);
     }
 
     return users;

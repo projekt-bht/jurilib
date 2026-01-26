@@ -11,7 +11,7 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
       where: { id: accountID },
     });
     if (!account) {
-      throw new ValidationError('notFound', 'accounts', accountID);
+      throw new ValidationError('notFound', 'accounts', accountID, 404);
     }
 
     const accountRes = {
@@ -44,7 +44,7 @@ export const updateAccount = async (
   try {
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
     if (!existingAccount) {
-      throw new ValidationError('notFound', 'accounts', accountId);
+      throw new ValidationError('notFound', 'accounts', accountId, 404);
     }
 
     if (data.password !== undefined) data.password = await bcrypt.hash(data.password, 10);

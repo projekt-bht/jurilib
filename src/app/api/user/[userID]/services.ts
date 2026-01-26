@@ -10,7 +10,7 @@ export const readUser = async (userID: string): Promise<User> => {
       where: { id: userID },
     });
     if (!user) {
-      throw new ValidationError('notFound', 'user', userID);
+      throw new ValidationError('notFound', 'user', userID, 404);
     }
     return user;
   } catch (error) {
@@ -22,7 +22,7 @@ export const updateUser = async (user: UserUpdateInput, userID: string): Promise
   try {
     const existingUser = await prisma.user.findUnique({ where: { id: userID } });
     if (!existingUser) {
-      throw new ValidationError('notFound', 'user', userID);
+      throw new ValidationError('notFound', 'user', userID, 404);
     }
 
     if (Object.keys(user).length === 0) {
@@ -55,7 +55,7 @@ export const deleteUserTx = async (
     if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
     // find user by accountID
     const user = await tx.user.findUnique({ where: { accountId: accountID } });
-    if (!user) throw new ValidationError('notFound', 'user', accountID);
+    if (!user) throw new ValidationError('notFound', 'user', accountID, 404);
     // delete user
     await tx.user.delete({ where: { id: user.id } });
   } catch (error) {

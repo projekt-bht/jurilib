@@ -67,7 +67,7 @@ export async function readOrganizations(filters: {
       where,
     });
     if (!orgas) {
-      throw new ValidationError('notFound', 'organization', null);
+      throw new ValidationError('notFound', 'organization', null, 404);
     }
     return orgas;
   } catch (error) {

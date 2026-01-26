@@ -10,7 +10,7 @@ export const readEmployeeByEmployeeID = async (employeeID: string): Promise<Empl
       where: { id: employeeID },
     });
     if (!employee) {
-      throw new ValidationError('notFound', 'employees', employeeID);
+      throw new ValidationError('notFound', 'employees', employeeID, 404);
     }
     return employee;
   } catch (error) {
@@ -23,7 +23,7 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
   try {
     const existingEmployee = await prisma.employee.findUnique({ where: { id: employeeID } });
     if (!existingEmployee) {
-      throw new ValidationError('notFound', 'employees', employeeID);
+      throw new ValidationError('notFound', 'employees', employeeID, 404);
     }
 
     const updatedEmployee = await prisma.employee.update({
@@ -52,7 +52,7 @@ export const deleteEmployeeTx = async (
     if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
     // find employee by accountID
     const employee = await tx.employee.findUnique({ where: { accountId: accountID } });
-    if (!employee) throw new ValidationError('notFound', 'employee', accountID);
+    if (!employee) throw new ValidationError('notFound', 'employee', accountID, 404);
     // delete employee
     await tx.employee.delete({ where: { id: employee.id } });
   } catch (error) {

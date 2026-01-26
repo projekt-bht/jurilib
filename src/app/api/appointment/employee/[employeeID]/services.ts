@@ -72,15 +72,15 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
 async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string) {
   // check if employee exists
   if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
+    throw new ValidationError('notFound', 'employeeId', paramEmployeeID, 404);
   }
   // check if param employeeID matches body employeeID
   else if (bodyEmployeeID && paramEmployeeID !== bodyEmployeeID) {
-    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
+    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID, 404);
   }
   // check if organization exists
   // else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
-  //   throw new ValidationError('notFound', 'organizationId', orgID);
+  //   throw new ValidationError('notFound', 'organizationId', orgID, 404);
   // }
 }
 

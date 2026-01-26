@@ -38,6 +38,6 @@ export async function readAllAppointmentsByOrganization(
 async function validateReference(organizationID: string) {
   // check if organization exists
   if (!(await prisma.organization.findUnique({ where: { id: organizationID } }))) {
-    throw new ValidationError('notFound', 'organizationId', organizationID);
+    throw new ValidationError('notFound', 'organizationId', organizationID, 404);
   }
 }

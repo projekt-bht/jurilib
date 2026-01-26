@@ -11,7 +11,7 @@ export const readEmployeesByOrganizationID = async (
       where: { organizationId: organizationID },
     });
     if (!employees) {
-      throw new ValidationError('notFound', 'employees by organization ID', organizationID);
+      throw new ValidationError('notFound', 'employees by organization ID', organizationID, 404);
     }
 
     return employees;
