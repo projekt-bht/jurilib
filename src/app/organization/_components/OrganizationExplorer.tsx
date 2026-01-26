@@ -97,12 +97,14 @@ export function OrganizationExplorer({
 
   return (
     <section className="flex w-full flex-col gap-6">
-      <OrganizationFilters
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onReset={handleResetFilters}
-        activeFilterCount={activeFilterCount}
-      />
+      <div className="top-24 z-20">
+        <OrganizationFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleResetFilters}
+          activeFilterCount={activeFilterCount}
+        />
+      </div>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2">
