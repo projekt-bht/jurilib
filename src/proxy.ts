@@ -52,7 +52,6 @@ function resolveSlugRoutes(definedRoutes: string[], routeToBeChecked: string): s
 }
 
 const requiresAuthRoutes = [
-  '/api/dashboard',
   '/api/user/',
   '/api/appointment/[appointmentID]/request',
   '/api/appointment/[appointmentID]/cancel',
