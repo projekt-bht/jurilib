@@ -19,6 +19,10 @@ import { useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 
+// constant varable for icon size w and h
+const iconSize = 5;
+
+// Array to define navigation items to user specific pages
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
   { href: '/new-case', label: 'Neuer Fall', icon: Plus, highlight: true },
@@ -26,11 +30,13 @@ const navItems = [
   { href: '/appointments', label: 'Termine', icon: CalendarDays },
 ];
 
+// Array to define secondary navigation items to global pages
 const secondaryItems = [
-  { href: '/organizations', label: 'Organisationen', icon: Building2 },
+  { href: '/organization', label: 'Organisationen', icon: Building2 },
   { href: '/team', label: 'Team', icon: Users },
 ];
 
+// Array to define bottom navigation items to utility pages
 const bottomItems = [
   { href: '/settings', label: 'Einstellungen', icon: Settings },
   { href: '/help', label: 'Hilfe', icon: HelpCircle },
@@ -71,7 +77,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-23 left-0 h-[calc(100vh-5.75rem)] bg-background/95 backdrop-blur-xl border-r border-border z-30
+          fixed top-[90px] left-0 h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-16' : 'w-56'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
@@ -80,7 +86,7 @@ export function Sidebar() {
         <div className="flex flex-col h-full py-3">
           {/* Main Navigation */}
           <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
-            <div className="space-y-0.5">
+            <div className="space-y-1.5">
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -89,20 +95,20 @@ export function Sidebar() {
                     href={item.href}
                     onClick={handleLinkClick}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                      flex items-center gap-4 px-3.5 py-2.5 rounded-xl transition-all duration-200
                       ${isCollapsed ? 'justify-center' : ''}
                       ${
                         item.highlight && !isActive
-                          ? 'bg-primary/10 text-primary hover:bg-primary/15'
+                          ? 'bg-accent-blue-light text-primary hover:bg-accent-blue-light'
                           : isActive
-                            ? 'bg-muted text-foreground font-medium'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            ? 'bg-accent-gray-light/50 text-foreground font-medium'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon
-                      className={`w-4 h-4 shrink-0 ${item.highlight && !isActive ? 'text-primary' : ''}`}
+                      className={`w-${iconSize} h-${iconSize} shrink-0 ${item.highlight && !isActive ? 'text-accent-blue' : ''}`}
                     />
                     {!isCollapsed && <span className="text-sm">{item.label}</span>}
                   </Link>
@@ -132,13 +138,13 @@ export function Sidebar() {
                       ${isCollapsed ? 'justify-center' : ''}
                       ${
                         isActive
-                          ? 'bg-muted text-foreground font-medium'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                          ? 'bg-accent-gray-light/50 text-foreground font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 shrink-0" />
+                    <item.icon className={`w-${iconSize} h-${iconSize} shrink-0`} />
                     {!isCollapsed && <span className="text-sm">{item.label}</span>}
                   </Link>
                 );
@@ -160,13 +166,13 @@ export function Sidebar() {
                     ${isCollapsed ? 'justify-center' : ''}
                     ${
                       isActive
-                        ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        ? 'bg-accent-gray-light/50 text-foreground font-medium'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
                     }
                   `}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4 shrink-0" />
+                  <item.icon className={`w-${iconSize} h-${iconSize} shrink-0`} />
                   {!isCollapsed && <span className="text-sm">{item.label}</span>}
                 </Link>
               );
@@ -175,7 +181,7 @@ export function Sidebar() {
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full text-muted-foreground hover:text-foreground hover:bg-muted/50 justify-center"
+              className="hidden md:flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50 justify-center"
             >
               {isCollapsed ? (
                 <ChevronRight className="w-4 h-4" />
