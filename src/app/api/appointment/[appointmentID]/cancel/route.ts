@@ -2,19 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateIds } from '@/app/api/helper';
+import { handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { isAppointmentUserMatch } from '../helpers';
 import { cancelAppointment } from './services';
-
-/**
- * Validate parameter appointmentID as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'Appointment ID is required' }),
-});
 
 // POST /api/appointment/:appointmentID/cancel
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "OPEN"

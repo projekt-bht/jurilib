@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Case } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/client';
