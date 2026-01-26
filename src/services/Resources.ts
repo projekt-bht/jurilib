@@ -42,6 +42,22 @@ export type LoginResource = {
   exp: number;
 };
 
+export type UserLoginResource = {
+  id: string;
+  userId: string;
+  type: AccountType;
+  /** Expiration time in seconds since 1.1.1970 */
+  exp: number;
+};
+
+export type EmployeeLoginResource = {
+  id: string;
+  employeeId: string;
+  type: AccountType;
+  /** Expiration time in seconds since 1.1.1970 */
+  exp: number;
+};
+
 export type UserResource = {
   id: string;
   accountId: string;
