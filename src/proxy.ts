@@ -59,20 +59,16 @@ const requiresAuthRoutes = [
   '/api/case/user/[userID]',
   '/api/case/employee/[employeeID]',
 ];
-const optionalAuthRoutes = ['/api/authentication/login'];
 
 export function proxy(request: NextRequest, response: NextResponse) {
   const pathname = request.nextUrl.pathname;
   const requiredRoute = resolveSlugRoutes(requiresAuthRoutes, pathname);
-  const optionalRoute = resolveSlugRoutes(optionalAuthRoutes, pathname);
 
   if (requiresAuthRoutes.some((route) => requiredRoute.startsWith(route))) {
     return requiresAuthentication(request, response);
-  } else if (optionalAuthRoutes.some((route) => optionalRoute.startsWith(route))) {
+  } else {
     return optionalAuthentication(request, response);
   }
-
-  return NextResponse.next();
 }
 
 /**
