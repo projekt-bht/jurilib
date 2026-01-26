@@ -1,4 +1,5 @@
 'use client';
+//Pagination von Max muss angepasst werden
 // import Link from 'next/link';
 //
 // import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
