@@ -3,14 +3,18 @@ import { z } from 'zod';
 
 // ---------- header validation ----------
 
-// Validate the 'content-type' of the request header is 'application/json'
+/**
+ * Validate the 'content-type' of the request header is 'application/json'
+ */
 const headerSchema = z.object({
   'content-type': z.string().includes('application/json', {
     message: 'Invalid content type, must be application/json',
   }),
 });
 
-// Validate request headers, specifically the content-type
+/**
+ * Validate request headers, specifically the content-type
+ */
 export function validateHeader(headers: Headers): void {
   const contentType = headers.get('content-type');
   headerSchema.parse({ 'content-type': contentType ?? '' });
