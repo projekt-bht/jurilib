@@ -8,6 +8,7 @@ export default function Home() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { login, setLogin } = useLoginContext();
 
+  // TODO: Fallunterscheidung zwischen Employee und User über die Ressource im Login Context
   if (login) {
     return (
       <div className="min-h-screen bg-background">
