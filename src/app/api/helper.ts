@@ -15,9 +15,16 @@ const headerSchema = z.object({
 /**
  * Validate request headers, specifically the content-type
  */
-export function validateHeader(headers: Headers): void {
-  const contentType = headers.get('content-type');
-  headerSchema.parse({ 'content-type': contentType ?? '' });
+export function validateHeader(headers: Headers) {
+  try {
+    const contentType = headers.get('content-type');
+    headerSchema.parse({ 'content-type': contentType ?? '' });
+  } catch {
+    return NextResponse.json(
+      { message: 'Invalid content type, must be application/json' },
+      { status: 415 }
+    );
+  }
 }
 
 // ---------- param id validation ----------
