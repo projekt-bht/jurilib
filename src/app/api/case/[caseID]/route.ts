@@ -2,9 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 import { CaseStatus } from '~/generated/prisma/enums';
 
-import { verifyJWT } from '../../authentication/login/JWTService';
 import { handleValidationError, validateHeader } from '../../helper';
 import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
@@ -23,64 +24,67 @@ const caseUpdateSchema = z.strictObject({
 
 // PATCH /api/case/:caseID
 // Update a case
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ caseID: string }> }) {
-  try {
-    // validate URL Param
-    const { caseID } = await params;
-    paramsSchema.parse({ caseID });
-    // verify user is logged in
-    const jwtString = req.cookies.get('access_token')?.value;
-    const loginRes = verifyJWT(jwtString);
-    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
-      // validate header
-      validateHeader(req.headers);
-      // validate body
-      const body = caseUpdateSchema.parse(await req.json());
+export const PATCH = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      // validate URL Param
+      const { caseID } = await params;
+      paramsSchema.parse({ caseID });
+      if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
+        // validate header
+        validateHeader(req.headers);
+        // validate body
+        const body = caseUpdateSchema.parse(await req.json());
 
-      // handle update/patch
-      const updatedCase = await updateCase(caseID, body);
-      return NextResponse.json(updatedCase, { status: 200 });
-    } else {
-      // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        // handle update/patch
+        const updatedCase = await updateCase(caseID, body);
+        return NextResponse.json(updatedCase, { status: 200 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized, weil is nicht' }, { status: 401 });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Update failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
+  }
+);
+
+// DELETE /api/case/:caseID
+// Delete a case
+export const DELETE = withEmployeeAuth(
+  async (
+    _req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      const { caseID } = await params;
+      if (!caseID) {
+        return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
+      }
+      if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
+        await deleteCase(caseID);
+        return NextResponse.json({ status: 204 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
       return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
+        { message: 'Failed to delete organization: ' + (error as Error).message },
         { status: 400 }
       );
     }
   }
-}
-
-// DELETE /api/case/:caseID
-// Delete a case
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ caseID: string }> }
-) {
-  try {
-    const { caseID } = await params;
-    if (!caseID) {
-      return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
-    }
-    // verify user is logged in
-    const jwtString = _req.cookies.get('access_token')?.value;
-    const loginRes = verifyJWT(jwtString);
-    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
-      await deleteCase(caseID);
-      return NextResponse.json({ status: 204 });
-    } else {
-      // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-  } catch (error) {
-    return NextResponse.json(
-      { message: 'Failed to delete organization: ' + (error as Error).message },
-      { status: 400 }
-    );
-  }
-}
+);
