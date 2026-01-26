@@ -3,7 +3,13 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import {
+  handleError,
+  handleValidationError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 import type { ServiceCreateInput } from '~/generated/prisma/models';
 
@@ -35,7 +41,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json({ message: (error as Error).message }, { status: 400 });
+    return handleError(error, 'Failed to read Services');
   }
 }
 
@@ -76,16 +82,13 @@ export async function POST(
       return NextResponse.json(createdAppointment, { status: 201 });
     } else {
       // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Creation failed');
     }
   }
 }

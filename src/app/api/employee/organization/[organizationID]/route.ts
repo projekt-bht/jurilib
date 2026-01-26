@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { handleValidationError, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateIds } from '@/app/api/helper';
 
 import { readEmployeesByOrganizationID } from './services';
 
@@ -22,6 +22,6 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    return handleError(error, 'Failed to read Employees');
   }
 }

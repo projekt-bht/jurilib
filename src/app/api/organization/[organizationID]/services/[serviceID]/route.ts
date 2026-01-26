@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 
 import { isOrganizationEmployeeMatch } from '../helpers';
@@ -55,10 +55,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Service update failed');
     }
   }
 }
@@ -92,9 +89,6 @@ export async function DELETE(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to delete organization: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to delete organization');
   }
 }
