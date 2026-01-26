@@ -71,7 +71,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-[90px] left-0 h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30
+          fixed top-23 left-0 h-[calc(100vh-5.75rem)] bg-background/95 backdrop-blur-xl border-r border-border z-30
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-16' : 'w-56'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
