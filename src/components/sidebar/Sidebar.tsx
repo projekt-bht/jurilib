@@ -1,6 +1,5 @@
 'use client';
 
-import { useLoginContext } from '@/app/LoginContext';
 import {
   Building2,
   CalendarDays,
@@ -17,6 +16,8 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+
+import { useLoginContext } from '@/app/LoginContext';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
@@ -35,7 +36,7 @@ const bottomItems = [
   { href: '/help', label: 'Hilfe', icon: HelpCircle },
 ];
 
-export default function Sidebar() {
+export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -62,7 +63,7 @@ export default function Sidebar() {
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-[1.1rem] left-4 z-[60] md:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+        className="fixed top-[1.1rem] left-4 z-60 md:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
