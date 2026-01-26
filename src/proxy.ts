@@ -98,7 +98,7 @@ export function requiresAuthentication(req: NextRequest, _res: NextResponse) {
     return response;
   } catch {
     //No need to send detailed Error Message for security reasons, "Not Authorized" is enough.
-    return NextResponse.json('Not Authorized', { status: 401 });
+    return NextResponse.json({ message: 'Not Authorized' }, { status: 401 });
   }
 }
 
@@ -121,7 +121,7 @@ export function optionalAuthentication(req: NextRequest, _res: NextResponse) {
 
     return response;
   } catch {
-    //No need to send detailed Error Message for security reasons, "Not Authorized" is enough.
-    return NextResponse.json('Not Authorized', { status: 401 });
+    // only happens, if jwtString exists and is not valid. Hence ...
+    return NextResponse.json({ message: 'Corrupt Access Token' }, { status: 401 });
   }
 }
