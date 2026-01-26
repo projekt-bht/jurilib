@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import z from 'zod';
 
 import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import type { ValidationError } from '@/error/validationErrors';
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { readUser, updateUser } from './services';
@@ -59,7 +60,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ us
     }
     return NextResponse.json(
       { message: 'Failed to update User: ' + (error as Error).message },
-      { status: 400 }
+      { status: (error as ValidationError).statusCode ?? 400 }
     );
   }
 }

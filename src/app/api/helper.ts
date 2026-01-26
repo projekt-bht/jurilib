@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { ValidationError } from '@/error/validationErrors';
+
 // ---------- header validation ----------
 
 /**
@@ -20,9 +22,11 @@ export function validateHeader(headers: Headers) {
     const contentType = headers.get('content-type');
     headerSchema.parse({ 'content-type': contentType ?? '' });
   } catch {
-    return NextResponse.json(
-      { message: 'Invalid content type, must be application/json' },
-      { status: 415 }
+    throw new ValidationError(
+      'invalidContentType',
+      'content-type',
+      headers.get('content-type'),
+      415
     );
   }
 }
