@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, validateHeader } from '../../../../helper';
 import { readAppointment, updateAppointment } from './service';
 
 // GET /api/appointment/:userID/:appointmentID
@@ -77,40 +76,3 @@ export async function PATCH(
     }
   }
 }
-
-// DELETE /api/appointment/:userID/:appointmentID
-// Delete an appointment of user
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ userID: string; appointmentID: string }> }
-) {
-  try {
-    //validate header
-    validateHeader(req.headers);
-    // validate params
-    const { userID, appointmentID } = await params;
-    paramsSchema.parse({ userID, appointmentID });
-
-    // delete appointment
-    await deleteAppointment(userID, appointmentID);
-    return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Delete failed: ' + (error as Error).message },
-        { status: 400 }
-      );
-    }
-  }
-}
-
-/**
- * Validate parameter employeeID and appointmentID
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  userID: z.string().min(1, 'User ID is required'),
-  appointmentID: z.string().min(1, 'Appointment ID is required'),
-});
