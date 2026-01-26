@@ -12,14 +12,18 @@ import {
   ItemTitle,
 } from '@/components/ui/item';
 import { cn } from '@/lib/utils';
+import type { Employee } from '~/generated/prisma/client';
 
-import type { EmployeeCard } from './OrganizationCalendar';
+export enum BookingMode {
+  QUICK = 'quick',
+  EMPLOYEE = 'employee',
+}
 
 type BookingSelectorProps = {
   className?: string;
-  selectedEmployee?: EmployeeCard | null;
-  bookingMode?: 'quick' | 'employee';
-  onBookingModeChange?: (mode: 'quick' | 'employee') => void;
+  selectedEmployee?: Employee | null;
+  bookingMode?: BookingMode;
+  onBookingModeChange?: (mode: BookingMode) => void;
 }; // props allow external control of layout, mode, and selected staff
 
 /**
@@ -47,8 +51,8 @@ export default function BookingSelector({
     bookingMode === 'quick'
       ? 'Nächster verfügbarer Termin'
       : selectedEmployee
-      ? selectedEmployee.lastname
-      : 'Person auswählen';
+        ? selectedEmployee.lastname
+        : 'Person auswählen';
 
   return (
     // cn merges our default spacing with any external className passed in
@@ -79,9 +83,9 @@ export default function BookingSelector({
       </button>
 
       {isOpen && (
-        <ItemGroup className="grid grid-cols-1 gap-4 l:grid-cols-2">
+        <ItemGroup className="grid grid-cols-1 gap-4">
           <Item
-            onClick={() => handleSetBookingMode('quick')}
+            onClick={() => handleSetBookingMode(BookingMode.QUICK)}
             className={cn(
               // base card styles + variant for active/inactive quick mode
               'rounded-3xl border-2 shadow-[0_6px_18px_rgba(0,0,0,0.08)] cursor-pointer',
@@ -111,7 +115,7 @@ export default function BookingSelector({
           </Item>
 
           <Item
-            onClick={() => handleSetBookingMode('employee')}
+            onClick={() => handleSetBookingMode(BookingMode.EMPLOYEE)}
             className={cn(
               // base card styles + variant for active/inactive employee mode
               'rounded-3xl border-2 p-4 shadow-[0_6px_18px_rgba(0,0,0,0.06)] cursor-pointer',
@@ -133,7 +137,7 @@ export default function BookingSelector({
                 <User className="h-6 w-6" />
               </ItemMedia>
               <ItemContent className="gap-2">
-                <ItemTitle className="text-xl font-bold text-foreground leading-tight">
+                <ItemTitle className="text-l font-bold text-foreground leading-tight">
                   Mitarbeiter wählen
                 </ItemTitle>
                 <ItemDescription className="text-[11px] leading-4 text-muted-foreground">

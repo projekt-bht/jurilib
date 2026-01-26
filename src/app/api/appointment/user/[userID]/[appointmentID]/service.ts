@@ -34,20 +34,6 @@ export async function updateAppointment(
   }
 }
 
-// delete an appointment by ID
-export async function deleteAppointment(userID: string, appointmentID: string): Promise<void> {
-  // TODO: hier später noch prüfem, welchen Status der Termin haben darf, um gelöscht zu werden
-  // und ggf. Benachrichtugungen verschicken
-  try {
-    await validateReference(userID, appointmentID);
-    await prisma.appointment.delete({
-      where: { id: appointmentID },
-    });
-  } catch (error) {
-    throw new Error('Database delete failed: ' + (error as Error).message);
-  }
-}
-
 async function validateReference(paramUserID: string, paramAppointmentID: string) {
   // check if user exists
   if (!(await prisma.user.findUnique({ where: { id: paramUserID } }))) {
