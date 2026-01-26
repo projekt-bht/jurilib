@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowRight, Clock, MapPin } from 'lucide-react';
 
 import type { Organization } from '~/generated/prisma/client';
@@ -8,11 +6,7 @@ import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 
 // TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
 
-type OrganizationCardProps = {
-  organization: Organization;
-};
-
-export function OrganizationCard({ organization }: OrganizationCardProps) {
+export function OrganizationCard({ organization }: { organization: Organization }) {
   return (
     <div
       id={`OrganizationCard_${organization.id}`}
