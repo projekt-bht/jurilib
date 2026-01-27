@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, validateHeader } from '../../../../helper';
+import { handleValidationError, unauthorized, validateHeader } from '../../../../helper';
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
 
 /**
@@ -64,61 +66,71 @@ export async function GET(
 
 // PATCH /api/appointment/:employeeID/:appointmentID
 // Update an appointment
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
-) {
-  try {
-    //validate header
-    validateHeader(req.headers);
-    // validate params
-    const { employeeID, appointmentID } = await params;
-    paramsSchema.parse({ employeeID, appointmentID });
-    // validate body
-    const body = appointmentUpdateSchema.parse(await req.json());
-    if (!body || Object.keys(body).length === 0) {
-      return NextResponse.json({ message: 'Update data is required' }, { status: 400 });
-    }
+export const PATCH = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string; appointmentID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      //validate header
+      validateHeader(req.headers);
+      // validate params
+      const { employeeID, appointmentID } = await params;
+      paramsSchema.parse({ employeeID, appointmentID });
+      // validate body
 
-    // update appointment
-    const updatedAppointment = await updateAppointment(employeeID, appointmentID, body);
-    return NextResponse.json(updatedAppointment, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      // check if loginResource and employeeid given by url-param are the same
+      if (!(employeeID === account.employeeId)) return unauthorized();
+
+      const body = appointmentUpdateSchema.parse(await req.json());
+      if (!body || Object.keys(body).length === 0) {
+        return NextResponse.json({ message: 'Update data is required' }, { status: 400 });
+      }
+
+      // update appointment
+      const updatedAppointment = await updateAppointment(employeeID, appointmentID, body);
+      return NextResponse.json(updatedAppointment, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Update failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
   }
-}
+);
 
 // DELETE /api/appointment/:employeeID/:appointmentID
 // Delete an appointment
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
-) {
-  try {
-    //validate header
-    validateHeader(req.headers);
-    // validate params
-    const { employeeID, appointmentID } = await params;
-    paramsSchema.parse({ employeeID, appointmentID });
+export const DELETE = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string; appointmentID: string }> },
+    _account: EmployeeLoginResource
+  ) => {
+    try {
+      //validate header
+      validateHeader(req.headers);
+      // validate params
+      const { employeeID, appointmentID } = await params;
+      paramsSchema.parse({ employeeID, appointmentID });
 
-    // delete appointment
-    await deleteAppointment(employeeID, appointmentID);
-    return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Delete failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      // delete appointment
+      await deleteAppointment(employeeID, appointmentID);
+      return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Delete failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
   }
-}
+);
