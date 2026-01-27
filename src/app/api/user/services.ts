@@ -36,7 +36,8 @@ export const createUserTx = async (
 
     return createdUser;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 };
 
@@ -49,6 +50,7 @@ export const readUsers = async (): Promise<User[]> => {
 
     return users;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };

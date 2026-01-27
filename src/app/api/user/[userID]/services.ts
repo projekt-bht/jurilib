@@ -14,7 +14,8 @@ export const readUser = async (userID: string): Promise<User> => {
     }
     return user;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -38,7 +39,8 @@ export const updateUser = async (user: UserUpdateInput, userID: string): Promise
 
     return updatedUser;
   } catch (error) {
-    throw new Error('Database update failed' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed' + (error as Error).message);
   }
 };
 
@@ -59,6 +61,7 @@ export const deleteUserTx = async (
     // delete user
     await tx.user.delete({ where: { id: user.id } });
   } catch (error) {
-    throw new Error('Internal Server Error while deleting user: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Internal Server Error while deleting user: ' + (error as Error).message);
   }
 };
