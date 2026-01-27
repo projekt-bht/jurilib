@@ -101,8 +101,8 @@ export function Sidebar() {
                         item.highlight && !isActive
                           ? 'bg-accent-blue-light text-primary hover:bg-accent-blue-light'
                           : isActive
-                            ? 'bg-accent-gray-light/50 text-foreground font-medium'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
+                            ? 'bg-accent-gray-light/40 text-foreground font-medium'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/40'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
@@ -138,8 +138,8 @@ export function Sidebar() {
                       ${isCollapsed ? 'justify-center' : ''}
                       ${
                         isActive
-                          ? 'bg-accent-gray-light/50 text-foreground font-medium'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
+                          ? 'bg-accent-gray-light/40 text-foreground font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/40'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
@@ -166,8 +166,8 @@ export function Sidebar() {
                     ${isCollapsed ? 'justify-center' : ''}
                     ${
                       isActive
-                        ? 'bg-accent-gray-light/50 text-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50'
+                        ? 'bg-accent-gray-light/40 text-foreground font-medium'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/40'
                     }
                   `}
                   title={isCollapsed ? item.label : undefined}
@@ -181,7 +181,7 @@ export function Sidebar() {
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/50 justify-center"
+              className="hidden md:flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/40 justify-center"
             >
               {isCollapsed ? (
                 <ChevronRight className="w-4 h-4" />
