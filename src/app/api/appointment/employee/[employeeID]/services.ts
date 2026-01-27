@@ -44,7 +44,8 @@ export async function createAppointment(
     });
     return createdAppointment;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 }
 
@@ -58,7 +59,8 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
     });
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 

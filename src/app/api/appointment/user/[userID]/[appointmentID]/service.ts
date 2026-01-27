@@ -8,7 +8,8 @@ export async function readAppointment(userID: string, appointmentID: string): Pr
     const appointment = await validateReference(userID, appointmentID);
     return appointment;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 }
 
@@ -30,7 +31,8 @@ export async function updateAppointment(
     });
     return updatedAppointment;
   } catch (error) {
-    throw new Error('Database update failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed: ' + (error as Error).message);
   }
 }
 

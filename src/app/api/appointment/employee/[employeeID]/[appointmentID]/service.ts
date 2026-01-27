@@ -24,7 +24,8 @@ export async function readAppointment(
     const appointment = await validateReference(employeeID, appointmentID);
     return appointment;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 }
 
@@ -68,7 +69,8 @@ export async function updateAppointment(
     });
     return updatedAppointment;
   } catch (error) {
-    throw new Error('Database update failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed: ' + (error as Error).message);
   }
 }
 
@@ -80,7 +82,8 @@ export async function deleteAppointment(employeeID: string, appointmentID: strin
     await validateReference(employeeID, appointmentID);
     await prisma.appointment.delete({ where: { id: appointmentID, employeeId: employeeID } });
   } catch (error) {
-    throw new Error('Database delete failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database delete failed: ' + (error as Error).message);
   }
 }
 

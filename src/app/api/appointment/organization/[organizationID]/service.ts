@@ -25,7 +25,8 @@ export async function readAllAppointmentsByOrganization(
 
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
