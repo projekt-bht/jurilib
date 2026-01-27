@@ -14,7 +14,8 @@ export const readEmployeeByEmployeeID = async (employeeID: string): Promise<Empl
     }
     return employee;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -35,7 +36,8 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
 
     return updatedEmployee;
   } catch (error) {
-    throw new Error('Database update failed' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed' + (error as Error).message);
   }
 };
 
@@ -56,6 +58,8 @@ export const deleteEmployeeTx = async (
     // delete employee
     await tx.employee.delete({ where: { id: employee.id } });
   } catch (error) {
-    throw new Error('Internal Server Error while deleting employee: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else
+      throw new Error('Internal Server Error while deleting employee: ' + (error as Error).message);
   }
 };
