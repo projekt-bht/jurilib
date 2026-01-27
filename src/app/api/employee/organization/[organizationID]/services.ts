@@ -16,6 +16,7 @@ export const readEmployeesByOrganizationID = async (
 
     return employees;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
