@@ -1,38 +1,46 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { withUserAuth } from '@/lib/withAuth';
+import type { UserLoginResource } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, validateHeader } from '../../../../helper';
+import { handleValidationError, unauthorized, validateHeader } from '../../../../helper';
 import { readAppointment, updateAppointment } from './service';
 
 // GET /api/appointment/:userID/:appointmentID
 // Retrieve a specific appointment of user
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ userID: string; appointmentID: string }> }
-) {
-  try {
-    //validate header
-    validateHeader(req.headers);
-    // validate params
-    const { userID, appointmentID } = await params;
-    paramsSchema.parse({ userID, appointmentID });
+export const GET = withUserAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ userID: string; appointmentID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      //validate header
+      validateHeader(req.headers);
+      // validate params
+      const { userID, appointmentID } = await params;
+      paramsSchema.parse({ userID, appointmentID });
 
-    //read appointment
-    const appointment = await readAppointment(userID, appointmentID);
-    return NextResponse.json(appointment, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      // check if loginResource and userid given by url-param are the same
+      if (!(userID === account.userId)) return unauthorized();
+
+      // read appointment
+      const appointment = await readAppointment(userID, appointmentID);
+      return NextResponse.json(appointment, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Read failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
   }
-}
+);
 
 // PATCH /api/appointment/:userID/:appointmentID
 // Update an appointment of user
