@@ -1,13 +1,21 @@
 import { GripVertical, User } from 'lucide-react';
 
-export function CaseCard(caseItem: {
-  title: string;
-  status: string;
-  organizationID: string;
-  employeeID: string;
-  color: string;
-  progress: number;
-}) {
+import type { Case } from '~/generated/prisma/browser';
+
+export async function CaseCard(caseItem: Case) {
+  // fetch additional data
+  const resEmployee = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employees/${caseItem.employeeId}`,
+    { cache: 'no-store' }
+  );
+  const employee = await resEmployee.json();
+
+  const resOrganization = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organizations/${employee.organizationId}`,
+    { cache: 'no-store' }
+  );
+  const organization = await resOrganization.json();
+
   return (
     <div
       key={caseItem.title}
@@ -26,18 +34,19 @@ export function CaseCard(caseItem: {
         <h3 className="text-lg font-bold text-background line-clamp-2 min-h-13.5">
           {caseItem.title}
         </h3>
-        <p className="text-sm text-background">KANZLEINAME</p>
+        <p className="text-sm text-background"> {organization.name}</p>
 
         {/* Progress Bar*/}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-accent-white/80">Fortschritt</span>
-            <span className="text-accent-white font-medium">{caseItem.progress}%</span>
+            <span className="text-accent-white font-medium">{caseItem.status}%</span>
           </div>
           <div className="h-2 bg-background/30 rounded-full overflow-hidden">
+            {/* TODO: FIX ME! There is no progress property */}
             <div
               className="h-full bg-background rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${caseItem.progress}%` }}
+              style={{ width: `80%` }}
             />
           </div>
         </div>
@@ -47,7 +56,9 @@ export function CaseCard(caseItem: {
           <div className="flex items-center rounded-full bg-accent-white/20 p-1">
             <User className="w-5 h-5 text-accent-white/80 inline-block" />
           </div>
-          <span className="text-accent-white/80 text-sm pl-2">Mitarbeiter*in</span>
+          <span className="text-accent-white/80 text-sm pl-2">
+            {employee.firstname} {employee.lastname}
+          </span>
         </div>
       </div>
     </div>
