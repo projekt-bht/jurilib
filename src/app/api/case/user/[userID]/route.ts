@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleValidationError, unauthorized } from '@/app/api/helper';
+import { withUserAuth } from '@/lib/withAuth';
+import type { UserLoginResource } from '@/services/Resources';
 
 import { getCasesByUser } from './services';
 
@@ -16,26 +18,30 @@ const paramsSchema = z.strictObject({
 
 // GET /api/case/user/:userID
 // Show all cases from a single user
-export async function GET(req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
-  try {
-    // get userId from Header
-    const userId = req.headers.get('userID');
-    if (!userId) return unauthorized();
+export const GET = withUserAuth(
+  async (
+    _req: NextRequest,
+    { params }: { params: Promise<{ userID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      // get userID from URL params to check if it's a valid uuid
+      const { userID } = await params;
+      paramsSchema.parse({ userID });
 
-    // get userID from URL params to check if it's a valid uuid
-    const { userID } = await params;
-    paramsSchema.parse({ userID });
+      if (!(userID === account.userId)) return unauthorized();
 
-    const cases = await getCasesByUser(userId);
-    return NextResponse.json(cases, { status: 201 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      const cases = await getCasesByUser(account.userId);
+      return NextResponse.json(cases, { status: 201 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Creation failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
   }
-}
+);
