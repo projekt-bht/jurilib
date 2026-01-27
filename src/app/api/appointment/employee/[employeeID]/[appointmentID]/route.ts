@@ -39,12 +39,10 @@ export const appointmentUpdateSchema = z.strictObject({
 // GET /api/appointment/:employeeID/:appointmentID
 // Retrieve a specific appointment
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
 ) {
   try {
-    //validate header
-    validateHeader(req.headers);
     // validate params
     const { employeeID, appointmentID } = await params;
     paramsSchema.parse({ employeeID, appointmentID });
