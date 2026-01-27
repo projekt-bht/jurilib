@@ -52,7 +52,8 @@ export const readAccounts = async (): Promise<AccountResource[]> => {
 
     return accRes;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -73,6 +74,7 @@ export const updatePasswordWithEmail = async (email: string, password: string) =
       },
     });
   } catch (error) {
-    throw new Error('Database update failed' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed' + (error as Error).message);
   }
 };

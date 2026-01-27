@@ -23,7 +23,8 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
 
     return accountRes;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -65,7 +66,8 @@ export const updateAccount = async (
 
     return accountRes;
   } catch (error) {
-    throw new Error('Database update failed' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed' + (error as Error).message);
   }
 };
 
@@ -79,6 +81,8 @@ export const deleteAccountTx = async (
     // delete account
     await tx.account.delete({ where: { id: accountID } });
   } catch (error) {
-    throw new Error('Internal Server Error while deleting account: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else
+      throw new Error('Internal Server Error while deleting account: ' + (error as Error).message);
   }
 };
