@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { ValidationError } from '@/error/validationErrors';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
@@ -48,10 +49,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to read Appointment');
     }
   }
 }
@@ -75,7 +73,7 @@ export async function PATCH(
     // validate body
     const body = appointmentUpdateSchema.parse(await req.json());
     if (!body || Object.keys(body).length === 0) {
-      return NextResponse.json({ message: 'Update data is required' }, { status: 400 });
+      throw new ValidationError('invalidInput', 'body', 'empty', 400);
     }
 
     // update appointment
@@ -85,10 +83,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to update Appointment');
     }
   }
 }
@@ -116,10 +111,7 @@ export async function DELETE(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Delete failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to delete Appointment');
     }
   }
 }

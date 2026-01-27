@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader } from '@/app/api/helper';
 
 import { verifyJWT, verifyPasswordAndCreateJWT } from './JWTService';
 
@@ -38,10 +38,7 @@ export async function POST(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json(
-      { message: 'Creation failed: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Creation failed');
   }
 }
 

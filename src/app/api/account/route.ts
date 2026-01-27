@@ -2,7 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { validateHeader } from '../helper';
+import { handleError, handleValidationError, validateHeader } from '@/app/api/helper';
+
 import { readAccounts, updatePasswordWithEmail } from './services';
 
 const UpdateSchema = z.strictObject({
@@ -15,7 +16,7 @@ export async function GET(_req: NextRequest) {
     const accounts = await readAccounts();
     return NextResponse.json(accounts, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    return handleError(error, 'Failed to read Accounts');
   }
 }
 
@@ -31,14 +32,8 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleValidationError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to update account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to update account');
   }
 }

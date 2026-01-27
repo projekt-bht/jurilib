@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import { CaseStatus } from '~/generated/prisma/enums';
 
 import { verifyJWT } from '../../authentication/login/JWTService';
@@ -46,10 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ ca
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to update Case');
     }
   }
 }
@@ -78,9 +75,6 @@ export async function DELETE(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to delete organization: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to delete Case');
   }
 }

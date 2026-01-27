@@ -2,17 +2,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, unauthorized } from '@/app/api/helper';
+import { handleError, handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { bookAppointment } from './services';
-
-/**
- * Validate parameter appointmentID as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'Appointment ID is required' }),
-});
 
 // POST /api/appointment/:appointmentID/request
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "REQUESTED"
@@ -27,7 +19,7 @@ export async function POST(
 
     // get appointmentID from URL params
     const { appointmentID } = await params;
-    paramsSchema.parse({ appointmentID });
+    validateIds([{ id: appointmentID, identifier: 'appointmentID' }]);
 
     // book apppointment
     const bookedAppointment = await bookAppointment(appointmentID, userId);
@@ -36,10 +28,7 @@ export async function POST(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to book Appointment');
     }
   }
 }

@@ -2,7 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateIds } from '../../../helper';
+import { handleError, handleValidationError, validateIds } from '@/app/api/helper';
+
 import { readAllAppointmentsByUser } from './service';
 
 // GET api/appointment/user/:userID
@@ -19,10 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Reading appointments by user failed');
     }
   }
 }

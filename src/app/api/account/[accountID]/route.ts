@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
 import { deleteEmployeeTx } from '@/app/api/employee/[employeeID]/services';
-import { handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
 import { deleteUserTx } from '@/app/api/user/[userID]/services';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
@@ -35,7 +35,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    return handleError(error, 'Failed to read Account');
   }
 }
 
@@ -59,10 +59,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to update account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to update Account');
   }
 }
 
@@ -104,15 +101,6 @@ export async function DELETE(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     }
-    if (error instanceof ValidationError) {
-      return NextResponse.json(
-        { message: `Validation Error: ${error.message}` },
-        { status: error.statusCode }
-      );
-    }
-    return NextResponse.json(
-      { message: 'Failed to delete Account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to delete Account');
   }
 }

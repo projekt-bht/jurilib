@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleError, handleValidationError, validateHeader } from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
@@ -105,12 +105,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleValidationError(error);
+      return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Creation failed');
     }
   }
 }

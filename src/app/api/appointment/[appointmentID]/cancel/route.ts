@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { isAppointmentUserMatch } from '../helpers';
 import { cancelAppointment } from './services';
@@ -29,16 +29,13 @@ export async function POST(
       return NextResponse.json(canceledAppointment, { status: 200 });
     } else {
       // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to cancel Appointment');
     }
   }
 }

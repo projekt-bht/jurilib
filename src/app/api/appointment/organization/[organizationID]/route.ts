@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateIds } from '@/app/api/helper';
+import { handleError, handleValidationError, validateIds } from '@/app/api/helper';
 
 import { readAllAppointmentsByOrganization } from './service';
 
@@ -23,10 +23,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to read Appointments');
     }
   }
 }

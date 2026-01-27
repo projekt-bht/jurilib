@@ -2,17 +2,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, unauthorized } from '@/app/api/helper';
+import { handleError, handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { getCasesByUser } from './services';
-
-/**
- * Validate parameter appointmentID as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  userID: z.uuid({ error: 'Appointment ID is required' }),
-});
 
 // GET /api/case/user/:userID
 // Show all cases from a single user
@@ -24,7 +16,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     // get userID from URL params to check if it's a valid uuid
     const { userID } = await params;
-    paramsSchema.parse({ userID });
+    validateIds([{ id: userID, identifier: 'userID' }]);
 
     const cases = await getCasesByUser(userId);
     return NextResponse.json(cases, { status: 201 });
@@ -32,10 +24,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
     if (error instanceof z.ZodError) {
       return handleValidationError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to get cases by user');
     }
   }
 }
