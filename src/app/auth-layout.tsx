@@ -33,7 +33,7 @@ export default function AuthLayout({ children, showFooter = true }: AuthLayoutPr
         <Navbar />
         <div className="flex min-h-[calc(100vh-5.75rem)]">
           <Sidebar />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 flex flex-col">{children}</main>
         </div>
       </div>
     );
