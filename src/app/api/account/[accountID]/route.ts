@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
 import { deleteEmployeeTx } from '@/app/api/employee/[employeeID]/services';
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { deleteUserTx } from '@/app/api/user/[userID]/services';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
@@ -33,7 +33,7 @@ export async function GET(
     return NextResponse.json(account, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to read Account');
   }
@@ -57,7 +57,7 @@ export async function PATCH(
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to update Account');
   }
@@ -99,7 +99,7 @@ export async function DELETE(
     return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to delete Account');
   }

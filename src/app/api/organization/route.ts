@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
 import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(createdOrganization, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Creation failed');
   }
@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Read failed');
     }

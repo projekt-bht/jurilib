@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
 
@@ -19,7 +19,7 @@ export async function GET(
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to read organization');
   }
@@ -48,7 +48,7 @@ export async function PATCH(
     return NextResponse.json(updatedOrganization, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to update organization');
   }
@@ -68,7 +68,7 @@ export async function DELETE(
     return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to delete organization');
   }

@@ -47,7 +47,7 @@ export function validateIds(params: { id: string; identifier: string }[]): void 
 
 // ---------- error handling ----------
 
-export function handleValidationError(error: z.ZodError) {
+export function handleZodError(error: z.ZodError) {
   let errorStack = {};
   for (const issue of error.issues) {
     const message = issue.message;

@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
 
@@ -40,7 +40,7 @@ export async function POST(
     return NextResponse.json(createdAppointment, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Creating appointment failed');
     }
@@ -62,7 +62,7 @@ export async function GET(
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Failed to read Appointments');
     }

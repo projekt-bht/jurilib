@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 
 import { isOrganizationEmployeeMatch } from '../helpers';
@@ -53,7 +53,7 @@ export async function PATCH(
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Service update failed');
     }
@@ -87,7 +87,7 @@ export async function DELETE(
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to delete organization');
   }

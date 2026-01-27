@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleError, handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { isAppointmentEmployeeMatch } from './helpers';
 import { confirmAppointmentCreateCase } from './services';
@@ -38,7 +38,7 @@ export async function POST(
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Failed to confirm Appointment');
     }

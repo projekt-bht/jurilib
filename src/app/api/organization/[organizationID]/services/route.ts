@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
 import {
   handleError,
-  handleValidationError,
+  handleZodError,
   unauthorized,
   validateHeader,
   validateIds,
@@ -39,7 +39,7 @@ export async function GET(
     return NextResponse.json(services, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to read Services');
   }
@@ -86,7 +86,7 @@ export async function POST(
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Creation failed');
     }

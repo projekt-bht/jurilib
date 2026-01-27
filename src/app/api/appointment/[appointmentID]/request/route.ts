@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleValidationError, unauthorized, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { bookAppointment } from './services';
 
@@ -26,7 +26,7 @@ export async function POST(
     return NextResponse.json(bookedAppointment, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Failed to book Appointment');
     }

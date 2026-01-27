@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { readUser, updateUser } from './services';
@@ -36,7 +36,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ use
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to read User');
   }
@@ -55,7 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ us
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to update User');
   }

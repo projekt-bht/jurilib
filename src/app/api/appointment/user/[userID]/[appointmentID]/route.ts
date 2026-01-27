@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
@@ -26,7 +26,7 @@ export async function GET(
     return NextResponse.json(appointment, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Failed to read Appointment');
     }
@@ -65,7 +65,7 @@ export async function PATCH(
     return NextResponse.json(updatedAppointment, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
       return handleError(error, 'Failed to update Appointment');
     }

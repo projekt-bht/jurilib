@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { handleError, handleValidationError, validateHeader } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
 
 import { readAccounts, updatePasswordWithEmail } from './services';
 
@@ -32,7 +32,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to update account');
   }

@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { handleError, handleValidationError, validateHeader, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import type { Employee } from '~/generated/prisma/client';
 import { Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
 
@@ -38,7 +38,7 @@ export async function GET(
     return NextResponse.json(employee, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to read Employee');
   }
@@ -61,7 +61,7 @@ export async function PATCH(
     return NextResponse.json(updatedEmployee, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     }
     return handleError(error, 'Failed to update Employee');
   }
