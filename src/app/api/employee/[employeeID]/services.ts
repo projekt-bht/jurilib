@@ -10,11 +10,12 @@ export const readEmployeeByEmployeeID = async (employeeID: string): Promise<Empl
       where: { id: employeeID },
     });
     if (!employee) {
-      throw new ValidationError('notFound', 'employees', employeeID);
+      throw new ValidationError('notFound', 'employees', employeeID, 404);
     }
     return employee;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -23,7 +24,7 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
   try {
     const existingEmployee = await prisma.employee.findUnique({ where: { id: employeeID } });
     if (!existingEmployee) {
-      throw new ValidationError('notFound', 'employees', employeeID);
+      throw new ValidationError('notFound', 'employees', employeeID, 404);
     }
 
     const updatedEmployee = await prisma.employee.update({
@@ -35,7 +36,8 @@ export const updateEmployee = async (employee: Employee, employeeID: string): Pr
 
     return updatedEmployee;
   } catch (error) {
-    throw new Error('Database update failed' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed' + (error as Error).message);
   }
 };
 
@@ -52,10 +54,12 @@ export const deleteEmployeeTx = async (
     if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
     // find employee by accountID
     const employee = await tx.employee.findUnique({ where: { accountId: accountID } });
-    if (!employee) throw new ValidationError('notFound', 'employee', accountID);
+    if (!employee) throw new ValidationError('notFound', 'employee', accountID, 404);
     // delete employee
     await tx.employee.delete({ where: { id: employee.id } });
   } catch (error) {
-    throw new Error('Internal Server Error while deleting employee: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else
+      throw new Error('Internal Server Error while deleting employee: ' + (error as Error).message);
   }
 };

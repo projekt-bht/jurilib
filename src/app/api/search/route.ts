@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { handleError } from '@/app/api/helper';
+
 import { createSearch } from './services';
 
 type SearchRequest = {
@@ -21,9 +23,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Something went wrong' }, { status: 400 });
     }
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Something went wrong: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Something went wrong');
   }
 }

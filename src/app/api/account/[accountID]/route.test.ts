@@ -65,14 +65,14 @@ describe('Account Routen testen', () => {
     const req = new NextRequest(baseUrl);
     const res = await GET(req, { params: Promise.resolve({ accountID: createdAcc.id }) });
     const json = await res.json();
-    expect(json.email).toBe(createdAcc.email);
     expect(res.status).toBe(200);
+    expect(json.email).toBe(createdAcc.email);
   });
 
   test('GET non-existing Account', async () => {
     const req = new NextRequest(baseUrl);
     const res = await GET(req, { params: Promise.resolve({ accountID: 'non-existing-id' }) });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 
   test('PATCH email', async () => {
@@ -178,6 +178,6 @@ describe('Account Routen testen', () => {
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });

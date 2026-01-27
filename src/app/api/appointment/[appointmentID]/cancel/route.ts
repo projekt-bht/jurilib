@@ -2,18 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, unauthorized } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { isAppointmentUserMatch } from '../helpers';
 import { cancelAppointment } from './services';
-
-/**
- * Validate parameter appointmentID as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'Appointment ID is required' }),
-});
 
 // POST /api/appointment/:appointmentID/cancel
 // Booking Endpoint for user interaction. Requires authentication. Sets status to "OPEN"
@@ -28,7 +20,7 @@ export async function POST(
 
     // get appointmentID from URL params
     const { appointmentID } = await params;
-    paramsSchema.parse({ appointmentID });
+    validateIds([{ id: appointmentID, identifier: 'appointmentID' }]);
 
     // verify user matches the appointment
     if (await isAppointmentUserMatch(appointmentID, userId)) {
@@ -37,16 +29,13 @@ export async function POST(
       return NextResponse.json(canceledAppointment, { status: 200 });
     } else {
       // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to cancel Appointment');
     }
   }
 }

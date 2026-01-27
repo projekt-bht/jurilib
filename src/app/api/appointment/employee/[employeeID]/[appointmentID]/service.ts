@@ -24,7 +24,8 @@ export async function readAppointment(
     const appointment = await validateReference(employeeID, appointmentID);
     return appointment;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 }
 
@@ -68,7 +69,8 @@ export async function updateAppointment(
     });
     return updatedAppointment;
   } catch (error) {
-    throw new Error('Database update failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed: ' + (error as Error).message);
   }
 }
 
@@ -80,19 +82,20 @@ export async function deleteAppointment(employeeID: string, appointmentID: strin
     await validateReference(employeeID, appointmentID);
     await prisma.appointment.delete({ where: { id: appointmentID, employeeId: employeeID } });
   } catch (error) {
-    throw new Error('Database delete failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database delete failed: ' + (error as Error).message);
   }
 }
 
 export async function validateReference(paramEmployeeID: string, paramAppointmentID: string) {
   //check if employee exists
   if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
+    throw new ValidationError('notFound', 'employeeId', paramEmployeeID, 404);
   }
   // check if appointment exists
   const appointment = await prisma.appointment.findUnique({ where: { id: paramAppointmentID } });
   if (!appointment) {
-    throw new ValidationError('notFound', 'appointmentId', paramAppointmentID);
+    throw new ValidationError('notFound', 'appointmentId', paramAppointmentID, 404);
   }
 
   return appointment;

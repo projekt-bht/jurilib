@@ -34,7 +34,8 @@ export async function createOrganization(organization: Organization): Promise<Or
             WHERE "id" = ${createdOrganization.id}`;
     return createdOrganization;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 }
 
@@ -67,10 +68,11 @@ export async function readOrganizations(filters: {
       where,
     });
     if (!orgas) {
-      throw new ValidationError('notFound', 'organization', null);
+      throw new ValidationError('notFound', 'organization', null, 404);
     }
     return orgas;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 }

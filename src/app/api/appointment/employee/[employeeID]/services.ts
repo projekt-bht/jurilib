@@ -1,7 +1,6 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Appointment } from '~/generated/prisma/client';
-import type { AppointmentCreateInput } from '~/generated/prisma/models';
 
 type ZodCreateAppointment = {
   // organizationId: string;
@@ -45,7 +44,8 @@ export async function createAppointment(
     });
     return createdAppointment;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 }
 
@@ -59,7 +59,8 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
     });
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
@@ -73,15 +74,15 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
 async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string) {
   // check if employee exists
   if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
+    throw new ValidationError('notFound', 'employeeId', paramEmployeeID, 404);
   }
   // check if param employeeID matches body employeeID
   else if (bodyEmployeeID && paramEmployeeID !== bodyEmployeeID) {
-    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
+    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID, 404);
   }
   // check if organization exists
   // else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
-  //   throw new ValidationError('notFound', 'organizationId', orgID);
+  //   throw new ValidationError('notFound', 'organizationId', orgID, 404);
   // }
 }
 

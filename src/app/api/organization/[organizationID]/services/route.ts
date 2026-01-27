@@ -3,29 +3,18 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError, validateHeader } from '@/app/api/helper';
+import {
+  handleError,
+  handleZodError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 import type { ServiceCreateInput } from '~/generated/prisma/models';
 
 import { isOrganizationEmployeeMatch } from './helpers';
 import { createService, readServices } from './services';
-
-// GET /api/organization/:organizationID/services
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ organizationID: string }> }
-) {
-  try {
-    const { organizationID } = await params;
-    if (!organizationID) {
-      return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-    }
-    const services = await readServices(organizationID);
-    return NextResponse.json(services, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 400 });
-  }
-}
 
 const serviceCreateSchema = z.strictObject({
   description: z.string('description is required'),
@@ -37,9 +26,24 @@ const serviceCreateSchema = z.strictObject({
   defaultDuration: z.int().optional(),
 });
 
-const paramsSchema = z.strictObject({
-  organizationID: z.uuid({ error: 'Organization ID is required' }),
-});
+// GET /api/organization/:organizationID/services
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ organizationID: string }> }
+) {
+  try {
+    const { organizationID } = await params;
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
+
+    const services = await readServices(organizationID);
+    return NextResponse.json(services, { status: 200 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read Services');
+  }
+}
 
 // POST /api/organization/:organizationID/services
 // Create a new case manually without any appointments
@@ -55,7 +59,7 @@ export async function POST(
     validateHeader(req.headers);
     // validate params
     const { organizationID } = await params;
-    paramsSchema.parse({ organizationID });
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
     if (
       loginRes.employeeId &&
       (await isOrganizationEmployeeMatch(organizationID, loginRes.employeeId))
@@ -78,16 +82,13 @@ export async function POST(
       return NextResponse.json(createdAppointment, { status: 201 });
     } else {
       // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Creation failed');
     }
   }
 }

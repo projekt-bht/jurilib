@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
@@ -16,7 +17,6 @@ import type {
 import { createAccountTx } from '../../account/services';
 import { sendRegistrationCodeEmail } from '../../email/service';
 import { createEmployeeTx } from '../../employee/services';
-import { handleValidationError, validateHeader } from '../../helper';
 import { createUserTx } from '../../user/services';
 
 const accountSchema = z.strictObject({
@@ -49,7 +49,7 @@ const userRegistrationSchema = baseRegistrationSchema.extend({
 const employeeRegistrationSchema = baseRegistrationSchema.extend({
   description: z.string().optional(),
   email: z.email(),
-  organizationId: z.string().min(1), // Erforderlich und nicht leer
+  organizationId: z.uuid(),
   position: z.string().optional(),
   expertiseArea: z.array(z.enum(Area)).min(1), // at least 1 element
   languages: z.array(z.enum(Language)).min(1), // at least 1 element
@@ -105,12 +105,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Creation failed');
     }
   }
 }
@@ -150,7 +147,7 @@ function convertBodyToEmployeeInput(
   body: z.infer<typeof employeeRegistrationSchema>,
   accountId: string
 ): EmployeeUncheckedCreateInput {
-  // Manuelle Checks entfernt, da Zod die Validierung übernimmt
+  // manual checks removed, as Zod handles validation
   return {
     accountId: accountId,
     organizationId: body.organizationId,

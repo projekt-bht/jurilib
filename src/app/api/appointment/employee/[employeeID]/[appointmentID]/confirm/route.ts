@@ -3,19 +3,10 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleValidationError } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
 
 import { isAppointmentEmployeeMatch } from './helpers';
 import { confirmAppointmentCreateCase } from './services';
-
-/**
- * Validate parameter appointmentId as uuid
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  appointmentID: z.uuid({ error: 'AppointmentId is required' }),
-  employeeID: z.uuid({ error: 'EmployeeId is required' }),
-});
 
 // POST /api/appointment/employee/:employeeId/:appointmentId/confirm
 // Booking Endpoint for employee interaction. Requires authentication. Sets status to "CONFIRMED". Creates Case with given appointment
@@ -26,7 +17,10 @@ export async function POST(
   try {
     // get appointmentId from URL params
     const { employeeID, appointmentID } = await params;
-    paramsSchema.parse({ appointmentID, employeeID });
+    validateIds([
+      { id: employeeID, identifier: 'employeeID' },
+      { id: appointmentID, identifier: 'appointmentID' },
+    ]);
 
     // verify employee is logged in
     const jwtString = _req.cookies.get('access_token')?.value;
@@ -40,16 +34,13 @@ export async function POST(
       return NextResponse.json(bookedAppointment, { status: 200 });
     } else {
       // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to confirm Appointment');
     }
   }
 }
