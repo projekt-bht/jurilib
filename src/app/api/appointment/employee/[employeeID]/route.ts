@@ -2,7 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader } from '../../../helper';
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
+
+import { handleValidationError, unauthorized, validateHeader } from '../../../helper';
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
 
 /**
@@ -29,32 +32,38 @@ const appointmentCreateSchema = z.strictObject({
 
 // POST /api/appointment/employee/:employeeID
 // Create a new appointment
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string }> }
-) {
-  try {
-    // validate header
-    validateHeader(req.headers);
-    // validate params
-    const { employeeID } = await params;
-    paramsSchema.parse({ employeeID });
-    // validate body
-    const body = appointmentCreateSchema.parse(await req.json());
+export const POST = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      // validate header
+      validateHeader(req.headers);
+      // validate params
+      const { employeeID } = await params;
+      paramsSchema.parse({ employeeID });
+      // validate body
+      const body = appointmentCreateSchema.parse(await req.json());
 
-    const createdAppointment = await createAppointment(employeeID, body);
-    return NextResponse.json(createdAppointment, { status: 201 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleValidationError(error);
-    } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      // check if loginResource and employeeid given by url-param are the same
+      if (!(employeeID === account.employeeId)) return unauthorized();
+
+      const createdAppointment = await createAppointment(employeeID, body);
+      return NextResponse.json(createdAppointment, { status: 201 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleValidationError(error);
+      } else {
+        return NextResponse.json(
+          { message: 'Creation failed: ' + (error as Error).message },
+          { status: 400 }
+        );
+      }
     }
   }
-}
+);
 
 // GET /api/appointment/:employeeID
 // Retrieve all appointments of employee
