@@ -246,7 +246,7 @@ export function OrganizationFilters({
         </div>
 
         {isPanelOpen && (
-          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
+          <div className="mt-4 grid grid-cols-1 gap-1.5 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
             {sections.map((section) => (
               <div
                 key={section.key}
@@ -272,34 +272,33 @@ export function OrganizationFilters({
                             {group.title}
                           </div>
                         )}
-                        {group.items.map((item) => (
-                          <div
-                            key={`${group.key}-${item.value}`}
-                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                              item.hoverClassName ?? defaultHoverClassName
+                      {group.items.map((item) => (
+                        <Label
+                          key={`${group.key}-${item.value}`}
+                          htmlFor={`${group.key}-${item.value}`}
+                          className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                            item.hoverClassName ?? defaultHoverClassName
+                          }`}
+                        >
+                          <Checkbox
+                            id={`${group.key}-${item.value}`}
+                            className="border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
+                            checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                            onCheckedChange={(isChecked) =>
+                              handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                            }
+                            aria-label={`Filter nach ${item.label}`}
+                          />
+                          {item.icon}
+                          <span
+                            className={`text-xs font-medium text-foreground ${
+                              item.labelClassName ?? ''
                             }`}
                           >
-                            <Checkbox
-                              id={`${group.key}-${item.value}`}
-                              className="cursor-pointer border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
-                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                              onCheckedChange={(isChecked) =>
-                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                              }
-                              aria-label={`Filter nach ${item.label}`}
-                            />
-                            <Label
-                              htmlFor={`${group.key}-${item.value}`}
-                              className={
-                                item.labelClassName ??
-                                'inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground'
-                              }
-                            >
-                              {item.icon}
-                              {item.label}
-                            </Label>
-                          </div>
-                        ))}
+                            {item.label}
+                          </span>
+                        </Label>
+                      ))}
                       </div>
                     )
                   )}
