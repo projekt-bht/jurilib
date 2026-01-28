@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 
+import { validateIds } from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { AccountResource } from '@/services/Resources';
@@ -32,7 +33,7 @@ export const readAccount = async (accountID: string): Promise<AccountResource> =
  * Update an existing account in the database by accountID
  *
  * Only mail, password and isVerifiedcan be updated.
- * Role and id are immutable, since they are used to connect the account to other entities.
+ * Type and id are immutable, since they are used to connect the account to other entities.
  *
  * @param accountId - The ID of the account to update
  * @param data - Partial account data to update (it can include email, password, isVerified)
@@ -43,13 +44,21 @@ export const updateAccount = async (
   data: Partial<Account>
 ): Promise<AccountResource> => {
   try {
+    // get account
     const existingAccount = await prisma.account.findUnique({ where: { id: accountId } });
     if (!existingAccount) {
       throw new ValidationError('notFound', 'accounts', accountId, 404);
     }
 
+    // validate no immutable fields are being changed
+    if (data.type || data.type || data.id) {
+      throw new ValidationError('immutableField', 'type', data.type);
+    }
+
+    // hash password if being updated
     if (data.password !== undefined) data.password = await bcrypt.hash(data.password, 10);
 
+    // update account
     const updatedAccount = await prisma.account.update({
       where: { id: accountId },
       data: {
@@ -57,6 +66,7 @@ export const updateAccount = async (
       },
     });
 
+    // return updated account
     const accountRes: AccountResource = {
       id: updatedAccount.id,
       email: updatedAccount.email,
@@ -77,7 +87,8 @@ export const deleteAccountTx = async (
 ): Promise<void> => {
   try {
     // validate accountID
-    if (!accountID) throw new ValidationError('invalidInput', 'accountID', accountID);
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
+
     // delete account
     await tx.account.delete({ where: { id: accountID } });
   } catch (error) {
