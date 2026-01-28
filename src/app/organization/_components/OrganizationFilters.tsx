@@ -109,7 +109,7 @@ export function OrganizationFilters({
   ) => onFilterChange(category, value, isChecked);
 
   const isActiveFilters = activeFilterCount > 0;
-  const defaultHoverClassName = 'hover:bg-accent-gray-soft';
+  const defaultHoverClassName = 'hover:bg-accent-gray-soft cursor-pointer';
 
   type SectionItem = {
     value: FilterValue;
@@ -220,7 +220,7 @@ export function OrganizationFilters({
             size="sm"
             disabled={!isActiveFilters}
             onClick={onReset}
-            className="h-7 px-2 text-xs font-semibold"
+            className="h-7 px-2 text-xs font-semibold cursor-pointer"
           >
             <X className="w-4 h-4" />
             Zurücksetzen
@@ -230,7 +230,7 @@ export function OrganizationFilters({
             variant="ghost"
             size="sm"
             onClick={() => setIsPanelOpen((prev) => !prev)}
-            className="h-7 w-7 p-0"
+            className="h-7 w-7 p-0 cursor-pointer"
             aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
           >
             <ChevronDown
@@ -275,6 +275,7 @@ export function OrganizationFilters({
                         >
                           <Checkbox
                             id={`${group.key}-${item.value}`}
+                            className="cursor-pointer"
                             checked={(filters[group.key] as FilterValue[]).includes(item.value)}
                             onCheckedChange={(isChecked) =>
                               handleCheckboxChange(group.key, item.value, Boolean(isChecked))
