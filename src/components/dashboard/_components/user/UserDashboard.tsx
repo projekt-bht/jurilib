@@ -20,6 +20,13 @@ export function UserDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [cases, setCases] = useState<Case[]>([]);
 
+  const caseColors: string[] = [
+    'from-accent-red/85 to-accent-purple/85',
+    'from-accent-purple/85 to-accent-blue/85',
+    'from-accent-blue/85 to-accent-emerald/85',
+    'from-accent-amber/85 to-accent-red/85',
+  ];
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -46,8 +53,8 @@ export function UserDashboard() {
   }, [userId]);
 
   return (
-    <section id="user-dashboard" className="py-16 md:py-10 px-6 bg-background scroll-mt-24">
-      <div className="bg-background flex-1 w-full p-8 md:p-9 overflow-y-auto">
+    <section id="user-dashboard" className="px-6 bg-background">
+      <div className="bg-background flex-1 w-full p-8 md:p-9 overflow-y-auto md:overflow-y-hidden">
         <div className="space-y-6">
           {/* Greeting */}
           <div className="mb-12">
@@ -92,13 +99,21 @@ export function UserDashboard() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Aktive Fälle</h2>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-1 hover:underline">
                 Alle anzeigen <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {Array.isArray(cases)
-                ? cases.slice(0, 4).map((caseItem) => <CaseCard key={caseItem.id} {...caseItem} />)
+                ? cases
+                    .slice(0, 4)
+                    .map((caseItem, index) => (
+                      <CaseCard
+                        key={caseItem.id}
+                        color={caseColors[index % caseColors.length]}
+                        caseItem={caseItem}
+                      />
+                    ))
                 : null}
             </div>
           </div>
