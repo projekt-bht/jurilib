@@ -59,7 +59,7 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
     return () => {
       isMounted = false;
     };
-  }, [appointment]);
+  }, [appointment.employeeId, appointment.updatedAt]);
 
   return (
     <div
@@ -118,6 +118,13 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
               <span>Online-Meeting</span>
             </>
           )}
+        </div>
+        {/* Notes */}
+        <div className="bg-accent-white/10 rounded-lg mt-4">
+          <h4 className="text-xs font-semibold text-foreground mb-1">Infos für dich:</h4>
+          <p className="text-xs text-muted-foreground line-clamp-3">
+            {appointment.notes ?? 'Keine Notizen vorhanden.'}
+          </p>
         </div>
       </div>
     </div>
