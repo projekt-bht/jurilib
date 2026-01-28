@@ -57,7 +57,7 @@ export function CaseCard(caseItem: Case) {
       key={caseItem.title}
       className=" bg-linear-to-br from-accent-amber/70 to-accent-red/70
                     rounded-2xl p-5
-                    transition-all duration-500 ease-out shadow-lg hover:shadow-2xl
+                    transition-all duration-500 ease-out shadow-sm hover:shadow-md
                     hover:scale-105 hover:-translate-y-2
                     relative overflow-hidden"
     >
@@ -65,7 +65,7 @@ export function CaseCard(caseItem: Case) {
       <div className="flex justify-between items-center pb-4 ">
         <GripVertical className="w-5 h-5 text-accent-gray-soft cursor-move mr-2" />
         <p className="px-2.5 py-1 rounded-full text-xs font-semibold text-foreground bg-accent-white/70">
-          {caseItem.status}
+          {translateCaseStatus(caseItem.status)}
         </p>
       </div>
 
@@ -89,7 +89,8 @@ export function CaseCard(caseItem: Case) {
             <div
               className="h-full bg-background rounded-full transition-all duration-500 ease-out"
               style={{
-                width: caseItem.status === CaseStatus.IN_PROGRESS ? `${progressBarProgress}` : '0',
+                width:
+                  caseItem.status === CaseStatus.IN_PROGRESS ? `${progressBarProgress}%` : '0%',
               }}
             />
           </div>
@@ -107,4 +108,17 @@ export function CaseCard(caseItem: Case) {
       </div>
     </div>
   );
+}
+
+function translateCaseStatus(status: CaseStatus): string {
+  switch (status) {
+    case CaseStatus.OPEN:
+      return 'Offen';
+    case CaseStatus.IN_PROGRESS:
+      return 'In Bearbeitung';
+    case CaseStatus.COMPLETED:
+      return 'Abgeschlossen';
+    default:
+      return 'Unbekannt';
+  }
 }
