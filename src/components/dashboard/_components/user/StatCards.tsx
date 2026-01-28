@@ -48,12 +48,17 @@ export function StatCards({ cases }: { cases: Case[] }) {
 
 function calculateStats(cases: Case[]): Stats[] {
   let stats: Stats[] = [];
+  let totalCases = 0;
+  let activeCases = 0;
+  let closedCases = 0;
 
-  if (cases.length === 0) return stats;
-
-  const totalCases = cases.length;
-  const activeCases = cases.filter((caseItem) => caseItem.status !== CaseStatus.COMPLETED).length;
-  const closedCases = totalCases - activeCases;
+  // TODO: Fix me, i'm so ugly
+  if (!cases || !Array.isArray(cases) || cases.length === 0) {
+  } else {
+    totalCases = cases.length;
+    activeCases = cases.filter((caseItem) => caseItem.status !== CaseStatus.COMPLETED).length;
+    closedCases = totalCases - activeCases;
+  }
 
   stats = [
     {
@@ -67,14 +72,14 @@ function calculateStats(cases: Case[]): Stats[] {
       id: 'active-cases',
       title: 'Aktive Fälle',
       statValue: activeCases,
-      iconColor: 'accent-amber',
+      iconColor: 'accent-blue',
       Icon: Clock,
     },
     {
       id: 'closed-cases',
       title: 'Abgeschlossene Fälle',
       statValue: closedCases,
-      iconColor: 'accent-emerald',
+      iconColor: 'accent-blue',
       Icon: CheckCircle,
     },
   ];
