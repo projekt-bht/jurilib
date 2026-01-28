@@ -208,7 +208,9 @@ export function OrganizationFilters({
             </div>
             <div>
               <h3 className="text-sm font-semibold text-foreground">Filter</h3>
-              <p className="text-xs text-muted-foreground">Filteroptionen anzeigen</p>
+              <p className="text-xs text-muted-foreground">
+                Durchsuchen Sie alle 6 verfügbaren Rechtsorganisationen
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -272,36 +274,36 @@ export function OrganizationFilters({
                             {group.title}
                           </div>
                         )}
-                    {group.items.map((item) => (
-                      // RM: Each filter option is wrapped in a full-width label so the entire row
-                      // RM: is clickable; the checkbox is controlled via state and toggles the
-                      // RM: selected filter value on click.
-                      <Label
-                        key={`${group.key}-${item.value}`}
-                        htmlFor={`${group.key}-${item.value}`}
-                          className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                            item.hoverClassName ?? defaultHoverClassName
-                          }`}
-                        >
-                          <Checkbox
-                            id={`${group.key}-${item.value}`}
-                            className="border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
-                            checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                            onCheckedChange={(isChecked) =>
-                              handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                            }
-                            aria-label={`Filter nach ${item.label}`}
-                          />
-                          {item.icon}
-                          <span
-                            className={`text-xs font-medium text-foreground ${
-                              item.labelClassName ?? ''
+                        {group.items.map((item) => (
+                          // RM: Each filter option is wrapped in a full-width label so the entire row
+                          // RM: is clickable; the checkbox is controlled via state and toggles the
+                          // RM: selected filter value on click.
+                          <Label
+                            key={`${group.key}-${item.value}`}
+                            htmlFor={`${group.key}-${item.value}`}
+                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                              item.hoverClassName ?? defaultHoverClassName
                             }`}
                           >
-                            {item.label}
-                          </span>
-                        </Label>
-                      ))}
+                            <Checkbox
+                              id={`${group.key}-${item.value}`}
+                              className="border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
+                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                              onCheckedChange={(isChecked) =>
+                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                              }
+                              aria-label={`Filter nach ${item.label}`}
+                            />
+                            {item.icon}
+                            <span
+                              className={`text-xs font-medium text-foreground ${
+                                item.labelClassName ?? ''
+                              }`}
+                            >
+                              {item.label}
+                            </span>
+                          </Label>
+                        ))}
                       </div>
                     )
                   )}

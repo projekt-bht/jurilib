@@ -59,31 +59,42 @@ export default function OrganizationsPage() {
   const [skip, setSkip] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   async function loadOrganizations(nextSkip = skip, nextFilters = filters) {
     if (loading || (!hasMore && nextSkip !== 0)) return;
 
     setLoading(true);
+    setErrorMessage(null);
+    if (nextSkip === 0) {
+      // RM: Keep the current list visible while refreshing to avoid UI flicker.
+      setIsRefreshing(true);
+    }
 
-    const fetched = await fetchOrganizations(nextSkip, steps, nextFilters);
+    try {
+      const fetched = await fetchOrganizations(nextSkip, steps, nextFilters);
 
-    setOrganizations((prev) => {
-      //remove the React key warning
-      const merged = nextSkip === 0 ? fetched : [...prev, ...fetched];
-      const byId = new Map<string, Organization>();
-      merged.forEach((org) => byId.set(org.id, org));
-      return Array.from(byId.values());
-    });
-    setSkip(nextSkip + steps);
-
-    setHasMore(fetched.length === steps);
-
-    setLoading(false);
+      setOrganizations((prev) => {
+        // RM: De-dupe by id to avoid duplicate React keys when merging pages.
+        const merged = nextSkip === 0 ? fetched : [...prev, ...fetched];
+        const byId = new Map<string, Organization>();
+        merged.forEach((org) => byId.set(org.id, org));
+        return Array.from(byId.values());
+      });
+      setSkip(nextSkip + steps);
+      setHasMore(fetched.length === steps);
+    } catch (error) {
+      // RM: Surface a friendly error and keep previous results on screen.
+      setErrorMessage('Organisationen konnten nicht geladen werden.');
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
   }
 
   // Initial Load + Filter Change
   useEffect(() => {
-    setOrganizations([]);
     setSkip(0);
     setHasMore(true);
     loadOrganizations(0, filters);
@@ -157,6 +168,12 @@ export default function OrganizationsPage() {
               </Link>
             ))}
           </div>
+
+          {isRefreshing && (
+            <div className="py-4 text-muted-foreground">Aktualisiere Ergebnisse…</div>
+          )}
+
+          {errorMessage && <div className="py-4 text-destructive">{errorMessage}</div>}
 
           {loading && (
             <div className="py-6 text-muted-foreground">Lade weitere Organisationen…</div>
