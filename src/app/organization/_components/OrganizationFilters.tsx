@@ -161,7 +161,10 @@ export function OrganizationFilters({
         {
           title: 'Preismodell',
           key: 'pricingModel',
-          items: sortedPricingModel.map((item) => ({ value: item, label: item })),
+          items: sortedPricingModel.map((item) => ({
+            value: item,
+            label: item === PricingModelEnum.FIXED ? 'Festpreis' : 'Stundensatz',
+          })),
         },
       ],
     },
