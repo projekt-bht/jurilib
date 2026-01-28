@@ -42,7 +42,7 @@ export type FilterOptions = {
   pricingModel: PricingModel[];
 };
 
-type FilterValue =
+export type FilterValue =
   | PriceCategory
   | OrganizationType
   | Area

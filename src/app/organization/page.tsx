@@ -7,24 +7,9 @@ import { OrganizationCard } from '@/app/organization/_components/OrganizationCar
 import {
   OrganizationFilters,
   type FilterOptions,
+  type FilterValue,
 } from '@/app/organization/_components/OrganizationFilters';
 import type { Organization } from '~/generated/prisma/client';
-import type {
-  Accessibility,
-  Area,
-  Language,
-  OrganizationType,
-  PriceCategory,
-  PricingModel,
-} from '~/generated/prisma/enums';
-
-type FilterValue =
-  | PriceCategory
-  | OrganizationType
-  | Area
-  | Language
-  | Accessibility
-  | PricingModel;
 
 async function fetchOrganizations(
   skip: number,
