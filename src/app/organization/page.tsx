@@ -148,14 +148,14 @@ export default function OrganizationsPage() {
   const activeFilterCount = Object.values(filters).reduce((sum, list) => sum + list.length, 0);
 
   return (
-    <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
+    <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-6 px-4 pb-10">
       {organizations.length > 0 ? (
         <>
-          <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
-          <div className="h-8" />
-
-          {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
           <div className="w-full max-w-6xl">
+            <p className="text-4xl text-foreground font-bold">Organisationsliste</p>
+            <div className="h-6" />
+
+            {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
             <OrganizationFilters
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -163,7 +163,7 @@ export default function OrganizationsPage() {
               activeFilterCount={activeFilterCount}
             />
           </div>
-          <div className="h-6" />
+          <div className="h-8" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
             {organizations.map((orga) => (

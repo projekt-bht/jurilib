@@ -195,7 +195,9 @@ export function OrganizationFilters({
   ];
 
   return (
-    <section className="w-full rounded-lg border border-border bg-background p-3">
+    <section className="group relative w-full rounded-3xl border border-border bg-background shadow-sm hover:border-primary/40 hover:shadow-xl transition-all duration-500 overflow-hidden">
+      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative p-4">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
         <div className="flex items-center gap-3">
           <div className="rounded-full border border-border bg-muted p-1.5">
@@ -243,11 +245,11 @@ export function OrganizationFilters({
       </div>
 
       {isPanelOpen && (
-        <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
+        <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
           {sections.map((section) => (
             <div
               key={section.key}
-              className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2 flex flex-col h-[360px]"
+              className="rounded-2xl border border-border/70 bg-background/80 px-3 pb-3 pt-2.5 flex flex-col h-[360px] shadow-sm hover:shadow-md transition-all duration-300"
             >
               <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
                 <span className="text-muted-foreground">{section.icon}</span>
@@ -302,6 +304,7 @@ export function OrganizationFilters({
           ))}
         </div>
       )}
+      </div>
     </section>
   );
 }
