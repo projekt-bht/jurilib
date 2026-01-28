@@ -4,7 +4,17 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 ## 1. Naming Conventions
 
-### 1.1 Variables and Constants
+## 1.1 Language
+
+- **English:**  
+  All elements that are **permanently part of the codebase or project** must be written in English. This includes, but is not limited to:  
+  variables, constants, functions, methods, classes, interfaces, types, enums, file and folder names, branch names, commit messages, backend error messages, and comments.
+
+- **German:**  
+  As our team is based in Germany, **issues and temporary comments** (e.g. TODOs or FIXMEs) may be written in German.  
+  Furthermore, **all user-facing content** (emails, frontend error messages and everything else in the UI) must be written in German. This is due to the application currently being targeted exclusively at a German customer base.
+
+### 1.2 Variables and Constants
 
 - **Local variables & function arguments:** `lowerCamelCase`
   ```ts
@@ -14,13 +24,8 @@ This styleguide defines coding conventions and workflow practices for the projec
   ```ts
   const API_URL = 'https://api.example.com';
   ```
-- **Boolean variables:** use `is` / `has` / `can` prefixes
-  ```ts
-  const isActive = true;
-  const hasAccess = false;
-  ```
 
-### 1.2 Functions & Methods
+### 1.3 Functions & Methods
 
 - **React funtions:** `UpperCamleCase`
   ```ts
@@ -30,18 +35,13 @@ This styleguide defines coding conventions and workflow practices for the projec
   ```ts
   function getUserName(id: string) {}
   ```
-- **Async functions:** `lowerCamelCase`, optionally with a `fetch` / `load` prefix <!--- TODO: Decision here!-->
-  ```ts
-  async function fetchUserData() {}
-  async function loadUserData() {}
-  ```
 - **Event handlers / callbacks:** `handle` / `on` prefix
   ```ts
   const handleClick = () => {};
   const onSubmit = () => {};
   ```
 
-### 1.3 Classes, Interfaces, Types, Enums
+### 1.4 Classes, Interfaces, Types, Enums
 
 - **Classes:** `UpperCamelCase`
   ```ts
@@ -51,23 +51,22 @@ This styleguide defines coding conventions and workflow practices for the projec
   ```ts
   interface IUser {}
   ```
-- **Types / Enums:** `UpperCamelCase`
+- **Types:**
+  - **Name:** `UpperCamelCase`
+  - **Value:** `lowerCamelCase`
   ```ts
   type UserRole = 'admin' | 'user';
-  enum Status {
-    Active,
-    Inactive,
+  ```
+- **Enums:**
+  - **Name:** `UpperCamelCase`
+  - **Value:** `UPPER_SNAKE_CASE`
+  ```ts
+  enum UserType {
+    USER
+    EMPLOYEE
+    ADMIN
   }
   ```
-
-### 1.4 Files & Folders
-
-- **React components / classes:**  
-  `UpperCamelCase` → `UserCard.tsx`
-- **Utilities / services:**  
-  `lowerCamelCase` → `authService.ts`, `dateUtils.ts`
-- **Folders:**  
-  `UpperCamelCase` → `Components/`, `Services/`
 
 ## 2. Branches
 
@@ -79,7 +78,8 @@ This styleguide defines coding conventions and workflow practices for the projec
 | **dev**      | Stage / Integration                      | Created from `main` branch, PRs -> `main`, minimum 1 review |
 | **setup/\*** |  For initial setup, may be deleted later | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
 | **feat/\***  |  Adding new features                     | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
-| **bug/\***   | self explanatory                         | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **fix/\***   | Self explanatory                         | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **bug/\***   | Can be used interchangeably to fix/\*    | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
 
 ### 2.2 Creating Branch
 
@@ -89,8 +89,9 @@ Bracnches are created from an issue. This way, all commits within the branch are
 
 ### 3.1 Basics
 
-- **Structure:** `<type>(<scope>): <short, imperative description>` or `<type>(<scope>): <short, imperative description> (<reference to issue>)`
-- **Language:** English
+- **Structure:**  
+  `<type>(<scope>): <short, imperative description>` **or**  
+  `<type>(<scope>): <short, imperative description> (#<issue number>)`
 - **Reference to issue:** There **allways (!)** has to be a reference to an issue. If the commit is not automatically linked to an issue through a branch, the reference has to be added manually.
 
 ### 3.2 Types
@@ -111,11 +112,11 @@ Bracnches are created from an issue. This way, all commits within the branch are
 
 ### 3.3 Examples
 
-| Bad             | Good                                                  |
-| --------------- | ----------------------------------------------------- |
-| “updated stuff” | `feat(auth): add password reset flow (refs #7)`       |
-| “fixed bug”     | `fix(api): prevent null pointer on login (fixes #54)` |
-| “cleanup”       | `refactor(ui): remove unused button props (#83)`      |
+| Bad             | Good                                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| “updated stuff” | `feat(auth): add password reset flow` **or** `feat(auth): add password reset flow (refs #7)`           |
+| “fixed bug”     | `fix(api): prevent null pointer on login` **or** `fix(api): prevent null pointer on login (fixes #54)` |
+| “cleanup”       | `refactor(ui): remove unused button props` **or** `refactor(ui): remove unused button props (#83)`     |
 
 ## 4. Linting & Formatting
 
