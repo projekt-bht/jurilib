@@ -61,7 +61,7 @@ const SCROLL_THRESHOLD = 150; // px vor Seitenende
 export default function OrganizationsPage() {
   // RM: Filter UI and filter state live in the page so there is a single source of truth
   // RM: and no duplicate state handling in child components. Filter changes request new DB results here.
-  const EMPTY_FILTERS: FilterOptions = {
+  const emptyFilters: FilterOptions = {
     priceCategory: [],
     organizationType: [],
     area: [],
@@ -69,7 +69,7 @@ export default function OrganizationsPage() {
     accessibility: [],
     pricingModel: [],
   };
-  const [filters, setFilters] = useState<FilterOptions>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<FilterOptions>(emptyFilters);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [skip, setSkip] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -142,7 +142,7 @@ export default function OrganizationsPage() {
     });
 
   // RM: Reset all filters back to empty arrays (default state).
-  const handleResetFilters = () => setFilters(EMPTY_FILTERS);
+  const handleResetFilters = () => setFilters(emptyFilters);
 
   // RM: Used by the UI to show how many filters are currently active.
   const activeFilterCount = Object.values(filters).reduce((sum, list) => sum + list.length, 0);
