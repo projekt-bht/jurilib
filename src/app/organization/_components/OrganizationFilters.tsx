@@ -170,7 +170,10 @@ export function OrganizationFilters({
       title: 'Fachbereich',
       icon: <Tag className="w-4 h-4" />,
       scroll: true,
-      items: sortedAreas.map((area) => ({ value: area, label: area })),
+      items: sortedAreas.map((area) => ({
+        value: area,
+        label: area.toString().replace(/_/g, ' '),
+      })),
     },
     {
       key: 'languages',
@@ -184,7 +187,10 @@ export function OrganizationFilters({
       title: 'Barrierefreiheit',
       icon: <PersonStanding className="w-4 h-4" />,
       scroll: true,
-      items: sortedAccessibility.map((item) => ({ value: item, label: item })),
+      items: sortedAccessibility.map((item) => ({
+        value: item,
+        label: item.toString().replace(/_/g, ' '),
+      })),
     },
   ];
 
