@@ -272,10 +272,13 @@ export function OrganizationFilters({
                             {group.title}
                           </div>
                         )}
-                      {group.items.map((item) => (
-                        <Label
-                          key={`${group.key}-${item.value}`}
-                          htmlFor={`${group.key}-${item.value}`}
+                    {group.items.map((item) => (
+                      // RM: Each filter option is wrapped in a full-width label so the entire row
+                      // RM: is clickable; the checkbox is controlled via state and toggles the
+                      // RM: selected filter value on click.
+                      <Label
+                        key={`${group.key}-${item.value}`}
+                        htmlFor={`${group.key}-${item.value}`}
                           className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
                             item.hoverClassName ?? defaultHoverClassName
                           }`}
