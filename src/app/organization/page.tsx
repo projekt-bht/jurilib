@@ -149,22 +149,22 @@ export default function OrganizationsPage() {
 
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-6 px-4 pb-10">
+      <div className="w-full max-w-6xl">
+        <p className="text-4xl text-foreground font-bold">Organisationsliste</p>
+        <div className="h-6" />
+
+        {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
+        <OrganizationFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleResetFilters}
+          activeFilterCount={activeFilterCount}
+        />
+      </div>
+      <div className="h-8" />
+
       {organizations.length > 0 ? (
         <>
-          <div className="w-full max-w-6xl">
-            <p className="text-4xl text-foreground font-bold">Organisationsliste</p>
-            <div className="h-6" />
-
-            {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
-            <OrganizationFilters
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onReset={handleResetFilters}
-              activeFilterCount={activeFilterCount}
-            />
-          </div>
-          <div className="h-8" />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
             {organizations.map((orga) => (
               <Link href={`/organization/${orga.id}`} key={`OrganizationCard_${orga.id}`}>

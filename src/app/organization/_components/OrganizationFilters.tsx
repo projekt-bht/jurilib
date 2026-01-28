@@ -50,6 +50,18 @@ type FilterValue =
   | Accessibility
   | PricingModel;
 
+type SectionItem = {
+  value: FilterValue;
+  label: string;
+  icon?: React.ReactNode;
+  hoverClassName?: string;
+  labelClassName?: string;
+};
+type SectionGroup = {
+  title: string;
+  key: keyof FilterOptions;
+  items: SectionItem[];
+};
 const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
   [PriceCategoryEnum.FREE]: {
     label: 'Kostenlos',
@@ -111,19 +123,6 @@ export function OrganizationFilters({
 
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-gray-soft cursor-pointer';
-
-  type SectionItem = {
-    value: FilterValue;
-    label: string;
-    icon?: React.ReactNode;
-    hoverClassName?: string;
-    labelClassName?: string;
-  };
-  type SectionGroup = {
-    title: string;
-    key: keyof FilterOptions;
-    items: SectionItem[];
-  };
 
   const sections: Array<{
     key: keyof FilterOptions;
@@ -199,115 +198,116 @@ export function OrganizationFilters({
   ];
 
   return (
-    <section className="group relative w-full rounded-3xl border border-border bg-background shadow-sm hover:border-primary/40 hover:shadow-xl transition-all duration-500 overflow-hidden">
+    <section className="group relative w-full rounded-3xl border border-border bg-accent/10 shadow-sm hover:border-primary/40 hover:shadow-xl transition-all duration-500 overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="relative p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
-        <div className="flex items-center gap-3">
-          <div className="rounded-full border border-border bg-muted p-1.5">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">Filter</h3>
-            <p className="text-xs text-muted-foreground">
-              Wähle Organisationstyp, Preis, Fachbereich, Sprache und Barrierefreiheit aus.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {isActiveFilters && (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
-              {activeFilterCount} aktiv
-            </span>
-          )}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={!isActiveFilters}
-            onClick={onReset}
-            className="h-7 px-2 text-xs font-semibold cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-            Zurücksetzen
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsPanelOpen((prev) => !prev)}
-            className="h-7 w-7 p-0 cursor-pointer"
-            aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
-          >
-            <ChevronDown
-              className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
-                isPanelOpen ? 'rotate-180' : ''
-              }`}
-            />
-          </Button>
-        </div>
-      </div>
-
-      {isPanelOpen && (
-        <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
-          {sections.map((section) => (
-            <div
-              key={section.key}
-              className="rounded-2xl border border-border/70 bg-background/80 px-3 pb-3 pt-2.5 flex flex-col h-[360px] shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-                <span className="text-muted-foreground">{section.icon}</span>
-                <span className="text-xs font-semibold text-foreground">{section.title}</span>
-              </div>
-              <div
-                className={`mt-2 space-y-3 flex-1 min-h-0 ${
-                  section.scroll ? 'overflow-y-auto pr-1' : ''
-                }`}
-              >
-                {(section.groups ?? [{ title: '', key: section.key, items: section.items }]).map(
-                  (group) => (
-                    <div key={`${section.key}-${group.title || 'default'}`} className="space-y-1.5">
-                      {group.title && (
-                        <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                          {group.title}
-                        </div>
-                      )}
-                      {group.items.map((item) => (
-                        <div
-                          key={`${group.key}-${item.value}`}
-                          className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                            item.hoverClassName ?? defaultHoverClassName
-                          }`}
-                        >
-                          <Checkbox
-                            id={`${group.key}-${item.value}`}
-                            className="cursor-pointer"
-                            checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                            onCheckedChange={(isChecked) =>
-                              handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                            }
-                            aria-label={`Filter nach ${item.label}`}
-                          />
-                          <Label
-                            htmlFor={`${group.key}-${item.value}`}
-                            className={
-                              item.labelClassName ??
-                              'inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground'
-                            }
-                          >
-                            {item.icon}
-                            {item.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                )}
-              </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
+          <div className="flex items-center gap-3">
+            <div className="rounded-full border border-border bg-muted p-1.5">
+              <Filter className="w-4 h-4 text-muted-foreground" />
             </div>
-          ))}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Filter</h3>
+            <p className="text-xs text-muted-foreground">Filteroptionen anzeigen</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {isActiveFilters && (
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
+                {activeFilterCount} aktiv
+              </span>
+            )}
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={!isActiveFilters}
+              onClick={onReset}
+              className="h-7 px-2 text-xs font-semibold cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+              Zurücksetzen
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsPanelOpen((prev) => !prev)}
+              className="h-7 w-7 p-0 cursor-pointer"
+              aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
+            >
+              <ChevronDown
+                className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                  isPanelOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </Button>
+          </div>
         </div>
-      )}
+
+        {isPanelOpen && (
+          <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
+            {sections.map((section) => (
+              <div
+                key={section.key}
+                className="rounded-2xl border border-border/70 bg-background/80 px-3 pb-3 pt-2.5 flex flex-col h-[360px] shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+                  <span className="text-muted-foreground">{section.icon}</span>
+                  <span className="text-xs font-semibold text-foreground">{section.title}</span>
+                </div>
+                <div
+                  className={`mt-2 space-y-3 flex-1 min-h-0 ${
+                    section.scroll ? 'overflow-y-auto pr-1' : ''
+                  }`}
+                >
+                  {(section.groups ?? [{ title: '', key: section.key, items: section.items }]).map(
+                    (group) => (
+                      <div
+                        key={`${section.key}-${group.title || 'default'}`}
+                        className="space-y-1.5"
+                      >
+                        {group.title && (
+                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                            {group.title}
+                          </div>
+                        )}
+                        {group.items.map((item) => (
+                          <div
+                            key={`${group.key}-${item.value}`}
+                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                              item.hoverClassName ?? defaultHoverClassName
+                            }`}
+                          >
+                            <Checkbox
+                              id={`${group.key}-${item.value}`}
+                              className="cursor-pointer border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
+                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                              onCheckedChange={(isChecked) =>
+                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                              }
+                              aria-label={`Filter nach ${item.label}`}
+                            />
+                            <Label
+                              htmlFor={`${group.key}-${item.value}`}
+                              className={
+                                item.labelClassName ??
+                                'inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground'
+                              }
+                            >
+                              {item.icon}
+                              {item.label}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
