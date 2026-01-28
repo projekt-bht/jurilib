@@ -20,7 +20,13 @@ export function StatCards({ cases }: { cases: Case[] }) {
       {stats.map((stat) => (
         <div
           key={stat.id}
-          className="group relative isolate rounded-2xl p-3 overflow-hidden bg-background border border-border/40 transition-all duration-300 drop-shadow-md hover:drop-shadow-lg hover:scale-[1.02]"
+          className="group relative isolate rounded-2xl
+            p-3 overflow-hidden 
+            bg-background border
+            border-border/40 
+            transition-all duration-300
+            shadow-sm hover:shadow-md 
+            hover:scale-105 hover:-translate-y-2"
         >
           {/* Solid accent bar - 5px left of icon */}
           <div className="absolute left-12 top-3 bottom-3 w-0.5 rounded-full bg-accent-gray-light" />
@@ -41,11 +47,15 @@ export function StatCards({ cases }: { cases: Case[] }) {
 }
 
 function calculateStats(cases: Case[]): Stats[] {
+  let stats: Stats[] = [];
+
+  if (cases.length === 0) return stats;
+
   const totalCases = cases.length;
   const activeCases = cases.filter((caseItem) => caseItem.status !== CaseStatus.COMPLETED).length;
   const closedCases = totalCases - activeCases;
 
-  const stats: Stats[] = [
+  stats = [
     {
       id: 'total-cases',
       title: 'Anzahl aller Fälle',
