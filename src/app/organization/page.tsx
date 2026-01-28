@@ -1,10 +1,10 @@
 'use client';
-//Pagination von Max muss angepasst werden
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
-import { useEffect, useState } from 'react';
 
 async function fetchOrganizations(skip: number, take: number): Promise<Organization[]> {
   try {
@@ -82,37 +82,42 @@ export default function OrganizationsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, hasMore]);
 
-  //new from AI
-  //const organizations: Organization[] = [];
-
   return (
-    <div className="bg-card flex flex-col items-center min-h-screen px-4">
-      <div className="w-full max-w-6xl py-6 space-y-6">
-        <div className="space-y-2">
+    <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
+      {organizations.length > 0 ? (
+        <>
           <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
-        </div>
+          <div className="h-8" />
 
-        <div className="h-8" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
-          {organizations.map((orga) => (
-            <Link href={`/organization/${orga.id}`} key={'OrganizationCard_' + orga.id}>
-              <OrganizationCard organization={orga} />
-            </Link>
-          ))}
-        </div>
-        <div className="mb-8 text-muted-foreground pt-6">
-          Deine Anfrage wird vertraulich behandelt.
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
+            {organizations.map((orga) => (
+              <Link href={`/organization/${orga.id}`} key={`OrganizationCard_${orga.id}`}>
+                <OrganizationCard organization={orga} />
+              </Link>
+            ))}
+          </div>
+
+          {loading && (
+            <div className="py-6 text-muted-foreground">Lade weitere Organisationen…</div>
+          )}
+
+          {!hasMore && (
+            <div className="py-6 text-muted-foreground">
+              Keine weiteren Organisationen verfügbar.
+            </div>
+          )}
+
+          <div className="mb-8 text-muted-foreground pt-6">
+            Deine Anfrage wird vertraulich behandelt.
+          </div>
+        </>
+      ) : (
         <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
           <p className="text-5xl font-bold text-foreground">
             Leider konnten wir keine passende Organisation finden.
           </p>
         </div>
-        {/*<OrganizationExplorerA organizations={organizations} />*/}
-        <div className="mb-4 text-muted-foreground pt-2 text-sm">
-          Deine Anfrage wird vertraulich behandelt.
-        </div>
-      </div>
+      )}
     </div>
   );
 }
