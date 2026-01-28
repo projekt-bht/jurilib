@@ -1,4 +1,4 @@
-import { FolderOpen } from 'lucide-react';
+import { CheckCircle, Clock, FolderOpen } from 'lucide-react';
 
 import { type Case, CaseStatus } from '~/generated/prisma/browser';
 
@@ -19,18 +19,19 @@ export function StatCards({ cases }: { cases: Case[] }) {
     <>
       {stats.map((stat) => (
         <div
-          key={stat.title}
-          className="bg-background rounded-2xl p-3 md:p-4 border border-border shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+          key={stat.id}
+          className="group relative isolate rounded-2xl p-3 overflow-hidden bg-background border border-border/40 transition-all duration-300 drop-shadow-md hover:drop-shadow-lg hover:scale-[1.02]"
         >
-          <div className="flex items-center gap-2 md:gap-3">
-            <div
-              className={`w-8 h-8 md:w-10 md:h-10 rounded-xl bg-${stat.iconColor}-light flex items-center justify-center border border-border`}
-            >
+          {/* Solid accent bar - 5px left of icon */}
+          <div className="absolute left-12 top-3 bottom-3 w-0.5 rounded-full bg-accent-gray-light" />
+
+          <div className="relative flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-muted/50 flex items-center justify-center shrink-0">
               <stat.Icon className={`w-4 h-4 md:w-6 md:h-6 text-${stat.iconColor}`} />
             </div>
             <div>
-              <p className="text-xl md:text-2xl font-bold">{stat.statValue}</p>
-              <p className="text-xs md:text-sm text-muted-foreground">{stat.title}</p>
+              <p className="text-xl font-bold text-foreground tracking-tight">{stat.statValue}</p>
+              <p className="text-xs text-muted-foreground font-medium">{stat.title}</p>
             </div>
           </div>
         </div>
@@ -56,15 +57,15 @@ function calculateStats(cases: Case[]): Stats[] {
       id: 'active-cases',
       title: 'Aktive Fälle',
       statValue: activeCases,
-      iconColor: 'accent-green',
-      Icon: FolderOpen,
+      iconColor: 'accent-amber',
+      Icon: Clock,
     },
     {
       id: 'closed-cases',
       title: 'Abgeschlossene Fälle',
       statValue: closedCases,
-      iconColor: 'accent-red',
-      Icon: FolderOpen,
+      iconColor: 'accent-emerald',
+      Icon: CheckCircle,
     },
   ];
 
