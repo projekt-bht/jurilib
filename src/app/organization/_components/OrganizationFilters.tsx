@@ -198,7 +198,7 @@ export function OrganizationFilters({
   ];
 
   return (
-    <section className="group relative w-full rounded-3xl border border-border bg-accent/10 shadow-sm hover:border-primary/40 hover:shadow-xl transition-all duration-500 overflow-hidden">
+    <section className="group relative w-full rounded-3xl border border-border bg-accent/10 hover:border-primary/40 transition-all duration-500 overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="relative p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
@@ -208,7 +208,7 @@ export function OrganizationFilters({
             </div>
             <div>
               <h3 className="text-sm font-semibold text-foreground">Filter</h3>
-            <p className="text-xs text-muted-foreground">Filteroptionen anzeigen</p>
+              <p className="text-xs text-muted-foreground">Filteroptionen anzeigen</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -233,11 +233,11 @@ export function OrganizationFilters({
               variant="ghost"
               size="sm"
               onClick={() => setIsPanelOpen((prev) => !prev)}
-              className="h-7 w-7 p-0 cursor-pointer"
+              className="h-12 w-12 p-0 cursor-pointer"
               aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
             >
               <ChevronDown
-                className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${
+                className={`w-8 h-8 text-muted-foreground transition-transform duration-200 ${
                   isPanelOpen ? 'rotate-180' : ''
                 }`}
               />
