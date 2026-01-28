@@ -1,75 +1,109 @@
 import { MapPin, Video } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { cn } from '@/lib/utils';
 import type { Appointment } from '~/generated/prisma/browser';
 import { AppointmentStatus } from '~/generated/prisma/browser';
 
-function getAppointmentHeaderColor(status: AppointmentStatus): {
-  color: string;
-  lightColor: string;
-} {
+function getAppointmentHeaderColor(status: AppointmentStatus): string {
   switch (status) {
     case AppointmentStatus.REQUESTED:
-      return { color: 'bg-accent-blue', lightColor: 'bg-accent-blue-light' };
+      return 'bg-accent-blue';
     case AppointmentStatus.CONFIRMED:
-      return { color: 'bg-accent-emerald', lightColor: 'bg-accent-emerald-light' };
+      return 'bg-accent-emerald';
     case AppointmentStatus.CANCELED:
-      return { color: 'bg-accent-red', lightColor: 'bg-accent-red-light' };
+      return 'bg-accent-red';
     default:
-      return { color: 'bg-accent-amber', lightColor: 'bg-accent-amber-light' };
+      return 'bg-accent-amber';
   }
 }
 
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
-  const { color, lightColor } = getAppointmentHeaderColor(appointment.status);
+  const color = getAppointmentHeaderColor(appointment.status);
+
+  // fetch backend data
+  const [employeeName, setEmployeeName] = useState<string>('');
+  const [organizationName, setOrganizationName] = useState<string>('');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchData() {
+      try {
+        const resEmployee = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${appointment.employeeId}`,
+          { cache: 'no-store' }
+        );
+        const employeeData = await resEmployee.json();
+
+        if (!isMounted) return;
+
+        setEmployeeName(`${employeeData.firstname} ${employeeData.lastname}`);
+
+        const resOrganization = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${employeeData.organizationId}`,
+          { cache: 'no-store' }
+        );
+        const organizationData = await resOrganization.json();
+
+        if (isMounted) {
+          setOrganizationName(organizationData.name);
+        }
+      } catch (error) {
+        // TODO: Handle error state
+        console.error('Error fetching appointment data:', error);
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [appointment]);
+
   return (
     <div
       key={appointment.id}
-      className="bg-background rounded-2xl border border-border overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      className="group relative bg-background rounded-xl border border-border/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
     >
-      {/* Header with fixed height and colored background */}
-      <div
-        className={cn(
-          'px-4 py-3 h-14 flex items-center justify-between border-b border-border drop-shadow-sm',
-          lightColor
-        )}
-      >
-        {/* Date and Time */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-bold text-foreground">
-            {appointment.dateTimeStart.toLocaleDateString('de-DE', {
-              day: 'numeric',
-              month: 'short',
-            })}
-          </span>
-          <span className="text-sm text-accent-gray">
-            {appointment.dateTimeStart.toLocaleTimeString('de-DE', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}{' '}
-            Uhr
-          </span>
-        </div>
-
-        {/* Status Badge */}
-        <span
-          className={cn('px-2.5 py-1 rounded-full text-xs font-semibold text-accent-white ', color)}
-        >
-          {appointment.status.replace('_', ' ')}
-        </span>
-      </div>
+      {/* Colored left border */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${color}`} />
 
       {/* Content */}
-      <div className="p-4 space-y-3">
-        <div>
-          <p className="font-semibold text-sm line-clamp-1">TITEL DES TERMINS</p>
-          <p className="text-xs text-muted-foreground line-clamp-1">EMPLOYEENAME</p>
+      <div className="p-4 pl-5">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-foreground">
+              {new Date(appointment.dateTimeStart).toLocaleDateString('de-DE', {
+                day: 'numeric',
+                month: 'short',
+              })}
+            </span>
+            <span className="text-sm text-accent-gray">
+              {new Date(appointment.dateTimeStart).toLocaleTimeString('de-DE', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}{' '}
+              Uhr
+            </span>
+          </div>
+          <span className={`px-2 py-0.5 rounded-md text-xs font-medium text-accent-white ${color}`}>
+            {appointment.status.replace('_', ' ')}
+          </span>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs text-foreground">
+        {/* Case info */}
+        <p className="font-semibold text-sm text-foreground line-clamp-1 mb-1">
+          {organizationName}
+        </p>
+        <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{employeeName}</p>
+
+        {/* Location */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {appointment.location ? (
             <>
-              <MapPin className="w-3.5 h-3.5 shrink-0 " />
+              <MapPin className="w-3.5 h-3.5 shrink-0" />
               <span className="line-clamp-1">{appointment.location}</span>
             </>
           ) : (
@@ -79,12 +113,6 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
             </>
           )}
         </div>
-
-        {appointment.notes && (
-          <p className="text-xs text-foreground bg-accent-gray/10 rounded-lg px-3 py-2 line-clamp-2 border border-border">
-            {appointment.notes}
-          </p>
-        )}
       </div>
     </div>
   );
