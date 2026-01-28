@@ -62,17 +62,30 @@ type SectionGroup = {
   key: keyof FilterOptions;
   items: SectionItem[];
 };
-const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
+const priceCategoryMeta: Record<
+  PriceCategoryEnum,
+  { label: string; hoverClassName: string; textClassName: string }
+> = {
   [PriceCategoryEnum.FREE]: {
     label: 'Kostenlos',
-    hoverClassName: 'hover:bg-accent-emerald-soft',
+    hoverClassName: 'hover:bg-accent-blue-soft',
+    textClassName: 'text-accent-emerald',
   },
-  [PriceCategoryEnum.LOW]: { label: '€ - Niedrig', hoverClassName: 'hover:bg-accent-amber-soft' },
+  [PriceCategoryEnum.LOW]: {
+    label: 'Niedrig €',
+    hoverClassName: 'hover:bg-accent-blue-soft',
+    textClassName: 'text-accent-amber',
+  },
   [PriceCategoryEnum.MEDIUM]: {
-    label: '€€ - Mittel',
-    hoverClassName: 'hover:bg-accent-amber-light',
+    label: 'Mittel €€',
+    hoverClassName: 'hover:bg-accent-blue-soft',
+    textClassName: 'text-accent-amber',
   },
-  [PriceCategoryEnum.HIGH]: { label: '€€€ - Hoch', hoverClassName: 'hover:bg-accent-red/10' },
+  [PriceCategoryEnum.HIGH]: {
+    label: 'Hoch €€€',
+    hoverClassName: 'hover:bg-accent-blue-soft',
+    textClassName: 'text-accent-red',
+  },
 };
 
 const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: React.ReactNode }> =
@@ -122,7 +135,7 @@ export function OrganizationFilters({
   ) => onFilterChange(category, value, isChecked);
 
   const isActiveFilters = activeFilterCount > 0;
-  const defaultHoverClassName = 'hover:bg-accent-gray-soft cursor-pointer';
+  const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
 
   const sections: Array<{
     key: keyof FilterOptions;
@@ -198,13 +211,14 @@ export function OrganizationFilters({
   ];
 
   return (
-    <section className="group relative w-full rounded-3xl border border-border bg-accent/10 hover:border-primary/40 transition-all duration-500 overflow-hidden">
-      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    <section className="group relative w-full rounded-3xl border border-border bg-background hover:border-primary/40 shadow-sm transition-all duration-500 overflow-hidden">
+      <div className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-accent-purple/15 blur-2xl" />
+      <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-accent-blue/15 blur-2xl" />
       <div className="relative p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
           <div className="flex items-center gap-3">
-            <div className="rounded-full border border-border bg-muted p-1.5">
-              <Filter className="w-4 h-4 text-muted-foreground" />
+            <div className="rounded-full border border-border bg-linear-to-br from-accent-blue/20 to-accent-purple/20 p-1.5">
+              <Filter className="w-4 h-4 text-foreground" />
             </div>
             <div>
               <h3 className="text-sm font-semibold text-foreground">Filter</h3>
@@ -215,7 +229,7 @@ export function OrganizationFilters({
           </div>
           <div className="flex items-center gap-2">
             {isActiveFilters && (
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
+              <span className="rounded-full bg-linear-to-r from-accent-blue/30 to-accent-purple/30 px-2 py-0.5 text-xs font-semibold text-foreground">
                 {activeFilterCount} aktiv
               </span>
             )}
@@ -252,10 +266,12 @@ export function OrganizationFilters({
             {sections.map((section) => (
               <div
                 key={section.key}
-                className="rounded-2xl border border-border/70 bg-background/80 px-3 pb-3 pt-2.5 flex flex-col h-[360px] shadow-sm hover:shadow-md transition-all duration-300"
+                className="rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col h-[360px] shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-                  <span className="text-muted-foreground">{section.icon}</span>
+                  <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
+                    {section.icon}
+                  </span>
                   <span className="text-xs font-semibold text-foreground">{section.title}</span>
                 </div>
                 <div
@@ -287,7 +303,7 @@ export function OrganizationFilters({
                           >
                             <Checkbox
                               id={`${group.key}-${item.value}`}
-                              className="border-foreground/40 bg-background hover:border-foreground/60 shadow-sm"
+                              className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
                               checked={(filters[group.key] as FilterValue[]).includes(item.value)}
                               onCheckedChange={(isChecked) =>
                                 handleCheckboxChange(group.key, item.value, Boolean(isChecked))
