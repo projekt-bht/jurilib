@@ -4,8 +4,6 @@ import Link from 'next/link';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import type { Organization } from '~/generated/prisma/client';
-import { OrganizationExplorer } from './_components/OrganizationExplorer';
-import { OrganizationExplorerA } from './_components/OrganizationExplorerA';
 import { useEffect, useState } from 'react';
 
 async function fetchOrganizations(skip: number, take: number): Promise<Organization[]> {
