@@ -1,25 +1,54 @@
 'use client';
 
-import { Building2, ChevronDown, Filter, Scale, Tag, Users, X } from 'lucide-react';
+import {
+  Building,
+  Building2,
+  ChevronDown,
+  Filter,
+  Scale,
+  Tag,
+  X,
+  PersonStanding,
+  Earth,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import type { Area, OrganizationType, PriceCategory } from '~/generated/prisma/enums';
+import type {
+  Accessibility,
+  Area,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  PricingModel,
+} from '~/generated/prisma/enums';
 import {
+  Accessibility as AccessibilityEnum,
   Area as AreasEnum,
+  Language as LanguageEnum,
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
+  PricingModel as PricingModelEnum,
 } from '~/generated/prisma/enums';
 
 export type FilterOptions = {
   priceCategory: PriceCategory[];
   organizationType: OrganizationType[];
-  specialties: Area[];
+  area: Area[];
+  languages: Language[];
+  accessibility: Accessibility[];
+  pricingModel: PricingModel[];
 };
 
-type FilterValue = PriceCategory | OrganizationType | Area;
+type FilterValue =
+  | PriceCategory
+  | OrganizationType
+  | Area
+  | Language
+  | Accessibility
+  | PricingModel;
 
 const priceCategoryMeta: Record<PriceCategoryEnum, { label: string; hoverClassName: string }> = {
   [PriceCategoryEnum.FREE]: {
@@ -38,11 +67,11 @@ const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: 
   {
     [OrganizationTypeEnum.LAW_FIRM]: {
       label: 'Kanzlei',
-      icon: <Building2 className="w-3.5 h-3.5" />,
+      icon: <Building className="w-3.5 h-3.5" />,
     },
     [OrganizationTypeEnum.ASSOCIATION]: {
       label: 'Verein',
-      icon: <Users className="w-3.5 h-3.5" />,
+      icon: <Building2 className="w-3.5 h-3.5" />,
     },
   };
 
@@ -58,29 +87,106 @@ export function OrganizationFilters({
   activeFilterCount: number;
 }) {
   const [isPanelOpen, setIsPanelOpen] = useState(true);
+  // RM: Pre-sort enum values once (German locale) so filter lists render consistently without
+  // RM: re-sorting on every render.
   const [sortedAreas] = useState(() =>
-    // Keep specialties deterministic and easy to scan.
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
-
-  function SectionHeader({ title, icon }: { title: string; icon: React.ReactNode }) {
-    return (
-      <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-        <span className="text-muted-foreground">{icon}</span>
-        <span className="text-xs font-semibold text-foreground">{title}</span>
-      </div>
-    );
-  }
+  const [sortedLanguages] = useState(() =>
+    [...Object.values(LanguageEnum)].sort((a, b) => a.localeCompare(b, 'de'))
+  );
+  const [sortedAccessibility] = useState(() =>
+    [...Object.values(AccessibilityEnum)].sort((a, b) => a.localeCompare(b, 'de'))
+  );
+  const [sortedPricingModel] = useState(() =>
+    [...Object.values(PricingModelEnum)].sort((a, b) => a.localeCompare(b, 'de'))
+  );
 
   const handleCheckboxChange = (
     category: keyof FilterOptions,
     value: FilterValue,
     isChecked: boolean
-  ) => {
-    onFilterChange(category, value, isChecked);
-  };
+  ) => onFilterChange(category, value, isChecked);
 
   const isActiveFilters = activeFilterCount > 0;
+  const defaultHoverClassName = 'hover:bg-accent-gray-soft';
+
+  type SectionItem = {
+    value: FilterValue;
+    label: string;
+    icon?: React.ReactNode;
+    hoverClassName?: string;
+    labelClassName?: string;
+  };
+  type SectionGroup = {
+    title: string;
+    key: keyof FilterOptions;
+    items: SectionItem[];
+  };
+
+  const sections: Array<{
+    key: keyof FilterOptions;
+    title: string;
+    icon: React.ReactNode;
+    items: SectionItem[];
+    scroll?: boolean;
+    groups?: SectionGroup[];
+  }> = [
+    {
+      key: 'organizationType',
+      title: 'Organisationstyp',
+      icon: <Building2 className="w-4 h-4" />,
+      items: Object.values(OrganizationTypeEnum).map((type) => ({
+        value: type,
+        label: organizationTypeMeta[type].label,
+        icon: organizationTypeMeta[type].icon,
+      })),
+    },
+    {
+      key: 'priceCategory',
+      title: 'Preis',
+      icon: <Scale className="w-4 h-4" />,
+      items: [],
+      groups: [
+        {
+          title: 'Preisklasse',
+          key: 'priceCategory',
+          items: Object.values(PriceCategoryEnum).map((price) => ({
+            value: price,
+            label: priceCategoryMeta[price].label,
+            hoverClassName: priceCategoryMeta[price].hoverClassName,
+            labelClassName: 'cursor-pointer text-xs font-semibold text-foreground',
+          })),
+        },
+        {
+          title: 'Preismodell',
+          key: 'pricingModel',
+          items: sortedPricingModel.map((item) => ({ value: item, label: item })),
+        },
+      ],
+    },
+    {
+      key: 'area',
+      title: 'Fachbereich',
+      icon: <Tag className="w-4 h-4" />,
+      scroll: true,
+      items: sortedAreas.map((area) => ({ value: area, label: area })),
+    },
+    {
+      key: 'languages',
+      title: 'Sprache',
+      icon: <Earth className="w-4 h-4" />,
+      scroll: true,
+      items: sortedLanguages.map((language) => ({ value: language, label: language })),
+    },
+    {
+      key: 'accessibility',
+      title: 'Barrierefreiheit',
+      icon: <PersonStanding className="w-4 h-4" />,
+      scroll: true,
+      items: sortedAccessibility.map((item) => ({ value: item, label: item })),
+    },
+  ];
 
   return (
     <section className="w-full rounded-lg border border-border bg-background p-3">
@@ -131,88 +237,62 @@ export function OrganizationFilters({
       </div>
 
       {isPanelOpen && (
-        <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            <SectionHeader title="Organisationstyp" icon={<Building2 className="w-4 h-4" />} />
-            <div className="mt-2 space-y-1.5">
-              {Object.values(OrganizationTypeEnum).map((type) => (
-                <div
-                  key={type}
-                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-accent-gray-soft"
-                >
-                  <Checkbox
-                    id={`org-type-${type}`}
-                    checked={filters.organizationType.includes(type)}
-                    onCheckedChange={(isChecked) =>
-                      handleCheckboxChange('organizationType', type, Boolean(isChecked))
-                    }
-                    aria-label={`Filter nach ${organizationTypeMeta[type].label}`}
-                  />
-                  <Label
-                    htmlFor={`org-type-${type}`}
-                    className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground"
-                  >
-                    {organizationTypeMeta[type].icon}
-                    {organizationTypeMeta[type].label}
-                  </Label>
-                </div>
-              ))}
+        <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
+          {sections.map((section) => (
+            <div
+              key={section.key}
+              className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2 flex flex-col h-[360px]"
+            >
+              <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+                <span className="text-muted-foreground">{section.icon}</span>
+                <span className="text-xs font-semibold text-foreground">{section.title}</span>
+              </div>
+              <div
+                className={`mt-2 space-y-3 flex-1 min-h-0 ${
+                  section.scroll ? 'overflow-y-auto pr-1' : ''
+                }`}
+              >
+                {(section.groups ?? [{ title: '', key: section.key, items: section.items }]).map(
+                  (group) => (
+                    <div key={`${section.key}-${group.title || 'default'}`} className="space-y-1.5">
+                      {group.title && (
+                        <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                          {group.title}
+                        </div>
+                      )}
+                      {group.items.map((item) => (
+                        <div
+                          key={`${group.key}-${item.value}`}
+                          className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                            item.hoverClassName ?? defaultHoverClassName
+                          }`}
+                        >
+                          <Checkbox
+                            id={`${group.key}-${item.value}`}
+                            checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                            onCheckedChange={(isChecked) =>
+                              handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                            }
+                            aria-label={`Filter nach ${item.label}`}
+                          />
+                          <Label
+                            htmlFor={`${group.key}-${item.value}`}
+                            className={
+                              item.labelClassName ??
+                              'inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-foreground'
+                            }
+                          >
+                            {item.icon}
+                            {item.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                )}
+              </div>
             </div>
-          </div>
-
-          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            <SectionHeader title="Preisklasse" icon={<Scale className="w-4 h-4" />} />
-            <div className="mt-2 space-y-1.5">
-              {Object.values(PriceCategoryEnum).map((price) => (
-                <div
-                  key={price}
-                  className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors ${priceCategoryMeta[price].hoverClassName}`}
-                >
-                  <Checkbox
-                    id={`price-${price}`}
-                    checked={filters.priceCategory.includes(price)}
-                    onCheckedChange={(isChecked) =>
-                      handleCheckboxChange('priceCategory', price, Boolean(isChecked))
-                    }
-                    aria-label={`Filter nach ${priceCategoryMeta[price].label}`}
-                  />
-                  <Label
-                    htmlFor={`price-${price}`}
-                    className="cursor-pointer text-xs font-semibold text-foreground"
-                  >
-                    {priceCategoryMeta[price].label}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-border bg-background px-2.5 pb-2.5 pt-2">
-            <SectionHeader title="Fachbereich" icon={<Tag className="w-4 h-4" />} />
-            <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto pr-1">
-              {sortedAreas.map((area) => (
-                <div
-                  key={area}
-                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-accent-gray-soft"
-                >
-                  <Checkbox
-                    id={`specialty-${area}`}
-                    checked={filters.specialties.includes(area)}
-                    onCheckedChange={(isChecked) =>
-                      handleCheckboxChange('specialties', area, Boolean(isChecked))
-                    }
-                    aria-label={`Filter nach ${area}`}
-                  />
-                  <Label
-                    htmlFor={`specialty-${area}`}
-                    className="cursor-pointer text-xs font-medium text-foreground"
-                  >
-                    {area}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       )}
     </section>

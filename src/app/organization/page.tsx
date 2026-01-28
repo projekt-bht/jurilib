@@ -4,14 +4,42 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
+import {
+  OrganizationFilters,
+  type FilterOptions,
+} from '@/app/organization/_components/OrganizationFilters';
 import type { Organization } from '~/generated/prisma/client';
+import type {
+  Accessibility,
+  Area,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  PricingModel,
+} from '~/generated/prisma/enums';
 
-async function fetchOrganizations(skip: number, take: number): Promise<Organization[]> {
+type FilterValue =
+  | PriceCategory
+  | OrganizationType
+  | Area
+  | Language
+  | Accessibility
+  | PricingModel;
+
+async function fetchOrganizations(
+  skip: number,
+  take: number,
+  filters: FilterOptions
+): Promise<Organization[]> {
   try {
     const params = new URLSearchParams({
       skip: skip.toString(),
       take: take.toString(),
     });
+    filters.priceCategory.forEach((price) => params.append('priceCategory', price));
+    filters.organizationType.forEach((type) => params.append('organizationType', type));
+    filters.area.forEach((area) => params.append('area', area));
+    filters.languages.forEach((language) => params.append('language', language));
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
@@ -31,33 +59,51 @@ const steps = 10;
 const SCROLL_THRESHOLD = 150; // px vor Seitenende
 
 export default function OrganizationsPage() {
+  // RM: Filter UI and filter state live in the page so there is a single source of truth
+  // RM: and no duplicate state handling in child components. Filter changes request new DB results here.
+  const EMPTY_FILTERS: FilterOptions = {
+    priceCategory: [],
+    organizationType: [],
+    area: [],
+    languages: [],
+    accessibility: [],
+    pricingModel: [],
+  };
+  const [filters, setFilters] = useState<FilterOptions>(EMPTY_FILTERS);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [skip, setSkip] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  async function loadOrganizations() {
-    if (loading || !hasMore) return;
+  async function loadOrganizations(nextSkip = skip, nextFilters = filters) {
+    if (loading || (!hasMore && nextSkip !== 0)) return;
 
     setLoading(true);
 
-    const fetched = await fetchOrganizations(skip, steps);
+    const fetched = await fetchOrganizations(nextSkip, steps, nextFilters);
 
-    setOrganizations((prev) => [...prev, ...fetched]);
-    setSkip((prev) => prev + steps);
+    setOrganizations((prev) => {
+      //remove the React key warning
+      const merged = nextSkip === 0 ? fetched : [...prev, ...fetched];
+      const byId = new Map<string, Organization>();
+      merged.forEach((org) => byId.set(org.id, org));
+      return Array.from(byId.values());
+    });
+    setSkip(nextSkip + steps);
 
-    if (fetched.length < steps) {
-      setHasMore(false);
-    }
+    setHasMore(fetched.length === steps);
 
     setLoading(false);
   }
 
-  // Initial Load
+  // Initial Load + Filter Change
   useEffect(() => {
-    loadOrganizations();
+    setOrganizations([]);
+    setSkip(0);
+    setHasMore(true);
+    loadOrganizations(0, filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filters]);
 
   // Scroll Event
   // this was GPT
@@ -82,12 +128,42 @@ export default function OrganizationsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, hasMore]);
 
+  // RM: Toggle a single filter value on/off and update only that category.
+  const handleFilterChange = (
+    category: keyof FilterOptions,
+    value: FilterValue,
+    isChecked: boolean
+  ) =>
+    setFilters((prev) => {
+      const next = isChecked
+        ? [...prev[category], value]
+        : prev[category].filter((item) => item !== value);
+      return { ...prev, [category]: next };
+    });
+
+  // RM: Reset all filters back to empty arrays (default state).
+  const handleResetFilters = () => setFilters(EMPTY_FILTERS);
+
+  // RM: Used by the UI to show how many filters are currently active.
+  const activeFilterCount = Object.values(filters).reduce((sum, list) => sum + list.length, 0);
+
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-3 px-4">
       {organizations.length > 0 ? (
         <>
           <p className="text-4xl text-foreground font-semibold">Organisationsliste</p>
           <div className="h-8" />
+
+          {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
+          <div className="w-full max-w-6xl">
+            <OrganizationFilters
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onReset={handleResetFilters}
+              activeFilterCount={activeFilterCount}
+            />
+          </div>
+          <div className="h-6" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
             {organizations.map((orga) => (
