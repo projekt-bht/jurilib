@@ -204,7 +204,7 @@ export function OrganizationFilters({
           <div>
             <h3 className="text-sm font-semibold text-foreground">Filter</h3>
             <p className="text-xs text-muted-foreground">
-              Wähle Organisationstyp, Preisklasse und Fachbereich
+              Wähle Organisationstyp, Preis, Fachbereich, Sprache und Barrierefreiheit aus.
             </p>
           </div>
         </div>
