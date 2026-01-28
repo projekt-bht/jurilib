@@ -64,10 +64,14 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   return (
     <div
       key={appointment.id}
-      className="group relative bg-background rounded-xl border border-border/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+      className="group relative bg-background
+      rounded-2xl border border-border/60
+      overflow-hidden shadow-sm
+      hover:shadow-md transition-all
+      duration-300 hover:scale-105 hover:-translate-y-2"
     >
       {/* Colored left border */}
-      <div className={`absolute left-0 top-0 bottom-0 w-1 ${color}`} />
+      <div className={`absolute left-0 top-0 bottom-0 w-2 ${color}`} />
 
       {/* Content */}
       <div className="p-4 pl-5">
@@ -80,7 +84,7 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
                 month: 'short',
               })}
             </span>
-            <span className="text-sm text-accent-gray">
+            <span className="text-sm text-primary">
               {new Date(appointment.dateTimeStart).toLocaleTimeString('de-DE', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -88,8 +92,10 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
               Uhr
             </span>
           </div>
-          <span className={`px-2 py-0.5 rounded-md text-xs font-medium text-accent-white ${color}`}>
-            {appointment.status.replace('_', ' ')}
+          <span
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold text-accent-white ${color}`}
+          >
+            {translateAppointmentStatus(appointment.status)}
           </span>
         </div>
 
@@ -116,4 +122,17 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
       </div>
     </div>
   );
+}
+
+function translateAppointmentStatus(status: AppointmentStatus): string {
+  switch (status) {
+    case AppointmentStatus.REQUESTED:
+      return 'Angefragt';
+    case AppointmentStatus.CONFIRMED:
+      return 'Bestätigt';
+    case AppointmentStatus.CANCELED:
+      return 'Abgesagt';
+    default:
+      return 'Geplant';
+  }
 }
