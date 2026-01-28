@@ -86,7 +86,8 @@ export function OrganizationFilters({
   onReset: () => void;
   activeFilterCount: number;
 }) {
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  // When landing on the page, the filters should start collapsed.
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   // RM: Pre-sort enum values once (German locale) so filter lists render consistently without
   // RM: re-sorting on every render.
   const [sortedAreas] = useState(() =>
