@@ -26,6 +26,7 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { POST } = await import('@/app/api/authentication/register/route');
+const { DELETE } = await import('@/app/api/account/[accountID]/route');
 
 describe('Account Routen testen', () => {
   const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/account`;
@@ -206,11 +207,42 @@ describe('Account Routen testen', () => {
   test('Negative: update immutable field type', async () => {
     expect(async () => {
       await updateAccount(createdAcc.id, { type: AccountType.EMPLOYEE });
-    }).rejects.toThrow('notFound');
+    }).rejects.toThrow('immutableField');
   });
 
   /**
    * Delete cannot be directly tested via service, as it requires transaction
    * with User/Employee deletion. It is however tested in the route test.
    */
+
+  // Cleanup - delete created Account and associated User
+  test('Cleanup: DELETE Account', async () => {
+    const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
+
+    // make sure both Account and User exist before deletion
+    const accountBefore = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+    const userBefore = await prisma.user.findUnique({
+      where: { accountId: createdAcc.id },
+    });
+    expect(accountBefore).not.toBeNull();
+    expect(userBefore).not.toBeNull();
+
+    // delete Account and User
+    const getReq = new NextRequest(baseUrl);
+    const res = await DELETE(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
+    expect(res.status).toBe(200);
+    const accountDeleted = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+    const userDeleted = await prisma.user.findUnique({
+      where: { accountId: createdAcc.id },
+    });
+
+    // verify both are deleted
+    expect(res.status).toBe(200);
+    expect(userDeleted).toBeNull();
+    expect(accountDeleted).toBeNull();
+  });
 });

@@ -302,6 +302,7 @@ describe('Account Routen testen', () => {
     expect(res.status).toBe(404);
   });
 
+  // Tests route and cleans up created Account and associated User
   test('Positive: DELETE Account', async () => {
     // make sure both Account and User exist before deletion
     const accountBefore = await prisma.account.findUnique({

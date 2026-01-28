@@ -26,6 +26,7 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { GET, PATCH } = await import('@/app/api/account/route');
+const { DELETE } = await import('@/app/api/account/[accountID]/route');
 const registerRoute = await import('@/app/api/authentication/register/route');
 const RegisterPOST = registerRoute.POST;
 
@@ -214,5 +215,34 @@ describe('Account Routen testen', () => {
     // make sure password was not changed
     expect(await bcrypt.compare(account.password!, updated!.password)).toBe(false);
     expect(updated?.password).toBe(createdAcc.password);
+  });
+
+  // Cleanup - delete created Account and associated User
+  test('Cleanup: DELETE Account', async () => {
+    // make sure both Account and User exist before deletion
+    const accountBefore = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+    const userBefore = await prisma.user.findUnique({
+      where: { accountId: createdAcc.id },
+    });
+    expect(accountBefore).not.toBeNull();
+    expect(userBefore).not.toBeNull();
+
+    // delete Account and User
+    const getReq = new NextRequest(baseUrl);
+    const res = await DELETE(getReq, { params: Promise.resolve({ accountID: createdAcc.id }) });
+    expect(res.status).toBe(200);
+    const accountDeleted = await prisma.account.findUnique({
+      where: { id: createdAcc.id },
+    });
+    const userDeleted = await prisma.user.findUnique({
+      where: { accountId: createdAcc.id },
+    });
+
+    // verify both are deleted
+    expect(res.status).toBe(200);
+    expect(userDeleted).toBeNull();
+    expect(accountDeleted).toBeNull();
   });
 });
