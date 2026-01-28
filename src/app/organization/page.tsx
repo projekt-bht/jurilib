@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import {
-  OrganizationFilters,
   type FilterOptions,
   type FilterValue,
+  OrganizationFilters,
 } from '@/app/organization/_components/OrganizationFilters';
 import type { Organization } from '~/generated/prisma/client';
 
@@ -84,7 +84,7 @@ export default function OrganizationsPage() {
       });
       setSkip(nextSkip + steps);
       setHasMore(fetched.length === steps);
-    } catch (error) {
+    } catch {
       // RM: Surface a friendly error and keep previous results on screen.
       setErrorMessage('Organisationen konnten nicht geladen werden.');
     } finally {

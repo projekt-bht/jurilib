@@ -4,12 +4,12 @@ import {
   Building,
   Building2,
   ChevronDown,
+  Earth,
   Filter,
+  PersonStanding,
   Scale,
   Tag,
   X,
-  PersonStanding,
-  Earth,
 } from 'lucide-react';
 import { useState } from 'react';
 
