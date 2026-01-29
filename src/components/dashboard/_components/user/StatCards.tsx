@@ -19,6 +19,7 @@ export function StatCards({ cases }: { cases: Case[] }) {
     <>
       {stats.map((stat) => (
         <div
+          id={stat.id}
           key={stat.id}
           className="group relative isolate rounded-2xl
             p-3 overflow-hidden 
