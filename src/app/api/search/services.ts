@@ -9,7 +9,7 @@ import type {
 import type { Organization } from '~/generated/prisma/client';
 
 const similarityOffset = 0.8;
-const threshold = 0.12;
+const threshold = 0.1;
 
 export async function createSearch(query: string) {
   const searchInput = await vectorizeSearch(query);
