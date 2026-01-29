@@ -12,14 +12,9 @@ const openai = new OpenAI({
   },
 });
 
+//https://openrouter.ai/docs/guides/features/structured-outputs
 export async function vectorizeSearch(query: string) {
-  const expansionPrompt = `
-    Versuche bitte diesen Text zu juristschen rechtlichen Fachgebieten zuzuordnen, bzw. wo das hingehören könnte.
-    Gebe nur einzelne Fachgebiete zurück, keine Sätze oder Erklärungen.
-    Gib bitte nur die Fachgebiete als antwort zurück, falls du nichts sinnvolles findest gib einfach '#' das zurück
-    "${query}"
-    `;
-  const possibleAnswers = Object.values(Area).join(', ');
+  const possibleAreas = Object.values(Area);
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
       User role: Equivalent to the queries made by the user.
@@ -31,11 +26,34 @@ export async function vectorizeSearch(query: string) {
       {
         role: 'system',
         content:
-          'Du bist ein juristisch versiertes Modell. Gebe genau EIN Fachgebiet EXAKT zurück. Mögliche Gebiete: ' +
-          possibleAnswers,
+          'Du bist ein juristisch versiertes Modell. Ordne den kommenden User Prompt genau EINEM der juristischen Fachgebiet zu.' +
+          possibleAreas,
       },
-      { role: 'user', content: expansionPrompt },
+      {
+        role: 'user',
+        content: query,
+      },
     ],
+    response_format: {
+      type: 'json_schema',
+      json_schema: {
+        name: 'expertise_area',
+        schema: {
+          type: 'object',
+          properties: {
+            area: {
+              type: 'string',
+              enum: [...possibleAreas, '#'],
+              description:
+                'Ordne den Text genau einem juristischen Fachgebiet zu. Falls keines passt, gib "#" zurück.',
+            },
+          },
+          required: ['area'],
+          additionalProperties: false,
+        },
+      },
+    },
+    stream: false,
   });
 
   const expandedQuery = expansion?.choices[0].message.content?.trim() ?? query;
