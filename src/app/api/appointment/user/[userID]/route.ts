@@ -2,13 +2,13 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
 import { withUserAuth } from '@/lib/withAuth';
 import type { UserLoginResource } from '@/services/Resources';
 
-import { handleValidationError, unauthorized } from '../../../helper';
 import { readAllAppointmentsByUser } from './service';
 
-// GET api/appointment/:userID
+// GET api/appointment/user/:userID
 // Retrieve all appointments of user
 export const GET = withUserAuth(
   async (
@@ -19,7 +19,7 @@ export const GET = withUserAuth(
     try {
       // validate userID
       const { userID } = await params;
-      paramsSchema.parse({ userID });
+      validateIds([{ id: userID, identifier: 'userID' }]);
 
       // check if loginResource and userid given by url-param are the same
       if (!(userID === account.userId)) return unauthorized();
@@ -28,12 +28,9 @@ export const GET = withUserAuth(
       return NextResponse.json(appointments, { status: 200 });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return handleValidationError(error);
+        return handleZodError(error);
       } else {
-        return NextResponse.json(
-          { message: 'Read failed: ' + (error as Error).message },
-          { status: 400 }
-        );
+        return handleError(error, 'Reading appointments by user failed');
       }
     }
   }

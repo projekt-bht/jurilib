@@ -1,3 +1,4 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Case } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/client';
@@ -13,14 +14,17 @@ export async function confirmAppointmentCreateCase(
     const appointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
+    if (!appointment) {
+      throw new ValidationError('notFound', 'appointment', appointmentId, 404);
+    }
     // only continue, if userId is given!
-    if (appointment?.userId) {
+    if (appointment.userId) {
       // get user information to
       const user = await prisma.user.findUnique({
         where: { id: appointment.userId },
       });
       if (!user) {
-        throw new Error('User not found');
+        throw new ValidationError('notFound', 'user', appointment.userId, 404);
       }
       const { firstname, lastname } = user;
 
@@ -47,7 +51,8 @@ export async function confirmAppointmentCreateCase(
     }
     throw new Error('Appointment is not assigned to any user');
   } catch (error) {
-    throw new Error('Database update failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed: ' + (error as Error).message);
   }
 }
 

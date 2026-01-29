@@ -25,7 +25,8 @@ export async function readAllAppointmentsByOrganization(
 
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
@@ -38,6 +39,6 @@ export async function readAllAppointmentsByOrganization(
 async function validateReference(organizationID: string) {
   // check if organization exists
   if (!(await prisma.organization.findUnique({ where: { id: organizationID } }))) {
-    throw new ValidationError('notFound', 'organizationId', organizationID);
+    throw new ValidationError('notFound', 'organizationId', organizationID, 404);
   }
 }

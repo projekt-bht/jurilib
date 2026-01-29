@@ -1,5 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import * as z from 'zod';
+
+import { handleError, handleZodError, validateIds } from '@/app/api/helper';
 
 import { readEmployeesByOrganizationID } from './services';
 
@@ -11,13 +14,14 @@ export async function GET(
 ) {
   try {
     const { organizationID } = await params;
-    if (!organizationID) {
-      return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
 
     const employees = await readEmployeesByOrganizationID(organizationID);
     return NextResponse.json(employees, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read Employees');
   }
 }

@@ -4,16 +4,14 @@ import { z } from 'zod';
 
 import { withEmployeeAuth } from '@/lib/withAuth';
 import type { EmployeeLoginResource } from '@/services/Resources';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { CaseStatus } from '~/generated/prisma/enums';
 
-import { handleValidationError, validateHeader } from '../../helper';
+import { verifyJWT } from '../../authentication/login/JWTService';
 import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';
 
-const paramsSchema = z.strictObject({
-  caseID: z.uuid({ error: 'Case ID is required' }),
-});
 const caseUpdateSchema = z.strictObject({
   employeeId: z.uuid({ error: 'Employee ID is required' }).optional(),
   title: z.string('title is required').optional(),
@@ -33,7 +31,8 @@ export const PATCH = withEmployeeAuth(
     try {
       // validate URL Param
       const { caseID } = await params;
-      paramsSchema.parse({ caseID });
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+
       if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
         // validate header
         validateHeader(req.headers);
@@ -45,16 +44,13 @@ export const PATCH = withEmployeeAuth(
         return NextResponse.json(updatedCase, { status: 200 });
       } else {
         // unauthorized
-        return NextResponse.json({ message: 'Unauthorized, weil is nicht' }, { status: 401 });
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return handleValidationError(error);
+        return handleZodError(error);
       } else {
-        return NextResponse.json(
-          { message: 'Update failed: ' + (error as Error).message },
-          { status: 400 }
-        );
+        return handleError(error, 'Failed to update Case');
       }
     }
   }
@@ -70,9 +66,7 @@ export const DELETE = withEmployeeAuth(
   ) => {
     try {
       const { caseID } = await params;
-      if (!caseID) {
-        return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
-      }
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
       if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
         await deleteCase(caseID);
         return NextResponse.json({ status: 204 });
@@ -81,10 +75,10 @@ export const DELETE = withEmployeeAuth(
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
       }
     } catch (error) {
-      return NextResponse.json(
-        { message: 'Failed to delete organization: ' + (error as Error).message },
-        { status: 400 }
-      );
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to delete Case');
     }
   }
 );

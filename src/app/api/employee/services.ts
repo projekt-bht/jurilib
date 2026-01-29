@@ -42,7 +42,8 @@ export const createEmployeeTx = async (
 
     return createdEmployee;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 };
 
@@ -51,11 +52,12 @@ export const readAllEmployees = async (): Promise<Employee[]> => {
   try {
     const employees: Employee[] = await prisma.employee.findMany();
     if (!employees) {
-      throw new ValidationError('notFound', 'employees', employees);
+      throw new ValidationError('notFound', 'employees', employees, 404);
     }
 
     return employees;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };

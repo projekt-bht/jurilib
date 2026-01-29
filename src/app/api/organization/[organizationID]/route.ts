@@ -2,6 +2,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { withEmployeeAuth } from '@/lib/withAuth';
+import * as z from 'zod';
+
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
 
@@ -12,14 +15,15 @@ export async function GET(
 ) {
   try {
     const { organizationID } = await params;
-    if (!organizationID) {
-      return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
 
     const organization = await readOrganization(organizationID);
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read organization');
   }
 }
 
@@ -28,9 +32,7 @@ export const PATCH = withEmployeeAuth(
   async (req: NextRequest, { params }: { params: Promise<{ organizationID: string }> }) => {
     // TODO: Authentifizierung
     try {
-      if (!req.headers.get('content-type')?.includes('application/json')) {
-        return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-      }
+      validateHeader(req.headers);
 
       const body = await req.json();
       if (!body || Object.keys(body).length === 0) {
@@ -38,18 +40,16 @@ export const PATCH = withEmployeeAuth(
       }
 
       const { organizationID } = await params;
-      if (!organizationID) {
-        return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-      }
+      validateIds([{ id: organizationID, identifier: 'organizationID' }]);
 
       const updatedOrganization = await updateOrganization(body, organizationID);
 
       return NextResponse.json(updatedOrganization, { status: 200 });
     } catch (error) {
-      return NextResponse.json(
-        { message: 'Failed to update organization: ' + (error as Error).message },
-        { status: 400 }
-      );
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to update organization');
     }
   }
 );
@@ -57,19 +57,16 @@ export const PATCH = withEmployeeAuth(
 // DELETE /api/organization/:organizationID
 export const DELETE = withEmployeeAuth(
   async (_req: NextRequest, { params }: { params: Promise<{ organizationID: string }> }) => {
-    // TODO: Authentifizierung
     try {
       const { organizationID } = await params;
-      if (!organizationID) {
-        return NextResponse.json({ message: 'Organization ID is required' }, { status: 400 });
-      }
+      validateIds([{ id: organizationID, identifier: 'organizationID' }]);
       await deleteOrganization(organizationID);
       return NextResponse.json({ message: 'Deleted' }, { status: 200 });
     } catch (error) {
-      return NextResponse.json(
-        { message: 'Failed to delete organization: ' + (error as Error).message },
-        { status: 400 }
-      );
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to delete organization');
     }
   }
 );

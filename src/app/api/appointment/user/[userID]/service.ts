@@ -12,7 +12,8 @@ export async function readAllAppointmentsByUser(userID: string): Promise<Appoint
     });
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
@@ -25,6 +26,6 @@ export async function readAllAppointmentsByUser(userID: string): Promise<Appoint
 async function validateReference(userID: string) {
   // check if user exists
   if (!(await prisma.user.findUnique({ where: { id: userID } }))) {
-    throw new ValidationError('notFound', 'userId', userID);
+    throw new ValidationError('notFound', 'userId', userID, 404);
   }
 }

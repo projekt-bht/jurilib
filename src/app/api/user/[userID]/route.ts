@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { readUser, updateUser } from './services';
@@ -29,26 +30,23 @@ const UpdateSchema = z.strictObject({
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
   try {
     const { userID } = await params;
-    if (!userID) {
-      return NextResponse.json({ message: 'User ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: userID, identifier: 'userID' }]);
 
     const user = await readUser(userID);
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read User');
   }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
     const { userID } = await params;
-    if (!userID) {
-      return NextResponse.json({ message: 'User ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: userID, identifier: 'userID' }]);
 
     const body = await req.json();
     const validatedBody = UpdateSchema.parse(body);
@@ -57,15 +55,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ us
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleZodError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to update User: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to update User');
   }
 }
 

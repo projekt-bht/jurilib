@@ -80,7 +80,7 @@ describe('Organization Routen testen', () => {
   test('GET non-existing Organization', async () => {
     const req = new NextRequest(placeholderURL);
     const res = await GET(req, { params: Promise.resolve({ organizationID: 'non-existing-id' }) });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 
   test('PATCH Organization', async () => {

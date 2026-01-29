@@ -11,11 +11,12 @@ export const readEmployeesByOrganizationID = async (
       where: { organizationId: organizationID },
     });
     if (!employees) {
-      throw new ValidationError('notFound', 'employees by organization ID', organizationID);
+      throw new ValidationError('notFound', 'employees by organization ID', organizationID, 404);
     }
 
     return employees;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
