@@ -74,12 +74,21 @@ async function main() {
     const orgName = faker.company.name();
 
     const expertiseArea = [faker.helpers.enumValue(Area)];
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+
     const type = faker.helpers.enumValue(OrganizationType);
     const accessibility = [faker.helpers.enumValue(Accessibility)];
 
     let expertiseVector = null;
     if (process.env.OPENAI_API_KEY) {
-      expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+      expertiseVector = await vectorizeExpertiseArea(
+        JSON.stringify({
+          area: expertiseArea.toString(),
+          city: city,
+          zipcode: zipCode,
+        })
+      );
     }
 
     const org = await prisma.organization.create({
@@ -95,8 +104,8 @@ async function main() {
         expertiseAreas: expertiseArea,
         type: type,
         priceCategory: faker.helpers.enumValue(PriceCategory),
-        country: faker.location.country(),
-        city: faker.location.city(),
+        country: zipCode,
+        city: city,
         zipCode: faker.location.zipCode(),
         street: faker.location.street(),
         houseNumber: faker.location.buildingNumber(),
