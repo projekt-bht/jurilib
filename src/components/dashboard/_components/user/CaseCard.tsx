@@ -17,8 +17,6 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
   const [progressBarProgress] = useState(() => Math.floor(Math.random() * 101));
 
   useEffect(() => {
-    let isMounted = true;
-
     async function fetchData() {
       try {
         const resEmployee = await fetch(
@@ -27,18 +25,14 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
         );
         const employeeData = await resEmployee.json();
 
-        if (!isMounted) return;
-
         const resOrganization = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${employeeData.organizationId}`,
           { cache: 'no-store' }
         );
         const organizationData = await resOrganization.json();
 
-        if (isMounted) {
-          setEmployee(employeeData);
-          setOrganization(organizationData);
-        }
+        setEmployee(employeeData);
+        setOrganization(organizationData);
       } catch (error) {
         // TODO: Handle error state
         console.error('Error fetching case data:', error);
@@ -46,20 +40,17 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
     }
 
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [caseItem.employeeId, caseItem.status]);
+  }, [caseItem]);
 
   return (
     <div
+      id={caseItem.id}
       key={caseItem.title}
       className={` bg-linear-to-br ${color}
                     rounded-2xl p-5
                     transition-all duration-500 ease-out shadow-sm hover:shadow-md
                     hover:scale-105 hover:-translate-y-2
-                    relative overflow-hidden`}
+                    relative overflow-hidden cursor-pointer`}
     >
       {/* Header Section*/}
       <div className="flex justify-between items-center pb-4 ">
@@ -77,7 +68,6 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
         </div>
 
         {/* Progress Bar*/}
-
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-accent-white">Fortschritt</span>
