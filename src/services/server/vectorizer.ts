@@ -47,6 +47,11 @@ export async function vectorizeSearch(query: string) {
               description:
                 'Ordne den Text genau einem juristischen Fachgebiet zu. Falls keines passt, gib "#" zurück.',
             },
+            city: {
+              type: 'string',
+              description:
+                'Gebe die Stadt aus dem Text zurück, **nur wenn eine gültige Stadt oder PLZ vorhanden ist**, sonst "#".',
+            },
           },
           required: ['area'],
           additionalProperties: false,
