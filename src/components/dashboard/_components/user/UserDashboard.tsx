@@ -45,20 +45,21 @@ export function UserDashboard() {
         const casesRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}/case/user/${userId}`);
         const casesData: Case[] = await casesRes.json();
         setCases(casesData);
-      } finally {
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
       }
     }
 
     fetchData();
-  }, [userId]);
+  }, [login, userId]);
 
   return (
-    <section id="user-dashboard" className="px-6 bg-background">
-      <div className="bg-background flex-1 w-full p-8 md:p-9 overflow-y-auto md:overflow-y-hidden">
+    <section id="user-dashboard" className="bg-card">
+      <div className="bg-card flex-1 w-full p-20 md:p-20 overflow-y-auto md:overflow-y-hidden">
         <div className="space-y-6">
           {/* Greeting */}
           <div className="mb-12">
-            <h1 className="text-2xl md:text-2xl lg:text-4xl font-bold text-foreground tracking-tight mb-2">
+            <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight mb-2">
               Willkommen zurück, {user?.firstname}!
             </h1>
             <p className="text-lg text-muted-foreground">
@@ -80,7 +81,18 @@ export function UserDashboard() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Anstehende Termine</h2>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 cursor-pointer
+                relative after:absolute
+                after:bottom-0 after:left-0
+                after:w-0 after:h-0.5 
+                after:bg-accent-blue
+                after:transition-all 
+                after:duration-300 
+                hover:after:w-full"
+              >
                 Alle anzeigen <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -99,7 +111,18 @@ export function UserDashboard() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Aktive Fälle</h2>
-              <Button variant="ghost" size="sm" className="gap-1 hover:underline">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 cursor-pointer
+                relative after:absolute
+                after:bottom-0 after:left-0
+                after:w-0 after:h-0.5 
+                after:bg-accent-blue
+                after:transition-all 
+                after:duration-300 
+                hover:after:w-full"
+              >
                 Alle anzeigen <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
