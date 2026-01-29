@@ -1,10 +1,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-
-import { withEmployeeAuth } from '@/lib/withAuth';
 import * as z from 'zod';
 
 import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import { withEmployeeAuth } from '@/lib/withAuth';
 
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
 

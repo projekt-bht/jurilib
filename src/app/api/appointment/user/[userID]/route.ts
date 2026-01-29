@@ -35,11 +35,3 @@ export const GET = withUserAuth(
     }
   }
 );
-
-/**
- * Validate parameter userID
- */
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  userID: z.string().min(1, 'User ID is required'),
-});

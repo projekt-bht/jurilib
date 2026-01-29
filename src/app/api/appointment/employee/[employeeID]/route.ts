@@ -2,9 +2,6 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { withEmployeeAuth } from '@/lib/withAuth';
-import type { EmployeeLoginResource } from '@/services/Resources';
-
 import {
   handleError,
   handleZodError,
@@ -12,6 +9,8 @@ import {
   validateHeader,
   validateIds,
 } from '@/app/api/helper';
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
 

@@ -2,12 +2,11 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { withEmployeeAuth } from '@/lib/withAuth';
 import type { EmployeeLoginResource } from '@/services/Resources';
-import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { CaseStatus } from '~/generated/prisma/enums';
 
-import { verifyJWT } from '../../authentication/login/JWTService';
 import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';

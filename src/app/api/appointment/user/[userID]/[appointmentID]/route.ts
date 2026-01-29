@@ -1,7 +1,13 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import {
+  handleError,
+  handleZodError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
 import { withUserAuth } from '@/lib/withAuth';
 import type { UserLoginResource } from '@/services/Resources';

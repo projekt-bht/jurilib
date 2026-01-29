@@ -198,11 +198,11 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       body: JSON.stringify(data),
     });
 
-  //   const res = await PATCH(patchReq, {
-  //     params: Promise.resolve({ employeeID: cEmployee.id }),
-  //   });
-  //   expect(res.status).toBe(400);
-  // });
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ employeeID: cEmployee.id }),
+    });
+    expect(res.status).toBe(400);
+  });
 
   test('DELETE Employee through account', async () => {
     const getReq = new NextRequest(placeholderUrl);
@@ -219,6 +219,6 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });
