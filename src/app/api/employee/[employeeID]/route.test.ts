@@ -12,6 +12,10 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   }),
 }));
 
+jest.unstable_mockModule('@/app/api/authentication/login/JWTService', () => ({
+  verifyJWT: jest.fn(),
+}));
+
 // Non-mock related implementation:
 
 import {
@@ -43,12 +47,18 @@ const { POST: orgPOST } = await import('@/app/api/organization/route');
 const { GET, PATCH } = await import('@/app/api/employee/[employeeID]/route');
 const { DELETE } = await import('@/app/api/account/[accountID]/route');
 const { POST } = await import('@/app/api/authentication/register/route');
+const { verifyJWT } = await import('@/app/api/authentication/login/JWTService');
 
 // !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
 
 describe('Employee Endpoint /employee/[employeeID] testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee/[employeeID]`;
+  const placeholderUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}`;
   let cEmployee: Employee;
+
+  (verifyJWT as jest.Mock).mockReturnValue({
+    employeeId: 1231,
+    id: 1231241,
+  });
 
   test('Create Account and Employee', async () => {
     // Create Organization first
@@ -70,7 +80,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       numberOfRatings: 10,
     };
 
-    const reqOrga = new NextRequest(baseUrl, {
+    const reqOrga = new NextRequest(placeholderUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(organization),
@@ -101,7 +111,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
       },
     };
 
-    const reqRegister = new NextRequest(baseUrl, {
+    const reqRegister = new NextRequest(placeholderUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registerInput),
@@ -124,7 +134,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
   });
 
   test('GET Employee', async () => {
-    const req = new NextRequest(baseUrl);
+    const req = new NextRequest(placeholderUrl);
     const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
     const json = await res.json();
     expect(json.length).not.toBe(0);
@@ -132,27 +142,26 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
   });
 
   test('GET non-existing Employee', async () => {
-    const req = new NextRequest(baseUrl);
+    const req = new NextRequest(placeholderUrl);
     const res = await GET(req, { params: Promise.resolve({ employeeID: 'non-existing-id' }) });
     expect(res.status).toBe(404);
   });
 
-  test('PATCH Employee name', async () => {
-    const getReq = new NextRequest(baseUrl);
-    const getRes = await GET(getReq, { params: Promise.resolve({ employeeID: cEmployee.id }) });
-    const getJSON = await getRes.json();
+  test('PATCH Employee name (authenticated)', async () => {
+    (verifyJWT as jest.Mock).mockReturnValue({
+      employeeId: cEmployee.id,
+      id: cEmployee.accountId,
+    });
 
-    expect(getJSON.length).not.toBe(0);
-    expect(getRes.status).toBe(200);
-
-    const employee = {
-      firstname: 'updatedPeter',
-    };
-
-    const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+    const patchReq = new NextRequest(placeholderUrl, {
       method: 'PATCH',
-      body: JSON.stringify(employee),
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
+      body: JSON.stringify({
+        firstname: 'updatedPeter',
+      }),
     });
 
     const res = await PATCH(patchReq, {
@@ -161,20 +170,22 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
 
     expect(res.status).toBe(200);
 
-    const updated = await prisma.employee.findFirst({
+    const updated = await prisma.employee.findUnique({
       where: { id: cEmployee.id },
     });
 
     expect(updated?.firstname).toBe('updatedPeter');
-    expect(res.status).toBe(200);
   });
 
-  test('PATCH User with invalid data', async () => {
+  test('PATCH User with invalid data (authenticated)', async () => {
     const data = {
       id: 12345,
     };
-    const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+    const patchReq = new NextRequest(placeholderUrl, {
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -186,7 +197,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
   });
 
   test('DELETE Employee through account', async () => {
-    const getReq = new NextRequest(baseUrl);
+    const getReq = new NextRequest(placeholderUrl);
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: cEmployee.accountId }),
     });
@@ -196,7 +207,7 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
   });
 
   test('DELETE non-existing Employee', async () => {
-    const getReq = new NextRequest(baseUrl);
+    const getReq = new NextRequest(placeholderUrl);
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
