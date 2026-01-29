@@ -23,7 +23,9 @@ async function fetchOrganizations(
   filters.priceCategory.forEach((price) => params.append('priceCategory', price));
   filters.organizationType.forEach((type) => params.append('organizationType', type));
   filters.area.forEach((area) => params.append('area', area));
-  filters.languages.forEach((language) => params.append('language', language));
+  filters.languages.forEach((language) => params.append('languages', language));
+  filters.accessibility.forEach((item) => params.append('accessibility', item));
+  filters.pricingModel.forEach((item) => params.append('pricingModel', item));
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
