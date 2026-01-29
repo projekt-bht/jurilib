@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
 
-import { createOrganization, readOrganizations } from './services';
 import { handleValidationError } from '../helper';
+import { createOrganization, readOrganizations } from './services';
 
 /**
  * Validate parameters
