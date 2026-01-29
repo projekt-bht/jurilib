@@ -3,7 +3,14 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
-import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+import {
+  Accessibility,
+  Area,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  PricingModel,
+} from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
 
@@ -24,6 +31,9 @@ const paramsSchema = z.strictObject({
   priceCategory: z.array(z.enum(PriceCategory)),
   organizationType: z.array(z.enum(OrganizationType)),
   area: z.array(z.enum(Area)),
+  languages: z.array(z.enum(Language)),
+  accessibility: z.array(z.enum(Accessibility)),
+  pricingModel: z.array(z.enum(PricingModel)),
 });
 
 /*
@@ -67,6 +77,9 @@ export async function GET(req: NextRequest) {
     const priceCategory = searchParams.getAll('priceCategory');
     const organizationType = searchParams.getAll('organizationType');
     const area = searchParams.getAll('area');
+    const languages = searchParams.getAll('languages');
+    const accessibility = searchParams.getAll('accessibility');
+    const pricingModel = searchParams.getAll('pricingModel');
 
     const validatedParams = paramsSchema.parse({
       skip: skip,
@@ -74,6 +87,9 @@ export async function GET(req: NextRequest) {
       priceCategory: priceCategory,
       organizationType: organizationType,
       area: area,
+      languages: languages,
+      accessibility: accessibility,
+      pricingModel: pricingModel,
     });
 
     const organization = await readOrganizations(validatedParams);
