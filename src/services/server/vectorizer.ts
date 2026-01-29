@@ -52,6 +52,11 @@ export async function vectorizeSearch(query: string) {
               description:
                 'Gebe die Stadt aus dem Text zurück, **nur wenn eine gültige Stadt oder PLZ vorhanden ist**, sonst "#".',
             },
+            zipCode: {
+              type: 'string',
+              description:
+                'Gebe die Postleitzahl aus dem Text zurück, **nur wenn eine gültige PLZ vorhanden ist**, sonst "#".',
+            },
           },
           required: ['area'],
           additionalProperties: false,
