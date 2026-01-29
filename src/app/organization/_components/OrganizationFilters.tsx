@@ -16,14 +16,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import type {
-  Accessibility,
-  Area,
-  Language,
-  OrganizationType,
-  PriceCategory,
-  PricingModel,
-} from '~/generated/prisma/enums';
+
 import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
@@ -34,21 +27,21 @@ import {
 } from '~/generated/prisma/enums';
 
 export type FilterOptions = {
-  priceCategory: PriceCategory[];
-  organizationType: OrganizationType[];
-  area: Area[];
-  languages: Language[];
-  accessibility: Accessibility[];
-  pricingModel: PricingModel[];
+  priceCategory: PriceCategoryEnum[];
+  organizationType: OrganizationTypeEnum[];
+  area: AreasEnum[];
+  languages: LanguageEnum[];
+  accessibility: AccessibilityEnum[];
+  pricingModel: PricingModelEnum[];
 };
 
 export type FilterValue =
-  | PriceCategory
-  | OrganizationType
-  | Area
-  | Language
-  | Accessibility
-  | PricingModel;
+  | PriceCategoryEnum
+  | OrganizationTypeEnum
+  | AreasEnum
+  | LanguageEnum
+  | AccessibilityEnum
+  | PricingModelEnum;
 
 type SectionItem = {
   value: FilterValue;
@@ -113,8 +106,8 @@ export function OrganizationFilters({
 }) {
   // When landing on the page, the filters should start collapsed.
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  // RM: Pre-sort enum values once (German locale) so filter lists render consistently without
-  // RM: re-sorting on every render.
+  // Pre-sort enum values once (German locale) so filter lists render consistently without
+  // re-sorting on every render.
   const [sortedAreas] = useState(() =>
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
@@ -239,24 +232,30 @@ export function OrganizationFilters({
               size="sm"
               disabled={!isActiveFilters}
               onClick={onReset}
-              className="h-7 px-2 text-xs font-semibold cursor-pointer"
+              className="h-9 rounded-full px-3 gap-1.5 border border-border/70 bg-linear-to-br from-accent-blue-soft/30 to-accent-purple-soft/30 text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <X className="w-4 h-4" />
-              Zurücksetzen
+              <span className="text-xs font-semibold tracking-wide">Zurücksetzen</span>
             </Button>
             <Button
               type="button"
               variant="ghost"
-              size="sm"
+              size="lg"
               onClick={() => setIsPanelOpen((prev) => !prev)}
-              className="h-12 w-12 p-0 cursor-pointer"
+              className="h-11 rounded-full px-4 gap-2 border border-border/70 bg-linear-to-br from-accent-blue-soft/40 to-accent-purple-soft/40 text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/50 cursor-pointer"
               aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
+              aria-pressed={isPanelOpen}
             >
               <ChevronDown
-                className={`w-8 h-8 text-muted-foreground transition-transform duration-200 ${
+                size={22}
+                strokeWidth={2.5}
+                className={`text-foreground transition-transform duration-200 ${
                   isPanelOpen ? 'rotate-180' : ''
                 }`}
               />
+              <span className="text-xs font-semibold tracking-wide">
+                {isPanelOpen ? 'schließen' : 'öffnen'}
+              </span>
             </Button>
           </div>
         </div>
@@ -291,9 +290,9 @@ export function OrganizationFilters({
                           </div>
                         )}
                         {group.items.map((item) => (
-                          // RM: Each filter option is wrapped in a full-width label so the entire row
-                          // RM: is clickable; the checkbox is controlled via state and toggles the
-                          // RM: selected filter value on click.
+                          // Each filter option is wrapped in a full-width label so the entire row
+                          // is clickable; the checkbox is controlled via state and toggles the
+                          // selected filter value on click.
                           <Label
                             key={`${group.key}-${item.value}`}
                             htmlFor={`${group.key}-${item.value}`}

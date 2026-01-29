@@ -16,36 +16,31 @@ async function fetchOrganizations(
   take: number,
   filters: FilterOptions
 ): Promise<Organization[]> {
-  try {
-    const params = new URLSearchParams({
-      skip: skip.toString(),
-      take: take.toString(),
-    });
-    filters.priceCategory.forEach((price) => params.append('priceCategory', price));
-    filters.organizationType.forEach((type) => params.append('organizationType', type));
-    filters.area.forEach((area) => params.append('area', area));
-    filters.languages.forEach((language) => params.append('language', language));
+  const params = new URLSearchParams({
+    skip: skip.toString(),
+    take: take.toString(),
+  });
+  filters.priceCategory.forEach((price) => params.append('priceCategory', price));
+  filters.organizationType.forEach((type) => params.append('organizationType', type));
+  filters.area.forEach((area) => params.append('area', area));
+  filters.languages.forEach((language) => params.append('language', language));
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
-      { cache: 'no-store' }
-    );
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
+    { cache: 'no-store' }
+  );
 
-    if (!res.ok) return [];
+  if (!res.ok) return [];
 
-    return (await res.json()) as Organization[];
-  } catch (error) {
-    console.error('Failed to fetch organizations:', error);
-    return [];
-  }
+  return (await res.json()) as Organization[];
 }
 
 const steps = 10;
 const SCROLL_THRESHOLD = 150; // px vor Seitenende
 
 export default function OrganizationsPage() {
-  // RM: Filter UI and filter state live in the page so there is a single source of truth
-  // RM: and no duplicate state handling in child components. Filter changes request new DB results here.
+  // Filter UI and filter state live in the page so there is a single source of truth
+  // nd no duplicate state handling in child components. Filter changes request new DB results here.
   const emptyFilters: FilterOptions = {
     priceCategory: [],
     organizationType: [],
@@ -68,7 +63,7 @@ export default function OrganizationsPage() {
     setLoading(true);
     setErrorMessage(null);
     if (nextSkip === 0) {
-      // RM: Keep the current list visible while refreshing to avoid UI flicker.
+      // Keep the current list visible while refreshing to avoid UI flicker.
       setIsRefreshing(true);
     }
 
@@ -76,7 +71,7 @@ export default function OrganizationsPage() {
       const fetched = await fetchOrganizations(nextSkip, steps, nextFilters);
 
       setOrganizations((prev) => {
-        // RM: De-dupe by id to avoid duplicate React keys when merging pages.
+        // De-dupe by id to avoid duplicate React keys when merging pages.
         const merged = nextSkip === 0 ? fetched : [...prev, ...fetched];
         const byId = new Map<string, Organization>();
         merged.forEach((org) => byId.set(org.id, org));
@@ -85,7 +80,7 @@ export default function OrganizationsPage() {
       setSkip(nextSkip + steps);
       setHasMore(fetched.length === steps);
     } catch {
-      // RM: Surface a friendly error and keep previous results on screen.
+      // Surface a friendly error and keep previous results on screen.
       setErrorMessage('Organisationen konnten nicht geladen werden.');
     } finally {
       setLoading(false);
@@ -124,7 +119,7 @@ export default function OrganizationsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, hasMore]);
 
-  // RM: Toggle a single filter value on/off and update only that category.
+  // Toggle a single filter value on/off and update only that category.
   const handleFilterChange = (
     category: keyof FilterOptions,
     value: FilterValue,
@@ -137,10 +132,10 @@ export default function OrganizationsPage() {
       return { ...prev, [category]: next };
     });
 
-  // RM: Reset all filters back to empty arrays (default state).
+  // Reset all filters back to empty arrays (default state).
   const handleResetFilters = () => setFilters(emptyFilters);
 
-  // RM: Used by the UI to show how many filters are currently active.
+  // Used by the UI to show how many filters are currently active.
   const activeFilterCount = Object.values(filters).reduce((sum, list) => sum + list.length, 0);
 
   return (
@@ -149,7 +144,7 @@ export default function OrganizationsPage() {
         <p className="text-4xl text-foreground font-bold">Organisationsliste</p>
         <div className="h-6" />
 
-        {/* RM: w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
+        {/* w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
         <OrganizationFilters
           filters={filters}
           onFilterChange={handleFilterChange}
