@@ -1,6 +1,6 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
 import { Area } from '~/generated/prisma/client';
 
@@ -50,7 +50,7 @@ export const updateOrganization = async (
       });
       return updatedOrganization;
     } else {
-      const expertiseVector = await vectorizeExpertiseArea(organization.expertiseAreas.toString());
+      const expertiseVector = await createEmbedding(organization.expertiseAreas.toString());
 
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
