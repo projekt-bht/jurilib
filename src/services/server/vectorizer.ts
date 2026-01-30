@@ -20,7 +20,7 @@ export type VectorFormat = {
 };
 
 //https://openrouter.ai/docs/guides/features/structured-outputs
-export async function vectorizeSearch(query: string) {
+export async function vectorizeSearch(query: string): Promise<VectorFormat> {
   const possibleAreas = Object.values(Area);
   /*
       System role: Allows you to specify the way the model answers questions. Classic example: “You are a helpful assistant.”
@@ -82,16 +82,27 @@ export async function vectorizeSearch(query: string) {
   console.log('Original:', query);
   console.log('Expanded:', expandedQuery);
 
-  const embeddingResponse = await openai.embeddings.create({
-    model: 'openai/text-embedding-3-large',
-    input: expandedQuery,
-  });
+  const parsedQuery: VectorFormat = JSON.parse(expandedQuery);
 
-  const embedding = embeddingResponse.data[0].embedding;
+  const responseEmbedding: VectorFormat = {
+    area: await createEmbedding(parsedQuery.area),
+  };
+
+  if (parsedQuery.city) {
+    responseEmbedding.city = await createEmbedding(parsedQuery.city);
+  }
+
+  if (parsedQuery.zipCode) {
+    responseEmbedding.zipCode = await createEmbedding(parsedQuery.zipCode);
+  }
+
+  if (parsedQuery.description) {
+    responseEmbedding.description = await createEmbedding(parsedQuery.description);
+  }
 
   // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.
-  return `[${embedding.join(',')}]`;
+  return responseEmbedding;
 }
 
 export async function createEmbedding(query: string) {
