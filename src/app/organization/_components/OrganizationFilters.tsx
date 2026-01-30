@@ -62,17 +62,17 @@ const priceCategoryMeta: Record<
     textClassName: 'text-accent-emerald',
   },
   [PriceCategoryEnum.LOW]: {
-    label: 'Niedrig €',
+    label: 'Niedrig 50-100€',
     hoverClassName: 'hover:bg-accent-blue-soft',
     textClassName: 'text-accent-amber',
   },
   [PriceCategoryEnum.MEDIUM]: {
-    label: 'Mittel €€',
+    label: 'Mittel 101-200€',
     hoverClassName: 'hover:bg-accent-blue-soft',
     textClassName: 'text-accent-amber',
   },
   [PriceCategoryEnum.HIGH]: {
-    label: 'Hoch €€€',
+    label: 'Hoch über 200€',
     hoverClassName: 'hover:bg-accent-blue-soft',
     textClassName: 'text-accent-red',
   },
