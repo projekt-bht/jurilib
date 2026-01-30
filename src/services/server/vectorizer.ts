@@ -112,3 +112,21 @@ export async function createEmbedding(query: string) {
   });
   return `[${embeddingResponse.data[0].embedding.join(',')}]`;
 }
+
+export async function extractBuzzwords(query: string) {
+  const expansion = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {
+        role: 'system',
+        content:
+          'Extrahiere nur die relevanten juristischen Buzzwords aus dem Prompt (Kanzlei Beschreibung), halluziniere keine dazu!',
+      },
+      {
+        role: 'user',
+        content: query,
+      },
+    ],
+  });
+  return expansion.choices[0].message.content;
+}
