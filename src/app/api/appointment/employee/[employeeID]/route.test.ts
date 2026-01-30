@@ -50,8 +50,6 @@ const { GET: appointmentsByEmployeeGET, POST: appointmentPOST } =
 const { POST: employeePOST } = await import('@/app/api/authentication/register/route');
 const { verifyJWT } = await import('@/app/api/authentication/login/JWTService');
 
-// !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
-
 describe('Appointment Employee Endpoint api/appointment/employee/[employeeID] testen', () => {
   const placeholderUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}`;
   let cEmployee: Employee;
@@ -120,10 +118,6 @@ describe('Appointment Employee Endpoint api/appointment/employee/[employeeID] te
 
     const createdEmployee = await resRegister?.json();
     cEmployee = createdEmployee;
-
-    const _createdAccount = await prisma.account.findUnique({
-      where: { email: registerInput.account.email },
-    });
   });
 
   test('GET non-existing Employee', async () => {
