@@ -12,6 +12,10 @@ jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
   }),
 }));
 
+jest.unstable_mockModule('@/app/api/authentication/login/JWTService', () => ({
+  verifyJWT: jest.fn(),
+}));
+
 // Non-mock related implementation:
 import type { RegisterResource } from '@/services/Resources';
 import { AccountType, Gender, Pronoun, type User } from '~/generated/prisma/client';
@@ -25,6 +29,7 @@ const { prisma } = await import('@/lib/db');
 const { GET, PATCH } = await import('@/app/api/user/[userID]/route');
 const { DELETE } = await import('@/app/api/account/[accountID]/route');
 const { POST } = await import('@/app/api/authentication/register/route');
+const { verifyJWT } = await import('@/app/api/authentication/login/JWTService');
 
 describe('User Routen testen', () => {
   const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/[userID]`;
@@ -48,7 +53,6 @@ describe('User Routen testen', () => {
       },
     };
 
-    // TODO: Rausfinden, warum das auch mit der baseUrl funktioniert
     const request = new NextRequest(registrationURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -81,6 +85,10 @@ describe('User Routen testen', () => {
   });
 
   test('PATCH User name', async () => {
+    (verifyJWT as jest.Mock).mockReturnValue({
+      id: cUser.accountId,
+      userId: cUser.id,
+    });
     const getReq = new NextRequest(baseUrl);
     const getRes = await GET(getReq, { params: Promise.resolve({ userID: cUser.id }) });
     const getJSON = await getRes.json();
@@ -93,7 +101,10 @@ describe('User Routen testen', () => {
     };
 
     const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
       method: 'PATCH',
       body: JSON.stringify(user),
     });
@@ -102,12 +113,13 @@ describe('User Routen testen', () => {
       params: Promise.resolve({ userID: cUser.id }),
     });
 
+    expect(res.status).toBe(200);
+
     const updated = await prisma.user.findFirst({
       where: { id: cUser.id },
     });
 
     expect(updated?.firstname).toBe('updatedPeter');
-    expect(res.status).toBe(200);
   });
 
   test('PATCH User with invalid data', async () => {
@@ -115,7 +127,10 @@ describe('User Routen testen', () => {
       id: 12345,
     };
     const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
       method: 'PATCH',
       body: JSON.stringify(data),
     });
@@ -131,7 +146,10 @@ describe('User Routen testen', () => {
       invalidAttr: 'invalid',
     };
     const patchReq = new NextRequest(baseUrl, {
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
       method: 'PATCH',
       body: JSON.stringify(data),
     });
