@@ -11,7 +11,7 @@ import {
   Language,
   Accessibility,
 } from '../generated/prisma/enums';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
@@ -76,26 +76,28 @@ async function main() {
     const expertiseArea = [faker.helpers.enumValue(Area)];
     const city = faker.location.city();
     const zipCode = faker.location.zipCode();
+    const description = faker.company.catchPhrase();
 
     const type = faker.helpers.enumValue(OrganizationType);
     const accessibility = [faker.helpers.enumValue(Accessibility)];
 
     let expertiseVector = null;
+    let cityVector = null;
+    let zipVector = null;
+    let descriptionVector = null;
+
     if (process.env.OPENAI_API_KEY) {
-      expertiseVector = await vectorizeExpertiseArea(
-        JSON.stringify({
-          area: expertiseArea.toString(),
-          city: city,
-          zipcode: zipCode,
-        })
-      );
+      expertiseVector = await createEmbedding(expertiseArea.toString());
+      cityVector = await createEmbedding(city);
+      zipVector = await createEmbedding(zipCode);
+      descriptionVector = await createEmbedding(description);
     }
 
     const org = await prisma.organization.create({
       data: {
         id: orgId,
         name: orgName,
-        description: faker.company.catchPhrase(),
+        description: description,
         shortDescription: faker.company.catchPhrase(),
         email: faker.internet.email(),
         phone: faker.phone.number(),
@@ -115,10 +117,20 @@ async function main() {
       },
     });
 
-    if (expertiseVector) {
+    if (expertiseVector && cityVector && zipVector && descriptionVector) {
       await prisma.$executeRawUnsafe(
-        `UPDATE "Organization" SET "expertiseVector" = $1 WHERE id = $2`,
+        `
+          UPDATE "Organization" SET
+            "expertiseVector" = $1,
+            "cityVector" = $2,
+            "zipVector" = $3,
+            "descriptionVector" = $4
+          WHERE id = $5
+        `,
         expertiseVector,
+        cityVector,
+        zipVector,
+        descriptionVector,
         orgId
       );
     }
