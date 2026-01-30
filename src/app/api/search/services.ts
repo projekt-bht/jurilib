@@ -61,11 +61,16 @@ export async function createSearch(query: string) {
   >`
       SELECT
       *, 
-      1 - ("expertiseVector" <=> ${searchInput}::vector) AS similarity
+      (
+        (1 - ("expertiseVector" <=> ${vectorizedData.area}::vector)) * ${weights.area}
+        + COALESCE((1 - ("descriptionVector" <=> ${vectorizedData.description}::vector)) * ${weights.description}, 0)
+        + COALESCE((1 - ("cityVector" <=> ${vectorizedData.city}::vector)) * ${weights.city}, 0)
+        + COALESCE((1 - ("zipVector" <=> ${vectorizedData.zipCode}::vector)) * ${weights.zipCode}, 0)
+      ) AS similarity
       FROM "Organization"
       WHERE 
       "expertiseVector" IS NOT NULL
-      AND (1 - ("expertiseVector" <=> ${searchInput}::vector)) >= ${similarityOffset}
+      AND (1 - ("expertiseVector" <=> ${vectorizedData.area}::vector)) >= ${similarityOffset}
       ORDER BY similarity DESC
       `;
 
