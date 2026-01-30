@@ -1,6 +1,6 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 import type {
   Organization,
   OrganizationType,
@@ -24,7 +24,7 @@ export async function createOrganization(organization: Organization): Promise<Or
       }
     });
 
-    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseAreas.toString());
+    const expertiseVector = await createEmbedding(organization.expertiseAreas.toString());
 
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
