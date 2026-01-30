@@ -13,7 +13,7 @@ import {
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 import type { ServiceCreateInput } from '~/generated/prisma/models';
 
-import { isOrganizationEmployeeMatch } from './helpers';
+import { isOrganizationEmployeeMatch } from '../../helpers';
 import { createService, readServices } from './services';
 
 const serviceCreateSchema = z.strictObject({

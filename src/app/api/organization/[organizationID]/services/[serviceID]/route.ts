@@ -6,7 +6,7 @@ import { verifyJWT } from '@/app/api/authentication/login/JWTService';
 import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { PricingModel, ServiceType } from '~/generated/prisma/enums';
 
-import { isOrganizationEmployeeMatch } from '../helpers';
+import { isOrganizationEmployeeMatch } from '../../../helpers';
 import { deleteService } from './services';
 import { updateService } from './services';
 
