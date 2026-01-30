@@ -1,5 +1,5 @@
 import prisma from '@/lib/db';
-import { vectorizeSearch } from '@/services/server/vectorizer';
+import { VectorFormat, vectorizeSearch } from '@/services/server/vectorizer';
 import type {
   Accessibility,
   Area,
@@ -9,10 +9,10 @@ import type {
 import type { Organization } from '~/generated/prisma/client';
 
 const similarityOffset = 0.8;
-const threshold = 0.05;
+const threshold = 0.03;
 
 export async function createSearch(query: string) {
-  const searchInput = await vectorizeSearch(query);
+  const vectorizedData: VectorFormat = await vectorizeSearch(query);
 
   const matches = await prisma.$queryRaw<
     Array<{
@@ -44,6 +44,9 @@ export async function createSearch(query: string) {
       updatedAt: Date;
 
       expertiseVector: string;
+      cityVector: string;
+      zipVector: string;
+      descriptionVector: string;
 
       /* Internal use for similarity calculation */
       similarity: number;
