@@ -128,5 +128,5 @@ export async function extractBuzzwords(query: string) {
       },
     ],
   });
-  return expansion.choices[0].message.content;
+  return expansion?.choices[0].message.content?.trim() ?? query;
 }
