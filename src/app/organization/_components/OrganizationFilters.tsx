@@ -6,6 +6,7 @@ import {
   ChevronDown,
   Earth,
   Filter,
+  MapPin,
   PersonStanding,
   Scale,
   Tag,
@@ -15,6 +16,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import {
@@ -31,6 +33,7 @@ export type FilterOptions = {
   area: AreasEnum[];
   languages: LanguageEnum[];
   accessibility: AccessibilityEnum[];
+  city: string;
 };
 
 export type FilterValue =
@@ -93,11 +96,13 @@ const organizationTypeMeta: Record<OrganizationTypeEnum, { label: string; icon: 
 export function OrganizationFilters({
   filters,
   onFilterChange,
+  onCityChange,
   onReset,
   activeFilterCount,
 }: {
   filters: FilterOptions;
   onFilterChange: (category: keyof FilterOptions, value: FilterValue, isChecked: boolean) => void;
+  onCityChange: (value: string) => void;
   onReset: () => void;
   activeFilterCount: number;
 }) {
@@ -206,6 +211,19 @@ export function OrganizationFilters({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm ring-2 ring-primary/10">
+              <MapPin className="w-4 h-4 text-primary" />
+              <Label htmlFor="city-filter" className="sr-only">
+                Stadt
+              </Label>
+              <Input
+                id="city-filter"
+                value={filters.city}
+                onChange={(event) => onCityChange(event.target.value)}
+                placeholder="Stadt"
+                className="h-7 w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 focus-visible:ring-0"
+              />
+            </div>
             {isActiveFilters && (
               <span className="rounded-full bg-linear-to-r from-accent-blue/30 to-accent-purple/30 px-2 py-0.5 text-xs font-semibold text-foreground">
                 {activeFilterCount} aktiv
@@ -247,73 +265,75 @@ export function OrganizationFilters({
 
         {isPanelOpen && (
           // Always 5 columns; keep card width and use horizontal scroll on small screens.
-          <div className="mt-4 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
-            <div className="grid grid-cols-5 gap-1.5 min-w-[1000px] items-stretch">
-              {sections.map((section) => (
-                <div
-                  key={section.key}
-                  className="rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col h-[320px] shadow-sm hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-                    <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
-                      {section.icon}
-                    </span>
-                    <span className="text-xs font-semibold text-foreground">{section.title}</span>
-                  </div>
+          <>
+            <div className="mt-4 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
+              <div className="grid grid-cols-5 gap-1.5 min-w-[1100px] items-stretch">
+                {sections.map((section) => (
                   <div
-                    className={`mt-2 space-y-3 flex-1 min-h-0 ${
-                      section.scroll ? 'overflow-y-auto pr-1' : ''
-                    }`}
+                    key={section.key}
+                    className="rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col h-[320px] shadow-sm hover:shadow-md transition-all duration-300"
                   >
-                    {(
-                      section.groups ?? [{ title: '', key: section.key, items: section.items }]
-                    ).map((group) => (
-                      <div
-                        key={`${section.key}-${group.title || 'default'}`}
-                        className="space-y-1.5"
-                      >
-                        {group.title && (
-                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                            {group.title}
-                          </div>
-                        )}
-                        {group.items.map((item) => (
-                          // Each filter option is wrapped in a full-width label so the entire row
-                          // is clickable; the checkbox is controlled via state and toggles the
-                          // selected filter value on click.
-                          <Label
-                            key={`${group.key}-${item.value}`}
-                            htmlFor={`${group.key}-${item.value}`}
-                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                              item.hoverClassName ?? defaultHoverClassName
-                            }`}
-                          >
-                            <Checkbox
-                              id={`${group.key}-${item.value}`}
-                              className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                              onCheckedChange={(isChecked) =>
-                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                              }
-                              aria-label={`Filter nach ${item.label}`}
-                            />
-                            {item.icon}
-                            <span
-                              className={`text-xs font-medium text-foreground ${
-                                item.labelClassName ?? ''
+                    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+                      <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
+                        {section.icon}
+                      </span>
+                      <span className="text-xs font-semibold text-foreground">{section.title}</span>
+                    </div>
+                    <div
+                      className={`mt-2 space-y-3 flex-1 min-h-0 ${
+                        section.scroll ? 'overflow-y-auto pr-1' : ''
+                      }`}
+                    >
+                      {(
+                        section.groups ?? [{ title: '', key: section.key, items: section.items }]
+                      ).map((group) => (
+                        <div
+                          key={`${section.key}-${group.title || 'default'}`}
+                          className="space-y-1.5"
+                        >
+                          {group.title && (
+                            <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                              {group.title}
+                            </div>
+                          )}
+                          {group.items.map((item) => (
+                            // Each filter option is wrapped in a full-width label so the entire row
+                            // is clickable; the checkbox is controlled via state and toggles the
+                            // selected filter value on click.
+                            <Label
+                              key={`${group.key}-${item.value}`}
+                              htmlFor={`${group.key}-${item.value}`}
+                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                                item.hoverClassName ?? defaultHoverClassName
                               }`}
                             >
-                              {item.label}
-                            </span>
-                          </Label>
-                        ))}
-                      </div>
-                    ))}
+                              <Checkbox
+                                id={`${group.key}-${item.value}`}
+                                className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                                checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                                onCheckedChange={(isChecked) =>
+                                  handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                                }
+                                aria-label={`Filter nach ${item.label}`}
+                              />
+                              {item.icon}
+                              <span
+                                className={`text-xs font-medium text-foreground ${
+                                  item.labelClassName ?? ''
+                                }`}
+                              >
+                                {item.label}
+                              </span>
+                            </Label>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </section>

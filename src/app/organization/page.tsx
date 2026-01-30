@@ -25,6 +25,9 @@ async function fetchOrganizations(
   filters.area.forEach((area) => params.append('area', area));
   filters.languages.forEach((language) => params.append('languages', language));
   filters.accessibility.forEach((item) => params.append('accessibility', item));
+  if (filters.city.trim()) {
+    params.append('city', filters.city.trim());
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
@@ -48,6 +51,7 @@ export default function OrganizationsPage() {
     area: [],
     languages: [],
     accessibility: [],
+    city: '',
   };
   const [filters, setFilters] = useState<FilterOptions>(emptyFilters);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -126,9 +130,11 @@ export default function OrganizationsPage() {
     isChecked: boolean
   ) =>
     setFilters((prev) => {
+      if (category === 'city') return prev;
+      const current = prev[category];
       const next = isChecked
-        ? [...prev[category], value]
-        : prev[category].filter((item) => item !== value);
+        ? [...current, value]
+        : current.filter((item) => item !== value);
       return { ...prev, [category]: next };
     });
 
@@ -148,6 +154,7 @@ export default function OrganizationsPage() {
         <OrganizationFilters
           filters={filters}
           onFilterChange={handleFilterChange}
+          onCityChange={(value) => setFilters((prev) => ({ ...prev, city: value }))}
           onReset={handleResetFilters}
           activeFilterCount={activeFilterCount}
         />
