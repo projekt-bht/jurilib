@@ -11,6 +11,13 @@ import type { Organization } from '~/generated/prisma/client';
 const similarityOffset = 0.8;
 const threshold = 0.03;
 
+const weights = {
+  area: 0.6,
+  description: 0.1,
+  city: 0.2,
+  zipCode: 0.05,
+};
+
 export async function createSearch(query: string) {
   const vectorizedData: VectorFormat = await vectorizeSearch(query);
 
