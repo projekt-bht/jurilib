@@ -7,7 +7,6 @@ import type {
   Organization,
   OrganizationType,
   PriceCategory,
-  PricingModel,
   Prisma,
 } from '~/generated/prisma/client';
 import { Area } from '~/generated/prisma/client';
@@ -53,7 +52,6 @@ export async function readOrganizations(filters: {
   area?: Area[];
   languages?: Language[];
   accessibility?: Accessibility[];
-  pricingModel?: PricingModel[];
 }): Promise<Organization[]> {
   try {
     // Build a Prisma where clause that mirrors the UI filter selections.
@@ -72,9 +70,6 @@ export async function readOrganizations(filters: {
     }
     if (filters?.accessibility?.length) {
       where.accessibility = { hasSome: filters.accessibility };
-    }
-    if (filters?.pricingModel?.length) {
-      where.services = { some: { pricingModel: { in: filters.pricingModel } } };
     }
 
     const orgas: Organization[] = await prisma.organization.findMany({

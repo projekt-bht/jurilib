@@ -9,7 +9,6 @@ import {
   Language,
   OrganizationType,
   PriceCategory,
-  PricingModel,
 } from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
@@ -33,7 +32,6 @@ const paramsSchema = z.strictObject({
   area: z.array(z.enum(Area)),
   languages: z.array(z.enum(Language)),
   accessibility: z.array(z.enum(Accessibility)),
-  pricingModel: z.array(z.enum(PricingModel)),
 });
 
 /*
@@ -79,7 +77,6 @@ export async function GET(req: NextRequest) {
     const area = searchParams.getAll('area');
     const languages = searchParams.getAll('languages');
     const accessibility = searchParams.getAll('accessibility');
-    const pricingModel = searchParams.getAll('pricingModel');
 
     const validatedParams = paramsSchema.parse({
       skip: skip,
@@ -89,7 +86,6 @@ export async function GET(req: NextRequest) {
       area: area,
       languages: languages,
       accessibility: accessibility,
-      pricingModel: pricingModel,
     });
 
     const organization = await readOrganizations(validatedParams);
