@@ -18,18 +18,21 @@ import { useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 
+// Add new primary navigation items here
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/new-case', label: 'Neuer Fall', icon: Plus, highlight: true },
+  { href: '/new-appointment', label: 'Neuer Termin', icon: Plus, highlight: true },
   { href: '/cases', label: 'Meine Fälle', icon: FolderOpen },
   { href: '/appointments', label: 'Termine', icon: CalendarDays },
 ];
 
+// Add new secondary navigation items here
 const secondaryItems = [
   { href: '/organizations', label: 'Organisationen', icon: Building2 },
   { href: '/team', label: 'Team', icon: Users },
 ];
 
+// Add new bottom navigation items here
 const bottomItems = [
   { href: '/settings', label: 'Einstellungen', icon: Settings },
   { href: '/help', label: 'Hilfe', icon: HelpCircle },
@@ -45,11 +48,10 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside
         className={`
           hidden lg:flex lg:fixed lg:top-[90px] lg:left-0 lg:h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30 flex-col
-          transition-all duration-300 ease-in-out
+          transition-all duration-300 ease-in-out will-change-[width]
           ${isCollapsed ? 'lg:w-16' : 'lg:w-56'}
         `}
       >
@@ -64,22 +66,23 @@ export function Sidebar() {
                     key={item.href}
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
-                      ${isCollapsed ? 'justify-center' : ''}
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
                       ${
                         item.highlight && !isActive
-                          ? 'bg-primary/10 text-primary hover:bg-primary/15'
+                          ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/90'
                           : isActive
                             ? 'bg-muted text-foreground font-medium'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon
-                      className={`w-4 h-4 shrink-0 ${item.highlight && !isActive ? 'text-primary' : ''}`}
+                      className={`w-4 h-4 shrink-0 ${item.highlight && !isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
                     />
-                    {!isCollapsed && <span className="text-sm">{item.label}</span>}
+                    {!isCollapsed && (
+                      <span className="text-sm whitespace-nowrap">{item.label}</span>
+                    )}
                   </Link>
                 );
               })}
@@ -102,18 +105,19 @@ export function Sidebar() {
                     key={item.href}
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
-                      ${isCollapsed ? 'justify-center' : ''}
+                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
                       ${
                         isActive
                           ? 'bg-muted text-foreground font-medium'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    {!isCollapsed && <span className="text-sm">{item.label}</span>}
+                    <item.icon className={`w-4 h-4 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                    {!isCollapsed && (
+                      <span className="text-sm whitespace-nowrap">{item.label}</span>
+                    )}
                   </Link>
                 );
               })}
@@ -129,18 +133,17 @@ export function Sidebar() {
                   key={item.href}
                   href={item.href}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
-                    ${isCollapsed ? 'justify-center' : ''}
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
                     ${
                       isActive
                         ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                     }
                   `}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <item.icon className="w-4 h-4 shrink-0" />
-                  {!isCollapsed && <span className="text-sm">{item.label}</span>}
+                  <item.icon className={`w-4 h-4 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                  {!isCollapsed && <span className="text-sm whitespace-nowrap">{item.label}</span>}
                 </Link>
               );
             })}
@@ -148,14 +151,14 @@ export function Sidebar() {
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full text-muted-foreground hover:text-foreground hover:bg-muted/50 justify-center"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-500 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft overflow-hidden min-h-[40px]"
             >
               {isCollapsed ? (
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 mx-auto" />
               ) : (
                 <>
                   <ChevronLeft className="w-4 h-4" />
-                  <span className="text-sm">Einklappen</span>
+                  <span className="text-sm whitespace-nowrap">Einklappen</span>
                 </>
               )}
             </button>
@@ -179,7 +182,7 @@ export function Sidebar() {
                       ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/75'
                       : isActive
                         ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        : 'text-muted-foreground hover:text-foreground'
                   }
                 `}
               >
@@ -195,7 +198,7 @@ export function Sidebar() {
 
       {/* Desktop Spacer */}
       <div
-        className={`hidden lg:block shrink-0 transition-all duration-300 ${isCollapsed ? 'lg:w-16' : 'lg:w-56'}`}
+        className={`hidden lg:block shrink-0 transition-all duration-300 ease-in-out will-change-[width] ${isCollapsed ? 'lg:w-16' : 'lg:w-56'}`}
       />
 
       {/* Mobile Bottom Spacer */}
