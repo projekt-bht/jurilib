@@ -78,11 +78,10 @@ export const PATCH = withEmployeeAuth(
         { id: appointmentID, identifier: 'appointmentID' },
       ]);
 
-      // validate body
-
       // check if loginResource and employeeid given by url-param are the same
       if (!(employeeID === account.employeeId)) return unauthorized();
 
+      // validate body
       const body = appointmentUpdateSchema.parse(await req.json());
       if (!body || Object.keys(body).length === 0) {
         throw new ValidationError('invalidInput', 'body', 'empty', 400);
