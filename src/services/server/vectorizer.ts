@@ -53,17 +53,21 @@ export async function vectorizeSearch(query: string) {
               type: 'string',
               enum: [...possibleAreas, '#'],
               description:
-                'Ordne den Text genau einem juristischen Fachgebiet zu. Falls keines passt, gib "#" zurück.',
+                'Ordne den Text genau einem juristischen Fachgebiet zu, nur wenn eindeutig vorhanden, sonst null',
             },
             city: {
               type: 'string',
               description:
-                'Gebe die Stadt aus dem Text zurück, **nur wenn eine gültige Stadt oder PLZ vorhanden ist**, sonst "#".',
+                'Gebe die Stadt aus dem Text zurück, **nur wenn eine gültige Stadt oder PLZ vorhanden ist**, sonst null',
             },
             zipCode: {
               type: 'string',
               description:
-                'Gebe die Postleitzahl aus dem Text zurück, **nur wenn eine gültige PLZ vorhanden ist**, sonst "#".',
+                'Gebe die Postleitzahl aus dem Text zurück, **nur wenn eine gültige PLZ vorhanden ist**, sonst null',
+            },
+            description: {
+              type: 'string',
+              description: 'Extrahiere relevante juristische Buzzwords, sonst null.',
             },
           },
           required: ['area'],
