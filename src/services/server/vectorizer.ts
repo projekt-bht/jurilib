@@ -94,14 +94,10 @@ export async function vectorizeSearch(query: string) {
   return `[${embedding.join(',')}]`;
 }
 
-export async function vectorizeExpertiseArea(query: string) {
-  //   console.log(query);
+export async function createEmbedding(query: string) {
   const embeddingResponse = await openai.embeddings.create({
     model: 'openai/text-embedding-3-large',
     input: query,
   });
-
-  // Format numeric embedding array as string
-  const embedding = embeddingResponse.data[0].embedding;
-  return `[${embedding.join(',')}]`;
+  return `[${embeddingResponse.data[0].embedding.join(',')}]`;
 }
