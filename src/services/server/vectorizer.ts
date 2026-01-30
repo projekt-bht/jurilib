@@ -3,6 +3,13 @@ import OpenAI from 'openai';
 
 import { Area } from '~/generated/prisma/enums';
 
+export type VectorFormat = {
+  area: string;
+  city?: string;
+  zipCode?: string;
+  description?: string;
+};
+
 const openai = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL ?? '',
   apiKey: process.env.OPENAI_API_KEY ?? '',
@@ -11,13 +18,6 @@ const openai = new OpenAI({
     'X-Title': '<YOUR_SITE_NAME>', // Optional. Site title for rankings on openrouter.ai.
   },
 });
-
-export type VectorFormat = {
-  area: string;
-  city?: string;
-  zipCode?: string;
-  description?: string;
-};
 
 //https://openrouter.ai/docs/guides/features/structured-outputs
 export async function vectorizeSearch(query: string): Promise<VectorFormat> {
@@ -88,17 +88,10 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
     area: await createEmbedding(parsedQuery.area),
   };
 
-  if (parsedQuery.city) {
-    responseEmbedding.city = await createEmbedding(parsedQuery.city);
-  }
-
-  if (parsedQuery.zipCode) {
-    responseEmbedding.zipCode = await createEmbedding(parsedQuery.zipCode);
-  }
-
-  if (parsedQuery.description) {
+  if (parsedQuery.city) responseEmbedding.city = await createEmbedding(parsedQuery.city);
+  if (parsedQuery.zipCode) responseEmbedding.zipCode = await createEmbedding(parsedQuery.zipCode);
+  if (parsedQuery.description)
     responseEmbedding.description = await createEmbedding(parsedQuery.description);
-  }
 
   // Format numeric embedding array as string
   // needed atm, since prisma v7 internally converts arrays to JSON objects. To fix this we convert the array to a string here.
