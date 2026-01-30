@@ -2,9 +2,17 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import {
+  handleError,
+  handleZodError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
 import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 
+import { isOrganizationEmployeeMatch } from '../helpers';
 import { deleteOrganization, readOrganization, updateOrganization } from './services';
 
 // GET /api/organization/:organizationID
@@ -28,8 +36,11 @@ export async function GET(
 
 // PATCH /api/organization/:organizationID
 export const PATCH = withEmployeeAuth(
-  async (req: NextRequest, { params }: { params: Promise<{ organizationID: string }> }) => {
-    // TODO: Authentifizierung
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ organizationID: string }> },
+    account: EmployeeLoginResource
+  ) => {
     try {
       validateHeader(req.headers);
 
@@ -40,10 +51,13 @@ export const PATCH = withEmployeeAuth(
 
       const { organizationID } = await params;
       validateIds([{ id: organizationID, identifier: 'organizationID' }]);
+      if (await isOrganizationEmployeeMatch(organizationID, account.employeeId)) {
+        const updatedOrganization = await updateOrganization(body, organizationID);
 
-      const updatedOrganization = await updateOrganization(body, organizationID);
-
-      return NextResponse.json(updatedOrganization, { status: 200 });
+        return NextResponse.json(updatedOrganization, { status: 200 });
+      } else {
+        return unauthorized();
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return handleZodError(error);
@@ -55,12 +69,20 @@ export const PATCH = withEmployeeAuth(
 
 // DELETE /api/organization/:organizationID
 export const DELETE = withEmployeeAuth(
-  async (_req: NextRequest, { params }: { params: Promise<{ organizationID: string }> }) => {
+  async (
+    _req: NextRequest,
+    { params }: { params: Promise<{ organizationID: string }> },
+    account: EmployeeLoginResource
+  ) => {
     try {
       const { organizationID } = await params;
       validateIds([{ id: organizationID, identifier: 'organizationID' }]);
-      await deleteOrganization(organizationID);
-      return NextResponse.json({ message: 'Deleted' }, { status: 200 });
+      if (await isOrganizationEmployeeMatch(organizationID, account.employeeId)) {
+        await deleteOrganization(organizationID);
+        return NextResponse.json({ message: 'Deleted' }, { status: 200 });
+      } else {
+        return unauthorized();
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return handleZodError(error);
