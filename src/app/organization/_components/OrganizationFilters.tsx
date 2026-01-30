@@ -175,7 +175,13 @@ export function OrganizationFilters({
       title: 'Sprache',
       icon: <Earth className="w-4 h-4" />,
       scroll: true,
-      items: sortedLanguages.map((language) => ({ value: language, label: language })),
+      items: sortedLanguages.map((language) => ({
+        value: language,
+        label: language
+          .toString()
+          .toLocaleLowerCase('de')
+          .replace(/^./, (char) => char.toLocaleUpperCase('de')),
+      })),
     },
     {
       key: 'accessibility',
