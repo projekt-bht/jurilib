@@ -58,12 +58,6 @@ export async function vectorizeSearch(query: string) {
               description:
                 'Gebe die Postleitzahl aus dem Text zurück, **nur wenn eine gültige PLZ vorhanden ist**, sonst "#".',
             },
-            /*Unsafe?
-            shortDescription: {
-              type: 'string',
-              description:
-                'Generiere eine ShortDescription der Kanzlei in 1–2 Sätzen, die beschreibt, wie diese Kanzlei beim User-Problem helfen könnte.',
-            },*/
           },
           required: ['area'],
           additionalProperties: false,
