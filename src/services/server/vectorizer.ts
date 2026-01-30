@@ -12,6 +12,13 @@ const openai = new OpenAI({
   },
 });
 
+export type VectorFormat = {
+  area: string;
+  city?: string;
+  zipCode?: string;
+  description?: string;
+};
+
 //https://openrouter.ai/docs/guides/features/structured-outputs
 export async function vectorizeSearch(query: string) {
   const possibleAreas = Object.values(Area);
