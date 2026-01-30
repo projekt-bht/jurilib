@@ -52,6 +52,7 @@ export async function readOrganizations(filters: {
   area?: Area[];
   languages?: Language[];
   accessibility?: Accessibility[];
+  city?: string[];
 }): Promise<Organization[]> {
   try {
     // Build a Prisma where clause that mirrors the UI filter selections.
@@ -70,6 +71,9 @@ export async function readOrganizations(filters: {
     }
     if (filters?.accessibility?.length) {
       where.accessibility = { hasSome: filters.accessibility };
+    }
+    if (filters?.city?.length) {
+      where.city = { in: filters.city };
     }
 
     const orgas: Organization[] = await prisma.organization.findMany({

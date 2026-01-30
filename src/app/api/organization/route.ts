@@ -32,6 +32,7 @@ const paramsSchema = z.strictObject({
   area: z.array(z.enum(Area)),
   languages: z.array(z.enum(Language)),
   accessibility: z.array(z.enum(Accessibility)),
+  city: z.array(z.string()),
 });
 
 /*
@@ -77,6 +78,7 @@ export async function GET(req: NextRequest) {
     const area = searchParams.getAll('area');
     const languages = searchParams.getAll('languages');
     const accessibility = searchParams.getAll('accessibility');
+    const city = searchParams.getAll('city');
 
     const validatedParams = paramsSchema.parse({
       skip: skip,
@@ -86,6 +88,7 @@ export async function GET(req: NextRequest) {
       area: area,
       languages: languages,
       accessibility: accessibility,
+      city: city,
     });
 
     const organization = await readOrganizations(validatedParams);
