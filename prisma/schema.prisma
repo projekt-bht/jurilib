@@ -146,6 +146,9 @@ model Organization {
 
     // vector for similarity search
     expertiseVector    Unsupported("vector(3072)")?
+    cityVector         Unsupported("vector(3072)")?
+    zipVector          Unsupported("vector(3072)")?
+    descriptionVector  Unsupported("vector(3072)")?
 
     // rating infos
     averageRating      Float      @default(0)
