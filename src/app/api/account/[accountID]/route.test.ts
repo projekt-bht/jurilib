@@ -6,7 +6,7 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 }));
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => {
+  createEmbedding: jest.fn(async () => {
     const arr = Array(3072).fill(0.01);
     return `[${arr.join(',')}]`;
   }),
