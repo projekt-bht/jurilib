@@ -27,7 +27,8 @@ export async function vectorizeSearch(query: string) {
         role: 'system',
         content:
           'Du bist ein juristisch versiertes Modell. Ordne den kommenden User Prompt genau EINEM der juristischen Fachgebiet zu.' +
-          possibleAreas,
+          possibleAreas.join(', ') +
+          '. Falls der Prompt nicht juristisch ist, gib "#" zurück.',
       },
       {
         role: 'user',
@@ -57,6 +58,12 @@ export async function vectorizeSearch(query: string) {
               description:
                 'Gebe die Postleitzahl aus dem Text zurück, **nur wenn eine gültige PLZ vorhanden ist**, sonst "#".',
             },
+            /*Unsafe?
+            shortDescription: {
+              type: 'string',
+              description:
+                'Generiere eine ShortDescription der Kanzlei in 1–2 Sätzen, die beschreibt, wie diese Kanzlei beim User-Problem helfen könnte.',
+            },*/
           },
           required: ['area'],
           additionalProperties: false,
