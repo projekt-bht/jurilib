@@ -77,7 +77,7 @@ export function UserDashboard() {
           </div>
 
           {/* Statistics */}
-          <div className="w-4/5 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <StatCards cases={cases} />
           </div>
 
