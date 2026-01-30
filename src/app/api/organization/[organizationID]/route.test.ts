@@ -16,6 +16,10 @@ jest.unstable_mockModule('@/app/api/authentication/login/JWTService', () => ({
   verifyJWT: jest.fn(),
 }));
 
+jest.unstable_mockModule('@/app/api/organization/helpers', () => ({
+  isOrganizationEmployeeMatch: jest.fn(),
+}));
+
 // Non-mock related implementation:
 
 import type { OrganizationCreateInput, OrganizationUpdateInput } from '~/generated/prisma/models';
@@ -28,6 +32,7 @@ const { prisma } = await import('@/lib/db');
 const { DELETE, GET, PATCH } = await import('@/app/api/organization/[organizationID]/route');
 const { POST } = await import('@/app/api/organization/route');
 const { verifyJWT } = await import('@/app/api/authentication/login/JWTService');
+const { isOrganizationEmployeeMatch } = await import('@/app/api/organization/helpers');
 
 describe('Organization Routen testen', () => {
   const placeholderURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/organization/[organizationID]`;
@@ -37,6 +42,8 @@ describe('Organization Routen testen', () => {
     employeeId: 1231,
     id: 1231241,
   });
+
+  (isOrganizationEmployeeMatch as jest.Mock).mockReturnValue(true);
 
   // Usage of POST from organization/route.ts to create an organization for further tests
   test('POST Organization', async () => {
