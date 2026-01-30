@@ -23,11 +23,12 @@ import { useLoginContext } from '@/app/LoginContext';
 const iconSize = 5;
 
 // Array to define navigation items to user specific pages
+//TODO: Update hrefs
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
   { href: '/new-case', label: 'Neuer Fall', icon: Plus, highlight: true },
   { href: '/cases', label: 'Meine Fälle', icon: FolderOpen },
-  { href: '/appointments', label: 'Termine', icon: CalendarDays },
+  { href: '/appointments', label: 'Meine Termine', icon: CalendarDays },
 ];
 
 // Array to define secondary navigation items to global pages
@@ -61,7 +62,7 @@ export function Sidebar() {
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 md:hidden"
+          className="fixed inset-0 bg-accent-black backdrop-blur-sm z-30 md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -77,7 +78,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-[90px] left-0 h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30
+          fixed top-[90px] left-0 h-[calc(100vh-73px)] bg-background backdrop-blur-xl border-r border-border z-30
           transition-all duration-300 ease-in-out
           ${isCollapsed ? 'w-16' : 'w-56'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
@@ -99,7 +100,7 @@ export function Sidebar() {
                       ${isCollapsed ? 'justify-center' : ''}
                       ${
                         item.highlight && !isActive
-                          ? 'bg-accent-blue-light text-primary hover:bg-accent-blue-light'
+                          ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/80'
                           : isActive
                             ? 'bg-accent-gray-light/40 text-foreground font-medium'
                             : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-light/40'
@@ -108,7 +109,7 @@ export function Sidebar() {
                     title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon
-                      className={`w-${iconSize} h-${iconSize} shrink-0 ${item.highlight && !isActive ? 'text-accent-blue' : ''}`}
+                      className={`w-${iconSize} h-${iconSize} shrink-0 ${item.highlight && !isActive ? 'text-accent-white' : ''}`}
                     />
                     {!isCollapsed && <span className="text-sm">{item.label}</span>}
                   </Link>
