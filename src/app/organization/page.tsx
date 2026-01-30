@@ -25,7 +25,6 @@ async function fetchOrganizations(
   filters.area.forEach((area) => params.append('area', area));
   filters.languages.forEach((language) => params.append('languages', language));
   filters.accessibility.forEach((item) => params.append('accessibility', item));
-  filters.pricingModel.forEach((item) => params.append('pricingModel', item));
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
@@ -49,7 +48,6 @@ export default function OrganizationsPage() {
     area: [],
     languages: [],
     accessibility: [],
-    pricingModel: [],
   };
   const [filters, setFilters] = useState<FilterOptions>(emptyFilters);
   const [organizations, setOrganizations] = useState<Organization[]>([]);

@@ -23,7 +23,6 @@ import {
   Language as LanguageEnum,
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
-  PricingModel as PricingModelEnum,
 } from '~/generated/prisma/enums';
 
 export type FilterOptions = {
@@ -32,7 +31,6 @@ export type FilterOptions = {
   area: AreasEnum[];
   languages: LanguageEnum[];
   accessibility: AccessibilityEnum[];
-  pricingModel: PricingModelEnum[];
 };
 
 export type FilterValue =
@@ -40,8 +38,7 @@ export type FilterValue =
   | OrganizationTypeEnum
   | AreasEnum
   | LanguageEnum
-  | AccessibilityEnum
-  | PricingModelEnum;
+  | AccessibilityEnum;
 
 type SectionItem = {
   value: FilterValue;
@@ -117,9 +114,6 @@ export function OrganizationFilters({
   const [sortedAccessibility] = useState(() =>
     [...Object.values(AccessibilityEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
-  const [sortedPricingModel] = useState(() =>
-    [...Object.values(PricingModelEnum)].sort((a, b) => a.localeCompare(b, 'de'))
-  );
 
   const handleCheckboxChange = (
     category: keyof FilterOptions,
@@ -162,14 +156,6 @@ export function OrganizationFilters({
             label: priceCategoryMeta[price].label,
             hoverClassName: priceCategoryMeta[price].hoverClassName,
             labelClassName: 'cursor-pointer text-xs font-semibold text-foreground',
-          })),
-        },
-        {
-          title: 'Preismodell',
-          key: 'pricingModel',
-          items: sortedPricingModel.map((item) => ({
-            value: item,
-            label: item === PricingModelEnum.FIXED ? 'Festpreis' : 'Stundensatz',
           })),
         },
       ],
