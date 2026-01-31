@@ -312,8 +312,12 @@ export function OrganizationFilters({
                 <div
                   key={section.key}
                   // Under xl: box height is compact unless opened. At xl: fixed 320px height.
-                  className={`rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
-                    isWideLayout ? 'h-[320px]' : openSections[section.key] ? 'h-[320px]' : 'h-auto'
+                  className={`max-h-[320px] rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
+                    isWideLayout
+                      ? 'sm:h-[320px]'
+                      : openSections[section.key]
+                        ? 'sm:h-[320px]'
+                        : 'h-auto'
                   }`}
                 >
                   {/* At xl: static header (no accordion). Below xl: header toggles open/closed. */}
