@@ -66,7 +66,7 @@ export function UserDashboard() {
             <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight mb-2">
               Willkommen zurück, {user?.firstname}!
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground pl-5">
               {new Date().toLocaleDateString('de-DE', {
                 weekday: 'long',
                 day: 'numeric',
@@ -118,7 +118,7 @@ export function UserDashboard() {
                 <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-accent/5 rounded-full blur-3xl -z-10" />
 
                 <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4 shadow-sm">
                     <Calendar className="w-8 h-8 text-accent-blue" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
@@ -127,7 +127,7 @@ export function UserDashboard() {
                   <p className="text-muted-foreground mb-6">
                     Du hast aktuell keine Termine. Buche jetzt deinen nächsten Termin!
                   </p>
-                  <Button className="bg-accent-blue hover:bg-accent-blue/90 cursor-pointer">
+                  <Button className="bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Termin vereinbaren
                   </Button>
@@ -176,7 +176,7 @@ export function UserDashboard() {
                 <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-accent/5 rounded-full blur-3xl -z-10" />
 
                 <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4 shadow-sm">
                     <Folder className="w-8 h-8 text-accent-blue" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
