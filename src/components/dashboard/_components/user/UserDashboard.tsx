@@ -1,4 +1,4 @@
-import { Calendar, ChevronRight, Folder, Plus } from 'lucide-react';
+import { CalendarDays, ChevronRight, FolderOpen, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -84,7 +84,7 @@ export function UserDashboard() {
           {/* Appointments */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold pl-2">Anstehende Termine</h2>
+              <h2 className="text-2xl font-semibold pl-2">Anstehende Termine</h2>
 
               <Button
                 variant="ghost"
@@ -119,7 +119,7 @@ export function UserDashboard() {
 
                 <div className="relative z-10">
                   <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <Calendar className="w-8 h-8 text-accent-blue" />
+                    <CalendarDays className="w-8 h-8 text-accent-blue" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                     Keine anstehenden Termine
@@ -139,7 +139,7 @@ export function UserDashboard() {
           {/* Cases */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Aktive Fälle</h2>
+              <h2 className="text-2xl font-semibold pl-2">Aktive Fälle</h2>
               <Button
                 variant="ghost"
                 size="sm"
@@ -177,13 +177,13 @@ export function UserDashboard() {
 
                 <div className="relative z-10">
                   <div className="w-16 h-16 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <Folder className="w-8 h-8 text-accent-blue" />
+                    <FolderOpen className="w-8 h-8 text-accent-blue" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                     Keine aktiven Fälle
                   </h3>
                   <p className="text-muted-foreground mb-6">
-                    <span>Du hast aktuell keine aktiven Fälle.</span>
+                    <span>Du hast aktuell keine aktiven Fälle die bearbeitet werden.</span>
                   </p>
                 </div>
               </div>
