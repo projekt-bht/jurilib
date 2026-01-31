@@ -12,7 +12,7 @@ import {
   Tag,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -55,6 +55,13 @@ type SectionGroup = {
   key: keyof FilterOptions;
   items: SectionItem[];
 };
+const sectionKeys: Array<keyof FilterOptions> = [
+  'organizationType',
+  'priceCategory',
+  'area',
+  'languages',
+  'accessibility',
+];
 const priceCategoryMeta: Record<
   PriceCategoryEnum,
   { label: string; hoverClassName: string; textClassName: string }
@@ -108,6 +115,12 @@ export function OrganizationFilters({
 }) {
   // When landing on the page, the filters should start collapsed.
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  // Helper to open/close all sections at once based on layout size.
+  const buildSectionState = (isOpen: boolean) =>
+    Object.fromEntries(sectionKeys.map((key) => [key, isOpen]));
+  // Start compact: only headers visible until user opens a section (under xl).
+  const [openSections, setOpenSections] = useState(() => buildSectionState(false));
+  const [isWideLayout, setIsWideLayout] = useState(false);
   // Pre-sort enum values once (German locale) so filter lists render consistently without
   // re-sorting on every render.
   const [sortedAreas] = useState(() =>
@@ -128,6 +141,20 @@ export function OrganizationFilters({
 
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
+
+  // Sync layout with breakpoint: xl shows all sections open; below xl all collapsed.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1280px)');
+    const syncLayout = () => {
+      const isWide = mediaQuery.matches;
+      setIsWideLayout(isWide);
+      setOpenSections(buildSectionState(isWide));
+    };
+    syncLayout();
+    mediaQuery.addEventListener('change', syncLayout);
+    // Cleanup listener to prevent memory leaks when the component unmounts.
+    return () => mediaQuery.removeEventListener('change', syncLayout);
+  }, []);
 
   const sections: Array<{
     key: keyof FilterOptions;
@@ -211,7 +238,8 @@ export function OrganizationFilters({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm ring-2 ring-primary/10">
+            {/* City filter stays visible on all breakpoints; grows full-width on small screens. */}
+            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm ring-2 ring-primary/10">
               <MapPin className="w-4 h-4 text-primary" />
               <Label htmlFor="city-filter" className="sr-only">
                 Stadt
@@ -221,7 +249,7 @@ export function OrganizationFilters({
                 value={filters.city}
                 onChange={(event) => onCityChange(event.target.value)}
                 placeholder="Stadt"
-                className="h-7 w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 focus-visible:ring-0"
+                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 focus-visible:ring-0"
               />
             </div>
             {isActiveFilters && (
@@ -264,24 +292,68 @@ export function OrganizationFilters({
         </div>
 
         {isPanelOpen && (
-          // Always 5 columns; keep card width and use horizontal scroll on small screens.
           <>
-            <div className="mt-4 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0">
-              <div className="grid grid-cols-5 gap-1.5 min-w-[1100px] items-stretch">
+            <div className="mt-4 pb-2">
+              {/* Responsive grid: stacks to 1/2/3 cols and only 5 cols at xl. */}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
                 {sections.map((section) => (
                   <div
                     key={section.key}
-                    className="rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col h-[320px] shadow-sm hover:shadow-md transition-all duration-300"
+                    // Under xl: box height is compact unless opened. At xl: fixed 320px height.
+                    className={`rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
+                      isWideLayout
+                        ? 'h-[320px]'
+                        : openSections[section.key]
+                          ? 'h-[320px]'
+                          : 'h-auto'
+                    }`}
                   >
-                    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-                      <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
-                        {section.icon}
-                      </span>
-                      <span className="text-xs font-semibold text-foreground">{section.title}</span>
-                    </div>
+                    {/* At xl: static header (no accordion). Below xl: header toggles open/closed. */}
+                    {isWideLayout ? (
+                      <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+                        <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
+                          {section.icon}
+                        </span>
+                        <span className="text-xs font-semibold text-foreground">
+                          {section.title}
+                        </span>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenSections((prev) => ({
+                            ...prev,
+                            [section.key]: !prev[section.key],
+                          }))
+                        }
+                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left"
+                        aria-expanded={openSections[section.key]}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
+                            {section.icon}
+                          </span>
+                          <span className="text-xs font-semibold text-foreground">
+                            {section.title}
+                          </span>
+                        </span>
+                        <ChevronDown
+                          size={18}
+                          strokeWidth={2.5}
+                          className={`text-foreground transition-transform duration-200 ${
+                            openSections[section.key] ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                    )}
                     <div
+                      // Below xl: hide content when collapsed; when open, height is 320px and scrolls.
+                      // At xl: content always visible.
                       className={`mt-2 space-y-3 flex-1 min-h-0 ${
-                        section.scroll ? 'overflow-y-auto pr-1' : ''
+                        openSections[section.key] ? 'block' : 'hidden'
+                      } xl:block ${
+                        !isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''
                       }`}
                     >
                       {(
