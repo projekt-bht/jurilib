@@ -26,8 +26,7 @@ export function StatCards({ cases }: { cases: Case[] }) {
             bg-background border
             border-border/40 
             transition-all duration-300
-            shadow-sm hover:shadow-md 
-            hover:scale-105 hover:-translate-y-2"
+            shadow-sm hover:shadow-md "
         >
           {/* Solid accent bar - 5px left of icon */}
           <div className="absolute left-12 top-3 bottom-3 w-0.5 rounded-full bg-accent-gray-light" />
