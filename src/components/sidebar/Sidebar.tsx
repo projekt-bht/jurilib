@@ -28,7 +28,7 @@ const navItems = [
 
 // Add new secondary navigation items here
 const secondaryItems = [
-  { href: '/organizations', label: 'Organisationen', icon: Building2 },
+  { href: '/organization', label: 'Organisationen', icon: Building2 },
   { href: '/team', label: 'Team', icon: Users },
 ];
 
