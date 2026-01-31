@@ -56,15 +56,16 @@ export default function OrganizationsPage() {
   const [filters, setFilters] = useState<FilterOptions>(emptyFilters);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [skip, setSkip] = useState(0);
-  const [loading, setLoading] = useState(false);
+  // Styleguide: boolean state uses is/has/can prefix.
+  const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   async function loadOrganizations(nextSkip = skip, nextFilters = filters) {
-    if (loading || (!hasMore && nextSkip !== 0)) return;
+    if (isLoading || (!hasMore && nextSkip !== 0)) return;
 
-    setLoading(true);
+    setIsLoading(true);
     setErrorMessage(null);
     if (nextSkip === 0) {
       // Keep the current list visible while refreshing to avoid UI flicker.
@@ -87,7 +88,7 @@ export default function OrganizationsPage() {
       // Surface a friendly error and keep previous results on screen.
       setErrorMessage('Organisationen konnten nicht geladen werden.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
       setIsRefreshing(false);
     }
   }
@@ -104,7 +105,7 @@ export default function OrganizationsPage() {
   // this was GPT
   useEffect(() => {
     function handleScroll() {
-      if (loading || !hasMore) return;
+      if (isLoading || !hasMore) return;
 
       // if the site performs badly when scrolling, it could be an error with this
       const scrollPosition = window.innerHeight + window.scrollY;
@@ -121,7 +122,7 @@ export default function OrganizationsPage() {
       window.removeEventListener('scroll', handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, hasMore]);
+  }, [isLoading, hasMore]);
 
   // Toggle a single filter value on/off and update only that category.
   const handleFilterChange = (
@@ -132,9 +133,7 @@ export default function OrganizationsPage() {
     setFilters((prev) => {
       if (category === 'city') return prev;
       const current = prev[category];
-      const next = isChecked
-        ? [...current, value]
-        : current.filter((item) => item !== value);
+      const next = isChecked ? [...current, value] : current.filter((item) => item !== value);
       return { ...prev, [category]: next };
     });
 
@@ -183,7 +182,7 @@ export default function OrganizationsPage() {
 
           {errorMessage && <div className="py-4 text-destructive">{errorMessage}</div>}
 
-          {loading && (
+          {isLoading && (
             <div className="py-6 text-muted-foreground">Lade weitere Organisationen…</div>
           )}
 
