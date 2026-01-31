@@ -2,7 +2,15 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import z from 'zod';
 
-import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import {
+  handleError,
+  handleZodError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
+import { withUserAuth } from '@/lib/withAuth';
+import type { UserLoginResource } from '@/services/Resources';
 import type { UserUpdateInput } from '~/generated/prisma/models';
 
 import { readUser, updateUser } from './services';
@@ -42,24 +50,32 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ use
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ userID: string }> }) {
-  try {
-    validateHeader(req.headers);
-    const { userID } = await params;
-    validateIds([{ id: userID, identifier: 'userID' }]);
+// PATCH /api/user/:userID
+// used to update user information
+export const PATCH = withUserAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ userID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      validateHeader(req.headers);
+      const { userID } = await params;
+      validateIds([{ id: userID, identifier: 'userID' }]);
+      if (!(userID === account.userId)) return unauthorized();
+      const body = await req.json();
+      const validatedBody = UpdateSchema.parse(body);
 
-    const body = await req.json();
-    const validatedBody = UpdateSchema.parse(body);
-
-    const updatedUser = await updateUser(validatedBody as UserUpdateInput, userID);
-    return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
+      const updatedUser = await updateUser(validatedBody as UserUpdateInput, userID);
+      return NextResponse.json(updatedUser, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to update User');
     }
-    return handleError(error, 'Failed to update User');
   }
-}
+);
 
 /**
  * There is no DELETE endpoint for user as users are deleted through the account endpoint

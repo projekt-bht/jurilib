@@ -3,9 +3,12 @@ import { NextResponse } from 'next/server';
 import z from 'zod';
 
 import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 import type { Employee } from '~/generated/prisma/client';
 import { Area, Gender, Language, Pronoun } from '~/generated/prisma/enums';
 
+import { unauthorized } from '../../helper';
 import { readEmployeeByEmployeeID, updateEmployee } from './services';
 
 const UpdateSchemaEmployee = z.strictObject({
@@ -44,30 +47,37 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string }> }
-) {
-  try {
-    validateHeader(req.headers);
+// PATCH /api/employee/:employeeID
+// Update Employee
+export const PATCH = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      validateHeader(req.headers);
+      const { employeeID } = await params;
+      validateIds([{ id: employeeID, identifier: 'employeeID' }]);
 
-    const { employeeID } = await params;
-    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
+      const body = await req.json();
+      const validatedBody = UpdateSchemaEmployee.parse(body);
 
-    const body = await req.json();
-    const validatedBody = UpdateSchemaEmployee.parse(body);
+      // check if loginResource and userid given by url-param are the same
+      if (!(employeeID === account.employeeId)) return unauthorized();
 
-    const updatedEmployee = await updateEmployee(validatedBody as Employee, employeeID);
-    return NextResponse.json(updatedEmployee, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
+      const updatedEmployee = await updateEmployee(validatedBody as Employee, employeeID);
+      return NextResponse.json(updatedEmployee, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to update Employee');
     }
-    return handleError(error, 'Failed to update Employee');
   }
-}
+);
 
-/**
+/*
  * There is no DELETE endpoint for employee as employees are deleted through the account endpoint
  * when an account is deleted, which in turn calls the deleteEmployeeTx function in services.ts.
  * This ensures that all related data is cleaned up properly in a transaction.
