@@ -21,9 +21,9 @@ import { useLoginContext } from '@/app/LoginContext';
 // Add new primary navigation items here
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/new-appointment', label: 'Neuer Termin', icon: Plus, highlight: true },
-  { href: '/cases', label: 'Meine Fälle', icon: FolderOpen },
-  { href: '/appointments', label: 'Termine', icon: CalendarDays },
+  { href: '/search', label: 'Neuer Termin', icon: Plus, highlight: true },
+  { href: '/case', label: 'Meine Fälle', icon: FolderOpen },
+  { href: '/appointment', label: 'Meine Termine', icon: CalendarDays },
 ];
 
 // Add new secondary navigation items here
@@ -59,6 +59,11 @@ export function Sidebar() {
           {/* Main Navigation */}
           <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
             <div className="space-y-0.5">
+              {!isCollapsed && (
+                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Für dich
+                </p>
+              )}
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -66,7 +71,7 @@ export function Sidebar() {
                     key={item.href}
                     href={item.href}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
+                      flex items-center gap-6 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-10
                       ${
                         item.highlight && !isActive
                           ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/90'
@@ -78,7 +83,7 @@ export function Sidebar() {
                     title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon
-                      className={`w-4 h-4 shrink-0 ${item.highlight && !isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
+                      className={`w-5 h-5 shrink-0 ${item.highlight && !isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
                     />
                     {!isCollapsed && (
                       <span className="text-sm whitespace-nowrap">{item.label}</span>
@@ -114,7 +119,7 @@ export function Sidebar() {
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className={`w-4 h-4 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                    <item.icon className={`w-5 h-5 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
                     {!isCollapsed && (
                       <span className="text-sm whitespace-nowrap">{item.label}</span>
                     )}
@@ -142,7 +147,7 @@ export function Sidebar() {
                   `}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <item.icon className={`w-4 h-4 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                  <item.icon className={`w-5 h-5 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
                   {!isCollapsed && <span className="text-sm whitespace-nowrap">{item.label}</span>}
                 </Link>
               );
@@ -187,7 +192,7 @@ export function Sidebar() {
                 `}
               >
                 <item.icon
-                  className={`w-4 h-4 ${item.highlight && !isActive ? 'text-accent-white' : ''}`}
+                  className={`w-5 h-5 ${item.highlight && !isActive ? 'text-accent-white' : ''}`}
                 />
                 <span className="text-[11px] font-medium line-clamp-1">{item.label}</span>
               </Link>
