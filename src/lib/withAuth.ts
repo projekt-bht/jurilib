@@ -54,7 +54,7 @@ export function withEmployeeAuth(handler: EmployeeHandler) {
       const loginResource: LoginResource = verifyJWT(token);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { userId, ...employeeResource } = loginResource;
-      // Ensure userId is not undefined for UserLoginResource
+      // Ensure employeeId is not undefined for UserLoginResource
       if (employeeResource.employeeId) {
         return handler(req, ctx, employeeResource as EmployeeLoginResource);
       } else {
