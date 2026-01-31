@@ -172,7 +172,7 @@ export function OrganizationFilters({
   useEffect(() => {
     const timeout = window.setTimeout(() => onCityChange(cityInput), 500);
     return () => window.clearTimeout(timeout);
-  }, [cityInput, onCityChange]);
+  }, [cityInput]);
 
   // ESLint: Keep local input in sync on reset without triggering extra effects.
   const handleResetClick = () => {
