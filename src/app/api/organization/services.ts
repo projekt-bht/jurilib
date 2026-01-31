@@ -2,6 +2,8 @@ import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
 import type {
+  Accessibility,
+  Language,
   Organization,
   OrganizationType,
   PriceCategory,
@@ -48,6 +50,9 @@ export async function readOrganizations(filters: {
   priceCategory?: PriceCategory[];
   organizationType?: OrganizationType[];
   area?: Area[];
+  languages?: Language[];
+  accessibility?: Accessibility[];
+  city?: string[];
 }): Promise<Organization[]> {
   try {
     // Build a Prisma where clause that mirrors the UI filter selections.
@@ -60,6 +65,15 @@ export async function readOrganizations(filters: {
     }
     if (filters?.area?.length) {
       where.expertiseAreas = { hasSome: filters.area };
+    }
+    if (filters?.languages?.length) {
+      where.employees = { some: { languages: { hasSome: filters.languages } } };
+    }
+    if (filters?.accessibility?.length) {
+      where.accessibility = { hasSome: filters.accessibility };
+    }
+    if (filters?.city?.length) {
+      where.city = { in: filters.city };
     }
 
     const orgas: Organization[] = await prisma.organization.findMany({
