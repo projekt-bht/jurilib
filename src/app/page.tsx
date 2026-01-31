@@ -11,7 +11,7 @@ export default function Home() {
   // TODO: Fallunterscheidung zwischen Employee und User über die Ressource im Login Context
   if (login) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-card">
         <UserDashboard />
       </div>
     );
