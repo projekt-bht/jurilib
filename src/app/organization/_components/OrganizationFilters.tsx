@@ -234,13 +234,14 @@ export function OrganizationFilters({
   ];
 
   return (
-    <section className="group relative w-full rounded-3xl border border-border bg-background hover:border-primary/40 shadow-sm transition-all duration-500 overflow-hidden">
-      <div className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-accent-purple/15 blur-2xl" />
-      <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-accent-blue/15 blur-2xl" />
+    <section className="group relative w-full rounded-3xl border border-border bg-background hover:border-primary shadow-sm transition-all duration-500 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-1 bg-accent-blue-soft" />
+      <div className="absolute -top-12 -right-12 h-24 w-24 rounded-full bg-accent-purple-soft blur-2xl" />
+      <div className="absolute -bottom-12 -left-12 h-24 w-24 rounded-full bg-accent-blue-soft blur-2xl" />
       <div className="relative p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
           <div className="flex items-center gap-3">
-            <div className="rounded-full border border-border bg-linear-to-br from-accent-blue/20 to-accent-purple/20 p-1.5">
+            <div className="rounded-full border border-accent-blue-light bg-card p-1.5">
               <Filter className="w-4 h-4 text-foreground" />
             </div>
             <div>
@@ -252,8 +253,8 @@ export function OrganizationFilters({
           </div>
           <div className="flex items-center gap-2">
             {/* City filter stays visible on all breakpoints; grows full-width on small screens. */}
-            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm">
-              <MapPin className="w-4 h-4 text-primary" />
+            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border-2 border-accent-blue-light bg-card px-3 h-10 shadow-sm">
+              <MapPin className="w-4 h-4 text-accent-blue" />
               <Label htmlFor="city-filter" className="sr-only">
                 Stadt
               </Label>
@@ -262,11 +263,11 @@ export function OrganizationFilters({
                 value={cityInput}
                 onChange={(event) => setCityInput(event.target.value)}
                 placeholder="Stadt"
-                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 shadow-none ring-0 focus-visible:ring-0 focus-visible:border-0"
+                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-muted-foreground shadow-none ring-0 focus-visible:ring-0 focus-visible:border-0"
               />
             </div>
             {isActiveFilters && (
-              <span className="rounded-full bg-linear-to-r from-accent-blue/30 to-accent-purple/30 px-2 py-0.5 text-xs font-semibold text-foreground">
+              <span className="rounded-full border border-accent-blue-light bg-card px-2 py-0.5 text-xs font-semibold text-foreground">
                 {activeFilterCount} aktiv
               </span>
             )}
@@ -276,7 +277,7 @@ export function OrganizationFilters({
               size="sm"
               disabled={!isActiveFilters}
               onClick={handleResetClick}
-              className="h-9 rounded-full px-3 gap-1.5 border border-border/70 bg-linear-to-br from-accent-blue-soft/30 to-accent-purple-soft/30 text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-9 rounded-full px-3 gap-1.5 border border-accent-blue-light bg-accent-blue-soft text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary hover:bg-accent-blue-light disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <X className="w-4 h-4" />
               <span className="text-xs font-semibold tracking-wide">Zurücksetzen</span>
@@ -286,7 +287,7 @@ export function OrganizationFilters({
               variant="ghost"
               size="lg"
               onClick={() => setIsPanelOpen((prev) => !prev)}
-              className="h-11 rounded-full px-4 gap-2 border border-border/70 bg-linear-to-br from-accent-blue-soft/40 to-accent-purple-soft/40 text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/50 cursor-pointer"
+              className="h-11 rounded-full px-4 gap-2 border border-accent-blue-light bg-accent-blue-soft text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary hover:bg-accent-blue-light cursor-pointer"
               aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
               aria-pressed={isPanelOpen}
             >
@@ -312,7 +313,7 @@ export function OrganizationFilters({
                 <div
                   key={section.key}
                   // Under xl: box height is compact unless opened. At xl: fixed 320px height.
-                  className={`max-h-[320px] rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
+                  className={`max-h-[320px] rounded-2xl border border-border bg-card px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
                     isWideLayout
                       ? 'sm:h-[320px]'
                       : openSections[section.key]
@@ -389,7 +390,7 @@ export function OrganizationFilters({
                           >
                             <Checkbox
                               id={`${group.key}-${item.value}`}
-                              className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                              className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
                               checked={(filters[group.key] as FilterValue[]).includes(item.value)}
                               onCheckedChange={(isChecked) =>
                                 handleCheckboxChange(group.key, item.value, Boolean(isChecked))
