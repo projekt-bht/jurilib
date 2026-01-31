@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import type { Appointment } from '~/generated/prisma/browser';
 import { AppointmentStatus } from '~/generated/prisma/browser';
 
+import { fetchBackendData } from '../../helper';
+
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   const status = statusToTextAndColor(appointment.status);
 
@@ -14,23 +16,19 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resEmployee = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${appointment.employeeId}`,
-          { cache: 'no-store' }
-        );
+        const resEmployee = await fetchBackendData('employee', appointment.employeeId, 'Employee');
         const employeeData = await resEmployee.json();
-
         setEmployeeName(`${employeeData.firstname} ${employeeData.lastname}`);
 
-        const resOrganization = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${employeeData.organizationId}`,
-          { cache: 'no-store' }
+        const resOrganization = await fetchBackendData(
+          'organization',
+          employeeData.organizationId,
+          'Organization'
         );
         const organizationData = await resOrganization.json();
         setOrganizationName(organizationData.name);
       } catch (error) {
-        // TODO: Handle error state
-        console.error('Error fetching appointment data:', error);
+        throw error;
       }
     }
 
