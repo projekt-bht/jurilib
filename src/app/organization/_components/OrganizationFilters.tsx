@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
 import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
@@ -164,10 +163,11 @@ export function OrganizationFilters({
     return () => window.clearTimeout(timeout);
   }, [cityInput, onCityChange]);
 
-  // Keep local input in sync if filters are reset externally.
-  useEffect(() => {
-    setCityInput(filters.city);
-  }, [filters.city]);
+  // ESLint: Keep local input in sync on reset without triggering extra effects.
+  const handleResetClick = () => {
+    setCityInput('');
+    onReset();
+  };
 
   const sections: Array<{
     key: keyof FilterOptions;
@@ -275,7 +275,7 @@ export function OrganizationFilters({
               variant="ghost"
               size="sm"
               disabled={!isActiveFilters}
-              onClick={onReset}
+              onClick={handleResetClick}
               className="h-9 rounded-full px-3 gap-1.5 border border-border/70 bg-linear-to-br from-accent-blue-soft/30 to-accent-purple-soft/30 text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <X className="w-4 h-4" />
@@ -305,118 +305,110 @@ export function OrganizationFilters({
         </div>
 
         {isPanelOpen && (
-          <>
-            <div className="mt-4 pb-2">
-              {/* Responsive grid: stacks to 1/2/3 cols and only 5 cols at xl. */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
-                {sections.map((section) => (
-                  <div
-                    key={section.key}
-                    // Under xl: box height is compact unless opened. At xl: fixed 320px height.
-                    className={`rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
-                      isWideLayout
-                        ? 'h-[320px]'
-                        : openSections[section.key]
-                          ? 'h-[320px]'
-                          : 'h-auto'
-                    }`}
-                  >
-                    {/* At xl: static header (no accordion). Below xl: header toggles open/closed. */}
-                    {isWideLayout ? (
-                      <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+          <div className="mt-4 pb-2">
+            {/* Responsive grid: stacks to 1/2/3 cols and only 5 cols at xl. */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
+              {sections.map((section) => (
+                <div
+                  key={section.key}
+                  // Under xl: box height is compact unless opened. At xl: fixed 320px height.
+                  className={`rounded-2xl border border-border bg-card/80 px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
+                    isWideLayout ? 'h-[320px]' : openSections[section.key] ? 'h-[320px]' : 'h-auto'
+                  }`}
+                >
+                  {/* At xl: static header (no accordion). Below xl: header toggles open/closed. */}
+                  {isWideLayout ? (
+                    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
+                      <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
+                        {section.icon}
+                      </span>
+                      <span className="text-xs font-semibold text-foreground">{section.title}</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenSections((prev) => ({
+                          ...prev,
+                          [section.key]: !prev[section.key],
+                        }))
+                      }
+                      className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left"
+                      aria-expanded={openSections[section.key]}
+                    >
+                      <span className="flex items-center gap-2">
                         <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
                           {section.icon}
                         </span>
                         <span className="text-xs font-semibold text-foreground">
                           {section.title}
                         </span>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenSections((prev) => ({
-                            ...prev,
-                            [section.key]: !prev[section.key],
-                          }))
-                        }
-                        className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left"
-                        aria-expanded={openSections[section.key]}
+                      </span>
+                      <ChevronDown
+                        size={18}
+                        strokeWidth={2.5}
+                        className={`text-foreground transition-transform duration-200 ${
+                          openSections[section.key] ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                  )}
+                  <div
+                    // Below xl: hide content when collapsed; when open, height is 320px and scrolls.
+                    // At xl: content always visible.
+                    className={`mt-2 space-y-3 flex-1 min-h-0 ${
+                      openSections[section.key] ? 'block' : 'hidden'
+                    } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
+                  >
+                    {(
+                      section.groups ?? [{ title: '', key: section.key, items: section.items }]
+                    ).map((group) => (
+                      <div
+                        key={`${section.key}-${group.title || 'default'}`}
+                        className="space-y-1.5"
                       >
-                        <span className="flex items-center gap-2">
-                          <span className="rounded-md bg-accent-blue-soft p-1 text-foreground">
-                            {section.icon}
-                          </span>
-                          <span className="text-xs font-semibold text-foreground">
-                            {section.title}
-                          </span>
-                        </span>
-                        <ChevronDown
-                          size={18}
-                          strokeWidth={2.5}
-                          className={`text-foreground transition-transform duration-200 ${
-                            openSections[section.key] ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </button>
-                    )}
-                    <div
-                      // Below xl: hide content when collapsed; when open, height is 320px and scrolls.
-                      // At xl: content always visible.
-                      className={`mt-2 space-y-3 flex-1 min-h-0 ${
-                        openSections[section.key] ? 'block' : 'hidden'
-                      } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
-                    >
-                      {(
-                        section.groups ?? [{ title: '', key: section.key, items: section.items }]
-                      ).map((group) => (
-                        <div
-                          key={`${section.key}-${group.title || 'default'}`}
-                          className="space-y-1.5"
-                        >
-                          {group.title && (
-                            <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                              {group.title}
-                            </div>
-                          )}
-                          {group.items.map((item) => (
-                            // Each filter option is wrapped in a full-width label so the entire row
-                            // is clickable; the checkbox is controlled via state and toggles the
-                            // selected filter value on click.
-                            <Label
-                              key={`${group.key}-${item.value}`}
-                              htmlFor={`${group.key}-${item.value}`}
-                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                                item.hoverClassName ?? defaultHoverClassName
+                        {group.title && (
+                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                            {group.title}
+                          </div>
+                        )}
+                        {group.items.map((item) => (
+                          // Each filter option is wrapped in a full-width label so the entire row
+                          // is clickable; the checkbox is controlled via state and toggles the
+                          // selected filter value on click.
+                          <Label
+                            key={`${group.key}-${item.value}`}
+                            htmlFor={`${group.key}-${item.value}`}
+                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                              item.hoverClassName ?? defaultHoverClassName
+                            }`}
+                          >
+                            <Checkbox
+                              id={`${group.key}-${item.value}`}
+                              className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                              onCheckedChange={(isChecked) =>
+                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                              }
+                              aria-label={`Filter nach ${item.label}`}
+                            />
+                            {item.icon}
+                            <span
+                              className={`text-xs font-medium text-foreground ${
+                                item.labelClassName ?? ''
                               }`}
                             >
-                              <Checkbox
-                                id={`${group.key}-${item.value}`}
-                                className="border-foreground/40 bg-background hover:border-foreground/60 data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                                checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                                onCheckedChange={(isChecked) =>
-                                  handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                                }
-                                aria-label={`Filter nach ${item.label}`}
-                              />
-                              {item.icon}
-                              <span
-                                className={`text-xs font-medium text-foreground ${
-                                  item.labelClassName ?? ''
-                                }`}
-                              >
-                                {item.label}
-                              </span>
-                            </Label>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
+                              {item.label}
+                            </span>
+                          </Label>
+                        ))}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </>
+          </div>
         )}
       </div>
     </section>
