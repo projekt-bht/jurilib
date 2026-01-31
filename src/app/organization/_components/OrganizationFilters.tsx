@@ -144,17 +144,28 @@ export function OrganizationFilters({
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
 
   // Sync layout with breakpoint: xl shows all sections open; below xl all collapsed.
+  // When the grid collapses to a single column (< sm), force-close all sections.
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1280px)');
+    const wideQuery = window.matchMedia('(min-width: 1280px)');
+    const multiColumnQuery = window.matchMedia('(min-width: 400px)');
     const syncLayout = () => {
-      const isWide = mediaQuery.matches;
+      const isWide = wideQuery.matches;
+      const isSingleColumn = !multiColumnQuery.matches;
       setIsWideLayout(isWide);
+      if (isSingleColumn) {
+        setOpenSections(buildSectionState(false));
+        return;
+      }
       setOpenSections(buildSectionState(isWide));
     };
     syncLayout();
-    mediaQuery.addEventListener('change', syncLayout);
+    wideQuery.addEventListener('change', syncLayout);
+    multiColumnQuery.addEventListener('change', syncLayout);
     // Cleanup listener to prevent memory leaks when the component unmounts.
-    return () => mediaQuery.removeEventListener('change', syncLayout);
+    return () => {
+      wideQuery.removeEventListener('change', syncLayout);
+      multiColumnQuery.removeEventListener('change', syncLayout);
+    };
   }, []);
 
   // Debounce city
