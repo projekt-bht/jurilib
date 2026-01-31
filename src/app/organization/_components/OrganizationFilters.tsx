@@ -252,7 +252,7 @@ export function OrganizationFilters({
           </div>
           <div className="flex items-center gap-2">
             {/* City filter stays visible on all breakpoints; grows full-width on small screens. */}
-            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm ring-2 ring-primary/10">
+            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border-2 border-primary/20 bg-linear-to-br from-accent-blue/10 to-accent-purple/10 px-3 h-10 shadow-sm">
               <MapPin className="w-4 h-4 text-primary" />
               <Label htmlFor="city-filter" className="sr-only">
                 Stadt
@@ -262,7 +262,7 @@ export function OrganizationFilters({
                 value={cityInput}
                 onChange={(event) => setCityInput(event.target.value)}
                 placeholder="Stadt"
-                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 focus-visible:ring-0"
+                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 shadow-none ring-0 focus-visible:ring-0 focus-visible:border-0"
               />
             </div>
             {isActiveFilters && (
