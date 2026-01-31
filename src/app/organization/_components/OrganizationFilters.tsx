@@ -143,8 +143,8 @@ export function OrganizationFilters({
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
 
-  // Sync layout with breakpoint: xl shows all sections open; below xl all collapsed.
-  // When the grid collapses to a single column (< sm), force-close all sections.
+  // Sync layout with breakpoints: xl opens all sections; below xl collapses.
+  // If the grid collapses to a single column (< sm), force-close all sections regardless of prior state.
   useEffect(() => {
     const wideQuery = window.matchMedia('(min-width: 1280px)');
     const multiColumnQuery = window.matchMedia('(min-width: 400px)');
