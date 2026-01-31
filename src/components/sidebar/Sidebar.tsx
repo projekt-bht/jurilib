@@ -21,7 +21,7 @@ import { useLoginContext } from '@/app/LoginContext';
 // Add new primary navigation items here
 const navItems = [
   { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/search', label: 'Neuer Termin', icon: Plus, highlight: true },
+  { href: '/search', label: 'Neuer Termin', icon: Plus },
   { href: '/case', label: 'Meine Fälle', icon: FolderOpen },
   { href: '/appointment', label: 'Meine Termine', icon: CalendarDays },
 ];
@@ -73,17 +73,15 @@ export function Sidebar() {
                     className={`
                       flex items-center gap-6 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-10
                       ${
-                        item.highlight && !isActive
-                          ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/90'
-                          : isActive
-                            ? 'bg-muted text-foreground font-medium'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
+                        isActive
+                          ? 'bg-accent-blue text-accent-white font-medium'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
                     <item.icon
-                      className={`w-5 h-5 shrink-0 ${item.highlight && !isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
+                      className={`w-5 h-5 shrink-0 ${isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
                     />
                     {!isCollapsed && (
                       <span className="text-sm whitespace-nowrap">{item.label}</span>
@@ -113,13 +111,15 @@ export function Sidebar() {
                       flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
                       ${
                         isActive
-                          ? 'bg-muted text-foreground font-medium'
+                          ? 'bg-accent-blue text-accent-white font-medium'
                           : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                       }
                     `}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className={`w-5 h-5 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                    <item.icon
+                      className={`w-5 h-5 shrink-0 ${isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
+                    />
                     {!isCollapsed && (
                       <span className="text-sm whitespace-nowrap">{item.label}</span>
                     )}
@@ -141,13 +141,15 @@ export function Sidebar() {
                     flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 overflow-hidden min-h-[40px]
                     ${
                       isActive
-                        ? 'bg-muted text-foreground font-medium'
+                        ? 'bg-accent-blue text-accent-white font-medium'
                         : 'text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft'
                     }
                   `}
                   title={isCollapsed ? item.label : undefined}
                 >
-                  <item.icon className={`w-5 h-5 shrink-0 ${isCollapsed ? 'mx-auto' : ''}`} />
+                  <item.icon
+                    className={`w-5 h-5 shrink-0 ${isActive ? 'text-accent-white' : ''} ${isCollapsed ? 'mx-auto' : ''}`}
+                  />
                   {!isCollapsed && <span className="text-sm whitespace-nowrap">{item.label}</span>}
                 </Link>
               );
@@ -183,17 +185,13 @@ export function Sidebar() {
                 className={`
                   flex flex-col items-center justify-center p-2.5 sm:mx-10 md:mx-10 rounded-xl transition-all duration-500
                   ${
-                    item.highlight && !isActive
-                      ? 'bg-accent-blue text-accent-white hover:bg-accent-blue/75'
-                      : isActive
-                        ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground hover:text-foreground'
+                    isActive
+                      ? 'bg-accent-blue text-accent-white font-medium'
+                      : 'text-muted-foreground hover:text-foreground'
                   }
                 `}
               >
-                <item.icon
-                  className={`w-5 h-5 ${item.highlight && !isActive ? 'text-accent-white' : ''}`}
-                />
+                <item.icon className={`w-5 h-5 ${isActive ? 'text-accent-white' : ''}`} />
                 <span className="text-[11px] font-medium line-clamp-1">{item.label}</span>
               </Link>
             );
