@@ -121,6 +121,8 @@ export function OrganizationFilters({
   // Start compact: only headers visible until user opens a section (under xl).
   const [openSections, setOpenSections] = useState(() => buildSectionState(false));
   const [isWideLayout, setIsWideLayout] = useState(false);
+  // Local input state to debounce plain-text city search.
+  const [cityInput, setCityInput] = useState(filters.city);
   // Pre-sort enum values once (German locale) so filter lists render consistently without
   // re-sorting on every render.
   const [sortedAreas] = useState(() =>
@@ -155,6 +157,17 @@ export function OrganizationFilters({
     // Cleanup listener to prevent memory leaks when the component unmounts.
     return () => mediaQuery.removeEventListener('change', syncLayout);
   }, []);
+
+  // Debounce city
+  useEffect(() => {
+    const timeout = window.setTimeout(() => onCityChange(cityInput), 500);
+    return () => window.clearTimeout(timeout);
+  }, [cityInput, onCityChange]);
+
+  // Keep local input in sync if filters are reset externally.
+  useEffect(() => {
+    setCityInput(filters.city);
+  }, [filters.city]);
 
   const sections: Array<{
     key: keyof FilterOptions;
@@ -246,8 +259,8 @@ export function OrganizationFilters({
               </Label>
               <Input
                 id="city-filter"
-                value={filters.city}
-                onChange={(event) => onCityChange(event.target.value)}
+                value={cityInput}
+                onChange={(event) => setCityInput(event.target.value)}
                 placeholder="Stadt"
                 className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-primary/70 focus-visible:ring-0"
               />
@@ -352,9 +365,7 @@ export function OrganizationFilters({
                       // At xl: content always visible.
                       className={`mt-2 space-y-3 flex-1 min-h-0 ${
                         openSections[section.key] ? 'block' : 'hidden'
-                      } xl:block ${
-                        !isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''
-                      }`}
+                      } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
                     >
                       {(
                         section.groups ?? [{ title: '', key: section.key, items: section.items }]

@@ -142,7 +142,13 @@ export default function OrganizationsPage() {
   const handleResetFilters = () => setFilters(emptyFilters);
 
   // Used by the UI to show how many filters are currently active.
-  const activeFilterCount = Object.values(filters).reduce((sum, list) => sum + list.length, 0);
+  // Count city as 1 active filter when non-empty; other filters count by array length.
+  const activeFilterCount = Object.entries(filters).reduce((sum, [key, value]) => {
+    if (key === 'city') {
+      return sum + (String(value).trim() ? 1 : 0);
+    }
+    return sum + (value as FilterValue[]).length;
+  }, 0);
 
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-6 px-4 pb-10">
