@@ -2,17 +2,18 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
+import { deleteEmployeeTx } from '@/app/api/employee/[employeeID]/services';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import { deleteUserTx } from '@/app/api/user/[userID]/services';
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Account } from '~/generated/prisma/client';
 import { AccountType } from '~/generated/prisma/client';
 
-import { deleteEmployeeTx } from '../../employee/[employeeID]/services';
-import { deleteUserTx } from '../../user/[userID]/services';
 import { deleteAccountTx, readAccount, updateAccount } from './services';
 
 const UpdateSchema = z.strictObject({
-  email: z.email().optional(),
+  email: z.email({ message: 'Invalid email format' }).optional(),
   password: z
     .string()
     .min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8)
@@ -26,14 +27,15 @@ export async function GET(
 ) {
   try {
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
 
     const account = await readAccount(accountID);
     return NextResponse.json(account, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read Account');
   }
 }
 
@@ -42,16 +44,10 @@ export async function PATCH(
   { params }: { params: Promise<{ accountID: string }> }
 ) {
   try {
-    // validate header content-type
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
 
-    // validate params
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
 
     // validate body
     const body = await req.json();
@@ -61,29 +57,19 @@ export async function PATCH(
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleZodError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to update account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to update Account');
   }
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ accountID: string }> }
 ) {
-  // TODO: add validation
-
   try {
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
 
     /**
      * Delete Account and associated User/Employee in a transaction
@@ -112,15 +98,9 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
-    if (error instanceof ValidationError) {
-      return NextResponse.json(
-        { message: `Validation Error: ${error.message}` },
-        { status: error.statusCode }
-      );
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to delete Account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to delete Account');
   }
 }

@@ -2,17 +2,9 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError, validateHeader } from '../../../helper';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+
 import { createAppointment, readAllAppointmentsByEmployee } from './services';
-
-/**
- * Validate parameter employeeID
- */
-
-// const paramsSchema = z.object({
-const paramsSchema = z.strictObject({
-  employeeID: z.string().min(1, 'Employee ID is required'),
-});
 
 /**
  * Validate the attributes needed to create an appointment
@@ -36,9 +28,11 @@ export async function POST(
   try {
     // validate header
     validateHeader(req.headers);
+
     // validate params
     const { employeeID } = await params;
-    paramsSchema.parse({ employeeID });
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
+
     // validate body
     const body = appointmentCreateSchema.parse(await req.json());
 
@@ -46,12 +40,9 @@ export async function POST(
     return NextResponse.json(createdAppointment, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Creation failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Creating appointment failed');
     }
   }
 }
@@ -59,23 +50,21 @@ export async function POST(
 // GET /api/appointment/:employeeID
 // Retrieve all appointments of employee
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ employeeID: string }> }
 ) {
   try {
     // validate employeeID
     const { employeeID } = await params;
-    paramsSchema.parse({ employeeID });
+    validateIds([{ id: employeeID, identifier: 'employeeID' }]);
+
     const appointments = await readAllAppointmentsByEmployee(employeeID);
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to read Appointments');
     }
   }
 }

@@ -10,7 +10,11 @@ type CancelDialogProps = {
 export function CancelDialog({ open, showVerifyDialog, onOpenChange }: CancelDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md" showCloseButton={false}>
+      <DialogContent
+        className="max-w-md"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        showCloseButton={false}
+      >
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-accent-amber-light rounded-full">
@@ -37,7 +41,7 @@ export function CancelDialog({ open, showVerifyDialog, onOpenChange }: CancelDia
             className="flex-1 hover:bg-accent-red/70"
             onClick={() => showVerifyDialog(false)}
           >
-            Ja, abbrechen
+            Abbrechen
           </Button>
         </div>
       </DialogContent>

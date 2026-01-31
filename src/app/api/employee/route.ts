@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { handleError } from '@/app/api/helper';
+
 import { readAllEmployees } from './services';
 
 // GET /api/employee
@@ -10,6 +12,6 @@ export async function GET(_req: NextRequest) {
     const employees = await readAllEmployees();
     return NextResponse.json(employees, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    return handleError(error, 'Failed to read employees');
   }
 }

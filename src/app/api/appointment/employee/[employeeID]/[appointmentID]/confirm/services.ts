@@ -1,10 +1,8 @@
-import {
-  type CaseCreateWithAppointmentInput,
-  createCaseWithAppointment,
-} from '@/app/api/case/services';
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Case } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/client';
+import type { CaseCreateInput } from '~/generated/prisma/models';
 
 // Book an appointment by Id
 export async function confirmAppointmentCreateCase(
@@ -16,14 +14,17 @@ export async function confirmAppointmentCreateCase(
     const appointment = await prisma.appointment.findUnique({
       where: { id: appointmentId },
     });
+    if (!appointment) {
+      throw new ValidationError('notFound', 'appointment', appointmentId, 404);
+    }
     // only continue, if userId is given!
-    if (appointment?.userId) {
+    if (appointment.userId) {
       // get user information to
       const user = await prisma.user.findUnique({
         where: { id: appointment.userId },
       });
       if (!user) {
-        throw new Error('User not found');
+        throw new ValidationError('notFound', 'user', appointment.userId, 404);
       }
       const { firstname, lastname } = user;
 
@@ -32,6 +33,7 @@ export async function confirmAppointmentCreateCase(
         description: `Neuer Fall vom ${new Date().toLocaleDateString()}`,
         employee: { connect: { id: employeeId } },
         appointmentId: appointmentId,
+        user: { connect: { id: user.id } },
       };
       const createdCase = await createCaseWithAppointment(caseCreationData);
       // confirm appointment
@@ -49,6 +51,27 @@ export async function confirmAppointmentCreateCase(
     }
     throw new Error('Appointment is not assigned to any user');
   } catch (error) {
-    throw new Error('Database update failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database update failed: ' + (error as Error).message);
+  }
+}
+
+type CaseCreateWithAppointmentInput = CaseCreateInput & {
+  appointmentId: string;
+};
+
+async function createCaseWithAppointment(caseBody: CaseCreateWithAppointmentInput) {
+  try {
+    const { appointmentId, ...createCaseInput } = caseBody;
+    const createdCase = await prisma.case.create({
+      data: createCaseInput,
+    });
+    await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { caseId: createdCase.id },
+    });
+    return createdCase;
+  } catch (error) {
+    throw new Error('Database insert failed: ' + (error as Error).message);
   }
 }

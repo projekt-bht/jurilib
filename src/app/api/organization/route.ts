@@ -2,10 +2,16 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { Area, OrganizationType, PriceCategory } from '~/generated/prisma/client';
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
+import {
+  Accessibility,
+  Area,
+  Language,
+  OrganizationType,
+  PriceCategory,
+} from '~/generated/prisma/client';
 
 import { createOrganization, readOrganizations } from './services';
-import { handleValidationError } from '../helper';
 
 /**
  * Validate parameters
@@ -24,6 +30,9 @@ const paramsSchema = z.strictObject({
   priceCategory: z.array(z.enum(PriceCategory)),
   organizationType: z.array(z.enum(OrganizationType)),
   area: z.array(z.enum(Area)),
+  languages: z.array(z.enum(Language)),
+  accessibility: z.array(z.enum(Accessibility)),
+  city: z.array(z.string()),
 });
 
 /*
@@ -36,9 +45,7 @@ TODO:
 // Create a new organization
 export async function POST(req: NextRequest) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
 
     const body = await req.json();
     if (!body || Object.keys(body).length === 0) {
@@ -48,10 +55,10 @@ export async function POST(req: NextRequest) {
     const createdOrganization = await createOrganization(body);
     return NextResponse.json(createdOrganization, { status: 201 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Creation failed: ' + (error as Error).message },
-      { status: 400 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Creation failed');
   }
 }
 
@@ -69,6 +76,9 @@ export async function GET(req: NextRequest) {
     const priceCategory = searchParams.getAll('priceCategory');
     const organizationType = searchParams.getAll('organizationType');
     const area = searchParams.getAll('area');
+    const languages = searchParams.getAll('languages');
+    const accessibility = searchParams.getAll('accessibility');
+    const city = searchParams.getAll('city');
 
     const validatedParams = paramsSchema.parse({
       skip: skip,
@@ -76,18 +86,18 @@ export async function GET(req: NextRequest) {
       priceCategory: priceCategory,
       organizationType: organizationType,
       area: area,
+      languages: languages,
+      accessibility: accessibility,
+      city: city,
     });
 
     const organization = await readOrganizations(validatedParams);
     return NextResponse.json(organization, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Read failed');
     }
   }
 }

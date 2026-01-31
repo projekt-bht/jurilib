@@ -16,11 +16,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { deleteLogin } from '@/services/api';
+import { TokenType } from '~/generated/prisma/enums';
 
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
+import NewPasswordDialog from './NewPasswordDialog';
 import { initialRegisterData, RegisterDialog } from './RegisterDialog';
+import { SuccessDialog } from './SuccessDialog';
 import { VerifyDialog } from './VerifyDialog';
+
+export const authTimeoutDuration: number = 1000;
 
 export function Authentication() {
   const { login, setLogin } = useLoginContext();
@@ -28,23 +33,44 @@ export function Authentication() {
   const [isRegister, setIsRegister] = useState(false);
   const [registerStep, setRegisterStep] = useState(1);
   const [registerData, setRegisterData] = useState(initialRegisterData);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
 
   const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [showNewPasswordDialog, setShowNewPasswordDialog] = useState(false);
+
+  const [tokenType, setTokenType] = useState<TokenType>(TokenType.EMAIL_VERIFICATION);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const router = useRouter();
 
   if (login) {
     return (
-      <Button
-        onClick={async () => {
-          await deleteLogin();
-          setLogin(false);
-          router.push('/');
-        }}
-      >
-        Abmelden
-      </Button>
+      <>
+        <Button
+          onClick={async () => {
+            setSuccessOpen(true);
+            await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+
+            await deleteLogin();
+            setLogin(false);
+            setSuccessOpen(false);
+            router.push('/');
+          }}
+        >
+          Abmelden
+        </Button>
+
+        {successOpen && (
+          <SuccessDialog
+            open={successOpen}
+            onOpenChange={setSuccessOpen}
+            setPassword={setPassword}
+          />
+        )}
+      </>
     );
   }
 
@@ -88,13 +114,21 @@ export function Authentication() {
                 setRegisterData(initialRegisterData);
                 setRegisterStep(1);
               }}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              setTokenType={setTokenType}
             />
           ) : (
             <>
               <LoginDialog
                 onSuccess={() => setShowDialog(false)}
-                loginData={loginData}
-                setLoginData={setLoginData}
+                password={password}
+                setPassword={setPassword}
+                showVerifyDialog={setShowVerification}
+                email={email}
+                setEmail={setEmail}
+                setSuccessOpen={setSuccessOpen}
+                setTokenType={setTokenType}
               />
               <Button
                 type="button"
@@ -103,6 +137,7 @@ export function Authentication() {
                 onClick={() => {
                   setShowDialog(false);
                   setShowForgetPasswordDialog(true);
+                  setTokenType(TokenType.PASSWORD_RESET);
                 }}
               >
                 Passwort vergessen?
@@ -124,7 +159,15 @@ export function Authentication() {
       </Dialog>
 
       {showVerification && (
-        <VerifyDialog open={showVerification} onOpenChange={setShowVerification} />
+        <VerifyDialog
+          open={showVerification}
+          onOpenChange={setShowVerification}
+          setShowNewPasswordDialog={setShowNewPasswordDialog}
+          setSuccessOpen={setSuccessOpen}
+          email={email}
+          password={password}
+          type={tokenType}
+        />
       )}
 
       {showForgetPasswordDialog && (
@@ -133,7 +176,22 @@ export function Authentication() {
           onOpenChange={setShowForgetPasswordDialog}
           showLogin={setShowDialog}
           showVerification={setShowVerification}
+          email={email}
+          setEmail={setEmail}
         />
+      )}
+
+      {showNewPasswordDialog && (
+        <NewPasswordDialog
+          open={showNewPasswordDialog}
+          onOpenChange={setShowNewPasswordDialog}
+          email={email}
+          setSuccessOpen={setSuccessOpen}
+        />
+      )}
+
+      {successOpen && (
+        <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} setPassword={setPassword} />
       )}
     </>
   );

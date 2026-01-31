@@ -2,17 +2,14 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
 import { CaseStatus } from '~/generated/prisma/enums';
 
 import { verifyJWT } from '../../authentication/login/JWTService';
-import { handleValidationError, validateHeader } from '../../helper';
-import { isCaseEmployeeMatch } from './helpers';
+import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';
 
-const paramsSchema = z.strictObject({
-  caseID: z.uuid({ error: 'Case ID is required' }),
-});
 const caseUpdateSchema = z.strictObject({
   employeeId: z.uuid({ error: 'Employee ID is required' }).optional(),
   title: z.string('title is required').optional(),
@@ -27,7 +24,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ ca
   try {
     // validate URL Param
     const { caseID } = await params;
-    paramsSchema.parse({ caseID });
+    validateIds([{ id: caseID, identifier: 'caseID' }]);
+
     // verify user is logged in
     const jwtString = req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
@@ -46,12 +44,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ ca
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Update failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to update Case');
     }
   }
 }
@@ -64,9 +59,8 @@ export async function DELETE(
 ) {
   try {
     const { caseID } = await params;
-    if (!caseID) {
-      return NextResponse.json({ message: 'Case ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: caseID, identifier: 'caseID' }]);
+
     // verify user is logged in
     const jwtString = _req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
@@ -78,9 +72,9 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Failed to delete organization: ' + (error as Error).message },
-      { status: 400 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to delete Case');
   }
 }

@@ -178,6 +178,7 @@ async function main() {
       const caseTitle = faker.lorem.words(3);
       const caseItem = await prisma.case.create({
         data: {
+          user: { connect: { id: userIds[i % userIds.length] } },
           employee: { connect: { id: employeeId[i % employeeId.length] } },
           title: caseTitle,
           description: faker.lorem.sentence(),

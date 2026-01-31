@@ -1,6 +1,5 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import type { AccountResource } from '@/services/Resources';
 import type { Account } from '~/generated/prisma/browser';
 import { type Appointment, TokenType, type User } from '~/generated/prisma/browser';
 
@@ -14,25 +13,37 @@ import { sendEmail } from './mailer';
  * right now focused on USER role only, as employees are
  * not yet sufficiently supported
  */
-export async function sendRegistrationCodeEmail(account: AccountResource, user: User) {
-  const userFullName = `${user.firstname} ${user.lastname}`.trim();
+export async function sendRegistrationCodeEmail(email: string) {
+  try {
+    const account = await prisma.account.findUnique({
+      where: { email },
+      include: { user: true },
+    });
 
-  const { token: verificationCode, expiryMinutes } = await generateCode(
-    account.id!,
-    TokenType.EMAIL_VERIFICATION
-  );
+    if (!account || !account.user) return;
 
-  await sendEmail({
-    toEmail: account.email,
-    subject: `${verificationCode} ist dein JuriLib Registrierungscode`,
-    templateFileName: 'registration_confirmation_code.html',
-    templateVariables: {
-      NAME: userFullName,
-      VERIFICATION_CODE: verificationCode,
-      EXPIRY_MINUTES: expiryMinutes.toString(),
-      CURRENT_YEAR: new Date().getFullYear().toString(),
-    },
-  });
+    const userFullName = `${account.user.firstname} ${account.user.lastname}`.trim();
+
+    const { token: verificationCode, expiryMinutes } = await generateCode(
+      account.id!,
+      TokenType.EMAIL_VERIFICATION
+    );
+
+    await sendEmail({
+      toEmail: account.email,
+      subject: `${verificationCode} ist dein JuriLib Registrierungscode`,
+      templateFileName: 'registration_confirmation_code.html',
+      templateVariables: {
+        NAME: userFullName,
+        VERIFICATION_CODE: verificationCode,
+        EXPIRY_MINUTES: expiryMinutes.toString(),
+        CURRENT_YEAR: new Date().getFullYear().toString(),
+      },
+    });
+  } catch (error) {
+    if (error instanceof ValidationError) throw error;
+    throw new Error('Failed to send registration code email');
+  }
 }
 
 /**
@@ -43,34 +54,39 @@ export async function sendRegistrationCodeEmail(account: AccountResource, user: 
  * not yet sufficiently supported
  */
 export async function sendPasswordResetEmail(email: string) {
-  const account = await prisma.account.findUnique({
-    where: { email },
-    include: { user: true },
-  });
+  try {
+    const account = await prisma.account.findUnique({
+      where: { email },
+      include: { user: true },
+    });
 
-  if (!account || !account.user) {
-    throw new ValidationError('notFound', 'email', email, 404);
+    if (!account || !account.user) {
+      throw new ValidationError('notFound', 'email', email, 404);
+    }
+    const user = account.user;
+    const userFullName = `${user.firstname} ${user.lastname}`.trim();
+
+    // Generate a 6-digit verification code
+    const { token: verificationCode, expiryMinutes } = await generateCode(
+      account.id!,
+      TokenType.PASSWORD_RESET
+    );
+
+    await sendEmail({
+      toEmail: email,
+      subject: `${verificationCode} ist dein JuriLib Passwort-Zurücksetzungscode`,
+      templateFileName: 'password_reset_code.html',
+      templateVariables: {
+        NAME: userFullName,
+        VERIFICATION_CODE: verificationCode,
+        EXPIRY_MINUTES: expiryMinutes.toString(),
+        CURRENT_YEAR: new Date().getFullYear().toString(),
+      },
+    });
+  } catch (error) {
+    if (error instanceof ValidationError) throw error;
+    throw new Error('Failed to send password reset email');
   }
-  const user = account.user;
-  const userFullName = `${user.firstname} ${user.lastname}`.trim();
-
-  // Generate a 6-digit verification code
-  const { token: verificationCode, expiryMinutes } = await generateCode(
-    account.id!,
-    TokenType.PASSWORD_RESET
-  );
-
-  await sendEmail({
-    toEmail: email,
-    subject: `${verificationCode} ist dein JuriLib Passwort-Zurücksetzungscode`,
-    templateFileName: 'password_reset_code.html',
-    templateVariables: {
-      NAME: userFullName,
-      VERIFICATION_CODE: verificationCode,
-      EXPIRY_MINUTES: expiryMinutes.toString(),
-      CURRENT_YEAR: new Date().getFullYear().toString(),
-    },
-  });
 }
 
 /**
@@ -89,7 +105,19 @@ export async function sendAppointmentConfirmationEmail(userId: string, appt: App
   const cancelled = false;
   const hint =
     'Falls du den Termin nicht wahrnehmen kannst, informiere die Organisation bitte rechtzeitig.';
-  await sendAppointmentInformationEmail(userId, appt, title, mainMessage, updated, cancelled, hint);
+  try {
+    await sendAppointmentInformationEmail(
+      userId,
+      appt,
+      title,
+      mainMessage,
+      updated,
+      cancelled,
+      hint
+    );
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -115,7 +143,19 @@ export async function sendAppointmentCancellationEmail(userId: string, appt: App
   const cancelled = true;
   const hint =
     'Über den Button kommt du zu der Terminbuchungseite, um einen neuen Termin zu vereinbaren.';
-  await sendAppointmentInformationEmail(userId, appt, title, mainMessage, updated, cancelled, hint);
+  try {
+    await sendAppointmentInformationEmail(
+      userId,
+      appt,
+      title,
+      mainMessage,
+      updated,
+      cancelled,
+      hint
+    );
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**
@@ -130,7 +170,19 @@ export async function sendAppointmentChangeEmail(userId: string, appt: Appointme
   const cancelled = false;
   const hint =
     'Falls du den Termin nicht wahrnehmen kannst, informiere die Organisation bitte rechtzeitig.';
-  await sendAppointmentInformationEmail(userId, appt, title, mainMessage, updated, cancelled, hint);
+  try {
+    await sendAppointmentInformationEmail(
+      userId,
+      appt,
+      title,
+      mainMessage,
+      updated,
+      cancelled,
+      hint
+    );
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function sendAppointmentInformationEmail(
@@ -142,44 +194,49 @@ async function sendAppointmentInformationEmail(
   cancelled: boolean,
   hint: string
 ) {
-  // fetch necessary data
-  const user = await getUser(userId);
-  const account = await getAccount(user.accountId);
-  const { appointmentDate, appointmentTime } = getDateTimeString(appt.dateTimeStart);
-  const { empFirstname, empLastname, organizationId } = await getEmployee(appt.employeeId);
-  const { orgName, orgEmail } = await getOrganization(organizationId);
-  const caseTitle = await getCaseTitle(appt.caseId!);
+  try {
+    // fetch necessary data
+    const user = await getUser(userId);
+    const account = await getAccount(user.accountId);
+    const { appointmentDate, appointmentTime } = getDateTimeString(appt.dateTimeStart);
+    const { empFirstname, empLastname, organizationId } = await getEmployee(appt.employeeId);
+    const { orgName, orgEmail } = await getOrganization(organizationId);
+    const caseTitle = await getCaseTitle(appt.caseId!);
 
-  // construct missing variables
-  const fullTitle = `Termin ${title}`;
-  const userFullName = `${user.firstname} ${user.lastname}`.trim();
-  const employeeFullName = `${empFirstname} ${empLastname}`.trim();
-  // TODO: set appt.administration url
-  const apptAdministrationUrl = 'https://jurilib.de';
+    // construct missing variables
+    const fullTitle = `Termin ${title}`;
+    const userFullName = `${user.firstname} ${user.lastname}`.trim();
+    const employeeFullName = `${empFirstname} ${empLastname}`.trim();
+    // TODO: set appt.administration url
+    const apptAdministrationUrl = 'https://jurilib.de';
 
-  await sendEmail({
-    toEmail: account.email,
-    subject: `${title} deines Termins bei ${orgName}`,
-    templateFileName: 'appointment_information.html',
-    templateVariables: {
-      TITLE: fullTitle,
-      NAME: userFullName,
-      MAIN_MESSAGE: mainMessage,
-      UPDATED: updated ? 'aktualisierten ' : '',
-      CANCELLED: cancelled ? 'abgesagten ' : '',
-      APPT_DATE: appointmentDate,
-      APPT_TIME: appointmentTime,
-      APPT_ORGANIZATION_NAME: orgName,
-      APPT_LOCATION: appt.location ?? 'Nicht angegeben',
-      APPT_EMPLOYEE_NAME: employeeFullName ?? 'Nicht angegeben',
-      APPT_CASE_TITLE: caseTitle ?? 'Ohne Fallzuordnung',
-      APPOINTMENT_MANAGEMENT_URL: apptAdministrationUrl,
-      BUTTON_TEXT: cancelled ? 'Neuen Termin buchen' : 'Zur Terminverwaltung',
-      HINT: hint,
-      APPT_ORGANIZATION_EMAIL: orgEmail,
-      CURRENT_YEAR: new Date().getFullYear().toString(),
-    },
-  });
+    await sendEmail({
+      toEmail: account.email,
+      subject: `${title} deines Termins bei ${orgName}`,
+      templateFileName: 'appointment_information.html',
+      templateVariables: {
+        TITLE: fullTitle,
+        NAME: userFullName,
+        MAIN_MESSAGE: mainMessage,
+        UPDATED: updated ? 'aktualisierten ' : '',
+        CANCELLED: cancelled ? 'abgesagten ' : '',
+        APPT_DATE: appointmentDate,
+        APPT_TIME: appointmentTime,
+        APPT_ORGANIZATION_NAME: orgName,
+        APPT_LOCATION: appt.location ?? 'Nicht angegeben',
+        APPT_EMPLOYEE_NAME: employeeFullName ?? 'Nicht angegeben',
+        APPT_CASE_TITLE: caseTitle ?? 'Ohne Fallzuordnung',
+        APPOINTMENT_MANAGEMENT_URL: apptAdministrationUrl,
+        BUTTON_TEXT: cancelled ? 'Neuen Termin buchen' : 'Zur Terminverwaltung',
+        HINT: hint,
+        APPT_ORGANIZATION_EMAIL: orgEmail,
+        CURRENT_YEAR: new Date().getFullYear().toString(),
+      },
+    });
+  } catch (error) {
+    if (error instanceof ValidationError) throw error;
+    throw new Error('Failed to send appointment information email');
+  }
 }
 
 /**

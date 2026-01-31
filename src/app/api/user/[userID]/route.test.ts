@@ -56,8 +56,8 @@ describe('User Routen testen', () => {
     });
 
     const resRegistration = await POST(request);
-    expect(resRegistration.status).toBe(201);
-    cUser = await resRegistration.json();
+    expect(resRegistration!.status).toBe(201);
+    cUser = await resRegistration!.json();
 
     const createdAccount = await prisma.account.findUnique({
       where: { email: registrationInput.account.email },
@@ -77,7 +77,7 @@ describe('User Routen testen', () => {
   test('GET non-existing User', async () => {
     const req = new NextRequest(baseUrl);
     const res = await GET(req, { params: Promise.resolve({ userID: 'non-existing-id' }) });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 
   test('PATCH User name', async () => {
@@ -155,6 +155,6 @@ describe('User Routen testen', () => {
     const res = await DELETE(getReq, {
       params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
   });
 });

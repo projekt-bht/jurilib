@@ -1,6 +1,8 @@
 // Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
 import { jest } from '@jest/globals';
 
+import prisma from '@/lib/db';
+
 jest.unstable_mockModule('@/app/api/email/mailer', () => ({
   sendEmail: jest.fn(),
 }));
@@ -26,7 +28,7 @@ const { POST, DELETE } = await import('@/app/api/authentication/login/route');
 describe('Login test', () => {
   const baseUrlRegister = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/register`;
   const loginURL = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/authentication/login`;
-  let createdAccount = {};
+  let createdAccount = { email: '', password: '' };
 
   test('Create Account and User', async () => {
     // Create both account and user through registration route
@@ -60,7 +62,26 @@ describe('Login test', () => {
     };
   });
 
-  test('Login with User', async () => {
+  test('Login with unverified User', async () => {
+    const req = new NextRequest(loginURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(createdAccount),
+    });
+
+    const res = await POST(req);
+    expect(res!.status).toBe(400);
+  });
+
+  test('Login with verified User', async () => {
+    //
+    await prisma.account.update({
+      where: { email: createdAccount.email },
+      data: {
+        isVerified: true,
+      },
+    });
+
     const req = new NextRequest(loginURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

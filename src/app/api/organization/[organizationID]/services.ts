@@ -10,11 +10,12 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
       where: { id: organizationID },
     });
     if (!orga) {
-      throw new ValidationError('notFound', 'organization', organizationID);
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
     return orga;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -25,7 +26,7 @@ export const updateOrganization = async (
   try {
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
-      throw new ValidationError('notFound', 'organization', organizationID);
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
 
     if (!organization.expertiseAreas) {
@@ -65,8 +66,12 @@ export const updateOrganization = async (
       return updatedOrganization;
     }
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     // Hier muss geprüft werden, ob der Fehler von Prisma kommt oder von der Vektorisierung
-    throw new Error('Database update failed or vectorization failed: ' + (error as Error).message);
+    else
+      throw new Error(
+        'Database update failed or vectorization failed: ' + (error as Error).message
+      );
   }
 };
 

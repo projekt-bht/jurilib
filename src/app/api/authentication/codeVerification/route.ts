@@ -1,26 +1,29 @@
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 
+import { handleError, validateHeader } from '@/app/api/helper';
 import { TokenType } from '~/generated/prisma/enums';
 
-import { validateHeader } from '../../helper';
 import { verifyCode } from './service';
 
 const codeVerificationSchema = z.strictObject({
-  accountId: z.string().min(1),
+  email: z.email(),
   type: z.enum(TokenType),
   code: z.string(),
 });
+
 export async function POST(req: NextRequest) {
   try {
     validateHeader(req.headers);
 
     const body = codeVerificationSchema.parse(await req.json());
 
-    await verifyCode(body.accountId, body.type, body.code);
-
-    return new Response(null, { status: 200 });
+    const verify = await verifyCode(body.email, body.type, body.code);
+    if (verify) {
+      return new Response(null, { status: 200 });
+    }
+    throw new Error('Code Verification failed');
   } catch (error) {
-    return new Response((error as Error).message, { status: 400 });
+    return handleError(error, 'Code verification failed');
   }
 }

@@ -12,7 +12,8 @@ export class ValidationError extends Error {
       | 'invalidInput'
       | 'mismatch'
       | 'invalidReference'
-      | 'overlappingAppointment',
+      | 'overlappingAppointment'
+      | 'invalidContentType',
     public field?: string,
     public value?: unknown,
     public statusCode: number = 400
@@ -34,6 +35,8 @@ export class ValidationError extends Error {
         return 'The reference is invalid.';
       case 'overlappingAppointment':
         return 'The appointment overlaps with an existing appointment.';
+      case 'invalidContentType':
+        return 'Invalid content type, must be application/json';
     }
   }
 }
