@@ -9,6 +9,8 @@ import {
   type Organization,
 } from '~/generated/prisma/browser';
 
+import { fetchBackendData } from '../../helper';
+
 export function CaseCard({ color, caseItem }: { color: string; caseItem: Case }) {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
@@ -19,23 +21,20 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
   useEffect(() => {
     async function fetchData() {
       try {
-        const resEmployee = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${caseItem.employeeId}`,
-          { cache: 'no-store' }
-        );
+        const resEmployee = await fetchBackendData('/employee', caseItem.employeeId, 'Employee');
         const employeeData = await resEmployee.json();
 
-        const resOrganization = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${employeeData.organizationId}`,
-          { cache: 'no-store' }
+        const resOrganization = await fetchBackendData(
+          'organization',
+          employeeData.organizationId,
+          'Organization'
         );
         const organizationData = await resOrganization.json();
 
         setEmployee(employeeData);
         setOrganization(organizationData);
       } catch (error) {
-        // TODO: Handle error state
-        console.error('Error fetching case data:', error);
+        throw error;
       }
     }
 
