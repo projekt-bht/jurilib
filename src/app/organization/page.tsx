@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { OrganizationCard } from '@/app/organization/_components/OrganizationCard';
 import {
@@ -10,6 +10,7 @@ import {
   OrganizationFilters,
 } from '@/app/organization/_components/OrganizationFilters';
 import type { Organization } from '~/generated/prisma/client';
+import { getCityByName } from '@/lib/azureMap';
 
 async function fetchOrganizations(
   skip: number,
@@ -129,16 +130,20 @@ export default function OrganizationsPage() {
     category: keyof FilterOptions,
     value: FilterValue,
     isChecked: boolean
-  ) =>
+  ) => {
     setFilters((prev) => {
       if (category === 'city') return prev;
       const current = prev[category];
       const next = isChecked ? [...current, value] : current.filter((item) => item !== value);
       return { ...prev, [category]: next };
     });
-
+  };
   // Reset all filters back to empty arrays (default state).
   const handleResetFilters = () => setFilters(emptyFilters);
+  const handleCityChange = useCallback(
+    (value: string) => setFilters((prev) => ({ ...prev, city: value })),
+    []
+  );
 
   // Used by the UI to show how many filters are currently active.
   // Count city as 1 active filter when non-empty; other filters count by array length.
@@ -159,7 +164,7 @@ export default function OrganizationsPage() {
         <OrganizationFilters
           filters={filters}
           onFilterChange={handleFilterChange}
-          onCityChange={(value) => setFilters((prev) => ({ ...prev, city: value }))}
+          onCityChange={handleCityChange}
           onReset={handleResetFilters}
           activeFilterCount={activeFilterCount}
         />

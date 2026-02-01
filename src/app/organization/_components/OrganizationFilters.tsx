@@ -16,8 +16,13 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group';
 import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
@@ -25,6 +30,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
+import { getCityByName } from '@/lib/azureMap';
 
 export type FilterOptions = {
   priceCategory: PriceCategoryEnum[];
@@ -54,6 +60,56 @@ type SectionGroup = {
   key: keyof FilterOptions;
   items: SectionItem[];
 };
+
+type CityOption = {
+  name: string;
+  country: string;
+  position: { lat: number; lon: number };
+  label: string;
+};
+
+type CityInputProps = {
+  value: string;
+  onChange: (value: string) => void;
+  onClear: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  showClear?: boolean;
+  placeholder?: string;
+};
+
+function CityInput({
+  value,
+  onChange,
+  onClear,
+  onFocus,
+  onBlur,
+  showClear,
+  placeholder,
+}: CityInputProps) {
+  return (
+    <InputGroup className="h-10 rounded-full bg-background px-2 shadow-sm">
+      <InputGroupAddon align="inline-start">
+        <MapPin className="w-4 h-4" />
+      </InputGroupAddon>
+      <InputGroupInput
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        className="text-sm font-medium"
+      />
+      {showClear && value && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="icon-sm" onClick={onClear} aria-label="Stadt löschen">
+            <X className="h-3.5 w-3.5" />
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
+    </InputGroup>
+  );
+}
 const sectionKeys: Array<keyof FilterOptions> = [
   'organizationType',
   'priceCategory',
@@ -122,6 +178,11 @@ export function OrganizationFilters({
   const [isWideLayout, setIsWideLayout] = useState(false);
   // Local input state to debounce plain-text city search.
   const [cityInput, setCityInput] = useState(filters.city);
+  const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
+  const [isCityLoading, setIsCityLoading] = useState(false);
+  const [cityError, setCityError] = useState<string | null>(null);
+  const [selectedCityLabel, setSelectedCityLabel] = useState<string | null>(null);
+  const [isCityOpen, setIsCityOpen] = useState(false);
   // Pre-sort enum values once (German locale) so filter lists render consistently without
   // re-sorting on every render.
   const [sortedAreas] = useState(() =>
@@ -139,6 +200,36 @@ export function OrganizationFilters({
     value: FilterValue,
     isChecked: boolean
   ) => onFilterChange(category, value, isChecked);
+
+  const handleCitySelect = (option: CityOption) => {
+    setCityInput(option.label);
+    setCityOptions([]);
+    setCityError(null);
+    setSelectedCityLabel(option.label);
+    setIsCityOpen(false);
+    onCityChange(option.name);
+  };
+
+  const handleCityClear = () => {
+    setCityInput('');
+    setCityOptions([]);
+    setCityError(null);
+    setSelectedCityLabel(null);
+    setIsCityOpen(false);
+    onCityChange('');
+  };
+
+  const handleCityInputChange = (value: string) => {
+    setCityInput(value);
+    if (selectedCityLabel && value.trim() !== selectedCityLabel) {
+      setSelectedCityLabel(null);
+      onCityChange('');
+    }
+    setIsCityOpen(true);
+  };
+
+  const handleCityFocus = () => setIsCityOpen(true);
+  const handleCityBlur = () => window.setTimeout(() => setIsCityOpen(false), 150);
 
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
@@ -170,13 +261,45 @@ export function OrganizationFilters({
 
   // Debounce city
   useEffect(() => {
-    const timeout = window.setTimeout(() => onCityChange(cityInput), 500);
-    return () => window.clearTimeout(timeout);
-  }, [cityInput]);
+    const query = cityInput.trim();
+    if (!query) {
+      setCityOptions([]);
+      setCityError(null);
+      onCityChange('');
+      return;
+    }
+    if (selectedCityLabel && query === selectedCityLabel) {
+      setCityOptions([]);
+      setCityError(null);
+      return;
+    }
+    let isActive = true;
+    const timeout = window.setTimeout(async () => {
+      try {
+        setIsCityLoading(true);
+        setCityError(null);
+        const results = (await getCityByName(query)) as CityOption[] | undefined;
+        if (!isActive) return;
+        setCityOptions(results ?? []);
+      } catch {
+        if (!isActive) return;
+        setCityError('Stadt konnte nicht gefunden werden.');
+        setCityOptions([]);
+      } finally {
+        if (isActive) setIsCityLoading(false);
+      }
+    }, 400);
+    return () => {
+      isActive = false;
+      window.clearTimeout(timeout);
+    };
+  }, [cityInput, onCityChange]);
 
   // ESLint: Keep local input in sync on reset without triggering extra effects.
   const handleResetClick = () => {
     setCityInput('');
+    setCityOptions([]);
+    setCityError(null);
     onReset();
   };
 
@@ -261,19 +384,52 @@ export function OrganizationFilters({
           </div>
           <div className="flex items-center gap-2">
             {/* City filter stays visible on all breakpoints; grows full-width on small screens. */}
-            <div className="flex w-full md:w-auto items-center gap-2 rounded-full border border-border bg-background px-3 h-10 shadow-sm">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
+            <div className="relative w-full md:w-72">
               <Label htmlFor="city-filter" className="sr-only">
                 Stadt
               </Label>
-              <Input
-                id="city-filter"
+              <CityInput
                 value={cityInput}
-                onChange={(event) => setCityInput(event.target.value)}
+                onChange={handleCityInputChange}
+                onClear={handleCityClear}
+                onFocus={handleCityFocus}
+                onBlur={handleCityBlur}
+                showClear
                 placeholder="Stadt"
-                className="h-7 w-full md:w-36 border-0 bg-transparent px-0 text-sm font-medium placeholder:text-muted-foreground shadow-none ring-0 focus-visible:ring-0 focus-visible:border-0"
               />
-            </div>
+              {isCityOpen &&
+                (isCityLoading || cityError || cityOptions.length > 0 || cityInput.trim()) && (
+                <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-border bg-background shadow-md px-2 py-2 z-20">
+                  {isCityLoading && (
+                    <div className="px-2 py-1 text-xs text-muted-foreground">Suche…</div>
+                  )}
+                  {!isCityLoading && cityError && (
+                    <div className="px-2 py-1 text-xs text-destructive">{cityError}</div>
+                  )}
+                  {!isCityLoading && !cityError && (
+                    <div className="max-h-52 overflow-y-auto">
+                      {cityOptions.map((option) => (
+                        <Button
+                          key={`${option.name}-${option.position.lat}-${option.position.lon}`}
+                          type="button"
+                          variant="ghost"
+                          onClick={() => handleCitySelect(option)}
+                          className="w-full justify-start px-2 py-1 text-left text-sm text-foreground hover:bg-accent-blue-soft"
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    {cityOptions.length === 0 &&
+                      (!selectedCityLabel || cityInput.trim() !== selectedCityLabel) && (
+                        <div className="px-2 py-1 text-xs text-muted-foreground">
+                          Keine Treffer
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
             {isActiveFilters && (
               <span className="rounded-full border border-border bg-accent-blue-light px-2 py-0.5 text-xs font-semibold text-foreground">
                 {activeFilterCount} aktiv
