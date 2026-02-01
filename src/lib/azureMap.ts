@@ -1,10 +1,21 @@
+type AzureMapResult = {
+  address: {
+    municipality?: string;
+    countrySubdivision?: string;
+  };
+  position: { lat: number; lon: number };
+};
+
+type AzureMapResponse = {
+  results: AzureMapResult[];
+};
+
+const radiusDefaultValue = process.env.NEXT_PUBLIC_AZURE_MAPS_RADIUS_DEFAULT;
 const azureMapConfig = {
-  key: process.env.NEXT_PUBLIC_AZURE_MAPS_KEY || '',
-  baseUrl: process.env.NEXT_PUBLIC_AZURE_MAPS_BASE_URL || '',
-  radiusDefault: process.env.NEXT_PUBLIC_AZURE_MAPS_RADIUS_DEFAULT
-    ? parseInt(process.env.NEXT_PUBLIC_AZURE_MAPS_RADIUS_DEFAULT)
-    : 10000,
-  clientId: process.env.NEXT_PUBLIC_AZURE_MAPS_CLIENT_ID || '',
+  key: process.env.NEXT_PUBLIC_AZURE_MAPS_KEY ?? '',
+  baseUrl: process.env.NEXT_PUBLIC_AZURE_MAPS_BASE_URL ?? '',
+  radiusDefault: radiusDefaultValue ? Number.parseInt(radiusDefaultValue, 10) : 10000,
+  clientId: process.env.NEXT_PUBLIC_AZURE_MAPS_CLIENT_ID ?? '',
 };
 export const getCityByName = async (cityName: string) => {
   if (cityName.trim() === '') {
@@ -21,13 +32,15 @@ export const getCityByName = async (cityName: string) => {
   if (!response.ok) {
     throw new Error(`Azure Maps API request failed with status ${response.status}`);
   }
-  const data = await response.json();
-  return data.results.map((item: any) => {
+  const data = (await response.json()) as AzureMapResponse;
+  return data.results.map((item) => {
+    const municipality = item.address.municipality ?? '';
+    const countrySubdivision = item.address.countrySubdivision ?? '';
     return {
-      name: item.address.municipality,
-      country: item.address.countrySubdivision,
+      name: municipality,
+      country: countrySubdivision,
       position: item.position,
-      label: item.address.municipality + ', ' + item.address.countrySubdivision,
+      label: `${municipality}, ${countrySubdivision}`,
     };
   });
 };
@@ -50,13 +63,15 @@ export const getCityByRadius = async (lat: number, lon: number, cityName: string
   if (!response.ok) {
     throw new Error(`Azure Maps API request failed with status ${response.status}`);
   }
-  const data = await response.json();
-  return data.results.map((item: any) => {
+  const data = (await response.json()) as AzureMapResponse;
+  return data.results.map((item) => {
+    const municipality = item.address.municipality ?? '';
+    const countrySubdivision = item.address.countrySubdivision ?? '';
     return {
-      name: item.address.municipality,
-      country: item.address.countrySubdivision,
+      name: municipality,
+      country: countrySubdivision,
       position: item.position,
-      label: item.address.municipality + ', ' + item.address.countrySubdivision,
+      label: `${municipality}, ${countrySubdivision}`,
     };
   });
 };

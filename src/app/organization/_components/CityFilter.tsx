@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { Label } from '@/components/ui/label';
 import { getCityByName, getCityByRadius } from '@/lib/azureMap';
 
 type CityOption = {
@@ -88,6 +88,8 @@ export function CityFilter({
   const [isRadiusLoading, setIsRadiusLoading] = useState(false);
   const [radiusError, setRadiusError] = useState<string | null>(null);
 
+  const hasCityError = Boolean(cityError);
+  const hasCityQuery = cityInput.trim().length > 0;
   const isAllSelected =
     radiusOptions.length > 0 && radiusOptions.every((option) => value.includes(option.name));
 
@@ -244,15 +246,15 @@ export function CityFilter({
               </div>
             </div>
             {isCityOpen &&
-              (isCityLoading || cityError || cityOptions.length > 0 || cityInput.trim()) && (
+              (isCityLoading || hasCityError || cityOptions.length > 0 || hasCityQuery) && (
                 <div className="mt-2 rounded-2xl border border-border bg-background shadow-md px-2 py-2">
                   {isCityLoading && (
                     <div className="px-2 py-1 text-xs text-muted-foreground">Suche…</div>
                   )}
-                  {!isCityLoading && cityError && (
+                  {!isCityLoading && hasCityError && (
                     <div className="px-2 py-1 text-xs text-destructive">{cityError}</div>
                   )}
-                  {!isCityLoading && !cityError && (
+                  {!isCityLoading && !hasCityError && (
                     <div className="max-h-52 overflow-y-auto">
                       {cityOptions.map((option) => (
                         <Button
@@ -265,7 +267,7 @@ export function CityFilter({
                           {option.label}
                         </Button>
                       ))}
-                      {cityInput.trim() && cityOptions.length === 0 && (
+                      {hasCityQuery && cityOptions.length === 0 && (
                         <div className="px-2 py-1 text-xs text-muted-foreground">Keine Treffer</div>
                       )}
                     </div>

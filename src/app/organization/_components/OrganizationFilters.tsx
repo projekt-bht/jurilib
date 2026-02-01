@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { CityFilter } from '@/app/organization/_components/CityFilter';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -23,7 +24,6 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
-import { CityFilter } from '@/app/organization/_components/CityFilter';
 
 export type FilterOptions = {
   priceCategory: PriceCategoryEnum[];
