@@ -140,6 +140,7 @@ export default function OrganizationsPage() {
   };
   // Reset all filters back to empty arrays (default state).
   const handleResetFilters = () => setFilters(emptyFilters);
+  // City filter: memoized to avoid re-running effects in child components.
   const handleCityChange = useCallback(
     (value: string) => setFilters((prev) => ({ ...prev, city: value })),
     []

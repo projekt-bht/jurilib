@@ -176,12 +176,16 @@ export function OrganizationFilters({
   // Start compact: only headers visible until user opens a section (under xl).
   const [openSections, setOpenSections] = useState(() => buildSectionState(false));
   const [isWideLayout, setIsWideLayout] = useState(false);
-  // Local input state to debounce plain-text city search.
+  // City search: input state + dropdown data for Azure Maps results.
   const [cityInput, setCityInput] = useState(filters.city);
+  // City search: list of matching cities for the dropdown.
   const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
+  // City search: UI state for loading/error messaging.
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [cityError, setCityError] = useState<string | null>(null);
+  // City search: remember last selected label to avoid re-searching after selection.
   const [selectedCityLabel, setSelectedCityLabel] = useState<string | null>(null);
+  // City search: controls whether the dropdown is visible.
   const [isCityOpen, setIsCityOpen] = useState(false);
   // Pre-sort enum values once (German locale) so filter lists render consistently without
   // re-sorting on every render.
@@ -201,6 +205,7 @@ export function OrganizationFilters({
     isChecked: boolean
   ) => onFilterChange(category, value, isChecked);
 
+  // City search: user picks a city from the dropdown list.
   const handleCitySelect = (option: CityOption) => {
     setCityInput(option.label);
     setCityOptions([]);
@@ -210,6 +215,7 @@ export function OrganizationFilters({
     onCityChange(option.name);
   };
 
+  // City search: clear input + reset dropdown + filter state.
   const handleCityClear = () => {
     setCityInput('');
     setCityOptions([]);
@@ -219,6 +225,7 @@ export function OrganizationFilters({
     onCityChange('');
   };
 
+  // City search: typing opens dropdown and resets selection if user edits text.
   const handleCityInputChange = (value: string) => {
     setCityInput(value);
     if (selectedCityLabel && value.trim() !== selectedCityLabel) {
@@ -228,6 +235,7 @@ export function OrganizationFilters({
     setIsCityOpen(true);
   };
 
+  // City search: open/close dropdown based on focus.
   const handleCityFocus = () => setIsCityOpen(true);
   const handleCityBlur = () => window.setTimeout(() => setIsCityOpen(false), 150);
 
@@ -259,7 +267,7 @@ export function OrganizationFilters({
     };
   }, []);
 
-  // Debounce city
+  // City search: debounce Azure Maps lookup.
   useEffect(() => {
     const query = cityInput.trim();
     if (!query) {
@@ -268,6 +276,7 @@ export function OrganizationFilters({
       onCityChange('');
       return;
     }
+    // If user selected a city and hasn't edited the label, don't refetch.
     if (selectedCityLabel && query === selectedCityLabel) {
       setCityOptions([]);
       setCityError(null);
@@ -278,6 +287,7 @@ export function OrganizationFilters({
       try {
         setIsCityLoading(true);
         setCityError(null);
+        // Azure Maps city lookup (DE only) via helper.
         const results = (await getCityByName(query)) as CityOption[] | undefined;
         if (!isActive) return;
         setCityOptions(results ?? []);
