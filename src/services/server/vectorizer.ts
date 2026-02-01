@@ -89,7 +89,7 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
   };
 
   if (parsedQuery.city) responseEmbedding.city = await createEmbedding(parsedQuery.city);
-  if (parsedQuery.zipCode) responseEmbedding.zipCode = await createEmbedding(parsedQuery.zipCode);
+  if (parsedQuery.zipCode) responseEmbedding.zipCode = parsedQuery.zipCode;
   if (parsedQuery.description)
     responseEmbedding.description = await createEmbedding(parsedQuery.description);
 
