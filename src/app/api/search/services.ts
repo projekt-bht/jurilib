@@ -1,5 +1,6 @@
 import prisma from '@/lib/db';
-import { VectorFormat, vectorizeSearch } from '@/services/server/vectorizer';
+import type { VectorFormat } from '@/services/server/vectorizer';
+import { vectorizeSearch } from '@/services/server/vectorizer';
 import type {
   Accessibility,
   Area,
@@ -10,12 +11,13 @@ import type { Organization } from '~/generated/prisma/client';
 
 const similarityOffset = 0.8;
 const threshold = 0.03;
+const zipCodeThreshold = 20.0;
 
 const weights = {
   area: 0.6,
   description: 0.1,
   city: 0.2,
-  zipCode: 0.05,
+  zipCode: 0.1,
 };
 
 export async function createSearch(query: string) {
@@ -65,7 +67,8 @@ export async function createSearch(query: string) {
         (1 - ("expertiseVector" <=> ${vectorizedData.area}::vector)) * ${weights.area}
         + COALESCE((1 - ("descriptionVector" <=> ${vectorizedData.description}::vector)) * ${weights.description}, 0)
         + COALESCE((1 - ("cityVector" <=> ${vectorizedData.city}::vector)) * ${weights.city}, 0)
-        + COALESCE((1 - ("zipVector" <=> ${vectorizedData.zipCode}::vector)) * ${weights.zipCode}, 0)
+        -- Example: ABS(13589 - 13599) = 10 / 20(threshold) = 0.5 
+        + COALESCE(GREATEST(0, 1 - (ABS("zipCode"::int - ${vectorizedData.zipCode}::int) / ${zipCodeThreshold})::FLOAT) * ${weights.zipCode}, 0)
       ) AS similarity
       FROM "Organization"
       WHERE 
