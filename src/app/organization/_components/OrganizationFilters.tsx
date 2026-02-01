@@ -6,7 +6,6 @@ import {
   ChevronDown,
   Earth,
   Filter,
-  MapPin,
   PersonStanding,
   Scale,
   Tag,
@@ -18,19 +17,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from '@/components/ui/input-group';
-import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
   Language as LanguageEnum,
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
-import { getCityByName } from '@/lib/azureMap';
+import { CityFilter } from '@/app/organization/_components/CityFilter';
 
 export type FilterOptions = {
   priceCategory: PriceCategoryEnum[];
@@ -38,7 +31,7 @@ export type FilterOptions = {
   area: AreasEnum[];
   languages: LanguageEnum[];
   accessibility: AccessibilityEnum[];
-  city: string;
+  city: string[];
 };
 
 export type FilterValue =
@@ -61,55 +54,6 @@ type SectionGroup = {
   items: SectionItem[];
 };
 
-type CityOption = {
-  name: string;
-  country: string;
-  position: { lat: number; lon: number };
-  label: string;
-};
-
-type CityInputProps = {
-  value: string;
-  onChange: (value: string) => void;
-  onClear: () => void;
-  onFocus: () => void;
-  onBlur: () => void;
-  showClear?: boolean;
-  placeholder?: string;
-};
-
-function CityInput({
-  value,
-  onChange,
-  onClear,
-  onFocus,
-  onBlur,
-  showClear,
-  placeholder,
-}: CityInputProps) {
-  return (
-    <InputGroup className="h-10 rounded-full bg-background px-2 shadow-sm">
-      <InputGroupAddon align="inline-start">
-        <MapPin className="w-4 h-4" />
-      </InputGroupAddon>
-      <InputGroupInput
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        className="text-sm font-medium"
-      />
-      {showClear && value && (
-        <InputGroupAddon align="inline-end">
-          <InputGroupButton size="icon-sm" onClick={onClear} aria-label="Stadt löschen">
-            <X className="h-3.5 w-3.5" />
-          </InputGroupButton>
-        </InputGroupAddon>
-      )}
-    </InputGroup>
-  );
-}
 const sectionKeys: Array<keyof FilterOptions> = [
   'organizationType',
   'priceCategory',
@@ -164,7 +108,7 @@ export function OrganizationFilters({
 }: {
   filters: FilterOptions;
   onFilterChange: (category: keyof FilterOptions, value: FilterValue, isChecked: boolean) => void;
-  onCityChange: (value: string) => void;
+  onCityChange: (value: string[]) => void;
   onReset: () => void;
   activeFilterCount: number;
 }) {
@@ -176,17 +120,6 @@ export function OrganizationFilters({
   // Start compact: only headers visible until user opens a section (under xl).
   const [openSections, setOpenSections] = useState(() => buildSectionState(false));
   const [isWideLayout, setIsWideLayout] = useState(false);
-  // City search: input state + dropdown data for Azure Maps results.
-  const [cityInput, setCityInput] = useState(filters.city);
-  // City search: list of matching cities for the dropdown.
-  const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
-  // City search: UI state for loading/error messaging.
-  const [isCityLoading, setIsCityLoading] = useState(false);
-  const [cityError, setCityError] = useState<string | null>(null);
-  // City search: remember last selected label to avoid re-searching after selection.
-  const [selectedCityLabel, setSelectedCityLabel] = useState<string | null>(null);
-  // City search: controls whether the dropdown is visible.
-  const [isCityOpen, setIsCityOpen] = useState(false);
   // Pre-sort enum values once (German locale) so filter lists render consistently without
   // re-sorting on every render.
   const [sortedAreas] = useState(() =>
@@ -204,40 +137,6 @@ export function OrganizationFilters({
     value: FilterValue,
     isChecked: boolean
   ) => onFilterChange(category, value, isChecked);
-
-  // City search: user picks a city from the dropdown list.
-  const handleCitySelect = (option: CityOption) => {
-    setCityInput(option.label);
-    setCityOptions([]);
-    setCityError(null);
-    setSelectedCityLabel(option.label);
-    setIsCityOpen(false);
-    onCityChange(option.name);
-  };
-
-  // City search: clear input + reset dropdown + filter state.
-  const handleCityClear = () => {
-    setCityInput('');
-    setCityOptions([]);
-    setCityError(null);
-    setSelectedCityLabel(null);
-    setIsCityOpen(false);
-    onCityChange('');
-  };
-
-  // City search: typing opens dropdown and resets selection if user edits text.
-  const handleCityInputChange = (value: string) => {
-    setCityInput(value);
-    if (selectedCityLabel && value.trim() !== selectedCityLabel) {
-      setSelectedCityLabel(null);
-      onCityChange('');
-    }
-    setIsCityOpen(true);
-  };
-
-  // City search: open/close dropdown based on focus.
-  const handleCityFocus = () => setIsCityOpen(true);
-  const handleCityBlur = () => window.setTimeout(() => setIsCityOpen(false), 150);
 
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
@@ -267,49 +166,8 @@ export function OrganizationFilters({
     };
   }, []);
 
-  // City search: debounce Azure Maps lookup.
-  useEffect(() => {
-    const query = cityInput.trim();
-    if (!query) {
-      setCityOptions([]);
-      setCityError(null);
-      onCityChange('');
-      return;
-    }
-    // If user selected a city and hasn't edited the label, don't refetch.
-    if (selectedCityLabel && query === selectedCityLabel) {
-      setCityOptions([]);
-      setCityError(null);
-      return;
-    }
-    let isActive = true;
-    const timeout = window.setTimeout(async () => {
-      try {
-        setIsCityLoading(true);
-        setCityError(null);
-        // Azure Maps city lookup (DE only) via helper.
-        const results = (await getCityByName(query)) as CityOption[] | undefined;
-        if (!isActive) return;
-        setCityOptions(results ?? []);
-      } catch {
-        if (!isActive) return;
-        setCityError('Stadt konnte nicht gefunden werden.');
-        setCityOptions([]);
-      } finally {
-        if (isActive) setIsCityLoading(false);
-      }
-    }, 400);
-    return () => {
-      isActive = false;
-      window.clearTimeout(timeout);
-    };
-  }, [cityInput, onCityChange]);
-
   // ESLint: Keep local input in sync on reset without triggering extra effects.
   const handleResetClick = () => {
-    setCityInput('');
-    setCityOptions([]);
-    setCityError(null);
     onReset();
   };
 
@@ -317,7 +175,7 @@ export function OrganizationFilters({
     key: keyof FilterOptions;
     title: string;
     icon: React.ReactNode;
-    items: SectionItem[];
+    items?: SectionItem[];
     scroll?: boolean;
     groups?: SectionGroup[];
   }> = [
@@ -393,53 +251,6 @@ export function OrganizationFilters({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* City filter stays visible on all breakpoints; grows full-width on small screens. */}
-            <div className="relative w-full md:w-72">
-              <Label htmlFor="city-filter" className="sr-only">
-                Stadt
-              </Label>
-              <CityInput
-                value={cityInput}
-                onChange={handleCityInputChange}
-                onClear={handleCityClear}
-                onFocus={handleCityFocus}
-                onBlur={handleCityBlur}
-                showClear
-                placeholder="Stadt"
-              />
-              {isCityOpen &&
-                (isCityLoading || cityError || cityOptions.length > 0 || cityInput.trim()) && (
-                <div className="absolute left-0 right-0 mt-2 rounded-2xl border border-border bg-background shadow-md px-2 py-2 z-20">
-                  {isCityLoading && (
-                    <div className="px-2 py-1 text-xs text-muted-foreground">Suche…</div>
-                  )}
-                  {!isCityLoading && cityError && (
-                    <div className="px-2 py-1 text-xs text-destructive">{cityError}</div>
-                  )}
-                  {!isCityLoading && !cityError && (
-                    <div className="max-h-52 overflow-y-auto">
-                      {cityOptions.map((option) => (
-                        <Button
-                          key={`${option.name}-${option.position.lat}-${option.position.lon}`}
-                          type="button"
-                          variant="ghost"
-                          onClick={() => handleCitySelect(option)}
-                          className="w-full justify-start px-2 py-1 text-left text-sm text-foreground hover:bg-accent-blue-soft"
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    {cityOptions.length === 0 &&
-                      (!selectedCityLabel || cityInput.trim() !== selectedCityLabel) && (
-                        <div className="px-2 py-1 text-xs text-muted-foreground">
-                          Keine Treffer
-                        </div>
-                      )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
             {isActiveFilters && (
               <span className="rounded-full border border-border bg-accent-blue-light px-2 py-0.5 text-xs font-semibold text-foreground">
                 {activeFilterCount} aktiv
@@ -481,7 +292,10 @@ export function OrganizationFilters({
 
         {isPanelOpen && (
           <div className="mt-4 pb-2">
-            {/* Responsive grid: stacks to 1/2/3 cols and only 5 cols at xl. */}
+            <div className="mb-3">
+              <CityFilter value={filters.city} onCityChange={onCityChange} />
+            </div>
+            {/* Responsive grid: stacks to 1/2/3 cols and 5 cols at xl. */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
               {sections.map((section) => (
                 <div
@@ -539,50 +353,50 @@ export function OrganizationFilters({
                       openSections[section.key] ? 'block' : 'hidden'
                     } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
                   >
-                    {(
-                      section.groups ?? [{ title: '', key: section.key, items: section.items }]
-                    ).map((group) => (
-                      <div
-                        key={`${section.key}-${group.title || 'default'}`}
-                        className="space-y-1.5"
-                      >
-                        {group.title && (
-                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                            {group.title}
-                          </div>
-                        )}
-                        {group.items.map((item) => (
-                          // Each filter option is wrapped in a full-width label so the entire row
-                          // is clickable; the checkbox is controlled via state and toggles the
-                          // selected filter value on click.
-                          <Label
-                            key={`${group.key}-${item.value}`}
-                            htmlFor={`${group.key}-${item.value}`}
-                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                              item.hoverClassName ?? defaultHoverClassName
-                            }`}
-                          >
-                            <Checkbox
-                              id={`${group.key}-${item.value}`}
-                              className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                              onCheckedChange={(isChecked) =>
-                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                              }
-                              aria-label={`Filter nach ${item.label}`}
-                            />
-                            {item.icon}
-                            <span
-                              className={`text-xs font-medium text-foreground ${
-                                item.labelClassName ?? ''
+                    {(section.groups ?? [{ title: '', key: section.key, items: section.items ?? [] }]).map(
+                      (group) => (
+                        <div
+                          key={`${section.key}-${group.title || 'default'}`}
+                          className="space-y-1.5"
+                        >
+                          {group.title && (
+                            <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                              {group.title}
+                            </div>
+                          )}
+                          {group.items.map((item) => (
+                            // Each filter option is wrapped in a full-width label so the entire row
+                            // is clickable; the checkbox is controlled via state and toggles the
+                            // selected filter value on click.
+                            <Label
+                              key={`${group.key}-${item.value}`}
+                              htmlFor={`${group.key}-${item.value}`}
+                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                                item.hoverClassName ?? defaultHoverClassName
                               }`}
                             >
-                              {item.label}
-                            </span>
-                          </Label>
-                        ))}
-                      </div>
-                    ))}
+                              <Checkbox
+                                id={`${group.key}-${item.value}`}
+                                className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                                checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                                onCheckedChange={(isChecked) =>
+                                  handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                                }
+                                aria-label={`Filter nach ${item.label}`}
+                              />
+                              {item.icon}
+                              <span
+                                className={`text-xs font-medium text-foreground ${
+                                  item.labelClassName ?? ''
+                                }`}
+                              >
+                                {item.label}
+                              </span>
+                            </Label>
+                          ))}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               ))}

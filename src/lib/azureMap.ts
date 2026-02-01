@@ -31,3 +31,32 @@ export const getCityByName = async (cityName: string) => {
     };
   });
 };
+
+export const getCityByRadius = async (lat: number, lon: number, cityName: string) => {
+  if (cityName.trim() === '') {
+    return;
+  }
+  const url = new URL(azureMapConfig.baseUrl);
+  url.searchParams.append('api-version', '1.0');
+  url.searchParams.append('lat', lat.toString());
+  url.searchParams.append('lon', lon.toString());
+  url.searchParams.append('subscription-key', azureMapConfig.key);
+  url.searchParams.append('entityType', 'Municipality');
+  url.searchParams.append('countrySet', 'DE');
+  url.searchParams.append('radius', azureMapConfig.radiusDefault.toString());
+  url.searchParams.append('query', cityName); //query '' dosent work here
+
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    throw new Error(`Azure Maps API request failed with status ${response.status}`);
+  }
+  const data = await response.json();
+  return data.results.map((item: any) => {
+    return {
+      name: item.address.municipality,
+      country: item.address.countrySubdivision,
+      position: item.position,
+      label: item.address.municipality + ', ' + item.address.countrySubdivision,
+    };
+  });
+};

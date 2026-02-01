@@ -10,7 +10,6 @@ import {
   OrganizationFilters,
 } from '@/app/organization/_components/OrganizationFilters';
 import type { Organization } from '~/generated/prisma/client';
-import { getCityByName } from '@/lib/azureMap';
 
 async function fetchOrganizations(
   skip: number,
@@ -26,9 +25,9 @@ async function fetchOrganizations(
   filters.area.forEach((area) => params.append('area', area));
   filters.languages.forEach((language) => params.append('languages', language));
   filters.accessibility.forEach((item) => params.append('accessibility', item));
-  if (filters.city.trim()) {
-    params.append('city', filters.city.trim());
-  }
+  filters.city.forEach((city) => {
+    if (city.trim()) params.append('city', city.trim());
+  });
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization?${params.toString()}`,
@@ -52,7 +51,7 @@ export default function OrganizationsPage() {
     area: [],
     languages: [],
     accessibility: [],
-    city: '',
+    city: [],
   };
   const [filters, setFilters] = useState<FilterOptions>(emptyFilters);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -142,7 +141,7 @@ export default function OrganizationsPage() {
   const handleResetFilters = () => setFilters(emptyFilters);
   // City filter: memoized to avoid re-running effects in child components.
   const handleCityChange = useCallback(
-    (value: string) => setFilters((prev) => ({ ...prev, city: value })),
+    (value: string[]) => setFilters((prev) => ({ ...prev, city: value })),
     []
   );
 
@@ -150,7 +149,7 @@ export default function OrganizationsPage() {
   // Count city as 1 active filter when non-empty; other filters count by array length.
   const activeFilterCount = Object.entries(filters).reduce((sum, [key, value]) => {
     if (key === 'city') {
-      return sum + (String(value).trim() ? 1 : 0);
+      return sum + (value as string[]).length;
     }
     return sum + (value as FilterValue[]).length;
   }, 0);
