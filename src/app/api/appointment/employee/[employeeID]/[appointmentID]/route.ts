@@ -1,8 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import {
+  handleError,
+  handleZodError,
+  unauthorized,
+  validateHeader,
+  validateIds,
+} from '@/app/api/helper';
 import { ValidationError } from '@/error/validationErrors';
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
 import { deleteAppointment, readAppointment, updateAppointment } from './service';
@@ -29,12 +37,10 @@ export const appointmentUpdateSchema = z.strictObject({
 // GET /api/appointment/:employeeID/:appointmentID
 // Retrieve a specific appointment
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
 ) {
   try {
-    validateHeader(req.headers);
-
     // validate params
     const { employeeID, appointmentID } = await params;
     validateIds([
@@ -56,62 +62,72 @@ export async function GET(
 
 // PATCH /api/appointment/:employeeID/:appointmentID
 // Update an appointment
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
-) {
-  try {
-    validateHeader(req.headers);
+export const PATCH = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string; appointmentID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      validateHeader(req.headers);
 
-    // validate params
-    const { employeeID, appointmentID } = await params;
-    validateIds([
-      { id: employeeID, identifier: 'employeeID' },
-      { id: appointmentID, identifier: 'appointmentID' },
-    ]);
+      // validate params
+      const { employeeID, appointmentID } = await params;
+      validateIds([
+        { id: employeeID, identifier: 'employeeID' },
+        { id: appointmentID, identifier: 'appointmentID' },
+      ]);
 
-    // validate body
-    const body = appointmentUpdateSchema.parse(await req.json());
-    if (!body || Object.keys(body).length === 0) {
-      throw new ValidationError('invalidInput', 'body', 'empty', 400);
-    }
+      // validate body
 
-    // update appointment
-    const updatedAppointment = await updateAppointment(employeeID, appointmentID, body);
-    return NextResponse.json(updatedAppointment, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
-    } else {
-      return handleError(error, 'Failed to update Appointment');
+      // check if loginResource and employeeid given by url-param are the same
+      if (!(employeeID === account.employeeId)) return unauthorized();
+
+      const body = appointmentUpdateSchema.parse(await req.json());
+      if (!body || Object.keys(body).length === 0) {
+        throw new ValidationError('invalidInput', 'body', 'empty', 400);
+      }
+
+      // update appointment
+      const updatedAppointment = await updateAppointment(employeeID, appointmentID, body);
+      return NextResponse.json(updatedAppointment, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      } else {
+        return handleError(error, 'Failed to update Appointment');
+      }
     }
   }
-}
+);
 
 // DELETE /api/appointment/:employeeID/:appointmentID
 // Delete an appointment
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ employeeID: string; appointmentID: string }> }
-) {
-  try {
-    validateHeader(req.headers);
+export const DELETE = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ employeeID: string; appointmentID: string }> },
+    _account: EmployeeLoginResource
+  ) => {
+    try {
+      validateHeader(req.headers);
 
-    // validate params
-    const { employeeID, appointmentID } = await params;
-    validateIds([
-      { id: employeeID, identifier: 'employeeID' },
-      { id: appointmentID, identifier: 'appointmentID' },
-    ]);
+      // validate params
+      const { employeeID, appointmentID } = await params;
+      validateIds([
+        { id: employeeID, identifier: 'employeeID' },
+        { id: appointmentID, identifier: 'appointmentID' },
+      ]);
 
-    // delete appointment
-    await deleteAppointment(employeeID, appointmentID);
-    return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
-    } else {
-      return handleError(error, 'Failed to delete Appointment');
+      // delete appointment
+      await deleteAppointment(employeeID, appointmentID);
+      return NextResponse.json({ message: 'Appointment deleted successfully' }, { status: 200 });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      } else {
+        return handleError(error, 'Failed to delete Appointment');
+      }
     }
   }
-}
+);

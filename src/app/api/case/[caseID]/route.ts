@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import { withEmployeeAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource } from '@/services/Resources';
 import { CaseStatus } from '~/generated/prisma/enums';
 
-import { verifyJWT } from '../../authentication/login/JWTService';
 import { isCaseEmployeeMatch } from '../helpers';
 import { deleteCase } from './services';
 import { updateCase } from './services';
@@ -20,61 +21,63 @@ const caseUpdateSchema = z.strictObject({
 
 // PATCH /api/case/:caseID
 // Update a case
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ caseID: string }> }) {
-  try {
-    // validate URL Param
-    const { caseID } = await params;
-    validateIds([{ id: caseID, identifier: 'caseID' }]);
+export const PATCH = withEmployeeAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      // validate URL Param
+      const { caseID } = await params;
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
 
-    // verify user is logged in
-    const jwtString = req.cookies.get('access_token')?.value;
-    const loginRes = verifyJWT(jwtString);
-    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
-      // validate header
-      validateHeader(req.headers);
-      // validate body
-      const body = caseUpdateSchema.parse(await req.json());
+      if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
+        // validate header
+        validateHeader(req.headers);
+        // validate body
+        const body = caseUpdateSchema.parse(await req.json());
 
-      // handle update/patch
-      const updatedCase = await updateCase(caseID, body);
-      return NextResponse.json(updatedCase, { status: 200 });
-    } else {
-      // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
-    } else {
-      return handleError(error, 'Failed to update Case');
+        // handle update/patch
+        const updatedCase = await updateCase(caseID, body);
+        return NextResponse.json(updatedCase, { status: 200 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      } else {
+        return handleError(error, 'Failed to update Case');
+      }
     }
   }
-}
+);
 
 // DELETE /api/case/:caseID
 // Delete a case
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ caseID: string }> }
-) {
-  try {
-    const { caseID } = await params;
-    validateIds([{ id: caseID, identifier: 'caseID' }]);
-
-    // verify user is logged in
-    const jwtString = _req.cookies.get('access_token')?.value;
-    const loginRes = verifyJWT(jwtString);
-    if (loginRes.employeeId && (await isCaseEmployeeMatch(caseID, loginRes.employeeId))) {
-      await deleteCase(caseID);
-      return NextResponse.json({ status: 204 });
-    } else {
-      // unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+export const DELETE = withEmployeeAuth(
+  async (
+    _req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: EmployeeLoginResource
+  ) => {
+    try {
+      const { caseID } = await params;
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+      if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
+        await deleteCase(caseID);
+        return NextResponse.json({ status: 204 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to delete Case');
     }
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return handleZodError(error);
-    }
-    return handleError(error, 'Failed to delete Case');
   }
-}
+);
