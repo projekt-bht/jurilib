@@ -78,101 +78,67 @@ export function CityFilter({
   value: string[];
   onCityChange: (value: string[]) => void;
 }) {
-  // City search: input state + dropdown data for Azure Maps results.
   const [cityInput, setCityInput] = useState(value[0] ?? '');
   const [cityOptions, setCityOptions] = useState<CityOption[]>([]);
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [cityError, setCityError] = useState<string | null>(null);
-  // City search: remember last selected label to avoid re-searching after selection.
-  const [selectedCityLabel, setSelectedCityLabel] = useState<string | null>(null);
   const [isCityOpen, setIsCityOpen] = useState(false);
-  // Radius search: after selecting a base city, fetch nearby cities.
   const [baseCity, setBaseCity] = useState<CityOption | null>(null);
   const [radiusOptions, setRadiusOptions] = useState<CityOption[]>([]);
-  const [selectedCities, setSelectedCities] = useState<string[]>(value);
   const [isRadiusLoading, setIsRadiusLoading] = useState(false);
   const [radiusError, setRadiusError] = useState<string | null>(null);
 
-  const updateSelectedCities = (next: string[]) => {
-    setSelectedCities(next);
-    onCityChange(next);
-  };
+  const isAllSelected =
+    radiusOptions.length > 0 && radiusOptions.every((option) => value.includes(option.name));
 
-  const resetRadius = () => {
-    setBaseCity(null);
-    setRadiusOptions([]);
-    updateSelectedCities([]);
-    setRadiusError(null);
-    setIsRadiusLoading(false);
-  };
-
-  const resetCitySearch = () => {
-    setCityOptions([]);
-    setCityError(null);
-    setSelectedCityLabel(null);
-    setIsCityOpen(false);
-  };
-
-  // City search: user picks a city from the dropdown list.
   const handleCitySelect = (option: CityOption) => {
     setCityInput(option.label);
-    resetCitySearch();
-    setSelectedCityLabel(option.label);
+    setCityOptions([]);
+    setCityError(null);
+    setIsCityOpen(false);
     setBaseCity(option);
-    updateSelectedCities([option.name]);
+    onCityChange([option.name]);
   };
 
-  // City search: clear input + reset dropdown + filter state.
   const handleCityClear = () => {
     setCityInput('');
-    resetCitySearch();
-    resetRadius();
+    setCityOptions([]);
+    setCityError(null);
+    setIsCityOpen(false);
+    setBaseCity(null);
+    setRadiusOptions([]);
+    setRadiusError(null);
+    setIsRadiusLoading(false);
+    onCityChange([]);
   };
 
-  // City search: typing opens dropdown and resets selection if user edits text.
   const handleCityInputChange = (input: string) => {
     setCityInput(input);
-    if (selectedCityLabel && input.trim() !== selectedCityLabel) {
-      setSelectedCityLabel(null);
-      resetRadius();
-    }
     if (!input.trim()) {
-      resetRadius();
+      setBaseCity(null);
+      setRadiusOptions([]);
+      setRadiusError(null);
+      setIsRadiusLoading(false);
+      onCityChange([]);
     }
     setIsCityOpen(true);
   };
 
-  // City search: open/close dropdown based on focus.
   const handleCityFocus = () => setIsCityOpen(true);
   const handleCityBlur = () => window.setTimeout(() => setIsCityOpen(false), 150);
 
-  const handleRadiusToggle = (cityName: string, isChecked: boolean) => {
-    setSelectedCities((prev) => {
-      const next = isChecked ? [...prev, cityName] : prev.filter((name) => name !== cityName);
-      onCityChange(next);
-      return next;
-    });
+  const handleRadiusToggle = (name: string, isChecked: boolean) => {
+    const next = isChecked ? [...value, name] : value.filter((item) => item !== name);
+    onCityChange(next);
   };
-
-  const isAllSelected =
-    radiusOptions.length > 0 &&
-    radiusOptions.every((option) => selectedCities.includes(option.name));
 
   const handleSelectAll = (isChecked: boolean) => {
-    const next = isChecked ? radiusOptions.map((option) => option.name) : [];
-    updateSelectedCities(next);
+    onCityChange(isChecked ? radiusOptions.map((option) => option.name) : []);
   };
 
-  // City search: debounce Azure Maps lookup.
   useEffect(() => {
     const query = cityInput.trim();
     if (!query) {
-      setCityOptions([]);
-      setCityError(null);
-      return;
-    }
-    // If user selected a city and hasn't edited the label, don't refetch.
-    if (selectedCityLabel && query === selectedCityLabel) {
       setCityOptions([]);
       setCityError(null);
       return;
@@ -182,7 +148,6 @@ export function CityFilter({
       try {
         setIsCityLoading(true);
         setCityError(null);
-        // Azure Maps city lookup (DE only) via helper.
         const results = (await getCityByName(query)) as CityOption[] | undefined;
         if (!isActive) return;
         setCityOptions(results ?? []);
@@ -198,9 +163,8 @@ export function CityFilter({
       isActive = false;
       window.clearTimeout(timeout);
     };
-  }, [cityInput, selectedCityLabel]);
+  }, [cityInput]);
 
-  // Radius search: fetch nearby cities when a base city is selected.
   useEffect(() => {
     if (!baseCity) {
       setRadiusOptions([]);
@@ -241,19 +205,17 @@ export function CityFilter({
     };
   }, [baseCity]);
 
-  // Reset local state when parent clears the filter.
   useEffect(() => {
-    if (value.length > 0) {
-      setSelectedCities(value);
-      if (!cityInput.trim()) {
-        setCityInput(value[0] ?? '');
-      }
-      return;
-    }
+    if (value.length) return;
     setCityInput('');
-    resetCitySearch();
-    resetRadius();
-  }, [cityInput, value]);
+    setCityOptions([]);
+    setCityError(null);
+    setIsCityOpen(false);
+    setBaseCity(null);
+    setRadiusOptions([]);
+    setRadiusError(null);
+    setIsRadiusLoading(false);
+  }, [value]);
 
   return (
     <div className="relative w-full rounded-2xl border border-border bg-background px-3 py-2 shadow-sm">
@@ -303,12 +265,9 @@ export function CityFilter({
                           {option.label}
                         </Button>
                       ))}
-                      {cityOptions.length === 0 &&
-                        (!selectedCityLabel || cityInput.trim() !== selectedCityLabel) && (
-                          <div className="px-2 py-1 text-xs text-muted-foreground">
-                            Keine Treffer
-                          </div>
-                        )}
+                      {cityInput.trim() && cityOptions.length === 0 && (
+                        <div className="px-2 py-1 text-xs text-muted-foreground">Keine Treffer</div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -352,7 +311,7 @@ export function CityFilter({
                         <Checkbox
                           id={`radius-city-${option.name}-${option.position.lat}`}
                           className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                          checked={selectedCities.includes(option.name)}
+                          checked={value.includes(option.name)}
                           onCheckedChange={(isChecked) =>
                             handleRadiusToggle(option.name, Boolean(isChecked))
                           }
