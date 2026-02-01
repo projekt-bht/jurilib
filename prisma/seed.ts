@@ -83,13 +83,11 @@ async function main() {
 
     let expertiseVector = null;
     let cityVector = null;
-    let zipVector = null;
     let descriptionVector = null;
 
     if (process.env.OPENAI_API_KEY) {
       expertiseVector = await createEmbedding(expertiseArea.toString());
       cityVector = await createEmbedding(city);
-      zipVector = await createEmbedding(zipCode);
       descriptionVector = await createEmbedding(description);
     }
 
@@ -117,19 +115,17 @@ async function main() {
       },
     });
 
-    if (expertiseVector && cityVector && zipVector && descriptionVector) {
+    if (expertiseVector && cityVector && descriptionVector) {
       await prisma.$executeRawUnsafe(
         `
           UPDATE "Organization" SET
             "expertiseVector" = $1,
             "cityVector" = $2,
-            "zipVector" = $3,
-            "descriptionVector" = $4
-          WHERE id = $5
+            "descriptionVector" = $3
+          WHERE id = $4
         `,
         expertiseVector,
         cityVector,
-        zipVector,
         descriptionVector,
         orgId
       );
