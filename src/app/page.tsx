@@ -1,6 +1,6 @@
 'use client';
-import { UserDashboard } from '@/components/dashboard/_components/user/UserDashboard';
-import { LandingPage } from '@/components/landingPage/LandingPage';
+import { UserDashboard } from '@/components/Dashboard/_components/user/UserDashboard';
+import { LandingPage } from '@/components/LandingPage/LandingPage';
 
 import { useLoginContext } from './LoginContext';
 

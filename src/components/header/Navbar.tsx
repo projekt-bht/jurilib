@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { LoginContext, useLoginContext } from '@/app/LoginContext';
-import { Authentication } from '@/components/authentication/Authentication';
+import { Authentication } from '@/components/Authentication/Authentication';
 import scale_logo from '~/public/scale_logo.svg';
 
 export function Navbar() {

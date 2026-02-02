@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-import { Footer } from '@/components/footer/Footer';
-import { Navbar } from '@/components/header/Navbar';
-import { Sidebar } from '@/components/sidebar/Sidebar';
+import { Footer } from '@/components/Footer/Footer';
+import { Navbar } from '@/components/Header/Navbar';
+import { Sidebar } from '@/components/Sidebar/Sidebar';
 
 import { useLoginContext } from './LoginContext';
 
