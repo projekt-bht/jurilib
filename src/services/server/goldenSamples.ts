@@ -6,13 +6,13 @@ const defaultOffset = 0.99;
 //Buzzword extraction is not covering 100% more likely > 70%
 const descriptionOffset = 0.7;
 
-function isValid(embeddingA: string, embeddingB: string) {
+function isValid(embeddingA: string, embeddingB: string, similarityOffset: number = defaultOffset) {
   const similarityResult = similarity(
     JSON.parse(embeddingA) as number[],
     JSON.parse(embeddingB) as number[]
   );
 
-  return similarityResult ? similarityResult > 0.99 : false;
+  return similarityResult ? similarityResult > similarityOffset : false;
 }
 
 export async function createScenarioTemplate(
