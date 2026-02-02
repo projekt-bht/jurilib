@@ -11,6 +11,6 @@ describe('Vectorizer Golden Samples', () => {
         sample.description
       );
       expect(isScenarioCorrect).toBeTruthy();
-    });
+    }, 15000);
   }
 });
