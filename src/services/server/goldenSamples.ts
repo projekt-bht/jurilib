@@ -15,17 +15,25 @@ function isValid(embeddingA: string, embeddingB: string) {
 
 export async function createScenarioTemplate(
   userInput: string,
-  expectedArea: Area
+  expectedArea: Area,
+  expectedCity?: string,
+  expectedDescription?: string
 ): Promise<boolean> {
   const userSearch = userInput;
   const searchResult = await vectorizeSearch(userSearch);
-  const embeddingResult = await createEmbedding([expectedArea].toString());
-  const similarityResult = similarity(
-    JSON.parse(searchResult.area) as number[],
-    JSON.parse(embeddingResult) as number[]
-  );
+  const areaEmbedding = await createEmbedding([expectedArea].toString());
+  if (!isValid(searchResult.area, areaEmbedding)) return false;
 
-  return similarityResult ? similarityResult > 0.99 : false;
+  if (expectedCity) {
+    const cityEmbedding = await createEmbedding(expectedCity);
+    if (!isValid(expectedCity, cityEmbedding)) return false;
+  }
+  if (expectedDescription) {
+    const descriptionEmbedding = await createEmbedding(expectedDescription);
+    if (!isValid(expectedDescription, descriptionEmbedding)) return false;
+  }
+
+  return true;
 }
 
 export const onlyAreaSamples: Array<{ text: string; area: Area }> = [
