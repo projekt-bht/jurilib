@@ -17,15 +17,6 @@ export default function AuthLayout({ children, showFooter = true }: AuthLayoutPr
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { login, setLogin } = useLoginContext();
 
-  //   // Show loading state while checking auth
-  //   if (isLoading) {
-  //     return (
-  //       <div className="min-h-screen bg-background flex items-center justify-center">
-  //         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-  //       </div>
-  //     );
-  //   }
-
   // Logged in view with sidebar, no footer
   if (login) {
     return (
