@@ -1,4 +1,5 @@
 import prisma from '@/lib/db';
+import type { VectorFormat } from '@/services/server/vectorizer';
 import { vectorizeSearch } from '@/services/server/vectorizer';
 import type {
   Accessibility,
@@ -9,10 +10,18 @@ import type {
 import type { Organization } from '~/generated/prisma/client';
 
 const similarityOffset = 0.8;
-const threshold = 0.12;
+const threshold = 0.03;
+const zipCodeThreshold = 20.0;
+
+const weights = {
+  area: 0.6,
+  description: 0.1,
+  city: 0.2,
+  zipCode: 0.1,
+};
 
 export async function createSearch(query: string) {
-  const searchInput = await vectorizeSearch(query);
+  const vectorizedData: VectorFormat = await vectorizeSearch(query);
 
   const matches = await prisma.$queryRaw<
     Array<{
@@ -44,6 +53,9 @@ export async function createSearch(query: string) {
       updatedAt: Date;
 
       expertiseVector: string;
+      cityVector: string;
+      zipVector: string;
+      descriptionVector: string;
 
       /* Internal use for similarity calculation */
       similarity: number;
@@ -51,11 +63,17 @@ export async function createSearch(query: string) {
   >`
       SELECT
       *, 
-      1 - ("expertiseVector" <=> ${searchInput}::vector) AS similarity
+      (
+        (1 - ("expertiseVector" <=> ${vectorizedData.area}::vector)) * ${weights.area}
+        + COALESCE((1 - ("descriptionVector" <=> ${vectorizedData.description}::vector)) * ${weights.description}, 0)
+        + COALESCE((1 - ("cityVector" <=> ${vectorizedData.city}::vector)) * ${weights.city}, 0)
+        -- Example: ABS(13589 - 13599) = 10 / 20(threshold) = 0.5 
+        + COALESCE(GREATEST(0, 1 - (ABS("zipCode"::int - ${vectorizedData.zipCode}::int) / ${zipCodeThreshold})::FLOAT) * ${weights.zipCode}, 0)
+      ) AS similarity
       FROM "Organization"
       WHERE 
       "expertiseVector" IS NOT NULL
-      AND (1 - ("expertiseVector" <=> ${searchInput}::vector)) >= ${similarityOffset}
+      AND (1 - ("expertiseVector" <=> ${vectorizedData.area}::vector)) >= ${similarityOffset}
       ORDER BY similarity DESC
       `;
 

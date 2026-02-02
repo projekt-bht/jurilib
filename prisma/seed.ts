@@ -11,7 +11,7 @@ import {
   Language,
   Accessibility,
 } from '../generated/prisma/enums';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
@@ -74,19 +74,28 @@ async function main() {
     const orgName = faker.company.name();
 
     const expertiseArea = [faker.helpers.enumValue(Area)];
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+    const description = faker.company.catchPhrase();
+
     const type = faker.helpers.enumValue(OrganizationType);
     const accessibility = [faker.helpers.enumValue(Accessibility)];
 
     let expertiseVector = null;
+    let cityVector = null;
+    let descriptionVector = null;
+
     if (process.env.OPENAI_API_KEY) {
-      expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+      expertiseVector = await createEmbedding(expertiseArea.toString());
+      cityVector = await createEmbedding(city);
+      descriptionVector = await createEmbedding(description);
     }
 
     const org = await prisma.organization.create({
       data: {
         id: orgId,
         name: orgName,
-        description: faker.company.catchPhrase(),
+        description: description,
         shortDescription: faker.company.catchPhrase(),
         email: faker.internet.email(),
         phone: faker.phone.number(),
@@ -95,8 +104,8 @@ async function main() {
         expertiseAreas: expertiseArea,
         type: type,
         priceCategory: faker.helpers.enumValue(PriceCategory),
-        country: faker.location.country(),
-        city: faker.location.city(),
+        country: zipCode,
+        city: city,
         zipCode: faker.location.zipCode(),
         street: faker.location.street(),
         houseNumber: faker.location.buildingNumber(),
@@ -106,10 +115,18 @@ async function main() {
       },
     });
 
-    if (expertiseVector) {
+    if (expertiseVector && cityVector && descriptionVector) {
       await prisma.$executeRawUnsafe(
-        `UPDATE "Organization" SET "expertiseVector" = $1 WHERE id = $2`,
+        `
+          UPDATE "Organization" SET
+            "expertiseVector" = $1,
+            "cityVector" = $2,
+            "descriptionVector" = $3
+          WHERE id = $4
+        `,
         expertiseVector,
+        cityVector,
+        descriptionVector,
         orgId
       );
     }
