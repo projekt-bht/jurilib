@@ -27,14 +27,17 @@ export async function createScenarioTemplate(
   const areaEmbedding = await createEmbedding([expectedArea].toString());
   if (!isValid(searchResult.area, areaEmbedding)) return false;
 
-  if (expectedCity) {
+  if (expectedCity && searchResult.city) {
     const cityEmbedding = await createEmbedding(expectedCity);
+    if (!isValid(searchResult.city, cityEmbedding)) return false;
+  }
   if (expectedZip && searchResult.zipCode) {
     if (expectedZip !== searchResult.zipCode) return false;
   }
-  if (expectedDescription) {
-    const descriptionEmbedding = await createEmbedding(expectedDescription);
-    if (!isValid(expectedDescription, descriptionEmbedding)) return false;
+  if (expectedDescription && searchResult.description) {
+    const buzzwords = await extractBuzzwords(expectedDescription);
+    const descriptionEmbedding = await createEmbedding(buzzwords);
+    if (!isValid(searchResult.description, descriptionEmbedding, descriptionOffset)) return false;
   }
 
   return true;
