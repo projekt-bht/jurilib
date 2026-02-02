@@ -44,6 +44,9 @@ export async function createScenarioTemplate(
   return true;
 }
 
+/*
+    AI GENERATED STATIC SAMPLES
+*/
 export const goldenSamples: Array<{
   text: string;
   area: Area;
