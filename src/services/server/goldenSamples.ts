@@ -24,8 +24,7 @@ export async function createScenarioTemplate(
   expectedZip?: string,
   expectedDescription?: string
 ): Promise<boolean> {
-  const userSearch = userInput;
-  const searchResult = await vectorizeSearch(userSearch);
+  const searchResult = await vectorizeSearch(userInput);
   const areaEmbedding = await createEmbedding([expectedArea].toString());
   if (!isValid(searchResult.area, areaEmbedding)) return false;
 
