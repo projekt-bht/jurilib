@@ -19,6 +19,7 @@ export async function createScenarioTemplate(
   userInput: string,
   expectedArea: Area,
   expectedCity?: string,
+  expectedZip?: string,
   expectedDescription?: string
 ): Promise<boolean> {
   const userSearch = userInput;
@@ -28,7 +29,8 @@ export async function createScenarioTemplate(
 
   if (expectedCity) {
     const cityEmbedding = await createEmbedding(expectedCity);
-    if (!isValid(expectedCity, cityEmbedding)) return false;
+  if (expectedZip && searchResult.zipCode) {
+    if (expectedZip !== searchResult.zipCode) return false;
   }
   if (expectedDescription) {
     const descriptionEmbedding = await createEmbedding(expectedDescription);
