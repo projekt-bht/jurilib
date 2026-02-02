@@ -190,7 +190,7 @@ export const goldenSamples: Array<{
     area: Area.Urheber_und_Medienrecht,
     city: 'München',
     zip: '80331',
-    description: 'Urheberrecht, Video, Veröffentlichung',
+    description: 'Urheberrechtlich geschützt, veröffentlicht, ohne Erlaubnis',
   },
   {
     text: 'Ich wurde bei einer öffentlichen Ausschreibung in 50667 Köln ausgeschlossen.',
