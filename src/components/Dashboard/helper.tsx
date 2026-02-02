@@ -4,8 +4,6 @@ import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 import type { Appointment, Case } from '~/generated/prisma/browser';
 import { AppointmentStatus, CaseStatus } from '~/generated/prisma/browser';
 
-import notFound from './not-found';
-
 /**
  * Type definition for metrics/statistics displayed in the StatsCard component.
  * Used in the user dashboard to represent key user statistics.
@@ -58,7 +56,7 @@ export async function fetchBackendData(
 
   // Call not-found.tsx page if resource is not found
   if (res.status === 404) {
-    notFound(errorInfo);
+    throw new Error(`Requested resource "${errorInfo}" not found`);
   }
 
   // If other errors occur, throw an error that is handled by the Error Boundary in error.tsx

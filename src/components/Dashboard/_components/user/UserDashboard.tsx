@@ -1,4 +1,12 @@
-import { CalendarDays, ChevronRight, FolderOpen, Plus } from 'lucide-react';
+import {
+  ArrowLeft,
+  CalendarDays,
+  ChevronRight,
+  FolderOpen,
+  Link,
+  Plus,
+  Search,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -7,7 +15,7 @@ import type { LoginResource } from '@/services/Resources';
 import type { User } from '~/generated/prisma/browser';
 import { type Appointment, type Case } from '~/generated/prisma/browser';
 
-import { calcActiveAppointments, calcActiveCases } from '../../helper';
+import { calcActiveAppointments, calcActiveCases, fetchBackendData } from '../../helper';
 import { AppointmentCard } from './AppointmentCard';
 import { CaseCard } from './CaseCard';
 import { StatCards } from './StatCards';
@@ -17,6 +25,7 @@ export function UserDashboard() {
   const userId = (login as LoginResource).userId;
 
   const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [activeAppointments, setActiveAppointments] = useState<number>(0);
   const [cases, setCases] = useState<Case[]>([]);
@@ -32,30 +41,41 @@ export function UserDashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
+        if (!userId) {
+          throw new Error('Benutzer-ID ist ungültig oder wurde nicht gefunden.');
+        }
         // Fetch user data
-        const userRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}/user/${userId}`);
+        const userRes = await fetchBackendData('/user', userId, 'Benutzerinformationen');
         setUser(await userRes.json());
 
         // Fetch appointments data
-        const appointmentsRes = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/appointment/user/${userId}`
+        const appointmentsRes = await fetchBackendData(
+          '/appointment/user',
+          userId,
+          'Benutzertermine'
         );
         const appointmentsData: Appointment[] = await appointmentsRes.json();
         setAppointments(appointmentsData);
         setActiveAppointments(calcActiveAppointments(appointmentsData));
 
         // Fetch cases data
-        const casesRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_ROOT}/case/user/${userId}`);
+        const casesRes = await fetchBackendData('/case/user', userId, 'Benutzerfälle');
         const casesData: Case[] = await casesRes.json();
         setCases(casesData);
         setActiveCases(calcActiveCases(casesData));
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        setError(
+          error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
+        );
       }
     }
 
     fetchData();
   }, [login, userId]);
+
+  if (error) {
+    return notFound(error);
+  }
 
   return (
     <section id="user-dashboard" className="bg-card">
@@ -192,5 +212,51 @@ export function UserDashboard() {
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Returns a not-found styled error component any error occurs during data fetching.
+ * @param error - Error message to be displayed
+ * @returns JSX.Element representing the not-found error page
+ */
+function notFound(error: string) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <main className="flex-1 flex items-center justify-center px-4 py-16">
+        <div className="max-w-2xl w-full text-center space-y-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-linear-to-br from-accent-blue-light to-accent-purple-light mb-4">
+              <Search className="w-12 h-12 text-accent-gray" />
+            </div>
+
+            <h1 className="text-5xl font-bold text-foreground">{error}</h1>
+
+            <p className="text-xl text-foreground leading-relaxed">
+              Die von dir gesuchte Ressource existiert leider nicht, konnte nicht gefunden werden
+              oder wurde entfernt. Bitte überprüfe die URL oder versuche es später erneut.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+            <Link href="/">
+              <Button size="lg" className="gap-2">
+                <ArrowLeft className="w-5 h-5" />
+                Zurück zur Startseite
+              </Button>
+            </Link>
+          </div>
+
+          <div className="pt-8 border-t border-border">
+            <p className="text-sm text-muted-foreground">
+              Benötigen Sie Hilfe? Kontaktieren Sie uns unter{' '}
+              <a href="mailto:support@jurilib.de" className="text-accent-blue hover:underline">
+                support@jurilib.de
+              </a>
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
