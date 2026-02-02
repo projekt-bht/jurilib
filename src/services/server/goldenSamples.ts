@@ -5,8 +5,8 @@ import { Area } from '~/generated/prisma/enums';
 import { createEmbedding, extractBuzzwords, vectorizeSearch } from './vectorizer';
 
 const defaultOffset = 0.99;
-//Buzzword extraction is not covering 100% more likely > 70%
-const descriptionOffset = 0.7;
+//Buzzword extraction is not covering 100% more likely > 60%
+const descriptionOffset = 0.6;
 
 function isValid(embeddingA: string, embeddingB: string, similarityOffset: number = defaultOffset) {
   const similarityResult = similarity(
