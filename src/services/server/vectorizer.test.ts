@@ -4,10 +4,10 @@ import { Area } from '~/generated/prisma/enums';
 
 import { createEmbedding, vectorizeSearch } from './vectorizer';
 
-async function createScenarioTemplate(userInput: string): Promise<boolean> {
+async function createScenarioTemplate(userInput: string, expectedArea: Area): Promise<boolean> {
   const userSearch = userInput;
   const searchResult = await vectorizeSearch(userSearch);
-  const embeddingResult = await createEmbedding([Area.Verkehrsrecht].toString());
+  const embeddingResult = await createEmbedding([expectedArea].toString());
   const similarityResult = similarity(
     JSON.parse(searchResult.area) as number[],
     JSON.parse(embeddingResult) as number[]
@@ -19,7 +19,8 @@ async function createScenarioTemplate(userInput: string): Promise<boolean> {
 describe('Vectorizer Golden Samples', () => {
   test('Basic Verkehrsrecht', async () => {
     const isScenarioCorrect = await createScenarioTemplate(
-      'Ich hatte einen Auffahrunfall und möchte wissen, wer haftet und welche Schritte ich rechtlich einleiten kann.'
+      'Ich hatte einen Auffahrunfall und möchte wissen, wer haftet und welche Schritte ich rechtlich einleiten kann.',
+      Area.Verkehrsrecht
     );
     expect(isScenarioCorrect).toBeTruthy();
   });
