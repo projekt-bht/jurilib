@@ -4,6 +4,15 @@ import { Area } from '~/generated/prisma/enums';
 
 import { createEmbedding, vectorizeSearch } from './vectorizer';
 
+function isValid(embeddingA: string, embeddingB: string) {
+  const similarityResult = similarity(
+    JSON.parse(embeddingA) as number[],
+    JSON.parse(embeddingB) as number[]
+  );
+
+  return similarityResult ? similarityResult > 0.99 : false;
+}
+
 export async function createScenarioTemplate(
   userInput: string,
   expectedArea: Area
