@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import type { Appointment } from '~/generated/prisma/browser';
 import { AppointmentStatus } from '~/generated/prisma/browser';
 
-import { fetchBackendData } from '../../helper';
+import { fetchBackendData, notFound } from '../../helper';
 
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   const status = statusToTextAndColor(appointment.status);
@@ -12,6 +12,7 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   // fetch backend data
   const [employeeName, setEmployeeName] = useState<string>('');
   const [organizationName, setOrganizationName] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,12 +29,16 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
         const organizationData = await resOrganization.json();
         setOrganizationName(organizationData.name);
       } catch (error) {
-        throw error;
+        setError(error instanceof Error ? error.message : 'Unknown error occurred');
       }
     }
 
     fetchData();
   }, [appointment]);
+
+  if (error) {
+    return notFound(error);
+  }
 
   return (
     <div

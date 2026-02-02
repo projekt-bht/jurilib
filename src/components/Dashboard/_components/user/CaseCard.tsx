@@ -9,11 +9,12 @@ import {
   type Organization,
 } from '~/generated/prisma/browser';
 
-import { fetchBackendData } from '../../helper';
+import { fetchBackendData, notFound } from '../../helper';
 
 export function CaseCard({ color, caseItem }: { color: string; caseItem: Case }) {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // TODO: Replace with real progress from case data, currently random for demo purposes
   const [progressBarProgress] = useState(() => Math.floor(Math.random() * 101));
@@ -34,12 +35,16 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
         setEmployee(employeeData);
         setOrganization(organizationData);
       } catch (error) {
-        throw error;
+        setError(error instanceof Error ? error.message : 'Unknown error occurred');
       }
     }
 
     fetchData();
   }, [caseItem]);
+
+  if (error) {
+    return notFound(error);
+  }
 
   return (
     <div
