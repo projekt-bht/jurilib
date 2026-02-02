@@ -2,7 +2,9 @@ import similarity from 'compute-cosine-similarity';
 
 import { Area } from '~/generated/prisma/enums';
 
-import { createEmbedding, vectorizeSearch } from './vectorizer';
+const defaultOffset = 0.99;
+//Buzzword extraction is not covering 100% more likely > 70%
+const descriptionOffset = 0.7;
 
 function isValid(embeddingA: string, embeddingB: string) {
   const similarityResult = similarity(
