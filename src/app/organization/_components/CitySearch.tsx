@@ -27,6 +27,7 @@ type CitySearchProps = {
 };
 
 export default function CitySearch({ value, onCityChange }: CitySearchProps) {
+  // Local input and result state for the city search flow.
   const [query, setQuery] = useState('');
   const [cities, setCities] = useState<City[]>([]);
   const [nearby, setNearby] = useState<City[]>([]);
@@ -38,11 +39,13 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
       setCities([]);
       return;
     }
+    // Debounce remote search requests while typing.
     const t = setTimeout(async () => setCities((await getCityByName(query)) || []), 300);
     return () => clearTimeout(t);
   }, [query, selected]);
 
   const select = async (city: City) => {
+    // Selecting a base city triggers the radius search and initializes the filter values.
     setSelected(city);
     setCities([]);
     setQuery(city.label);
@@ -53,6 +56,7 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
   };
 
   const toggle = (city: City) => {
+    // Toggling nearby cities updates the parent filter with base + radius selections.
     setChecked((prev) => {
       const next = prev.find((c) => c.label === city.label)
         ? prev.filter((c) => c.label !== city.label)
@@ -66,6 +70,7 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
 
   useEffect(() => {
     if (value.length) return;
+    // Reset local UI when the parent filter clears the city selection.
     setQuery('');
     setCities([]);
     setNearby([]);
