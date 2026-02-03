@@ -12,6 +12,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { getCityByName, getCityByRadius } from '@/lib/azureMap';
+import { MapPin } from 'lucide-react';
 
 interface City {
   name: string;
@@ -76,27 +77,37 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
     <div className="relative w-full rounded-2xl border border-border bg-background px-3 py-3 shadow-sm">
       <div className="flex flex-col gap-4">
         <div className="relative">
-          <Input
-            value={query}
-            onChange={(event) => {
-              const next = event.target.value;
-              setQuery(next);
-              if (selected) {
-                setSelected(null);
-                setNearby([]);
-                setChecked([]);
-                onCityChange([]);
-              }
-            }}
-            placeholder="Stadt suchen..."
-          />
+          <div className="flex items-center gap-2">
+            <div className="rounded-md bg-accent-blue-light p-1 text-foreground">
+              <MapPin className="h-4 w-4" />
+            </div>
+            <div className="flex-1">
+              <Input
+                value={query}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  setQuery(next);
+                  if (selected) {
+                    setSelected(null);
+                    setNearby([]);
+                    setChecked([]);
+                    onCityChange([]);
+                  }
+                }}
+                placeholder="Stadt suchen"
+              />
+            </div>
+          </div>
           {cities.length > 0 && (
-            <Command className="absolute w-full mt-1 border rounded-lg shadow-lg z-10">
+            <Command className="h-auto absolute w-full mt-1 border rounded-lg shadow-lg bg-white">
               <CommandList>
                 <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
                 <CommandGroup>
                   {cities.map((city) => (
-                    <CommandItem key={city.label} onSelect={() => select(city)}>
+                    <CommandItem
+                      key={city.position.lat + city.position.lon}
+                      onSelect={() => select(city)}
+                    >
                       {city.label}
                     </CommandItem>
                   ))}
@@ -110,13 +121,14 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
           {nearby.map((city) => (
             <label
               key={city.label}
-              className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer"
+              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 transition-colors cursor-pointer hover:bg-accent-blue-soft"
             >
               <Checkbox
+                className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
                 checked={checked.some((c) => c.label === city.label)}
                 onCheckedChange={() => toggle(city)}
               />
-              <span className="text-sm">{city.label}</span>
+              <span className="text-xs font-medium text-foreground">{city.label}</span>
             </label>
           ))}
         </div>
