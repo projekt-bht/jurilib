@@ -246,7 +246,7 @@ export function OrganizationFilters({
             <div>
               <h3 className="text-sm font-semibold text-foreground">Filter</h3>
               <p className="text-xs text-muted-foreground">
-                Durchsuchen Sie alle 6 verfügbaren Rechtsorganisationen
+                Durchsuche alle 6 verfügbaren Rechtsorganisationen
               </p>
             </div>
           </div>

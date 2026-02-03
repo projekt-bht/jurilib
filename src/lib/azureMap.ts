@@ -11,10 +11,13 @@ type AzureMapResponse = {
 };
 
 const radiusDefaultValue = process.env.NEXT_PUBLIC_AZURE_MAPS_RADIUS_DEFAULT;
+const MAX_RADIUS_METERS = 50_000;
 const azureMapConfig = {
   key: process.env.NEXT_PUBLIC_AZURE_MAPS_KEY ?? '',
   baseUrl: process.env.NEXT_PUBLIC_AZURE_MAPS_BASE_URL ?? '',
-  radiusDefault: radiusDefaultValue ? Number.parseInt(radiusDefaultValue, 10) : 10000,
+  radiusDefault: radiusDefaultValue
+    ? Math.min(Number.parseInt(radiusDefaultValue, 10), MAX_RADIUS_METERS)
+    : 10000,
   clientId: process.env.NEXT_PUBLIC_AZURE_MAPS_CLIENT_ID ?? '',
 };
 export const getCityByName = async (cityName: string) => {
