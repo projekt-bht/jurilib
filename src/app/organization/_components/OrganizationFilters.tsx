@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { CityFilter } from '@/app/organization/_components/CityFilter';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -24,7 +23,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
-import CitySearch from './CitySearchA';
+import CitySearch from './CitySearch';
 
 export type FilterOptions = {
   priceCategory: PriceCategoryEnum[];
@@ -294,8 +293,7 @@ export function OrganizationFilters({
         {isPanelOpen && (
           <div className="mt-4 pb-2">
             <div className="mb-3">
-              <CityFilter value={filters.city} onCityChange={onCityChange} />
-              <CitySearch />
+              <CitySearch value={filters.city} onCityChange={onCityChange} />
             </div>
             {/* Responsive grid: stacks to 1/2/3 cols and 5 cols at xl. */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
