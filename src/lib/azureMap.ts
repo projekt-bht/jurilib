@@ -49,9 +49,6 @@ export const getCityByName = async (cityName: string) => {
 };
 
 export const getCityByRadius = async (lat: number, lon: number, cityName: string) => {
-  if (cityName.trim() === '') {
-    return;
-  }
   const url = new URL(azureMapConfig.baseUrl);
   url.searchParams.append('api-version', '1.0');
   url.searchParams.append('lat', lat.toString());
@@ -60,7 +57,7 @@ export const getCityByRadius = async (lat: number, lon: number, cityName: string
   url.searchParams.append('entityType', 'Municipality');
   url.searchParams.append('countrySet', 'DE');
   url.searchParams.append('radius', azureMapConfig.radiusDefault.toString());
-  url.searchParams.append('query', cityName); //query '' dosent work here
+  url.searchParams.append('query', cityName);
 
   const response = await fetch(url.toString());
   if (!response.ok) {
