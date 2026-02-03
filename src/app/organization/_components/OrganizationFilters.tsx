@@ -24,6 +24,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
+import CitySearch from './CitySearchA';
 
 export type FilterOptions = {
   priceCategory: PriceCategoryEnum[];
@@ -294,6 +295,7 @@ export function OrganizationFilters({
           <div className="mt-4 pb-2">
             <div className="mb-3">
               <CityFilter value={filters.city} onCityChange={onCityChange} />
+              <CitySearch />
             </div>
             {/* Responsive grid: stacks to 1/2/3 cols and 5 cols at xl. */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
@@ -353,50 +355,52 @@ export function OrganizationFilters({
                       openSections[section.key] ? 'block' : 'hidden'
                     } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
                   >
-                    {(section.groups ?? [{ title: '', key: section.key, items: section.items ?? [] }]).map(
-                      (group) => (
-                        <div
-                          key={`${section.key}-${group.title || 'default'}`}
-                          className="space-y-1.5"
-                        >
-                          {group.title && (
-                            <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                              {group.title}
-                            </div>
-                          )}
-                          {group.items.map((item) => (
-                            // Each filter option is wrapped in a full-width label so the entire row
-                            // is clickable; the checkbox is controlled via state and toggles the
-                            // selected filter value on click.
-                            <Label
-                              key={`${group.key}-${item.value}`}
-                              htmlFor={`${group.key}-${item.value}`}
-                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                                item.hoverClassName ?? defaultHoverClassName
+                    {(
+                      section.groups ?? [
+                        { title: '', key: section.key, items: section.items ?? [] },
+                      ]
+                    ).map((group) => (
+                      <div
+                        key={`${section.key}-${group.title || 'default'}`}
+                        className="space-y-1.5"
+                      >
+                        {group.title && (
+                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
+                            {group.title}
+                          </div>
+                        )}
+                        {group.items.map((item) => (
+                          // Each filter option is wrapped in a full-width label so the entire row
+                          // is clickable; the checkbox is controlled via state and toggles the
+                          // selected filter value on click.
+                          <Label
+                            key={`${group.key}-${item.value}`}
+                            htmlFor={`${group.key}-${item.value}`}
+                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
+                              item.hoverClassName ?? defaultHoverClassName
+                            }`}
+                          >
+                            <Checkbox
+                              id={`${group.key}-${item.value}`}
+                              className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                              onCheckedChange={(isChecked) =>
+                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                              }
+                              aria-label={`Filter nach ${item.label}`}
+                            />
+                            {item.icon}
+                            <span
+                              className={`text-xs font-medium text-foreground ${
+                                item.labelClassName ?? ''
                               }`}
                             >
-                              <Checkbox
-                                id={`${group.key}-${item.value}`}
-                                className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                                checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                                onCheckedChange={(isChecked) =>
-                                  handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                                }
-                                aria-label={`Filter nach ${item.label}`}
-                              />
-                              {item.icon}
-                              <span
-                                className={`text-xs font-medium text-foreground ${
-                                  item.labelClassName ?? ''
-                                }`}
-                              >
-                                {item.label}
-                              </span>
-                            </Label>
-                          ))}
-                        </div>
-                      )
-                    )}
+                              {item.label}
+                            </span>
+                          </Label>
+                        ))}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
