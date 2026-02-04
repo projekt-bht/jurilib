@@ -130,6 +130,9 @@ export default function CitySearch({
               <SelectValue placeholder="Radius" />
             </SelectTrigger>
             <SelectContent
+              position="popper"
+              side="bottom"
+              align="end"
               className="rounded-xl border border-border bg-background p-1 shadow-lg"
               data-organization-filters-popover
             >
