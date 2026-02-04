@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Command,
   CommandEmpty,
@@ -24,15 +23,14 @@ interface City {
 type CitySearchProps = {
   value: string[];
   onCityChange: (value: string[]) => void;
+  onNearbyChange?: (value: City[]) => void;
 };
 
-export default function CitySearch({ value, onCityChange }: CitySearchProps) {
+export default function CitySearch({ value, onCityChange, onNearbyChange }: CitySearchProps) {
   // Local input and result state for the city search flow.
   const [query, setQuery] = useState('');
   const [cities, setCities] = useState<City[]>([]);
-  const [nearby, setNearby] = useState<City[]>([]);
   const [selected, setSelected] = useState<City | null>(null);
-  const [checked, setChecked] = useState<City[]>([]);
 
   useEffect(() => {
     if (query.length < 2 || selected) {
@@ -50,22 +48,9 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
     setCities([]);
     setQuery(city.label);
     const res = await getCityByRadius(city.position.lat, city.position.lon);
-    setNearby((res || []).filter((c: City) => c.label !== city.label));
-    setChecked([]);
+    const filtered = (res || []).filter((c: City) => c.label !== city.label);
+    onNearbyChange?.(filtered);
     onCityChange([city.name]);
-  };
-
-  const toggle = (city: City) => {
-    // Toggling nearby cities updates the parent filter with base + radius selections.
-    setChecked((prev) => {
-      const next = prev.find((c) => c.label === city.label)
-        ? prev.filter((c) => c.label !== city.label)
-        : [...prev, city];
-      const base = selected ? [selected.name] : [];
-      const nextValues = [...base, ...next.map((item) => item.name)];
-      onCityChange(nextValues);
-      return next;
-    });
   };
 
   useEffect(() => {
@@ -73,9 +58,8 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
     // Reset local UI when the parent filter clears the city selection.
     setQuery('');
     setCities([]);
-    setNearby([]);
     setSelected(null);
-    setChecked([]);
+    onNearbyChange?.([]);
   }, [value.length]);
 
   return (
@@ -89,16 +73,15 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
             setQuery(next);
             if (selected) {
               setSelected(null);
-              setNearby([]);
-              setChecked([]);
               onCityChange([]);
+              onNearbyChange?.([]);
             }
           }}
           placeholder="Stadt suchen"
           className="h-11 rounded-xl border-accent-gray bg-background pl-10 text-sm text-foreground focus-visible:border-accent-black focus-visible:ring-accent-gray-light"
         />
         {cities.length > 0 && (
-          <Command className="h-auto absolute w-full mt-2 border border-accent-gray rounded-xl shadow-lg bg-background z-99">
+          <Command className="h-auto absolute left-0 right-0 z-20 border border-accent-gray rounded-xl shadow-lg bg-background">
             <CommandList>
               <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
               <CommandGroup>
@@ -115,24 +98,6 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
           </Command>
         )}
       </div>
-
-      {nearby.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2 items-start">
-          {nearby.map((city) => (
-            <label
-              key={city.label}
-              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 border border-accent-gray bg-background transition-colors cursor-pointer hover:bg-accent-gray-soft"
-            >
-              <Checkbox
-                className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                checked={checked.some((c) => c.label === city.label)}
-                onCheckedChange={() => toggle(city)}
-              />
-              <span className="text-xs font-semibold text-foreground">{city.label}</span>
-            </label>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

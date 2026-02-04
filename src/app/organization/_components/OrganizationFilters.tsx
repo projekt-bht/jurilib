@@ -5,6 +5,7 @@ import {
   Building2,
   ChevronDown,
   Earth,
+  MapPin,
   PersonStanding,
   Scale,
   Tag,
@@ -53,6 +54,11 @@ type SectionGroup = {
   title: string;
   key: keyof FilterOptions;
   items: SectionItem[];
+};
+
+type NearbyCity = {
+  name: string;
+  label: string;
 };
 
 const sectionKeys: Array<keyof FilterOptions> = [
@@ -122,6 +128,8 @@ export function OrganizationFilters({
     accessibility: false,
     city: false,
   });
+  // Nearby cities are only available after a base city search; keep empty by default.
+  const [nearbyCities, setNearbyCities] = useState<NearbyCity[]>([]);
 
   const toggleSection = (key: keyof FilterOptions) => {
     setOpenSections((prev) => {
@@ -146,6 +154,13 @@ export function OrganizationFilters({
       accessibility: false,
       city: false,
     });
+  };
+  // Toggle city selection is for the nearby city filter
+  const toggleCity = (cityName: string) => {
+    const next = filters.city.includes(cityName)
+      ? filters.city.filter((item) => item !== cityName)
+      : [...filters.city, cityName];
+    onCityChange(next);
   };
 
   useEffect(() => {
@@ -355,7 +370,13 @@ export function OrganizationFilters({
     >
       <div className="p-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
-          <CitySearch value={filters.city} onCityChange={onCityChange} />
+          <CitySearch
+            value={filters.city}
+            onCityChange={onCityChange}
+            onNearbyChange={(cities) =>
+              setNearbyCities(cities.map((city) => ({ name: city.name, label: city.label })))
+            }
+          />
           <div className="space-y-2">
             <div className="text-sm font-semibold text-muted-foreground">Radius: {radiusKm} km</div>
             <Slider
@@ -457,6 +478,56 @@ export function OrganizationFilters({
               </div>
             );
           })}
+          {/* Render "Nachbarstädte" only after nearby items exist, so the filter row does not shift before a search. */}
+          {nearbyCities.length > 0 && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => toggleSection('city')}
+                className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-accent-gray"
+                aria-expanded={openSections.city}
+              >
+                <span className="flex items-center gap-2">
+                  <span className={iconToneByKey.city}>
+                    <MapPin className="w-4 h-4" />
+                  </span>
+                  <span>Nachbarstädte</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="rounded-full bg-accent-gray-soft px-2 py-0.5 text-xs font-semibold text-accent-gray">
+                    {nearbyCities.filter((city) => filters.city.includes(city.name)).length}
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${openSections.city ? 'rotate-180' : ''}`}
+                  />
+                </span>
+              </button>
+
+              {openSections.city && (
+                <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg">
+                  <div className="max-h-64 space-y-2 overflow-y-auto">
+                    {nearbyCities.map((city) => (
+                      <Label
+                        key={city.name}
+                        htmlFor={`city-${city.name}`}
+                        className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-gray-soft"
+                      >
+                        <Checkbox
+                          id={`city-${city.name}`}
+                          className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                          checked={filters.city.includes(city.name)}
+                          onCheckedChange={() => toggleCity(city.name)}
+                          aria-label={`Nachbarstadt ${city.label}`}
+                        />
+                        <span>{city.label}</span>
+                      </Label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="border-t border-border pt-3">
