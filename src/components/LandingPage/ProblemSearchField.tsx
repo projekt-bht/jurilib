@@ -46,6 +46,15 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     sessionStorage.setItem('cachedInquiries', JSON.stringify(filteredProblems));
   }
 
+  function addInquiry(query: string) {
+    setCachedInquiries((prev) => {
+      const filteredProblems = prev.filter((problem) => problem !== query);
+      const updatedInquiries = [query, ...filteredProblems].slice(0, 5);
+      sessionStorage.setItem('cachedInquiries', JSON.stringify(updatedInquiries));
+      return updatedInquiries;
+    });
+  }
+
   const exampleSearches = [
     {
       icon: ReceiptText,
