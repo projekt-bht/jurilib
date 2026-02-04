@@ -49,7 +49,7 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
     setSelected(city);
     setCities([]);
     setQuery(city.label);
-    const res = await getCityByRadius(city.position.lat, city.position.lon, city.name);
+    const res = await getCityByRadius(city.position.lat, city.position.lon);
     setNearby((res || []).filter((c: City) => c.label !== city.label));
     setChecked([]);
     onCityChange([city.name]);
