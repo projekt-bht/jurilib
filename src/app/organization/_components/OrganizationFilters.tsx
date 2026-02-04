@@ -1,8 +1,16 @@
 'use client';
 
-import { Building, Building2, ChevronDown, Earth, PersonStanding, Tag, X } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
+import {
+  Building,
+  Building2,
+  ChevronDown,
+  Earth,
+  PersonStanding,
+  Scale,
+  Tag,
+  X,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -15,7 +23,6 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
-import scale_logo from '~/public/scale_logo.svg';
 import CitySearch from './CitySearch';
 
 export type FilterOptions = {
@@ -115,6 +122,48 @@ export function OrganizationFilters({
     accessibility: false,
     city: false,
   });
+
+  const toggleSection = (key: keyof FilterOptions) => {
+    setOpenSections((prev) => {
+      const nextState = Object.keys(prev).reduce(
+        (acc, itemKey) => {
+          const typedKey = itemKey as keyof FilterOptions;
+          acc[typedKey] = typedKey === key ? !prev[typedKey] : false;
+          return acc;
+        },
+        {} as Record<keyof FilterOptions, boolean>
+      );
+      return nextState;
+    });
+  };
+
+  const closeAllSections = () => {
+    setOpenSections({
+      organizationType: false,
+      priceCategory: false,
+      area: false,
+      languages: false,
+      accessibility: false,
+      city: false,
+    });
+  };
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('[data-organization-filters]')) return;
+      closeAllSections();
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, []);
   // UI-only radius slider value (visuals only).
   const [radiusKm, setRadiusKm] = useState(50);
   // Pre-sort enum values once (German locale) so filter lists render consistently.
@@ -166,7 +215,7 @@ export function OrganizationFilters({
     {
       key: 'priceCategory',
       title: 'Preisklasse',
-      icon: <Image src={scale_logo} alt="Waage" width={16} height={16} className="h-4 w-4" />,
+      icon: <Scale className="w-4 h-4" />,
       items: Object.values(PriceCategoryEnum).map((price) => ({
         value: price,
         label: priceCategoryMeta[price].label,
@@ -225,12 +274,39 @@ export function OrganizationFilters({
 
   // Color palette for chips by filter category.
   const chipToneByKey: Record<keyof FilterOptions, { container: string; text: string }> = {
-    organizationType: { container: 'bg-purple-50 border-purple-200', text: 'text-purple-700' },
-    priceCategory: { container: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700' },
-    area: { container: 'bg-orange-50 border-orange-200', text: 'text-orange-700' },
-    languages: { container: 'bg-blue-50 border-blue-200', text: 'text-blue-700' },
-    accessibility: { container: 'bg-gray-50 border-gray-200', text: 'text-gray-700' },
-    city: { container: 'bg-gray-50 border-gray-200', text: 'text-gray-700' },
+    organizationType: {
+      container: 'bg-accent-purple-light border-accent-purple',
+      text: 'text-accent-purple',
+    },
+    priceCategory: {
+      container: 'bg-accent-emerald-light border-accent-emerald',
+      text: 'text-accent-emerald',
+    },
+    area: {
+      container: 'bg-accent-amber-light border-accent-amber',
+      text: 'text-accent-amber',
+    },
+    languages: {
+      container: 'bg-accent-blue-light border-accent-blue',
+      text: 'text-accent-blue',
+    },
+    accessibility: {
+      container: 'bg-accent-gray-soft border-accent-gray-light',
+      text: 'text-foreground',
+    },
+    city: {
+      container: 'bg-accent-gray-light border-accent-gray',
+      text: 'text-accent-gray',
+    },
+  };
+
+  const iconToneByKey: Record<keyof FilterOptions, string> = {
+    organizationType: chipToneByKey.organizationType.text,
+    priceCategory: chipToneByKey.priceCategory.text,
+    area: chipToneByKey.area.text,
+    languages: chipToneByKey.languages.text,
+    accessibility: chipToneByKey.accessibility.text,
+    city: chipToneByKey.city.text,
   };
 
   // Build a flat list of active chips with labels and colors.
@@ -273,12 +349,15 @@ export function OrganizationFilters({
   })();
 
   return (
-    <section className="relative w-full rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <section
+      data-organization-filters
+      className="relative w-full rounded-2xl border border-border bg-background shadow-sm"
+    >
       <div className="p-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
           <CitySearch value={filters.city} onCityChange={onCityChange} />
           <div className="space-y-2">
-            <div className="text-sm font-semibold text-gray-500">Radius: {radiusKm} km</div>
+            <div className="text-sm font-semibold text-muted-foreground">Radius: {radiusKm} km</div>
             <Slider
               value={[radiusKm]}
               min={0}
@@ -286,21 +365,22 @@ export function OrganizationFilters({
               step={1}
               onValueChange={(value) => setRadiusKm(value[0] ?? 50)}
             />
-            <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>0 km</span>
               <span>50 km</span>
             </div>
           </div>
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            disabled={!isActiveFilters}
-            onClick={handleResetClick}
-            className="h-10 rounded-xl px-4 text-sm font-semibold"
-          >
-            Zurücksetzen
-          </Button>
+          {isActiveFilters && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleResetClick}
+              className="border-accent-black text-accent-black bg-background hover:bg-accent-gray-soft"
+            >
+              Zurücksetzen
+            </Button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap">
@@ -310,22 +390,17 @@ export function OrganizationFilters({
               <div key={section.key} className="relative">
                 <button
                   type="button"
-                  onClick={() =>
-                    setOpenSections((prev) => ({
-                      ...prev,
-                      [section.key]: !prev[section.key],
-                    }))
-                  }
-                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-400"
+                  onClick={() => toggleSection(section.key)}
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-accent-gray"
                   aria-expanded={openSections[section.key]}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="text-gray-600">{section.icon}</span>
+                    <span className={iconToneByKey[section.key]}>{section.icon}</span>
                     <span>{section.title}</span>
                   </span>
                   <span className="flex items-center gap-2">
                     {selectedCount > 0 && (
-                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">
+                      <span className="rounded-full bg-accent-gray-soft px-2 py-0.5 text-xs font-semibold text-accent-gray">
                         {selectedCount}
                       </span>
                     )}
@@ -337,7 +412,7 @@ export function OrganizationFilters({
                 </button>
 
                 {openSections[section.key] && (
-                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-gray-200 bg-white p-3 shadow-lg">
+                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg">
                     <div className="max-h-64 space-y-2 overflow-y-auto">
                       {(
                         section.groups ?? [
@@ -349,7 +424,7 @@ export function OrganizationFilters({
                           className="space-y-1.5"
                         >
                           {group.title && (
-                            <div className="px-1 text-[11px] font-semibold text-gray-400">
+                            <div className="px-1 text-[11px] font-semibold text-muted-foreground">
                               {group.title}
                             </div>
                           )}
@@ -357,13 +432,13 @@ export function OrganizationFilters({
                             <Label
                               key={`${group.key}-${item.value}`}
                               htmlFor={`${group.key}-${item.value}`}
-                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-gray-700 transition-colors cursor-pointer ${
+                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-foreground transition-colors cursor-pointer ${
                                 item.hoverClassName ?? defaultHoverClassName
                               }`}
                             >
                               <Checkbox
                                 id={`${group.key}-${item.value}`}
-                                className="border-gray-300 bg-white data-[state=checked]:bg-gray-700 data-[state=checked]:border-gray-700"
+                                className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                 checked={(filters[group.key] as FilterValue[]).includes(item.value)}
                                 onCheckedChange={(isChecked) =>
                                   handleCheckboxChange(group.key, item.value, Boolean(isChecked))
@@ -384,11 +459,11 @@ export function OrganizationFilters({
           })}
         </div>
 
-        <div className="border-t border-gray-200 pt-3">
+        <div className="border-t border-border pt-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-gray-500">Aktive Filter:</span>
+            <span className="text-sm font-semibold text-muted-foreground">Aktive Filter:</span>
             {activeChips.length === 0 && (
-              <span className="text-sm text-gray-400">Keine ausgewählt</span>
+              <span className="text-sm text-muted-foreground">Keine ausgewählt</span>
             )}
             {activeChips.map((chip) => (
               <span
@@ -407,7 +482,7 @@ export function OrganizationFilters({
                     }
                     handleCheckboxChange(chip.key, chip.value as FilterValue, false);
                   }}
-                  className="h-5 w-5 rounded-full hover:bg-white/70"
+                  className="h-5 w-5 rounded-full hover:bg-accent-gray-soft"
                   aria-label={`${chip.label} entfernen`}
                 >
                   <X className="h-3 w-3" />

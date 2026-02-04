@@ -80,9 +80,8 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
 
   return (
     <div className="w-full">
-      <div className="mb-2 text-sm font-semibold text-gray-500">Search</div>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-gray" />
         <Input
           value={query}
           onChange={(event) => {
@@ -96,10 +95,10 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
             }
           }}
           placeholder="Stadt suchen"
-          className="h-11 rounded-xl border-gray-300 bg-gray-50 pl-10 text-sm text-gray-700 focus-visible:border-gray-300 focus-visible:ring-gray-200"
+          className="h-11 rounded-xl border-accent-gray bg-background pl-10 text-sm text-foreground focus-visible:border-accent-black focus-visible:ring-accent-gray-light"
         />
         {cities.length > 0 && (
-          <Command className="h-auto absolute w-full mt-2 border border-gray-200 rounded-xl shadow-lg bg-white">
+          <Command className="h-auto absolute w-full mt-2 border border-accent-gray rounded-xl shadow-lg bg-background z-99">
             <CommandList>
               <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
               <CommandGroup>
@@ -122,14 +121,14 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
           {nearby.map((city) => (
             <label
               key={city.label}
-              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 border border-gray-200 bg-white transition-colors cursor-pointer hover:bg-gray-50"
+              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 border border-accent-gray bg-background transition-colors cursor-pointer hover:bg-accent-gray-soft"
             >
               <Checkbox
-                className="border-gray-300 bg-white data-[state=checked]:bg-gray-700 data-[state=checked]:border-gray-700"
+                className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 checked={checked.some((c) => c.label === city.label)}
                 onCheckedChange={() => toggle(city)}
               />
-              <span className="text-xs font-medium text-gray-700">{city.label}</span>
+              <span className="text-xs font-semibold text-foreground">{city.label}</span>
             </label>
           ))}
         </div>
