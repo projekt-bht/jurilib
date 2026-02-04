@@ -34,6 +34,11 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     sessionStorage.setItem('problemText', query);
   }
 
+  function getInquiries(): string[] {
+    const stored = sessionStorage.getItem('cachedInquiries');
+    return stored ? JSON.parse(stored) : [];
+  }
+
   const exampleSearches = [
     {
       icon: ReceiptText,
