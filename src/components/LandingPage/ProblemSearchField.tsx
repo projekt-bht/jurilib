@@ -2,9 +2,9 @@
 
 //https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
 //WebSpeechAPI only exits on client
-import { BriefcaseBusiness, Building2, CarFront, ReceiptText } from 'lucide-react';
+import { BriefcaseBusiness, Building2, CarFront, Clock, ReceiptText, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '../ui/button';
 const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
@@ -16,7 +16,7 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
   const [problem, setProblem] = useState(getCachedProblem());
-  const [cachedInquiries, setCachedInquiries] = useState(getInquiries());
+  const [cachedInquiries, setCachedInquiries] = useState(getCachedInquiries());
 
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
@@ -36,17 +36,17 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     sessionStorage.setItem('problemText', query);
   }
 
-  function getInquiries(): string[] {
+  function getCachedInquiries(): string[] {
     const stored = sessionStorage.getItem('cachedInquiries');
     return stored ? JSON.parse(stored) : [];
   }
-  function removeInquiry(query: string) {
+  function removeCachedInquiry(query: string) {
     const filteredProblems = cachedInquiries.filter((problem) => problem !== query);
     setCachedInquiries(filteredProblems);
     sessionStorage.setItem('cachedInquiries', JSON.stringify(filteredProblems));
   }
 
-  function addInquiry(query: string) {
+  function addCachedInquiry(query: string) {
     setCachedInquiries((prev) => {
       const filteredProblems = prev.filter((problem) => problem !== query);
       const updatedInquiries = [query, ...filteredProblems].slice(0, 5);
@@ -95,7 +95,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     setError('');
     onSubmit(problem);
     setIsSubmitted(true);
-    addInquiry(problem);
+    addCachedInquiry(problem);
   }
 
   // Handle Enter key for submission
@@ -166,7 +166,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
                     className="ml-2 opacity-50 hover:opacity-100 hover:text-destructive transition-opacity"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeInquiry(query);
+                      removeCachedInquiry(query);
                     }}
                   >
                     <X className="w-3 h-3" />
