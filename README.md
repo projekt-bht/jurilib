@@ -1,4 +1,13 @@
-# JURILIB
+<!-- Logo and Title -->
+<div style="text-align: center;"> 
+<img src="public/scale_logo.svg" alt="jurilib Logo" width="200"/>
+
+</br>
+
+<h1>JURILIB</h1>
+</div>
+
+<!-- Content -->
 
 ## Getting Started
 
@@ -64,6 +73,7 @@ const App = () => {
   return <Camera size={48} fill="red" />;
 };
 ```
+
 ## Weitere Ressourcen
 
 To learn more about Next.js, take a look at the following resources:
