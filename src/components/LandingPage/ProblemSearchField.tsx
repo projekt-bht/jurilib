@@ -95,6 +95,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     setError('');
     onSubmit(problem);
     setIsSubmitted(true);
+    addInquiry(problem);
   }
 
   // Handle Enter key for submission
