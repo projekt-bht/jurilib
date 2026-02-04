@@ -53,12 +53,12 @@ Make sure the Docker container is running. Then:
 - `npm run db:deploy`
 - `npm run dev`
 
-### Anpassung des Datenbank-Schemas
+## Modifying the Database Schema
 
-- unter `/prisma/schema.prisma` findet ihr das Datenbank-Schema
-- nach Anpassung des Schemas ist eine erneute Migration erforderlich:
-  - `npm run db:dev` wird euch nach einem Namen fragen. Dieser wird in eurer lokalen Migrationshistorie dargestellt.
-  - **Keine Sorge:** hat keine Auswirkungen auf das Deployment oder Inhalt, oder, oder, oder...
+- The database schema is located at `/prisma/schema.prisma`
+- After modifying the schema, a new migration is required:
+  - `npm run db:dev` will prompt you for a migration name, which will be reflected in your local migration history.
+  - **No worries:** this does not affect deployment, existing data, or anything else along these lines
 
 ## Frontend Icons
 
