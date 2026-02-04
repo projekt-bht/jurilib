@@ -5,7 +5,6 @@ import {
   Building2,
   ChevronDown,
   Earth,
-  MapPin,
   PersonStanding,
   Scale,
   Tag,
@@ -391,6 +390,9 @@ export function OrganizationFilters({
             onRadiusChange={setRadiusKm}
             radiusOpen={isRadiusOpen}
             onRadiusOpenChange={setIsRadiusOpen}
+            nearbyCities={nearbyCities}
+            selectedCities={filters.city}
+            onToggleCity={toggleCity}
           />
         </div>
 
@@ -473,65 +475,6 @@ export function OrganizationFilters({
               </div>
             );
           })}
-          {/* Render "Nachbarstädte" only after nearby items exist, so the filter row does not shift before a search. */}
-          {nearbyCities.length > 0 && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => toggleSection('city')}
-                className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-accent-gray"
-                aria-expanded={openSections.city}
-              >
-                <span className="flex items-center gap-2">
-                  <span className={iconToneByKey.city}>
-                    <MapPin className="w-4 h-4" />
-                  </span>
-                  <span>Nachbarstädte</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <span
-                    className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
-                      nearbyCities.filter((city) => filters.city.includes(city.name)).length > 0
-                        ? 'opacity-100'
-                        : 'opacity-0'
-                    }`}
-                  >
-                    {nearbyCities.filter((city) => filters.city.includes(city.name)).length}
-                  </span>
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform ${openSections.city ? 'rotate-180' : ''}`}
-                  />
-                </span>
-              </button>
-
-              {openSections.city && (
-                <div
-                  className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
-                  data-organization-filters-popover
-                >
-                  <div className="max-h-64 space-y-2 overflow-y-auto">
-                    {nearbyCities.map((city) => (
-                      <Label
-                        key={city.name}
-                        htmlFor={`city-${city.name}`}
-                        className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-gray-soft"
-                      >
-                        <Checkbox
-                          id={`city-${city.name}`}
-                          className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                          checked={filters.city.includes(city.name)}
-                          onCheckedChange={() => toggleCity(city.name)}
-                          aria-label={`Nachbarstadt ${city.label}`}
-                        />
-                        <span>{city.label}</span>
-                      </Label>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         <div className="border-t border-border pt-3">

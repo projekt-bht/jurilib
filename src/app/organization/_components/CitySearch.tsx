@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { ChevronDown, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -10,7 +10,9 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -35,6 +37,9 @@ type CitySearchProps = {
   onRadiusChange: (value: number) => void;
   radiusOpen: boolean;
   onRadiusOpenChange: (value: boolean) => void;
+  nearbyCities: { name: string; label: string }[];
+  selectedCities: string[];
+  onToggleCity: (cityName: string) => void;
 };
 
 export default function CitySearch({
@@ -45,19 +50,42 @@ export default function CitySearch({
   onRadiusChange,
   radiusOpen,
   onRadiusOpenChange,
+  nearbyCities,
+  selectedCities,
+  onToggleCity,
 }: CitySearchProps) {
   // Local input and result state for the city search flow.
   const [query, setQuery] = useState('');
   const [cities, setCities] = useState<City[]>([]);
   const [selected, setSelected] = useState<City | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const radiusOptionsKm = [0, 5, 10, 15, 20, 25, 30, 40, 50];
+  const [isNearbyOpen, setIsNearbyOpen] = useState(false);
 
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('[data-organization-filters-popover]')) return;
+      if (containerRef.current?.contains(target)) return;
+      setIsNearbyOpen(false);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
     };
   }, []);
 
@@ -100,7 +128,7 @@ export default function CitySearch({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={containerRef}>
       <div className="relative">
         <div className="flex h-11 items-center gap-2 rounded-xl border border-accent-gray bg-background px-2 text-sm text-foreground focus-within:border-accent-black">
           <Search className="h-4 w-4 text-accent-gray" />
@@ -147,6 +175,32 @@ export default function CitySearch({
               ))}
             </SelectContent>
           </Select>
+          {nearbyCities.length > 0 && (
+            <>
+              <div className="h-6 w-px bg-accent-gray-light" />
+              <button
+                type="button"
+                onClick={() => setIsNearbyOpen((prev) => !prev)}
+                className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-foreground transition hover:bg-accent-gray-soft"
+                aria-expanded={isNearbyOpen}
+              >
+                <span>Nachbarstädte</span>
+                <span
+                  className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
+                    nearbyCities.filter((city) => selectedCities.includes(city.name)).length > 0
+                      ? 'opacity-100'
+                      : 'opacity-0'
+                  }`}
+                >
+                  {nearbyCities.filter((city) => selectedCities.includes(city.name)).length}
+                </span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform ${isNearbyOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+            </>
+          )}
         </div>
         {cities.length > 0 && (
           <Command className="h-auto absolute left-0 right-0 z-20 border border-accent-gray rounded-xl shadow-lg bg-background">
@@ -164,6 +218,31 @@ export default function CitySearch({
               </CommandGroup>
             </CommandList>
           </Command>
+        )}
+        {nearbyCities.length > 0 && isNearbyOpen && (
+          <div
+            className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
+            data-organization-filters-popover
+          >
+            <div className="max-h-64 space-y-2 overflow-y-auto">
+              {nearbyCities.map((city) => (
+                <Label
+                  key={city.name}
+                  htmlFor={`nearby-${city.name}`}
+                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-blue-soft"
+                >
+                  <Checkbox
+                    id={`nearby-${city.name}`}
+                    className="border-accent-gray bg-accent-white data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    checked={selectedCities.includes(city.name)}
+                    onCheckedChange={() => onToggleCity(city.name)}
+                    aria-label={`Nachbarstadt ${city.label}`}
+                  />
+                  <span>{city.label}</span>
+                </Label>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </div>
