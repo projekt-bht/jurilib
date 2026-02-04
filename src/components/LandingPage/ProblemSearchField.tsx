@@ -40,6 +40,11 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     const stored = sessionStorage.getItem('cachedInquiries');
     return stored ? JSON.parse(stored) : [];
   }
+  function removeInquiry(query: string) {
+    const filteredProblems = cachedInquiries.filter((problem) => problem !== query);
+    setCachedInquiries(filteredProblems);
+    sessionStorage.setItem('cachedInquiries', JSON.stringify(filteredProblems));
+  }
 
   const exampleSearches = [
     {
