@@ -11,6 +11,13 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { getCityByName, getCityByRadius } from '@/lib/azureMap';
 
 interface City {
@@ -24,14 +31,27 @@ type CitySearchProps = {
   value: string[];
   onCityChange: (value: string[]) => void;
   onNearbyChange?: (value: City[]) => void;
+  radiusKm: number;
+  onRadiusChange: (value: number) => void;
+  radiusOpen: boolean;
+  onRadiusOpenChange: (value: boolean) => void;
 };
 
-export default function CitySearch({ value: _value, onCityChange, onNearbyChange }: CitySearchProps) {
+export default function CitySearch({
+  value: _value,
+  onCityChange,
+  onNearbyChange,
+  radiusKm,
+  onRadiusChange,
+  radiusOpen,
+  onRadiusOpenChange,
+}: CitySearchProps) {
   // Local input and result state for the city search flow.
   const [query, setQuery] = useState('');
   const [cities, setCities] = useState<City[]>([]);
   const [selected, setSelected] = useState<City | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const radiusOptionsKm = [0, 5, 10, 15, 20, 25, 30, 40, 50];
 
   useEffect(() => {
     return () => {
@@ -41,16 +61,29 @@ export default function CitySearch({ value: _value, onCityChange, onNearbyChange
     };
   }, []);
 
+  const runRadiusSearch = async (city: City, radiusInKm: number) => {
+    const radiusMeters = Math.max(radiusInKm, 0) * 1000;
+    const res = await getCityByRadius(city.position.lat, city.position.lon, radiusMeters);
+    const filtered = (res || []).filter((c: City) => c.label !== city.label);
+    onNearbyChange?.(filtered);
+    const nextCityNames = [city.name, ...filtered.map((item) => item.name)].filter((name) =>
+      name.trim()
+    );
+    onCityChange(Array.from(new Set(nextCityNames)));
+  };
+
   const select = async (city: City) => {
     // Selecting a base city triggers the radius search and initializes the filter values.
     setSelected(city);
     setCities([]);
     setQuery(city.label);
-    const res = await getCityByRadius(city.position.lat, city.position.lon);
-    const filtered = (res || []).filter((c: City) => c.label !== city.label);
-    onNearbyChange?.(filtered);
-    onCityChange([city.name]);
+    await runRadiusSearch(city, radiusKm);
   };
+
+  useEffect(() => {
+    if (!selected) return;
+    void runRadiusSearch(selected, radiusKm);
+  }, [radiusKm, selected]);
 
   const scheduleSearch = (nextQuery: string) => {
     if (debounceRef.current) {
@@ -69,22 +102,49 @@ export default function CitySearch({ value: _value, onCityChange, onNearbyChange
   return (
     <div className="w-full">
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-gray" />
-        <Input
-          value={query}
-          onChange={(event) => {
-            const next = event.target.value;
-            setQuery(next);
-            if (selected) {
-              setSelected(null);
-              onCityChange([]);
-              onNearbyChange?.([]);
-            }
-            scheduleSearch(next);
-          }}
-          placeholder="Stadt suchen"
-          className="h-11 rounded-xl border-accent-gray bg-background pl-10 text-sm text-foreground focus-visible:border-accent-black focus-visible:ring-accent-gray-light"
-        />
+        <div className="flex h-11 items-center gap-2 rounded-xl border border-accent-gray bg-background px-2 text-sm text-foreground focus-within:border-accent-black">
+          <Search className="h-4 w-4 text-accent-gray" />
+          <Input
+            value={query}
+            onChange={(event) => {
+              const next = event.target.value;
+              setQuery(next);
+              if (selected) {
+                setSelected(null);
+                onCityChange([]);
+                onNearbyChange?.([]);
+              }
+              scheduleSearch(next);
+            }}
+            placeholder="Stadt suchen"
+            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-none focus-visible:border-0 focus-visible:ring-0"
+          />
+          <div className="h-6 w-px bg-accent-gray-light" />
+          <Select
+            value={radiusKm.toString()}
+            onValueChange={(value) => onRadiusChange(Number.parseInt(value, 10))}
+            open={radiusOpen}
+            onOpenChange={onRadiusOpenChange}
+          >
+            <SelectTrigger className="h-9 border-0 bg-transparent px-2 text-sm shadow-none focus-visible:ring-0">
+              <SelectValue placeholder="Radius" />
+            </SelectTrigger>
+            <SelectContent
+              className="rounded-xl border border-border bg-background p-1 shadow-lg"
+              data-organization-filters-popover
+            >
+              {radiusOptionsKm.map((option) => (
+                <SelectItem
+                  key={option}
+                  value={option.toString()}
+                  className="flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-blue-soft focus:bg-accent-blue-soft"
+                >
+                  {option} km
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         {cities.length > 0 && (
           <Command className="h-auto absolute left-0 right-0 z-20 border border-accent-gray rounded-xl shadow-lg bg-background">
             <CommandList>

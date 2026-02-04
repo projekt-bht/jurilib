@@ -9,6 +9,7 @@ import {
   PersonStanding,
   Scale,
   Tag,
+  Trash2,
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -16,7 +17,6 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
@@ -133,6 +133,7 @@ export function OrganizationFilters({
   const [nearbyCities, setNearbyCities] = useState<NearbyCity[]>([]);
   // Forces CitySearch to remount when the city filter is cleared externally.
   const [citySearchKey, setCitySearchKey] = useState(0);
+  const [isRadiusOpen, setIsRadiusOpen] = useState(false);
 
   const toggleSection = (key: keyof FilterOptions) => {
     setOpenSections((prev) => {
@@ -157,6 +158,7 @@ export function OrganizationFilters({
       accessibility: false,
       city: false,
     });
+    setIsRadiusOpen(false);
   };
   // Toggle city selection is for the nearby city filter
   const toggleCity = (cityName: string) => {
@@ -173,7 +175,7 @@ export function OrganizationFilters({
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
       const target = event.target as HTMLElement | null;
       if (!target) return;
-      if (target.closest('[data-organization-filters]')) return;
+      if (target.closest('[data-organization-filters-popover]')) return;
       closeAllSections();
     };
 
@@ -185,7 +187,7 @@ export function OrganizationFilters({
       document.removeEventListener('touchstart', handlePointerDown);
     };
   }, []);
-  // UI-only radius slider value (visuals only).
+  // Radius slider value (used for nearby city search).
   const [radiusKm, setRadiusKm] = useState(50);
   // Pre-sort enum values once (German locale) so filter lists render consistently.
   const [sortedAreas] = useState(() =>
@@ -356,17 +358,6 @@ export function OrganizationFilters({
       });
     });
 
-    filters.city.forEach((city) => {
-      if (!city.trim()) return;
-      chips.push({
-        key: 'city',
-        value: city,
-        label: city,
-        container: chipToneByKey.city.container,
-        text: chipToneByKey.city.text,
-      });
-    });
-
     return chips;
   })();
 
@@ -376,6 +367,18 @@ export function OrganizationFilters({
       className="relative w-full rounded-2xl border border-border bg-background shadow-sm"
     >
       <div className="p-4 space-y-4">
+        {isActiveFilters && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleResetClick}
+            className="absolute right-4 top-4 h-8 px-3 text-xs border-accent-black text-accent-black bg-background hover:bg-accent-gray-soft flex items-center gap-2"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Zurücksetzen
+          </Button>
+        )}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
           <CitySearch
             key={`city-search-${citySearchKey}`}
@@ -384,32 +387,11 @@ export function OrganizationFilters({
             onNearbyChange={(cities) =>
               setNearbyCities(cities.map((city) => ({ name: city.name, label: city.label })))
             }
+            radiusKm={radiusKm}
+            onRadiusChange={setRadiusKm}
+            radiusOpen={isRadiusOpen}
+            onRadiusOpenChange={setIsRadiusOpen}
           />
-          <div className="space-y-2">
-            <div className="text-sm font-semibold text-muted-foreground">Radius: {radiusKm} km</div>
-            <Slider
-              value={[radiusKm]}
-              min={0}
-              max={50}
-              step={1}
-              onValueChange={(value) => setRadiusKm(value[0] ?? 50)}
-            />
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>0 km</span>
-              <span>50 km</span>
-            </div>
-          </div>
-          {isActiveFilters && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleResetClick}
-              className="border-accent-black text-accent-black bg-background hover:bg-accent-gray-soft"
-            >
-              Zurücksetzen
-            </Button>
-          )}
         </div>
 
         <div className="grid grid-cols-2 gap-1 md:flex md:flex-wrap">
@@ -441,7 +423,10 @@ export function OrganizationFilters({
                 </button>
 
                 {openSections[section.key] && (
-                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg">
+                  <div
+                    className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
+                    data-organization-filters-popover
+                  >
                     <div className="max-h-64 space-y-2 overflow-y-auto">
                       {(
                         section.groups ?? [
@@ -513,7 +498,10 @@ export function OrganizationFilters({
               </button>
 
               {openSections.city && (
-                <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg">
+                <div
+                  className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
+                  data-organization-filters-popover
+                >
                   <div className="max-h-64 space-y-2 overflow-y-auto">
                     {nearbyCities.map((city) => (
                       <Label
