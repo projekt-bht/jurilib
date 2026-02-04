@@ -40,7 +40,7 @@ Additionally, **Prisma Studio** _(visual database browser)_ is available at
 
 For more information, see [Additional Resources](#additional-resources).
 
-### Empfohlene VSC Extensions
+## Recommended VS Code Extensions
 
 - [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
