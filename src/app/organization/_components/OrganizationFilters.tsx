@@ -410,11 +410,13 @@ export function OrganizationFilters({
                     <span>{section.title}</span>
                   </span>
                   <span className="flex items-center gap-2">
-                    {selectedCount > 0 && (
-                      <span className="rounded-full bg-accent-gray-soft px-2 py-0.5 text-xs font-semibold text-accent-gray">
-                        {selectedCount}
-                      </span>
-                    )}
+                    <span
+                      className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
+                        selectedCount > 0 ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    >
+                      {selectedCount}
+                    </span>
                     <ChevronDown
                       size={16}
                       className={`transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`}
@@ -487,7 +489,13 @@ export function OrganizationFilters({
                   <span>Nachbarstädte</span>
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className="rounded-full bg-accent-gray-soft px-2 py-0.5 text-xs font-semibold text-accent-gray">
+                  <span
+                    className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
+                      nearbyCities.filter((city) => filters.city.includes(city.name)).length > 0
+                        ? 'opacity-100'
+                        : 'opacity-0'
+                    }`}
+                  >
                     {nearbyCities.filter((city) => filters.city.includes(city.name)).length}
                   </span>
                   <ChevronDown
