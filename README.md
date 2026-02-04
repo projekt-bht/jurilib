@@ -48,7 +48,7 @@ For more information, see [Additional Resources](#additional-resources).
 
 ## Daily Setup
 
-Stellt sicher, dass der Docker Container läuft. Danach...
+Make sure the Docker container is running. Then:
 
 - `npm run db:deploy`
 - `npm run dev`
