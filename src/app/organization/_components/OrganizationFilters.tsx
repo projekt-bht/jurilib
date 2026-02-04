@@ -412,7 +412,7 @@ export function OrganizationFilters({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap">
+        <div className="grid grid-cols-2 gap-1 md:flex md:flex-wrap">
           {sections.map((section) => {
             const selectedCount = (filters[section.key] as FilterValue[]).length;
             return (
