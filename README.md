@@ -17,19 +17,20 @@ The codebase is structured for feature growth and testing, with modular UI compo
 
 ## Getting Started
 
-- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) oder [Colima](https://github.com/abiosoft/colima) starten
-- `npm install` zum Laden der Abhängigkeiten
-- `.env`aus der `sample.env` Vorlage erstellen. (Kann einfach kopiert und umbenannt werden)
-- Aufsetzen des Datenbank-Containers via Docker:
-  - `docker compose -f docker-compose.postgres.yml up -d`
-- Initialisieren der Datenbank via Script:
-  - `npm run db:setup` - stellt Struktur anhand des gegebenen Schemas her
-  - `npm run db:seed` - erstellt gemockte Daten (pro Organisation, zwei User, drei Services, vier Requests, fünf Appointments)
-- Starten des Webservers:
-  - `npm run dev`
+- Start [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Colima](https://github.com/abiosoft/colima)
+- Install dependencies: `npm install`
+- Create a `.env` file using `sample.env` as a template (you can simply copy and rename it)
+- Set up the database container using Docker: `docker compose -f docker-compose.postgres.yml up -d`
+- Initialize the database:
+  - `npm run db:setup`  
+    Creates the database structure based on the provided schema.
+  - `npm run db:seed`  
+    Seeds the database with mocked data (per organization: two users, three services, four requests, five appointments).
+- Start the development server: `npm run dev`
 
-Im Anschluss könnt ihr [http://localhost:3000](http://localhost:3000) aufrufen, um die Anwendung zu sehen.
-Zusätzlich steht euch unter [http://localhost:5555](http://localhost:5555) das **Prisma Studio** _(visuelle Darstellung der Datenbank)_ zur Verfügung.
+After the setup is complete, you can open [http://localhost:3000](http://localhost:3000) to view the application.  
+Additionally, **Prisma Studio** _(visual database browser)_ is available at  
+[http://localhost:5555](http://localhost:5555).
 
 ### Basic Next.js Struktur
 
