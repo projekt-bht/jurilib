@@ -19,6 +19,12 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Cache problemText whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('problemText', problem);
+  }, [problem]);
+
   function getCachedProblem(): string {
     return sessionStorage.getItem('problemText') ?? '';
   }
