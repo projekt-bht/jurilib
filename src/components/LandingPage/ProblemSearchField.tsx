@@ -16,6 +16,8 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
   const [problem, setProblem] = useState(getCachedProblem());
+  const [cachedInquiries, setCachedInquiries] = useState(getInquiries());
+
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
