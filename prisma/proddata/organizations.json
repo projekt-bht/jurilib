@@ -8,8 +8,15 @@
     "phone": "+49 30 54892130",
     "website": "https://www.westend-partner.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Arbeitsrecht", "Familienrecht", "Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Familienrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -29,8 +36,13 @@
     "phone": "+49 40 77892311",
     "website": "https://www.alsterblick-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -50,8 +62,14 @@
     "phone": "+49 69 33445520",
     "website": "https://www.recht-teilhabe.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Migrationsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -71,8 +89,13 @@
     "phone": "+49 221 88931244",
     "website": "https://www.kanzlei-rheinbogen.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Handels_und_Gesellschaftsrecht", "Bank_und_Kapitalmarktrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Handels_und_Gesellschaftsrecht",
+      "Bank_und_Kapitalmarktrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -92,8 +115,13 @@
     "phone": "+49 30 77219800",
     "website": "https://www.sozialberatung-mitte.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -113,8 +141,13 @@
     "phone": "+49 711 99823110",
     "website": "https://www.suedtor-kanzlei.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Strafrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Strafrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -134,8 +167,13 @@
     "phone": "+49 40 66219055",
     "website": "https://www.migrationshilfe-nord.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt", "Leichte_Sprache"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -155,8 +193,13 @@
     "phone": "+49 40 88923410",
     "website": "https://www.elbforum.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Handels_und_Gesellschaftsrecht", "Steuerrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Handels_und_Gesellschaftsrecht",
+      "Steuerrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -176,8 +219,13 @@
     "phone": "+49 89 33218990",
     "website": "https://www.rae-isartor.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Familienrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -197,8 +245,14 @@
     "phone": "+49 341 77214560",
     "website": "https://www.klartext-ev.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache", "Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Sozialrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Leichte_Sprache",
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -218,8 +272,13 @@
     "phone": "+49 421 88992311",
     "website": "https://www.hafenrecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Transport_und_Speditionsrecht", "Versicherungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Transport_und_Speditionsrecht",
+      "Versicherungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -239,8 +298,15 @@
     "phone": "+49 351 44882190",
     "website": "https://www.barrierefreies-recht.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Blindenleitsystem", "Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Blindenleitsystem",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -260,8 +326,13 @@
     "phone": "+49 251 77823410",
     "website": "https://www.kanzlei-domplatz.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Bau_und_Architektenrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Bau_und_Architektenrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -281,8 +352,13 @@
     "phone": "+49 621 88923110",
     "website": "https://www.rae-neckarstadt.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Arbeitsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -302,8 +378,13 @@
     "phone": "+49 911 66219044",
     "website": "https://www.jugendrecht-jetzt.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Strafrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Strafrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -323,8 +404,13 @@
     "phone": "+49 89 77823490",
     "website": "https://www.technorecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Informationstechnologierecht", "Gewerblichen_Rechtsschutz"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Informationstechnologierecht",
+      "Gewerblichen_Rechtsschutz"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -344,8 +430,14 @@
     "phone": "+49 341 77214422",
     "website": "https://www.seniorenrecht-plus.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Erbrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -365,8 +457,13 @@
     "phone": "+49 351 88923455",
     "website": "https://www.kanzlei-stadtforum.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht", "Insolvenz_und_Sanierungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht",
+      "Insolvenz_und_Sanierungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -386,8 +483,13 @@
     "phone": "+49 231 77219901",
     "website": "https://www.perspektive-recht.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -407,8 +509,13 @@
     "phone": "+49 69 88923177",
     "website": "https://www.kanzlei-mainufer.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Steuerrecht", "Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Steuerrecht",
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -428,8 +535,13 @@
     "phone": "+49 541 77214490",
     "website": "https://www.recht-vor-ort.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Sozialrecht", "Miet_und_Wohnungseigentumsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Miet_und_Wohnungseigentumsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -449,8 +561,13 @@
     "phone": "+49 761 88923990",
     "website": "https://www.suedwestrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verkehrsrecht", "Strafrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verkehrsrecht",
+      "Strafrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -470,8 +587,13 @@
     "phone": "+49 521 77218820",
     "website": "https://www.bildung-und-recht.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -491,8 +613,13 @@
     "phone": "+49 941 88923112",
     "website": "https://www.altstadt-kollegen.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Familienrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -512,8 +639,13 @@
     "phone": "+49 341 77215530",
     "website": "https://www.fair-und-klar.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Arbeitsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -533,8 +665,13 @@
     "phone": "+49 431 88923344",
     "website": "https://www.kanzlei-nordlicht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Transport_und_Speditionsrecht", "Versicherungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Transport_und_Speditionsrecht",
+      "Versicherungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -554,8 +691,14 @@
     "phone": "+49 711 77214455",
     "website": "https://www.recht-und-familie.org",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Familienrecht", "Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -575,8 +718,12 @@
     "phone": "+49 251 88923770",
     "website": "https://www.westfalenrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -596,8 +743,12 @@
     "phone": "+49 391 77213320",
     "website": "https://www.sozialrecht-aktiv.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -617,8 +768,12 @@
     "phone": "+49 30 88923199",
     "website": "https://www.kanzlei-am-theater.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Urheber_und_Medienrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Urheber_und_Medienrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -638,8 +793,13 @@
     "phone": "+49 3943 889231",
     "website": "https://www.kanzlei-markt-wr.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Arbeitsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -659,8 +819,13 @@
     "phone": "+49 591 772144",
     "website": "https://www.rechtsberatung-emsland.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Migrationsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -680,8 +845,13 @@
     "phone": "+49 8041 889233",
     "website": "https://www.kanzlei-oberland.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Familienrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -701,8 +871,12 @@
     "phone": "+49 3571 772199",
     "website": "https://www.sozialberatung-lausitz.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -722,8 +896,13 @@
     "phone": "+49 4271 889211",
     "website": "https://www.kanzlei-weserblick.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verkehrsrecht", "Versicherungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verkehrsrecht",
+      "Versicherungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -743,8 +922,12 @@
     "phone": "+49 941 772188",
     "website": "https://www.migrationsberatung-opf.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -764,8 +947,13 @@
     "phone": "+49 7831 889245",
     "website": "https://www.schwarzwaldrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -785,8 +973,13 @@
     "phone": "+49 6821 772144",
     "website": "https://www.recht-jugend-saar.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Strafrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Strafrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -806,8 +999,13 @@
     "phone": "+49 8461 889233",
     "website": "https://www.altmuehl-partner.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Agrarrecht", "Familienrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Agrarrecht",
+      "Familienrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -827,8 +1025,12 @@
     "phone": "+49 3332 772155",
     "website": "https://www.sozialrecht-uckermark.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -848,8 +1050,13 @@
     "phone": "+49 2621 889211",
     "website": "https://www.kanzlei-mittelrhein.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Versicherungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Versicherungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -869,8 +1076,12 @@
     "phone": "+49 3741 772188",
     "website": "https://www.recht-migration-vogtland.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -890,8 +1101,13 @@
     "phone": "+49 4841 889233",
     "website": "https://www.kanzlei-nordfriesland.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -911,8 +1127,12 @@
     "phone": "+49 831 772144",
     "website": "https://www.sozialberatung-allgaeu.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -932,8 +1152,13 @@
     "phone": "+49 3381 889211",
     "website": "https://www.havelrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verkehrsrecht", "Strafrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verkehrsrecht",
+      "Strafrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -953,8 +1178,12 @@
     "phone": "+49 5651 772199",
     "website": "https://www.recht-soziales-wm.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -974,8 +1203,12 @@
     "phone": "+49 5231 889233",
     "website": "https://www.lippe-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Arbeitsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -995,8 +1228,12 @@
     "phone": "+49 641 772144",
     "website": "https://www.migrationshilfe-mh.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1016,8 +1253,13 @@
     "phone": "+49 3546 889211",
     "website": "https://www.kanzlei-spreewald.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1037,8 +1279,12 @@
     "phone": "+49 9771 772155",
     "website": "https://www.recht-teilhabe-rhoen.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1058,8 +1304,12 @@
     "phone": "+49 211 88923110",
     "website": "https://www.kanzlei-rheintor.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1079,8 +1329,12 @@
     "phone": "+49 201 77214400",
     "website": "https://www.sozialberatung-ruhr.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1100,8 +1354,13 @@
     "phone": "+49 89 88923440",
     "website": "https://www.isarrecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Arbeitsrecht", "Steuerrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Steuerrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1121,8 +1380,12 @@
     "phone": "+49 69 77215510",
     "website": "https://www.integration-rm.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1142,8 +1405,13 @@
     "phone": "+49 40 88923990",
     "website": "https://www.hanserecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Transport_und_Speditionsrecht", "Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Transport_und_Speditionsrecht",
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1163,8 +1431,12 @@
     "phone": "+49 711 88923155",
     "website": "https://www.neckar-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1184,8 +1456,12 @@
     "phone": "+49 221 77214420",
     "website": "https://www.recht-arbeit-koeln.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Arbeitsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1205,8 +1481,12 @@
     "phone": "+49 228 88923300",
     "website": "https://www.wissenschaftsrecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1226,8 +1506,12 @@
     "phone": "+49 30 77215580",
     "website": "https://www.sozialrecht-nordost.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1247,8 +1531,12 @@
     "phone": "+49 381 88923190",
     "website": "https://www.ostsee-partner.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1268,8 +1556,13 @@
     "phone": "+49 341 88923310",
     "website": "https://www.elsterrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Strafrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Strafrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1289,8 +1582,12 @@
     "phone": "+49 511 77214490",
     "website": "https://www.teilhabe-hannover.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1310,8 +1607,12 @@
     "phone": "+49 421 88923220",
     "website": "https://www.weserforum.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1331,8 +1632,12 @@
     "phone": "+49 7121 772144",
     "website": "https://www.sozialberatung-neckaralb.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1352,8 +1657,13 @@
     "phone": "+49 681 88923140",
     "website": "https://www.saarforum.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1373,8 +1683,12 @@
     "phone": "+49 371 772155",
     "website": "https://www.gleichstellung-chemnitz.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1394,8 +1708,12 @@
     "phone": "+49 234 88923210",
     "website": "https://www.domrecht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1415,8 +1733,12 @@
     "phone": "+49 6341 772144",
     "website": "https://www.sozialberatung-suedpfalz.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1436,8 +1758,13 @@
     "phone": "+49 461 88923390",
     "website": "https://www.foerde-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1457,8 +1784,12 @@
     "phone": "+49 331 77215570",
     "website": "https://www.teilhabe-potsdam.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1478,8 +1809,13 @@
     "phone": "+49 30 88923410",
     "website": "https://www.spreeforum.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Vergaberecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Vergaberecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1499,8 +1835,12 @@
     "phone": "+49 40 77214430",
     "website": "https://www.sozialberatung-altona.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1520,8 +1860,13 @@
     "phone": "+49 69 88923160",
     "website": "https://www.maintor-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Steuerrecht", "Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Steuerrecht",
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1541,8 +1886,12 @@
     "phone": "+49 221 77215530",
     "website": "https://www.recht-migration-koeln.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1562,8 +1911,13 @@
     "phone": "+49 511 88923440",
     "website": "https://www.leinerecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1583,8 +1937,13 @@
     "phone": "+49 351 88923280",
     "website": "https://www.elbtor-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Strafrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Strafrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1604,8 +1963,12 @@
     "phone": "+49 271 772144",
     "website": "https://www.sozialberatung-swf.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1625,8 +1988,13 @@
     "phone": "+49 8031 889231",
     "website": "https://www.innrecht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Familienrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1646,8 +2014,12 @@
     "phone": "+49 421 77215520",
     "website": "https://www.gleichstellung-bremen.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1667,8 +2039,12 @@
     "phone": "+49 761 88923490",
     "website": "https://www.schwarzwald-partner.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1688,8 +2064,13 @@
     "phone": "+49 30 88923111",
     "website": "https://www.alexanderplatz-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Strafrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Strafrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1709,8 +2090,12 @@
     "phone": "+49 231 77214455",
     "website": "https://www.sozialberatung-nordstadt.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1730,8 +2115,12 @@
     "phone": "+49 7531 889233",
     "website": "https://www.bodensee-partner.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1751,8 +2140,13 @@
     "phone": "+49 561 77215540",
     "website": "https://www.jugend-recht.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht", "Strafrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht",
+      "Strafrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1772,8 +2166,12 @@
     "phone": "+49 395 889231",
     "website": "https://www.uferrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1793,8 +2191,12 @@
     "phone": "+49 3581 772144",
     "website": "https://www.sozialberatung-oberlausitz.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1814,8 +2216,13 @@
     "phone": "+49 8461 889231",
     "website": "https://www.altmuehl-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Familienrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Familienrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1835,8 +2242,12 @@
     "phone": "+49 3381 772155",
     "website": "https://www.migration-havel.org",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Migrationsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Migrationsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1856,8 +2267,13 @@
     "phone": "+49 941 889234",
     "website": "https://www.donauforum.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Steuerrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Steuerrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1877,8 +2293,12 @@
     "phone": "+49 5321 772144",
     "website": "https://www.sozialberatung-nordharz.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1898,8 +2318,12 @@
     "phone": "+49 441 889231",
     "website": "https://www.hafenstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Transport_und_Speditionsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Transport_und_Speditionsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -1919,8 +2343,12 @@
     "phone": "+49 8631 772155",
     "website": "https://www.gleichstellung-oberbayern.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1940,8 +2368,13 @@
     "phone": "+49 591 889233",
     "website": "https://www.emsland-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Arbeitsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Arbeitsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -1961,8 +2394,12 @@
     "phone": "+49 4521 772144",
     "website": "https://www.sozialberatung-ostholstein.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -1982,8 +2419,12 @@
     "phone": "+49 6172 889231",
     "website": "https://www.taunusrecht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Miet_und_Wohnungseigentumsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Miet_und_Wohnungseigentumsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2003,8 +2444,12 @@
     "phone": "+49 371 77215560",
     "website": "https://www.frauen-familie-recht.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Familienrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Familienrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2024,8 +2469,13 @@
     "phone": "+49 6021 889234",
     "website": "https://www.spessart-partner.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Verwaltungsrecht", "Sozialrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2045,8 +2495,12 @@
     "phone": "+49 5021 772144",
     "website": "https://www.sozialberatung-mittelweser.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2066,8 +2520,12 @@
     "phone": "+49 7751 889231",
     "website": "https://www.hochrhein-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2087,8 +2545,12 @@
     "phone": "+49 4841 772155",
     "website": "https://www.teilhabe-nordfriesland.org",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sozialrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2108,8 +2570,13 @@
     "phone": "+49 609 25559249",
     "website": "https://www.bruecke-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Medizinrecht", "Bau_und_Architektenrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Bau_und_Architektenrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2129,8 +2596,14 @@
     "phone": "+49 740 26585695",
     "website": "https://www.plaza-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Medizinrecht", "Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Sozialrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2150,8 +2623,14 @@
     "phone": "+49 168 65440508",
     "website": "https://www.campus-recht.de",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Sportrecht", "Sozialrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Sportrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2167,12 +2646,17 @@
     "name": "Verein Plaza e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@plaza-beratung.org",
+    "email": "kontakt1@plaza-beratung.org",
     "phone": "+49 506 65403286",
     "website": "https://www.plaza-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Medizinrecht", "Insolvenz_und_Sanierungsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Insolvenz_und_Sanierungsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2192,8 +2676,13 @@
     "phone": "+49 852 74479811",
     "website": "https://www.hafen-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Internationales_Wirtschaftsrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Internationales_Wirtschaftsrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2213,8 +2702,15 @@
     "phone": "+49 411 20594331",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Erbrecht", "Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Erbrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2234,8 +2730,14 @@
     "phone": "+49 779 45665670",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Sportrecht", "Steuerrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Sportrecht",
+      "Steuerrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2255,8 +2757,14 @@
     "phone": "+49 187 85148554",
     "website": "https://www.altstadt-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Miet_und_Wohnungseigentumsrecht", "Erbrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Miet_und_Wohnungseigentumsrecht",
+      "Erbrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2276,8 +2784,14 @@
     "phone": "+49 561 37679234",
     "website": "https://www.zentrum-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Sportrecht", "Bank_und_Kapitalmarktrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Sportrecht",
+      "Bank_und_Kapitalmarktrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2293,12 +2807,18 @@
     "name": "Kanzlei Hafen",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@hafen-recht.de",
+    "email": "kontakt1@hafen-recht.de",
     "phone": "+49 649 78853299",
     "website": "https://www.hafen-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Gewerblichen_Rechtsschutz", "Erbrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Gewerblichen_Rechtsschutz",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2318,8 +2838,13 @@
     "phone": "+49 272 93682373",
     "website": "https://www.stadttor-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Verwaltungsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2335,12 +2860,17 @@
     "name": "Rechtsanwälte Brücke & Kollegen",
     "shortDescription": "Rechtsberatung für Sportler, Vereine und Verbände.",
     "description": "Die Kanzlei begleitet Sportler und Sportorganisationen rechtlich. Vertragsgestaltung und Streitbeilegung gehören zum Portfolio.",
-    "email": "kontakt@bruecke-recht.de",
+    "email": "kontakt1@bruecke-recht.de",
     "phone": "+49 516 37507026",
     "website": "https://www.bruecke-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Sportrecht", "Bau_und_Architektenrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Sportrecht",
+      "Bau_und_Architektenrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2356,12 +2886,17 @@
     "name": "Rechtsberatung Altstadt e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@altstadt-beratung.org",
+    "email": "kontakt1@altstadt-beratung.org",
     "phone": "+49 563 48480630",
     "website": "https://www.altstadt-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Arbeitsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Arbeitsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2377,12 +2912,17 @@
     "name": "Rechtsanwälte Am Turm & Kollegen",
     "shortDescription": "Spezialisierung auf Bau- und Architektenrecht.",
     "description": "Die Kanzlei begleitet Bauherren, Architekten und Bauunternehmen. Bauvertragsrecht und Mängelstreitigkeiten sind zentrale Themen.",
-    "email": "kontakt@am-turm-recht.de",
+    "email": "kontakt1@am-turm-recht.de",
     "phone": "+49 355 96843908",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2398,12 +2938,17 @@
     "name": "Rechtsanwälte Brücke",
     "shortDescription": "Spezialisierung auf Bau- und Architektenrecht.",
     "description": "Die Kanzlei begleitet Bauherren, Architekten und Bauunternehmen. Bauvertragsrecht und Mängelstreitigkeiten sind zentrale Themen.",
-    "email": "kontakt@bruecke-recht.de",
+    "email": "kontakt2@bruecke-recht.de",
     "phone": "+49 976 78248114",
     "website": "https://www.bruecke-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2419,12 +2964,19 @@
     "name": "Anwaltskanzlei Am Turm",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@am-turm-recht.de",
+    "email": "kontakt2@am-turm-recht.de",
     "phone": "+49 842 25227289",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Sportrecht", "Medizinrecht", "Handels_und_Gesellschaftsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sportrecht",
+      "Medizinrecht",
+      "Handels_und_Gesellschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2440,12 +2992,17 @@
     "name": "Initiative Altstadt e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@altstadt-beratung.org",
+    "email": "kontakt2@altstadt-beratung.org",
     "phone": "+49 447 67716109",
     "website": "https://www.altstadt-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Bau_und_Architektenrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Bau_und_Architektenrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2461,12 +3018,17 @@
     "name": "Rechtsanwälte Altstadt & Kollegen",
     "shortDescription": "Beratung bei Insolvenz und Unternehmenssanierung.",
     "description": "Die Kanzlei begleitet Unternehmen in der Krise. Sanierungskonzepte und Insolvenzverfahren werden professionell betreut.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt1@altstadt-recht.de",
     "phone": "+49 296 70507237",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Familienrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Familienrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2482,11 +3044,13 @@
     "name": "Kanzlei Stadttor & Partner",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@stadttor-recht.de",
+    "email": "kontakt1@stadttor-recht.de",
     "phone": "+49 260 82554867",
     "website": "https://www.stadttor-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
     "expertiseAreas": [
       "Medizinrecht",
       "Gewerblichen_Rechtsschutz",
@@ -2511,7 +3075,9 @@
     "phone": "+49 219 97818670",
     "website": "https://www.zentrum-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
     "expertiseAreas": [
       "Internationales_Wirtschaftsrecht",
       "Sportrecht",
@@ -2536,8 +3102,13 @@
     "phone": "+49 168 21304414",
     "website": "https://www.stadttor-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Medizinrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Medizinrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2557,8 +3128,13 @@
     "phone": "+49 520 57675740",
     "website": "https://www.plaza-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Internationales_Wirtschaftsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Internationales_Wirtschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2574,12 +3150,18 @@
     "name": "Rechtsanwälte Hafen & Kollegen",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@hafen-recht.de",
+    "email": "kontakt2@hafen-recht.de",
     "phone": "+49 342 32410564",
     "website": "https://www.hafen-recht.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Sozialrecht", "Strafrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Sozialrecht",
+      "Strafrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2595,12 +3177,17 @@
     "name": "Kanzlei Altstadt & Partner",
     "shortDescription": "Beratung bei Insolvenz und Unternehmenssanierung.",
     "description": "Die Kanzlei begleitet Unternehmen in der Krise. Sanierungskonzepte und Insolvenzverfahren werden professionell betreut.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt2@altstadt-recht.de",
     "phone": "+49 774 68166739",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Miet_und_Wohnungseigentumsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Miet_und_Wohnungseigentumsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2620,8 +3207,13 @@
     "phone": "+49 171 99487064",
     "website": "https://www.campus-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Bank_und_Kapitalmarktrecht", "Sportrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Bank_und_Kapitalmarktrecht",
+      "Sportrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2637,12 +3229,18 @@
     "name": "Rechtsanwälte Am Turm",
     "shortDescription": "Internationale Wirtschaftsrechtsberatung.",
     "description": "Die Kanzlei berät bei grenzüberschreitenden Geschäften. Internationales Vertragsrecht und Handelsrecht sind Schwerpunkte.",
-    "email": "kontakt@am-turm-recht.de",
+    "email": "kontakt3@am-turm-recht.de",
     "phone": "+49 739 38242736",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Internationales_Wirtschaftsrecht", "Verwaltungsrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Internationales_Wirtschaftsrecht",
+      "Verwaltungsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2658,12 +3256,17 @@
     "name": "Rechtsberatung Stadttor e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@stadttor-beratung.org",
+    "email": "kontakt1@stadttor-beratung.org",
     "phone": "+49 525 19116951",
     "website": "https://www.stadttor-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Medizinrecht", "Steuerrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Steuerrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2679,12 +3282,17 @@
     "name": "Initiative Altstadt e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@altstadt-beratung.org",
+    "email": "kontakt3@altstadt-beratung.org",
     "phone": "+49 902 76180310",
     "website": "https://www.altstadt-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Strafrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Strafrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2700,12 +3308,18 @@
     "name": "Sozialberatung Zentrum e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@zentrum-beratung.org",
+    "email": "kontakt1@zentrum-beratung.org",
     "phone": "+49 654 37121473",
     "website": "https://www.zentrum-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Steuerrecht", "Arbeitsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Steuerrecht",
+      "Arbeitsrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2721,12 +3335,18 @@
     "name": "Kanzlei Zentrum",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@zentrum-recht.de",
+    "email": "kontakt1@zentrum-recht.de",
     "phone": "+49 857 21582801",
     "website": "https://www.zentrum-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Medizinrecht", "Handels_und_Gesellschaftsrecht", "Arbeitsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Handels_und_Gesellschaftsrecht",
+      "Arbeitsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2742,12 +3362,18 @@
     "name": "Rechtsanwälte Brücke",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@bruecke-recht.de",
+    "email": "kontakt3@bruecke-recht.de",
     "phone": "+49 617 28971963",
     "website": "https://www.bruecke-recht.de",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Strafrecht", "Verkehrsrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Strafrecht",
+      "Verkehrsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2763,12 +3389,17 @@
     "name": "Kanzlei Stadttor & Partner",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@stadttor-recht.de",
+    "email": "kontakt2@stadttor-recht.de",
     "phone": "+49 881 68014964",
     "website": "https://www.stadttor-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Medizinrecht", "Arbeitsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Arbeitsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2784,12 +3415,18 @@
     "name": "Anwaltskanzlei Hafen",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@hafen-recht.de",
+    "email": "kontakt3@hafen-recht.de",
     "phone": "+49 633 91107334",
     "website": "https://www.hafen-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
-    "expertiseAreas": ["Medizinrecht", "Bank_und_Kapitalmarktrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Bank_und_Kapitalmarktrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2805,12 +3442,19 @@
     "name": "Rechtsanwälte Campus & Kollegen",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@campus-recht.de",
+    "email": "kontakt1@campus-recht.de",
     "phone": "+49 261 62116519",
     "website": "https://www.campus-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Internationales_Wirtschaftsrecht", "Medizinrecht", "Sozialrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Internationales_Wirtschaftsrecht",
+      "Medizinrecht",
+      "Sozialrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2830,7 +3474,10 @@
     "phone": "+49 149 36539734",
     "website": "https://www.forum-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
     "expertiseAreas": [
       "Internationales_Wirtschaftsrecht",
       "Miet_und_Wohnungseigentumsrecht",
@@ -2851,12 +3498,18 @@
     "name": "Beratungsstelle Campus e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@campus-beratung.org",
+    "email": "kontakt1@campus-beratung.org",
     "phone": "+49 401 18530080",
     "website": "https://www.campus-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Insolvenz_und_Sanierungsrecht", "Medizinrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Insolvenz_und_Sanierungsrecht",
+      "Medizinrecht",
+      "Erbrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -2872,12 +3525,17 @@
     "name": "Kanzlei Hafen & Partner",
     "shortDescription": "Spezialisierung auf Bau- und Architektenrecht.",
     "description": "Die Kanzlei begleitet Bauherren, Architekten und Bauunternehmen. Bauvertragsrecht und Mängelstreitigkeiten sind zentrale Themen.",
-    "email": "kontakt@hafen-recht.de",
+    "email": "kontakt4@hafen-recht.de",
     "phone": "+49 375 99851927",
     "website": "https://www.hafen-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Bau_und_Architektenrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Bau_und_Architektenrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2897,8 +3555,14 @@
     "phone": "+49 129 83071674",
     "website": "https://www.forum-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Erbrecht", "Arbeitsrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Erbrecht",
+      "Arbeitsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -2914,12 +3578,18 @@
     "name": "Kanzlei Am Turm & Partner",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@am-turm-recht.de",
+    "email": "kontakt4@am-turm-recht.de",
     "phone": "+49 230 78392660",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht"],
-    "expertiseAreas": ["Medizinrecht", "Internationales_Wirtschaftsrecht", "Erbrecht"],
+    "accessibility": [
+      "Rollstuhlgerecht"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Internationales_Wirtschaftsrecht",
+      "Erbrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2935,12 +3605,18 @@
     "name": "Rechtsanwälte Altstadt & Kollegen",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt3@altstadt-recht.de",
     "phone": "+49 247 74750900",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Insolvenz_und_Sanierungsrecht", "Strafrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Insolvenz_und_Sanierungsrecht",
+      "Strafrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2956,12 +3632,17 @@
     "name": "Kanzlei Altstadt",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt4@altstadt-recht.de",
     "phone": "+49 824 85949812",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Gewerblichen_Rechtsschutz", "Arbeitsrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Gewerblichen_Rechtsschutz",
+      "Arbeitsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2977,12 +3658,18 @@
     "name": "Kanzlei Altstadt",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt5@altstadt-recht.de",
     "phone": "+49 230 96597724",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Aufzug_vorhanden"],
-    "expertiseAreas": ["Internationales_Wirtschaftsrecht", "Gewerblichen_Rechtsschutz"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Internationales_Wirtschaftsrecht",
+      "Gewerblichen_Rechtsschutz"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -2998,11 +3685,14 @@
     "name": "Kanzlei Campus",
     "shortDescription": "Beratung im gewerblichen Rechtsschutz und Patentrecht.",
     "description": "Die Kanzlei schützt geistiges Eigentum. Patent-, Marken- und Designrecht gehören zu den Kernkompetenzen.",
-    "email": "kontakt@campus-recht.de",
+    "email": "kontakt2@campus-recht.de",
     "phone": "+49 572 52198471",
     "website": "https://www.campus-recht.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
     "expertiseAreas": [
       "Internationales_Wirtschaftsrecht",
       "Gewerblichen_Rechtsschutz",
@@ -3023,12 +3713,18 @@
     "name": "Rechtsanwälte Zentrum",
     "shortDescription": "Spezialisierte Beratung im Medizin- und Gesundheitsrecht.",
     "description": "Die Kanzlei berät Ärzte, Krankenhäuser und Patienten in medizinrechtlichen Fragen. Schwerpunkte liegen im Arzthaftungsrecht und Gesundheitsrecht.",
-    "email": "kontakt@zentrum-recht.de",
+    "email": "kontakt2@zentrum-recht.de",
     "phone": "+49 486 43271933",
     "website": "https://www.zentrum-recht.de",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Medizinrecht", "Internationales_Wirtschaftsrecht", "Steuerrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Internationales_Wirtschaftsrecht",
+      "Steuerrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "MEDIUM",
     "country": "Deutschland",
@@ -3048,7 +3744,10 @@
     "phone": "+49 471 53047979",
     "website": "https://www.hafen-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Rollstuhlgerecht", "Leichte_Sprache"],
+    "accessibility": [
+      "Rollstuhlgerecht",
+      "Leichte_Sprache"
+    ],
     "expertiseAreas": [
       "Insolvenz_und_Sanierungsrecht",
       "Gewerblichen_Rechtsschutz",
@@ -3073,8 +3772,14 @@
     "phone": "+49 602 10987124",
     "website": "https://www.marktplatz-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Stufenloser_Zugang"],
-    "expertiseAreas": ["Bau_und_Architektenrecht", "Insolvenz_und_Sanierungsrecht", "Erbrecht"],
+    "accessibility": [
+      "Stufenloser_Zugang"
+    ],
+    "expertiseAreas": [
+      "Bau_und_Architektenrecht",
+      "Insolvenz_und_Sanierungsrecht",
+      "Erbrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -3090,12 +3795,18 @@
     "name": "Kanzlei Altstadt & Partner",
     "shortDescription": "Internationale Wirtschaftsrechtsberatung.",
     "description": "Die Kanzlei berät bei grenzüberschreitenden Geschäften. Internationales Vertragsrecht und Handelsrecht sind Schwerpunkte.",
-    "email": "kontakt@altstadt-recht.de",
+    "email": "kontakt6@altstadt-recht.de",
     "phone": "+49 976 32186068",
     "website": "https://www.altstadt-recht.de",
     "imageUrl": "",
-    "accessibility": ["Assistenztiere_erlaubt"],
-    "expertiseAreas": ["Internationales_Wirtschaftsrecht", "Verwaltungsrecht", "Familienrecht"],
+    "accessibility": [
+      "Assistenztiere_erlaubt"
+    ],
+    "expertiseAreas": [
+      "Internationales_Wirtschaftsrecht",
+      "Verwaltungsrecht",
+      "Familienrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -3111,12 +3822,18 @@
     "name": "Initiative Zentrum e.V.",
     "shortDescription": "Kostenlose Rechtsberatung für Menschen in schwierigen Lebenslagen.",
     "description": "Der Verein bietet niedrigschwellige Beratung. Ziel ist rechtliche Orientierung und gesellschaftliche Teilhabe.",
-    "email": "kontakt@zentrum-beratung.org",
+    "email": "kontakt2@zentrum-beratung.org",
     "phone": "+49 157 45407210",
     "website": "https://www.zentrum-beratung.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
-    "expertiseAreas": ["Medizinrecht", "Bank_und_Kapitalmarktrecht", "Erbrecht"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
+    "expertiseAreas": [
+      "Medizinrecht",
+      "Bank_und_Kapitalmarktrecht",
+      "Erbrecht"
+    ],
     "type": "ASSOCIATION",
     "priceCategory": "FREE",
     "country": "Deutschland",
@@ -3132,12 +3849,17 @@
     "name": "Kanzlei Plaza",
     "shortDescription": "Rechtsberatung für Sportler, Vereine und Verbände.",
     "description": "Die Kanzlei begleitet Sportler und Sportorganisationen rechtlich. Vertragsgestaltung und Streitbeilegung gehören zum Portfolio.",
-    "email": "kontakt@plaza-recht.de",
+    "email": "kontakt1@plaza-recht.de",
     "phone": "+49 782 61083255",
     "website": "https://www.plaza-recht.de",
     "imageUrl": "",
-    "accessibility": ["Leichte_Sprache"],
-    "expertiseAreas": ["Sportrecht", "Internationales_Wirtschaftsrecht"],
+    "accessibility": [
+      "Leichte_Sprache"
+    ],
+    "expertiseAreas": [
+      "Sportrecht",
+      "Internationales_Wirtschaftsrecht"
+    ],
     "type": "LAW_FIRM",
     "priceCategory": "HIGH",
     "country": "Deutschland",
@@ -3153,11 +3875,13 @@
     "name": "Kanzlei Am Turm",
     "shortDescription": "Spezialisierung auf Bau- und Architektenrecht.",
     "description": "Die Kanzlei begleitet Bauherren, Architekten und Bauunternehmen. Bauvertragsrecht und Mängelstreitigkeiten sind zentrale Themen.",
-    "email": "kontakt@am-turm-recht.de",
+    "email": "kontakt5@am-turm-recht.de",
     "phone": "+49 926 89724340",
     "website": "https://www.am-turm-recht.de",
     "imageUrl": "",
-    "accessibility": ["Aufzug_vorhanden"],
+    "accessibility": [
+      "Aufzug_vorhanden"
+    ],
     "expertiseAreas": [
       "Bau_und_Architektenrecht",
       "Miet_und_Wohnungseigentumsrecht",
