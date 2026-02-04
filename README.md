@@ -32,13 +32,13 @@ After the setup is complete, you can open [http://localhost:3000](http://localho
 Additionally, **Prisma Studio** _(visual database browser)_ is available at  
 [http://localhost:5555](http://localhost:5555).
 
-### Basic Next.js Struktur
+## Basic Next.js Structure
 
-- `/src/app/page.tsx` bildet die Startpage
-- `/src/app/[PageName]/page.tsx` bilden alle weiteren Frontend-Sites
-- `/src/app/api/[Endpoint]/route.tsx` bilden alle Backend-API's
+- `/src/app/page.tsx` represents the landing page
+- `/src/app/[PageName]/page.tsx` represent all additional frontend pages
+- `/src/app/api/[Endpoint]/route.tsx` represent all backend API endpoints
 
-Weitere Infos siehe [Learn More](##--Weitere--Ressourcen)
+For more information, see [Additional Resources](#additional-resources).
 
 ### Empfohlene VSC Extensions
 
