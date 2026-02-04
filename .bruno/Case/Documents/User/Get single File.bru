@@ -1,0 +1,24 @@
+meta {
+  name: Get single File
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/case/{{process.env.CASE_ID}}/documents/user?fileName=waage.png
+  body: none
+  auth: inherit
+}
+
+params:query {
+  fileName: waage.png
+}
+
+headers {
+  private: true
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
