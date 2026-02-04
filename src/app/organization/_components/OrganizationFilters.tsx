@@ -214,6 +214,7 @@ export function OrganizationFilters({
   const handleResetClick = () => {
     onReset();
     setCitySearchKey((prev) => prev + 1);
+    setNearbyCities([]);
   };
 
   // Filter sections rendered as dropdowns.
