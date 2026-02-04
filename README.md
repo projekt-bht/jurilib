@@ -62,9 +62,10 @@ Make sure the Docker container is running. Then:
 
 ## Frontend Icons
 
-Für die Nutzung von Icons im Frontend, kann die Library [Lucide](https://lucide.dev/icons/) genutzt werden.
-Icons können einfach als React Komponenten implentiert werden.
-Folgende Props können bei jedem Icon angepasst werden:
+For frontend icons, the library [Lucide](https://lucide.dev/icons/) can be used.
+Icons can be easily imported as React components.
+
+The following props are available for every icon:
 
 | name                | type    | default      |
 | ------------------- | ------- | ------------ |
@@ -73,9 +74,9 @@ Folgende Props können bei jedem Icon angepasst werden:
 | strokeWidth         | number  | 2            |
 | absoluteStrokeWidth | boolean | false        |
 
-Einfache Implementierung über:
+**Usage:**
 
-```
+```tsx
 const App = () => {
   return <Camera size={48} fill="red" />;
 };
