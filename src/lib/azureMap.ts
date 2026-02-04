@@ -57,9 +57,8 @@ export const getCityByRadius = async (lat: number, lon: number) => {
   url.searchParams.append('entityType', 'Municipality');
   url.searchParams.append('countrySet', 'DE');
   url.searchParams.append('radius', azureMapConfig.radiusDefault.toString());
-  url.searchParams.append('query', '');
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString() + "&query=''");
   if (!response.ok) {
     throw new Error(`Azure Maps API request failed with status ${response.status}`);
   }
