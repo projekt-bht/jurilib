@@ -1,21 +1,13 @@
 'use client';
 
-import {
-  Building,
-  Building2,
-  ChevronDown,
-  Earth,
-  Filter,
-  PersonStanding,
-  Scale,
-  Tag,
-  X,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Building, Building2, ChevronDown, Earth, PersonStanding, Tag, X } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import {
   Accessibility as AccessibilityEnum,
   Area as AreasEnum,
@@ -23,6 +15,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
+import scale_logo from '~/public/scale_logo.svg';
 import CitySearch from './CitySearch';
 
 export type FilterOptions = {
@@ -34,6 +27,7 @@ export type FilterOptions = {
   city: string[];
 };
 
+// Union of all filter value enums used in checkbox lists.
 export type FilterValue =
   | PriceCategoryEnum
   | OrganizationTypeEnum
@@ -112,16 +106,18 @@ export function OrganizationFilters({
   onReset: () => void;
   activeFilterCount: number;
 }) {
-  // When landing on the page, the filters should start collapsed.
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
-  // Helper to open/close all sections at once based on layout size.
-  const buildSectionState = (isOpen: boolean) =>
-    Object.fromEntries(sectionKeys.map((key) => [key, isOpen]));
-  // Start compact: only headers visible until user opens a section (under xl).
-  const [openSections, setOpenSections] = useState(() => buildSectionState(false));
-  const [isWideLayout, setIsWideLayout] = useState(false);
-  // Pre-sort enum values once (German locale) so filter lists render consistently without
-  // re-sorting on every render.
+  // Track which dropdown is currently open.
+  const [openSections, setOpenSections] = useState<Record<keyof FilterOptions, boolean>>({
+    organizationType: false,
+    priceCategory: false,
+    area: false,
+    languages: false,
+    accessibility: false,
+    city: false,
+  });
+  // UI-only radius slider value (visuals only).
+  const [radiusKm, setRadiusKm] = useState(50);
+  // Pre-sort enum values once (German locale) so filter lists render consistently.
   const [sortedAreas] = useState(() =>
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
@@ -132,45 +128,23 @@ export function OrganizationFilters({
     [...Object.values(AccessibilityEnum)].sort((a, b) => a.localeCompare(b, 'de'))
   );
 
+  // Delegate checkbox changes to parent filter state.
   const handleCheckboxChange = (
     category: keyof FilterOptions,
     value: FilterValue,
     isChecked: boolean
   ) => onFilterChange(category, value, isChecked);
 
+  // Used for reset button + active badge.
   const isActiveFilters = activeFilterCount > 0;
   const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
 
-  // Sync layout with breakpoints: xl opens all sections; below xl collapses.
-  // If the grid collapses to a single column (< sm), force-close all sections regardless of prior state.
-  useEffect(() => {
-    const wideQuery = window.matchMedia('(min-width: 1280px)');
-    const multiColumnQuery = window.matchMedia('(min-width: 400px)');
-    const syncLayout = () => {
-      const isWide = wideQuery.matches;
-      const isSingleColumn = !multiColumnQuery.matches;
-      setIsWideLayout(isWide);
-      if (isSingleColumn) {
-        setOpenSections(buildSectionState(false));
-        return;
-      }
-      setOpenSections(buildSectionState(isWide));
-    };
-    syncLayout();
-    wideQuery.addEventListener('change', syncLayout);
-    multiColumnQuery.addEventListener('change', syncLayout);
-    // Cleanup listener to prevent memory leaks when the component unmounts.
-    return () => {
-      wideQuery.removeEventListener('change', syncLayout);
-      multiColumnQuery.removeEventListener('change', syncLayout);
-    };
-  }, []);
-
-  // ESLint: Keep local input in sync on reset without triggering extra effects.
+  // Reset all filters back to default state.
   const handleResetClick = () => {
     onReset();
   };
 
+  // Filter sections rendered as dropdowns.
   const sections: Array<{
     key: keyof FilterOptions;
     title: string;
@@ -192,7 +166,7 @@ export function OrganizationFilters({
     {
       key: 'priceCategory',
       title: 'Preisklasse',
-      icon: <Scale className="w-4 h-4" />,
+      icon: <Image src={scale_logo} alt="Waage" width={16} height={16} className="h-4 w-4" />,
       items: Object.values(PriceCategoryEnum).map((price) => ({
         value: price,
         label: priceCategoryMeta[price].label,
@@ -235,176 +209,213 @@ export function OrganizationFilters({
     },
   ];
 
+  // Lookup map for value -> label to render active filter chips.
+  const sectionItemMap = (() => {
+    const map = new Map<keyof FilterOptions, Map<string, SectionItem>>();
+    sections.forEach((section) => {
+      const items = section.groups
+        ? section.groups.flatMap((group) => group.items)
+        : (section.items ?? []);
+      const itemMap = new Map<string, SectionItem>();
+      items.forEach((item) => itemMap.set(item.value.toString(), item));
+      map.set(section.key, itemMap);
+    });
+    return map;
+  })();
+
+  // Color palette for chips by filter category.
+  const chipToneByKey: Record<keyof FilterOptions, { container: string; text: string }> = {
+    organizationType: { container: 'bg-purple-50 border-purple-200', text: 'text-purple-700' },
+    priceCategory: { container: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700' },
+    area: { container: 'bg-orange-50 border-orange-200', text: 'text-orange-700' },
+    languages: { container: 'bg-blue-50 border-blue-200', text: 'text-blue-700' },
+    accessibility: { container: 'bg-gray-50 border-gray-200', text: 'text-gray-700' },
+    city: { container: 'bg-gray-50 border-gray-200', text: 'text-gray-700' },
+  };
+
+  // Build a flat list of active chips with labels and colors.
+  const activeChips = (() => {
+    const chips: Array<{
+      key: keyof FilterOptions;
+      value: string;
+      label: string;
+      container: string;
+      text: string;
+    }> = [];
+
+    sectionKeys.forEach((key) => {
+      const values = filters[key] as FilterValue[];
+      const itemMap = sectionItemMap.get(key);
+      values.forEach((value) => {
+        const item = itemMap?.get(value.toString());
+        chips.push({
+          key,
+          value: value.toString(),
+          label: item?.label ?? value.toString(),
+          container: chipToneByKey[key].container,
+          text: chipToneByKey[key].text,
+        });
+      });
+    });
+
+    filters.city.forEach((city) => {
+      if (!city.trim()) return;
+      chips.push({
+        key: 'city',
+        value: city,
+        label: city,
+        container: chipToneByKey.city.container,
+        text: chipToneByKey.city.text,
+      });
+    });
+
+    return chips;
+  })();
+
   return (
-    <section className="group relative w-full rounded-3xl border border-border bg-background hover:border-primary shadow-sm transition-all duration-500 overflow-hidden">
-      <div className="relative p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-2">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full border border-border bg-accent-blue-light p-1.5">
-              <Filter className="w-4 h-4 text-foreground" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">Filter</h3>
-              <p className="text-xs text-muted-foreground">
-                Durchsuche alle 6 verfügbaren Rechtsorganisationen
-              </p>
+    <section className="relative w-full rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="p-4 space-y-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
+          <CitySearch value={filters.city} onCityChange={onCityChange} />
+          <div className="space-y-2">
+            <div className="text-sm font-semibold text-gray-500">Radius: {radiusKm} km</div>
+            <Slider
+              value={[radiusKm]}
+              min={0}
+              max={50}
+              step={1}
+              onValueChange={(value) => setRadiusKm(value[0] ?? 50)}
+            />
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>0 km</span>
+              <span>50 km</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {isActiveFilters && (
-              <span className="rounded-full border border-border bg-accent-blue-light px-2 py-0.5 text-xs font-semibold text-foreground">
-                {activeFilterCount} aktiv
-              </span>
-            )}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={!isActiveFilters}
-              onClick={handleResetClick}
-              className="h-9 rounded-full px-3 gap-1.5 border border-border bg-accent-blue-light text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary hover:bg-accent-blue-soft disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <X className="w-4 h-4" />
-              <span className="text-xs font-semibold tracking-wide">Zurücksetzen</span>
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="lg"
-              onClick={() => setIsPanelOpen((prev) => !prev)}
-              className="h-11 rounded-full px-4 gap-2 border border-border bg-accent-blue-light text-foreground shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary hover:bg-accent-blue-soft cursor-pointer"
-              aria-label={isPanelOpen ? 'Filter schließen' : 'Filter öffnen'}
-              aria-pressed={isPanelOpen}
-            >
-              <ChevronDown
-                size={22}
-                strokeWidth={2.5}
-                className={`text-foreground transition-transform duration-200 ${
-                  isPanelOpen ? 'rotate-180' : ''
-                }`}
-              />
-              <span className="text-xs font-semibold tracking-wide">
-                {isPanelOpen ? 'schließen' : 'öffnen'}
-              </span>
-            </Button>
-          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={!isActiveFilters}
+            onClick={handleResetClick}
+            className="h-10 rounded-xl px-4 text-sm font-semibold"
+          >
+            Zurücksetzen
+          </Button>
         </div>
 
-        {isPanelOpen && (
-          <div className="mt-4 pb-2">
-            <div className="mb-3">
-              <CitySearch value={filters.city} onCityChange={onCityChange} />
-            </div>
-            {/* Responsive grid: stacks to 1/2/3 cols and 5 cols at xl. */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-start">
-              {sections.map((section) => (
-                <div
-                  key={section.key}
-                  // Under xl: box height is compact unless opened. At xl: fixed 320px height.
-                  className={`max-h-[320px] rounded-2xl border border-border bg-background px-3 pb-3 pt-2.5 flex flex-col shadow-sm hover:shadow-md transition-all duration-300 ${
-                    isWideLayout
-                      ? 'sm:h-[320px]'
-                      : openSections[section.key]
-                        ? 'sm:h-[320px]'
-                        : 'h-auto'
-                  }`}
+        <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap">
+          {sections.map((section) => {
+            const selectedCount = (filters[section.key] as FilterValue[]).length;
+            return (
+              <div key={section.key} className="relative">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenSections((prev) => ({
+                      ...prev,
+                      [section.key]: !prev[section.key],
+                    }))
+                  }
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-400"
+                  aria-expanded={openSections[section.key]}
                 >
-                  {/* At xl: static header (no accordion). Below xl: header toggles open/closed. */}
-                  {isWideLayout ? (
-                    <div className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5">
-                      <span className="rounded-md bg-accent-blue-light p-1 text-foreground">
-                        {section.icon}
+                  <span className="flex items-center gap-2">
+                    <span className="text-gray-600">{section.icon}</span>
+                    <span>{section.title}</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    {selectedCount > 0 && (
+                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">
+                        {selectedCount}
                       </span>
-                      <span className="text-xs font-semibold text-foreground">{section.title}</span>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenSections((prev) => ({
-                          ...prev,
-                          [section.key]: !prev[section.key],
-                        }))
-                      }
-                      className="flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left"
-                      aria-expanded={openSections[section.key]}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="rounded-md bg-accent-blue-light p-1 text-foreground">
-                          {section.icon}
-                        </span>
-                        <span className="text-xs font-semibold text-foreground">
-                          {section.title}
-                        </span>
-                      </span>
-                      <ChevronDown
-                        size={18}
-                        strokeWidth={2.5}
-                        className={`text-foreground transition-transform duration-200 ${
-                          openSections[section.key] ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                  )}
-                  <div
-                    // Below xl: hide content when collapsed; when open, height is 320px and scrolls.
-                    // At xl: content always visible.
-                    className={`mt-2 space-y-3 flex-1 min-h-0 ${
-                      openSections[section.key] ? 'block' : 'hidden'
-                    } xl:block ${!isWideLayout || section.scroll ? 'overflow-y-auto pr-1' : ''}`}
-                  >
-                    {(
-                      section.groups ?? [
-                        { title: '', key: section.key, items: section.items ?? [] },
-                      ]
-                    ).map((group) => (
-                      <div
-                        key={`${section.key}-${group.title || 'default'}`}
-                        className="space-y-1.5"
-                      >
-                        {group.title && (
-                          <div className="px-2 text-[11px] font-semibold text-muted-foreground">
-                            {group.title}
-                          </div>
-                        )}
-                        {group.items.map((item) => (
-                          // Each filter option is wrapped in a full-width label so the entire row
-                          // is clickable; the checkbox is controlled via state and toggles the
-                          // selected filter value on click.
-                          <Label
-                            key={`${group.key}-${item.value}`}
-                            htmlFor={`${group.key}-${item.value}`}
-                            className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 transition-colors cursor-pointer ${
-                              item.hoverClassName ?? defaultHoverClassName
-                            }`}
-                          >
-                            <Checkbox
-                              id={`${group.key}-${item.value}`}
-                              className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
-                              checked={(filters[group.key] as FilterValue[]).includes(item.value)}
-                              onCheckedChange={(isChecked) =>
-                                handleCheckboxChange(group.key, item.value, Boolean(isChecked))
-                              }
-                              aria-label={`Filter nach ${item.label}`}
-                            />
-                            {item.icon}
-                            <span
-                              className={`text-xs font-medium text-foreground ${
-                                item.labelClassName ?? ''
+                    )}
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform ${openSections[section.key] ? 'rotate-180' : ''}`}
+                    />
+                  </span>
+                </button>
+
+                {openSections[section.key] && (
+                  <div className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-gray-200 bg-white p-3 shadow-lg">
+                    <div className="max-h-64 space-y-2 overflow-y-auto">
+                      {(
+                        section.groups ?? [
+                          { title: '', key: section.key, items: section.items ?? [] },
+                        ]
+                      ).map((group) => (
+                        <div
+                          key={`${section.key}-${group.title || 'default'}`}
+                          className="space-y-1.5"
+                        >
+                          {group.title && (
+                            <div className="px-1 text-[11px] font-semibold text-gray-400">
+                              {group.title}
+                            </div>
+                          )}
+                          {group.items.map((item) => (
+                            <Label
+                              key={`${group.key}-${item.value}`}
+                              htmlFor={`${group.key}-${item.value}`}
+                              className={`flex w-full min-h-9 items-center gap-2 rounded-md px-2 py-1 text-sm font-medium text-gray-700 transition-colors cursor-pointer ${
+                                item.hoverClassName ?? defaultHoverClassName
                               }`}
                             >
-                              {item.label}
-                            </span>
-                          </Label>
-                        ))}
-                      </div>
-                    ))}
+                              <Checkbox
+                                id={`${group.key}-${item.value}`}
+                                className="border-gray-300 bg-white data-[state=checked]:bg-gray-700 data-[state=checked]:border-gray-700"
+                                checked={(filters[group.key] as FilterValue[]).includes(item.value)}
+                                onCheckedChange={(isChecked) =>
+                                  handleCheckboxChange(group.key, item.value, Boolean(isChecked))
+                                }
+                                aria-label={`Filter nach ${item.label}`}
+                              />
+                              {item.icon}
+                              <span className={item.labelClassName ?? ''}>{item.label}</span>
+                            </Label>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="border-t border-gray-200 pt-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-semibold text-gray-500">Aktive Filter:</span>
+            {activeChips.length === 0 && (
+              <span className="text-sm text-gray-400">Keine ausgewählt</span>
+            )}
+            {activeChips.map((chip) => (
+              <span
+                key={`${chip.key}-${chip.value}`}
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${chip.container} ${chip.text}`}
+              >
+                {chip.label}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  onClick={() => {
+                    if (chip.key === 'city') {
+                      onCityChange(filters.city.filter((item) => item !== chip.value));
+                      return;
+                    }
+                    handleCheckboxChange(chip.key, chip.value as FilterValue, false);
+                  }}
+                  className="h-5 w-5 rounded-full hover:bg-white/70"
+                  aria-label={`${chip.label} entfernen`}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </span>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

@@ -15,16 +15,16 @@ function Slider({
     >
       <SliderPrimitive.Track
         data-slot="slider-track"
-        className="relative h-2 w-full grow overflow-hidden rounded-full bg-accent-gray-light"
+        className="relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200"
       >
         <SliderPrimitive.Range
           data-slot="slider-range"
-          className="absolute h-full bg-accent-gray"
+          className="absolute h-full bg-gray-300"
         />
       </SliderPrimitive.Track>
       <SliderPrimitive.Thumb
         data-slot="slider-thumb"
-        className="block h-4 w-4 rounded-full border border-accent-gray bg-background shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-gray/40 disabled:pointer-events-none disabled:opacity-50"
+        className="block h-5 w-5 rounded-full border border-gray-300 bg-gray-400 shadow-sm transition-colors hover:bg-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
       />
     </SliderPrimitive.Root>
   )

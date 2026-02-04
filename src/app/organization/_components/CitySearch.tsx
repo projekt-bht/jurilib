@@ -12,7 +12,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { getCityByName, getCityByRadius } from '@/lib/azureMap';
-import { MapPin } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface City {
   name: string;
@@ -79,65 +79,61 @@ export default function CitySearch({ value, onCityChange }: CitySearchProps) {
   }, [value.length]);
 
   return (
-    <div className="relative w-full rounded-2xl border border-border bg-background px-3 py-3 shadow-sm">
-      <div className="flex flex-col gap-4">
-        <div className="relative">
-          <div className="flex items-center gap-2">
-            <div className="rounded-md bg-accent-blue-light p-1 text-foreground">
-              <MapPin className="h-4 w-4" />
-            </div>
-            <div className="flex-1">
-              <Input
-                value={query}
-                onChange={(event) => {
-                  const next = event.target.value;
-                  setQuery(next);
-                  if (selected) {
-                    setSelected(null);
-                    setNearby([]);
-                    setChecked([]);
-                    onCityChange([]);
-                  }
-                }}
-                placeholder="Stadt suchen"
-              />
-            </div>
-          </div>
-          {cities.length > 0 && (
-            <Command className="h-auto absolute w-full mt-1 border rounded-lg shadow-lg bg-white">
-              <CommandList>
-                <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
-                <CommandGroup>
-                  {cities.map((city) => (
-                    <CommandItem
-                      key={city.position.lat + city.position.lon}
-                      onSelect={() => select(city)}
-                    >
-                      {city.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          )}
-        </div>
+    <div className="w-full">
+      <div className="mb-2 text-sm font-semibold text-gray-500">Search</div>
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Input
+          value={query}
+          onChange={(event) => {
+            const next = event.target.value;
+            setQuery(next);
+            if (selected) {
+              setSelected(null);
+              setNearby([]);
+              setChecked([]);
+              onCityChange([]);
+            }
+          }}
+          placeholder="Stadt suchen"
+          className="h-11 rounded-xl border-gray-300 bg-gray-50 pl-10 text-sm text-gray-700 focus-visible:border-gray-300 focus-visible:ring-gray-200"
+        />
+        {cities.length > 0 && (
+          <Command className="h-auto absolute w-full mt-2 border border-gray-200 rounded-xl shadow-lg bg-white">
+            <CommandList>
+              <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
+              <CommandGroup>
+                {cities.map((city) => (
+                  <CommandItem
+                    key={city.position.lat + city.position.lon}
+                    onSelect={() => select(city)}
+                  >
+                    {city.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        )}
+      </div>
 
-        <div className="flex flex-wrap gap-2 items-start">
+      {nearby.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2 items-start">
           {nearby.map((city) => (
             <label
               key={city.label}
-              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 transition-colors cursor-pointer hover:bg-accent-blue-soft"
+              className="flex items-center gap-2 rounded-md px-2 py-1 min-h-9 border border-gray-200 bg-white transition-colors cursor-pointer hover:bg-gray-50"
             >
               <Checkbox
-                className="border-accent-gray bg-background hover:border-foreground data-[state=checked]:bg-accent-blue data-[state=checked]:border-accent-blue"
+                className="border-gray-300 bg-white data-[state=checked]:bg-gray-700 data-[state=checked]:border-gray-700"
                 checked={checked.some((c) => c.label === city.label)}
                 onCheckedChange={() => toggle(city)}
               />
-              <span className="text-xs font-medium text-foreground">{city.label}</span>
+              <span className="text-xs font-medium text-gray-700">{city.label}</span>
             </label>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
