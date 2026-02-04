@@ -15,7 +15,7 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // If the input is empty, an error message will be displayed
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
-  const [problem, setProblem] = useState('');
+  const [problem, setProblem] = useState(getCachedProblem());
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
