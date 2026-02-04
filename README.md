@@ -15,7 +15,7 @@ The stack is [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.types
 
 ## Prerequisites & Tools
 
-- Node.js (version TODO)
+- Node.js (version v22.14.0)
 - npm (bundled with Node.js)
 - Docker Desktop or [Colima](https://github.com/abiosoft/colima) for the local Postgres container
 - Recommended VS Code extensions:
@@ -23,7 +23,7 @@ The stack is [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.types
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-## Setup Guide (15‑minute quick start)
+## Setup Guide
 
 1. Start either [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Colima](https://github.com/abiosoft/colima)
 2. Install dependencies:
@@ -57,11 +57,38 @@ Open the app at [http://localhost:3000](http://localhost:3000). Prisma Studio wi
 
 Configuration is loaded from `.env` (based on `sample.env`).
 
-TODO: Document required variables and their purpose (e.g., database URL, email provider, authentication secrets).
+All required variables are defined in the `sample.env`. Variables that contain sensitive data (e.g. secrets, api keys) are stored in the `sample.env` with placeholder values. The real values must either be generated or will be given to trusted developers upon request.
 
 ## Development Process
 
-TODO: Document branching strategy, PR workflow, and code review expectations.
+### Branches
+
+Rules concerning branching strategy and branch naming are described in our [style-guide](./STYLEGUIDE.md). But here is a short summary:
+
+1. Branches normally should created from `dev`.
+2. They are also ideally created through an issue as that connects all commits within that branch to the respective issue.
+
+### PR workflow
+
+At Jurilib we value **honest, constructive and appreciative communication**. When communicating with other developers please be sure to so in a way that aligns with these values.
+
+**Before creating a PR**
+
+- make sure all tests pass (both BE and FE tests)
+- make sure your code is following the [style-guide](./STYLEGUIDE.md) (naming, formatting, linting, etc.)
+
+**When creating a PR**
+
+- make sure that the pipeline checks pass
+- select at least one person to review your PR (and notify them separately so they don't miss the request)
+
+**When reviewing a PR**
+
+- be honest with yourself if you have the necessary understanding of the project structure around the PR to judge the quality. If not, contact the person who created the PR and inform them, that they should request someone else.
+- be honest and constructive when communicating problematic code
+- when in doubt ask the person who created the PR to explain certain ideas or constructs to you (usually a good sign that the code would benefit from additional comments)
+- when disagreeing with the person who created the PR feel free to include another reviewer to get another opinion
+- after you have approved the PR please notify the person who created the PR and leave both merging and deleting of the branch up to them
 
 ## Test Suite
 
