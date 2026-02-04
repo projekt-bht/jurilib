@@ -24,6 +24,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
+
 import CitySearch from './CitySearch';
 
 export type FilterOptions = {
@@ -130,6 +131,8 @@ export function OrganizationFilters({
   });
   // Nearby cities are only available after a base city search; keep empty by default.
   const [nearbyCities, setNearbyCities] = useState<NearbyCity[]>([]);
+  // Forces CitySearch to remount when the city filter is cleared externally.
+  const [citySearchKey, setCitySearchKey] = useState(0);
 
   const toggleSection = (key: keyof FilterOptions) => {
     setOpenSections((prev) => {
@@ -161,6 +164,9 @@ export function OrganizationFilters({
       ? filters.city.filter((item) => item !== cityName)
       : [...filters.city, cityName];
     onCityChange(next);
+    if (next.length === 0 && filters.city.length > 0) {
+      setCitySearchKey((prev) => prev + 1);
+    }
   };
 
   useEffect(() => {
@@ -206,6 +212,7 @@ export function OrganizationFilters({
   // Reset all filters back to default state.
   const handleResetClick = () => {
     onReset();
+    setCitySearchKey((prev) => prev + 1);
   };
 
   // Filter sections rendered as dropdowns.
@@ -371,6 +378,7 @@ export function OrganizationFilters({
       <div className="p-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
           <CitySearch
+            key={`city-search-${citySearchKey}`}
             value={filters.city}
             onCityChange={onCityChange}
             onNearbyChange={(cities) =>
@@ -548,7 +556,11 @@ export function OrganizationFilters({
                   size="icon-xs"
                   onClick={() => {
                     if (chip.key === 'city') {
-                      onCityChange(filters.city.filter((item) => item !== chip.value));
+                      const nextCities = filters.city.filter((item) => item !== chip.value);
+                      onCityChange(nextCities);
+                      if (nextCities.length === 0) {
+                        setCitySearchKey((prev) => prev + 1);
+                      }
                       return;
                     }
                     handleCheckboxChange(chip.key, chip.value as FilterValue, false);

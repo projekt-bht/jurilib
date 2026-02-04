@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-import { Input } from '@/components/ui/input';
 import {
   Command,
   CommandEmpty,
@@ -10,8 +10,8 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import { getCityByName, getCityByRadius } from '@/lib/azureMap';
-import { Search } from 'lucide-react';
 
 interface City {
   name: string;
@@ -26,21 +26,20 @@ type CitySearchProps = {
   onNearbyChange?: (value: City[]) => void;
 };
 
-export default function CitySearch({ value, onCityChange, onNearbyChange }: CitySearchProps) {
+export default function CitySearch({ value: _value, onCityChange, onNearbyChange }: CitySearchProps) {
   // Local input and result state for the city search flow.
   const [query, setQuery] = useState('');
   const [cities, setCities] = useState<City[]>([]);
   const [selected, setSelected] = useState<City | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (query.length < 2 || selected) {
-      setCities([]);
-      return;
-    }
-    // Debounce remote search requests while typing.
-    const t = setTimeout(async () => setCities((await getCityByName(query)) || []), 300);
-    return () => clearTimeout(t);
-  }, [query, selected]);
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const select = async (city: City) => {
     // Selecting a base city triggers the radius search and initializes the filter values.
@@ -53,14 +52,19 @@ export default function CitySearch({ value, onCityChange, onNearbyChange }: City
     onCityChange([city.name]);
   };
 
-  useEffect(() => {
-    if (value.length) return;
-    // Reset local UI when the parent filter clears the city selection.
-    setQuery('');
-    setCities([]);
-    setSelected(null);
-    onNearbyChange?.([]);
-  }, [value.length]);
+  const scheduleSearch = (nextQuery: string) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    if (nextQuery.trim().length < 2) {
+      setCities([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      const results = (await getCityByName(nextQuery)) ?? [];
+      setCities(results);
+    }, 300);
+  };
 
   return (
     <div className="w-full">
@@ -76,6 +80,7 @@ export default function CitySearch({ value, onCityChange, onNearbyChange }: City
               onCityChange([]);
               onNearbyChange?.([]);
             }
+            scheduleSearch(next);
           }}
           placeholder="Stadt suchen"
           className="h-11 rounded-xl border-accent-gray bg-background pl-10 text-sm text-foreground focus-visible:border-accent-black focus-visible:ring-accent-gray-light"
