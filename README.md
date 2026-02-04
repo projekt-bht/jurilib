@@ -9,6 +9,12 @@
 
 <!-- Content -->
 
+Jurilib is a full‑stack legal services platform that connects users with organizations that offer legal services. Additionally it offers features to manage cases and appointments.
+
+It’s built with a [Next.js](https://nextjs.org/docs), [TypeScript](https://www.typescriptlang.org/), and a [Prisma-backed](https://www.prisma.io/docs) data layer and uses [Tailwind](https://tailwindcss.com/) and [Shadcn](https://ui.shadcn.com/docs) in the frontend.
+
+The codebase is structured for feature growth and testing, with modular UI components, API routes, and validation utilities.
+
 ## Getting Started
 
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/) oder [Colima](https://github.com/abiosoft/colima) starten
