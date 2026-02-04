@@ -1,0 +1,104 @@
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+import { handleError, handleZodError, validateIds } from '@/app/api/helper';
+import { withUserAuth } from '@/lib/withAuth';
+import type { UserLoginResource } from '@/services/Resources';
+
+import { isCaseUserMatch } from '../../../helpers';
+import { getBlob, uploadBlob } from '../services';
+
+/**
+ * Validate the 'private'-flag of the request header is a boolean value or undefined
+ */
+const headerSchema = z.object({
+  private: z
+    .enum(['true', 'false'])
+    .nullable()
+    .default('false')
+    .transform((val) => val === 'true'),
+});
+
+// POST /api/case/:caseID/documents/user
+// Upload a blob to azure as an user
+export const POST = withUserAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      const { private: privateFlag } = headerSchema.parse({ private: req.headers.get('private') });
+      // validate URL Param
+      const { caseID } = await params;
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+
+      if (await isCaseUserMatch(caseID, account.userId)) {
+        // Parse FormData
+        const formData = await req.formData();
+        const file = formData.get('file') as File;
+        const fileName = formData.get('fileName') as string;
+
+        if (!file || !fileName) {
+          return NextResponse.json({ message: 'File and fileName are required' }, { status: 400 });
+        }
+
+        // Convert file to base64
+        const fileBuffer = await file.arrayBuffer();
+        const fileBase64 = Buffer.from(fileBuffer).toString('base64');
+
+        // Upload blob to Azure
+        const uploadedBlob = await uploadBlob(
+          caseID,
+          fileName,
+          fileBase64,
+          privateFlag ? account.userId : undefined
+        );
+
+        return NextResponse.json(uploadedBlob, { status: 201 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      } else {
+        return handleError(error, 'Failed to upload blob');
+      }
+    }
+  }
+);
+
+// GET /api/case/:caseID/documents/user?fileName=...
+// Download a specific blob from azure as a user
+export const GET = withUserAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      const { private: privateFlag } = headerSchema.parse({ private: req.headers.get('private') });
+      const { caseID } = await params;
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+
+      const fileName = req.nextUrl.searchParams.get('fileName');
+      if (!fileName) {
+        return NextResponse.json(
+          { message: 'fileName query parameter is required' },
+          { status: 400 }
+        );
+      }
+
+      if (await isCaseUserMatch(caseID, account.userId)) {
+        return await getBlob(caseID, fileName, privateFlag ? account.userId : undefined);
+      } else {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
+      return handleError(error, 'Failed to download blob');
+    }
+  }
+);
