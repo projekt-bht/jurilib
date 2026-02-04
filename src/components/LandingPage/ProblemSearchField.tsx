@@ -142,6 +142,39 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
             : 'opacity-100 scale-100 max-h-96'
         }`}
       >
+        {cachedInquiries.length > 0 && (
+          <div className="mb-6">
+            <p className="text-sm text-muted-foreground text-center mb-3 flex items-center justify-center gap-2">
+              <Clock className="text-base text-center" />
+              Letzte Suchanfragen:
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {cachedInquiries.map((query, index) => (
+                <Button
+                  key={`history-${index}`}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  onClick={() => setCachedProblem(query)}
+                >
+                  <span className="truncate max-w-[200px]">{query}</span>
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    className="ml-2 opacity-50 hover:opacity-100 hover:text-destructive transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeInquiry(query);
+                    }}
+                  >
+                    <X className="w-3 h-3" />
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
         <span className="text-base text-accent-gray text-center mt-4 mb-4">
           Oder wähle ein Beispiel:
         </span>
