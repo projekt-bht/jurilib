@@ -188,7 +188,7 @@ export function OrganizationFilters({
     };
   }, []);
   // Radius slider value (used for nearby city search).
-  const [radiusKm, setRadiusKm] = useState(50);
+  const [radiusKm, setRadiusKm] = useState(0);
   // Pre-sort enum values once (German locale) so filter lists render consistently.
   const [sortedAreas] = useState(() =>
     [...Object.values(AreasEnum)].sort((a, b) => a.localeCompare(b, 'de'))
