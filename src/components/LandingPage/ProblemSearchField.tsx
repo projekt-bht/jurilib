@@ -23,6 +23,11 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     return sessionStorage.getItem('problemText') ?? '';
   }
 
+  function setCachedProblem(query: string) {
+    setProblem(query);
+    sessionStorage.setItem('problemText', query);
+  }
+
   const exampleSearches = [
     {
       icon: ReceiptText,
