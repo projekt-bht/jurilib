@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/api/case/{{process.env.CASE_ID}}/documents/employee?fileName=waage.png
+  url: http://localhost:3000/api/case/{{process.env.CASE_ID}}/documents/?fileName=testwaage
   body: none
   auth: inherit
 }
 
 params:query {
-  fileName: waage.png
+  fileName: testwaage
 }
 
 settings {
