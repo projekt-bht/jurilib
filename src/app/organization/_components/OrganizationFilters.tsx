@@ -67,6 +67,8 @@ const sectionKeys: Array<keyof FilterOptions> = [
   'area',
   'languages',
   'accessibility',
+  // City counts as an active filter for "Keine ausgewählt" logic, but has no chip.
+  'city',
 ];
 const priceCategoryMeta: Record<
   PriceCategoryEnum,
@@ -333,7 +335,7 @@ export function OrganizationFilters({
     city: chipToneByKey.city.text,
   };
 
-  // Build a flat list of active chips with labels and colors.
+  // Build a flat list of active chips with labels and colors (exclude city chips).
   const activeChips = (() => {
     const chips: Array<{
       key: keyof FilterOptions;
@@ -344,6 +346,8 @@ export function OrganizationFilters({
     }> = [];
 
     sectionKeys.forEach((key) => {
+      // City is handled separately: it affects the "active" state but doesn't render a chip.
+      if (key === 'city') return;
       const values = filters[key] as FilterValue[];
       const itemMap = sectionItemMap.get(key);
       values.forEach((value) => {
@@ -361,24 +365,16 @@ export function OrganizationFilters({
     return chips;
   })();
 
+  // City still marks filters as active even without chips.
+  const hasActiveCity = filters.city.length > 0;
+  const hasActiveNonCityFilters = activeChips.length > 0;
+
   return (
     <section
       data-organization-filters
       className="relative w-full rounded-2xl border border-border bg-background shadow-sm"
     >
       <div className="p-4 space-y-4">
-        {isActiveFilters && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleResetClick}
-            className="absolute right-4 top-4 h-8 px-3 text-xs border-accent-black text-accent-black bg-background hover:bg-accent-gray-soft flex items-center gap-2"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Zurücksetzen
-          </Button>
-        )}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
           <CitySearch
             key={`city-search-${citySearchKey}`}
@@ -481,7 +477,20 @@ export function OrganizationFilters({
         <div className="border-t border-border pt-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-semibold text-muted-foreground">Aktive Filter:</span>
-            {activeChips.length === 0 && (
+            {isActiveFilters && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleResetClick}
+                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Zurücksetzen
+              </Button>
+            )}
+            // "Keine ausgewählt" only when no filters are active, including city.
+            {!hasActiveNonCityFilters && !hasActiveCity && (
               <span className="text-sm text-muted-foreground">Keine ausgewählt</span>
             )}
             {activeChips.map((chip) => (
