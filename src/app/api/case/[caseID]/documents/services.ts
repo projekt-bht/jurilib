@@ -2,6 +2,7 @@ import { BlobServiceClient } from '@azure/storage-blob';
 import { NextResponse } from 'next/server';
 
 import { storageBaseURL } from '@/app/api/helper';
+import prisma from '@/lib/db';
 
 const sasToken = process.env.AZURE_BLOB_SAS;
 
@@ -51,7 +52,7 @@ export async function uploadBlob(caseID: string, fileName: string, file: string,
 
     return {
       name: blobName,
-      url: `${storageBaseURL}/${blobName}?${sasToken}`,
+      blobUrl: `${storageBaseURL}/${blobName}?${sasToken}`,
     };
   } catch (error) {
     throw new Error('File upload failed: ' + (error as Error).message);
