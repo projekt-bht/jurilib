@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import OpenAI from 'openai';
 
 import { Area } from '~/generated/prisma/enums';
@@ -79,8 +78,8 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
   });
 
   const expandedQuery = expansion?.choices[0].message.content?.trim() ?? query;
-  console.log('Original:', query);
-  console.log('Expanded:', expandedQuery);
+  //   console.log('Original:', query);
+  //   console.log('Expanded:', expandedQuery);
 
   const parsedQuery: VectorFormat = JSON.parse(expandedQuery);
 
