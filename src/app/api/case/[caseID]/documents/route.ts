@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ case
 
     const fileName = req.nextUrl.searchParams.get('fileName');
     if (!fileName) {
-      throw new ValidationError('invalidInput', 'fileName', undefined, 400);
+      throw new ValidationError('missingRequiredValue', 'fileName', 400);
     }
 
     try {
