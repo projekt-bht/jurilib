@@ -3,22 +3,13 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleError, handleZodError, validateIds } from '@/app/api/helper';
+import prisma from '@/lib/db';
 import { withUserAuth } from '@/lib/withAuth';
 import type { UserLoginResource } from '@/services/Resources';
 
 import { isCaseUserMatch } from '../../../helpers';
-import { getBlob, uploadBlob } from '../services';
-
-/**
- * Validate the 'private'-flag of the request header is a boolean value or undefined
- */
-const headerSchema = z.object({
-  private: z
-    .enum(['true', 'false'])
-    .nullable()
-    .default('false')
-    .transform((val) => val === 'true'),
-});
+import { blobHeaderSchema } from '../route';
+import { generateDocumentUrl, getBlob, updateDocumentArray, uploadBlob } from '../services';
 
 // POST /api/case/:caseID/documents/user
 // Upload a blob to azure as an user
@@ -29,7 +20,9 @@ export const POST = withUserAuth(
     account: UserLoginResource
   ) => {
     try {
-      const { private: privateFlag } = headerSchema.parse({ private: req.headers.get('private') });
+      const { private: privateFlag } = blobHeaderSchema.parse({
+        private: req.headers.get('private'),
+      });
       // validate URL Param
       const { caseID } = await params;
       validateIds([{ id: caseID, identifier: 'caseID' }]);
@@ -56,7 +49,17 @@ export const POST = withUserAuth(
           privateFlag ? account.userId : undefined
         );
 
-        return NextResponse.json(uploadedBlob, { status: 201 });
+        // Generate the API-relative document URL
+        const documentUrl = generateDocumentUrl(caseID, fileName, privateFlag, account.userId);
+        await updateDocumentArray(caseID, documentUrl);
+
+        return NextResponse.json(
+          {
+            name: uploadedBlob.name,
+            documentUrl,
+          },
+          { status: 201 }
+        );
       } else {
         // unauthorized
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -80,7 +83,9 @@ export const GET = withUserAuth(
     account: UserLoginResource
   ) => {
     try {
-      const { private: privateFlag } = headerSchema.parse({ private: req.headers.get('private') });
+      const { private: privateFlag } = blobHeaderSchema.parse({
+        private: req.headers.get('private'),
+      });
       const { caseID } = await params;
       validateIds([{ id: caseID, identifier: 'caseID' }]);
 
