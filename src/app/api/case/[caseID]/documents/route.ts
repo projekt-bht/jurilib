@@ -1,12 +1,10 @@
-// GET /api/case/:caseID/documents?fileName=...
-// Download a public blob from azure (accessible to both users and employees)
-
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { verifyJWT } from '@/app/api/authentication/login/JWTService';
-import { handleError, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
+import { ValidationError } from '@/error/validationErrors';
 import type { LoginResource } from '@/services/Resources';
 
 import { isCaseEmployeeMatch, isCaseUserMatch } from '../../helpers';
@@ -23,24 +21,22 @@ export const blobHeaderSchema = z.object({
     .transform((val) => val === 'true'),
 });
 
-// Download a specific public blob from azure (accessible to case user or employee)
+// GET /api/case/:caseID/documents?fileName=...
+// Download a public public blob from azure (accessible to both users and employees)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ caseID: string }> }) {
   try {
     const { caseID } = await params;
     validateIds([{ id: caseID, identifier: 'caseID' }]);
 
-    const fileName = req.nextUrl.searchParams.get('fileName');
-    if (!fileName) {
-      return NextResponse.json(
-        { message: 'fileName query parameter is required' },
-        { status: 400 }
-      );
-    }
-
     // Try to authenticate as either user or employee
     const token = req.cookies.get('access_token')?.value;
     if (!token) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
+    }
+
+    const fileName = req.nextUrl.searchParams.get('fileName');
+    if (!fileName) {
+      throw new ValidationError('invalidInput', 'fileName', undefined, 400);
     }
 
     try {
@@ -61,11 +57,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ case
       }
 
       // If neither user nor employee match, unauthorized
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return unauthorized();
     } catch {
       return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
     return handleError(error, 'Failed to download blob');
   }
 }
