@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleError, handleZodError, validateIds } from '@/app/api/helper';
-import prisma from '@/lib/db';
 import { withUserAuth } from '@/lib/withAuth';
 import type { UserLoginResource } from '@/services/Resources';
 
