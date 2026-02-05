@@ -88,3 +88,28 @@ export async function getBlob(caseID: string, fileName: string, userID?: string)
     throw new Error('Failed to fetch blobs: ' + (error as Error).message);
   }
 }
+
+/**
+ * Updates the documentURL array of a case. If the name/url is already set, it does nothing
+ * @param caseID
+ * @param documentUrl
+ */
+export async function updateDocumentArray(caseID: string, documentUrl: string) {
+  // Check if document URL already exists
+  const existingCase = await prisma.case.findUnique({
+    where: { id: caseID },
+    select: { documentsURL: true },
+  });
+
+  // Save the document URL to the database, only if it's not already existing
+  if (!existingCase?.documentsURL.includes(documentUrl)) {
+    await prisma.case.update({
+      where: { id: caseID },
+      data: {
+        documentsURL: {
+          push: documentUrl,
+        },
+      },
+    });
+  }
+}
