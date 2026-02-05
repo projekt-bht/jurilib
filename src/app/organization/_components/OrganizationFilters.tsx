@@ -393,7 +393,7 @@ export function OrganizationFilters({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-1 md:flex md:flex-wrap">
+        <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 md:flex md:flex-wrap">
           {sections.map((section) => {
             const selectedCount = (filters[section.key] as FilterValue[]).length;
             return (
@@ -489,7 +489,7 @@ export function OrganizationFilters({
                 Zurücksetzen
               </Button>
             )}
-            // "Keine ausgewählt" only when no filters are active, including city.
+            {/* "Keine ausgewählt" only when no filters are active, including city. */}
             {!hasActiveNonCityFilters && !hasActiveCity && (
               <span className="text-sm text-muted-foreground">Keine ausgewählt</span>
             )}
