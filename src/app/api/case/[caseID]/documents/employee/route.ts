@@ -2,7 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleZodError, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
+import { ValidationError } from '@/error/validationErrors';
 import { withEmployeeAuth } from '@/lib/withAuth';
 import type { EmployeeLoginResource } from '@/services/Resources';
 
@@ -29,7 +30,12 @@ export const POST = withEmployeeAuth(
         const fileName = formData.get('fileName') as string;
 
         if (!file || !fileName) {
-          return NextResponse.json({ message: 'File and fileName are required' }, { status: 400 });
+          throw new ValidationError(
+            'invalidInput',
+            'file/fileName',
+            `File: ${file}, FileName: ${fileName}`,
+            400
+          );
         }
 
         // Convert file to base64
@@ -51,8 +57,7 @@ export const POST = withEmployeeAuth(
           { status: 201 }
         );
       } else {
-        // unauthorized
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        return unauthorized();
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
