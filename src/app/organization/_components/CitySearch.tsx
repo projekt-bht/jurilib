@@ -105,7 +105,7 @@ export default function CitySearch({
     setSelected(city);
     setCities([]);
     setQuery(city.label);
-    await runRadiusSearch(city, radiusKm);
+    // Radius search is triggered by the effect that watches `selected` and `radiusKm`.
   };
 
   useEffect(() => {
