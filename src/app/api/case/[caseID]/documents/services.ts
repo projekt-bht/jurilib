@@ -5,6 +5,33 @@ import { storageBaseURL } from '@/app/api/helper';
 
 const sasToken = process.env.AZURE_BLOB_SAS;
 
+/**
+ * Generate a document URL for storing in the database
+ * @param caseID Case ID
+ * @param fileName File name
+ * @param isPrivate Whether the document is private (user-only)
+ * @param userID User ID (required if isPrivate is true)
+ * @returns API endpoint URL for accessing the document
+ */
+export function generateDocumentUrl(
+  caseID: string,
+  fileName: string,
+  isPrivate: boolean,
+  userID?: string
+): string {
+  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}case/${caseID}/documents`;
+  const searchParams = new URLSearchParams({ fileName });
+
+  if (isPrivate) {
+    if (!userID) {
+      throw new Error('userID is required for private documents');
+    }
+    return `${baseUrl}/user?${searchParams.toString()}`;
+  }
+
+  return `${baseUrl}?${searchParams.toString()}`;
+}
+
 export async function uploadBlob(caseID: string, fileName: string, file: string, userID?: string) {
   try {
     if (!sasToken) {
