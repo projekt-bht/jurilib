@@ -126,7 +126,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
                 : 'bg-muted text-muted-foreground cursor-not-allowed'
             }`}
           >
-            Analyse starten
+            Passende Lösung finden
             <ArrowUp className="w-4 h-4" />
           </button>
         </div>
