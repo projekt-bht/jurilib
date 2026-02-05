@@ -7,7 +7,7 @@ import { withEmployeeAuth } from '@/lib/withAuth';
 import type { EmployeeLoginResource } from '@/services/Resources';
 
 import { isCaseEmployeeMatch } from '../../../helpers';
-import { getBlob, uploadBlob } from '../services';
+import { generateDocumentUrl, updateDocumentArray, uploadBlob } from '../services';
 
 // POST /api/case/:caseID/documents/employee
 // Upload a blob to azure as an employee
@@ -36,10 +36,20 @@ export const POST = withEmployeeAuth(
         const fileBuffer = await file.arrayBuffer();
         const fileBase64 = Buffer.from(fileBuffer).toString('base64');
 
-        // Upload blob to Azure
+        // Upload blob to Azure (no private flag for employees, always public)
         const uploadedBlob = await uploadBlob(caseID, fileName, fileBase64);
 
-        return NextResponse.json(uploadedBlob, { status: 201 });
+        // Generate the API-relative document URL (public, not private)
+        const documentUrl = generateDocumentUrl(caseID, fileName, false);
+        await updateDocumentArray(caseID, documentUrl);
+
+        return NextResponse.json(
+          {
+            name: uploadedBlob.name,
+            documentUrl,
+          },
+          { status: 201 }
+        );
       } else {
         // unauthorized
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
