@@ -1,5 +1,3 @@
-import similarity from 'compute-cosine-similarity';
-
 import { Area } from '~/generated/prisma/enums';
 
 import { createEmbedding, extractBuzzwords, vectorizeSearch } from './vectorizer';
@@ -9,7 +7,7 @@ const defaultOffset = 0.99;
 const descriptionOffset = 0.6;
 
 function isValid(embeddingA: string, embeddingB: string, similarityOffset: number = defaultOffset) {
-  const similarityResult = similarity(
+  const similarityResult = cosineSimilarity(
     JSON.parse(embeddingA) as number[],
     JSON.parse(embeddingB) as number[]
   );
