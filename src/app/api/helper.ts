@@ -66,5 +66,3 @@ export function handleError(error: unknown, message: string) {
 export function unauthorized() {
   return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 }
-
-export const storageBaseURL = 'https://stjurilib.blob.core.windows.net/case-documents';

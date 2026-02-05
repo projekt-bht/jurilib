@@ -1,10 +1,10 @@
 import { BlobServiceClient } from '@azure/storage-blob';
 import { NextResponse } from 'next/server';
 
-import { storageBaseURL } from '@/app/api/helper';
 import prisma from '@/lib/db';
 
 const sasToken = process.env.AZURE_BLOB_SAS;
+const storageBaseURL = process.env.AZURE_STORAGE_BASE_URL;
 
 /**
  * Generate a document URL for storing in the database
