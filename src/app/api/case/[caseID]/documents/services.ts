@@ -1,6 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob';
 import { NextResponse } from 'next/server';
 
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 
 const sasToken = process.env.AZURE_BLOB_SAS;
@@ -25,7 +26,7 @@ export function generateDocumentUrl(
 
   if (isPrivate) {
     if (!userID) {
-      throw new Error('userID is required for private documents');
+      throw new ValidationError('missingRequiredValue', 'userID', undefined, 400);
     }
     return `${baseUrl}/user?${searchParams.toString()}`;
   }
@@ -55,6 +56,7 @@ export async function uploadBlob(caseID: string, fileName: string, file: string,
       blobUrl: `${storageBaseURL}/${blobName}?${sasToken}`,
     };
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     throw new Error('File upload failed: ' + (error as Error).message);
   }
 }
@@ -75,7 +77,7 @@ export async function getBlob(caseID: string, fileName: string, userID?: string)
     // Fetch the blob from Azure
     const response = await fetch(blobUrl);
     if (!response.ok) {
-      return NextResponse.json({ message: 'File not found' }, { status: 404 });
+      throw new ValidationError('notFound', 'fileName', fileName, 404);
     }
 
     const blob = await response.blob();
@@ -86,6 +88,7 @@ export async function getBlob(caseID: string, fileName: string, userID?: string)
       },
     });
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     throw new Error('Failed to fetch blobs: ' + (error as Error).message);
   }
 }
@@ -96,21 +99,25 @@ export async function getBlob(caseID: string, fileName: string, userID?: string)
  * @param documentUrl
  */
 export async function updateDocumentArray(caseID: string, documentUrl: string) {
-  // Check if document URL already exists
-  const existingCase = await prisma.case.findUnique({
-    where: { id: caseID },
-    select: { documentsURL: true },
-  });
-
-  // Save the document URL to the database, only if it's not already existing
-  if (!existingCase?.documentsURL.includes(documentUrl)) {
-    await prisma.case.update({
+  try {
+    // Check if document URL already exists
+    const existingCase = await prisma.case.findUnique({
       where: { id: caseID },
-      data: {
-        documentsURL: {
-          push: documentUrl,
-        },
-      },
+      select: { documentsURL: true },
     });
+
+    // Save the document URL to the database, only if it's not already existing
+    if (!existingCase?.documentsURL.includes(documentUrl)) {
+      await prisma.case.update({
+        where: { id: caseID },
+        data: {
+          documentsURL: {
+            push: documentUrl,
+          },
+        },
+      });
+    }
+  } catch (error) {
+    throw new Error('Failed to update case document URLs: ' + (error as Error).message);
   }
 }
