@@ -2,7 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleError, handleZodError, validateIds } from '@/app/api/helper';
+import { handleError, handleZodError, unauthorized, validateIds } from '@/app/api/helper';
+import { ValidationError } from '@/error/validationErrors';
 import { withUserAuth } from '@/lib/withAuth';
 import type { UserLoginResource } from '@/services/Resources';
 
@@ -33,7 +34,7 @@ export const POST = withUserAuth(
         const fileName = formData.get('fileName') as string;
 
         if (!file || !fileName) {
-          return NextResponse.json({ message: 'File and fileName are required' }, { status: 400 });
+          throw new ValidationError('missingRequiredValue', 'file/fileName', 400);
         }
 
         // Convert file to base64
@@ -60,8 +61,7 @@ export const POST = withUserAuth(
           { status: 201 }
         );
       } else {
-        // unauthorized
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        return unauthorized();
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -90,18 +90,18 @@ export const GET = withUserAuth(
 
       const fileName = req.nextUrl.searchParams.get('fileName');
       if (!fileName) {
-        return NextResponse.json(
-          { message: 'fileName query parameter is required' },
-          { status: 400 }
-        );
+        throw new ValidationError('missingRequiredValue', 'fileName', 400);
       }
 
       if (await isCaseUserMatch(caseID, account.userId)) {
         return await getBlob(caseID, fileName, privateFlag ? account.userId : undefined);
       } else {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        return unauthorized();
       }
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
       return handleError(error, 'Failed to download blob');
     }
   }
