@@ -53,34 +53,3 @@ export const POST = withEmployeeAuth(
     }
   }
 );
-
-// GET /api/case/:caseID/documents/employee?fileName=...
-// Download a specific blob from azure as a employee, while not having access to private files
-export const GET = withEmployeeAuth(
-  async (
-    req: NextRequest,
-    { params }: { params: Promise<{ caseID: string }> },
-    account: EmployeeLoginResource
-  ) => {
-    try {
-      const { caseID } = await params;
-      validateIds([{ id: caseID, identifier: 'caseID' }]);
-
-      const fileName = req.nextUrl.searchParams.get('fileName');
-      if (!fileName) {
-        return NextResponse.json(
-          { message: 'fileName query parameter is required' },
-          { status: 400 }
-        );
-      }
-
-      if (await isCaseEmployeeMatch(caseID, account.employeeId)) {
-        return await getBlob(caseID, fileName);
-      } else {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-      }
-    } catch (error) {
-      return handleError(error, 'Failed to download blob');
-    }
-  }
-);
