@@ -132,9 +132,27 @@ export function OrganizationFilters({
   });
   // Nearby cities are only available after a base city search; keep empty by default.
   const [nearbyCities, setNearbyCities] = useState<NearbyCity[]>([]);
+  const [isNearbyOpen, setIsNearbyOpen] = useState(false);
   // Forces CitySearch to remount when the city filter is cleared externally.
   const [citySearchKey, setCitySearchKey] = useState(0);
   const [isRadiusOpen, setIsRadiusOpen] = useState(false);
+
+  const closeSectionDropdowns = () => {
+    setOpenSections({
+      organizationType: false,
+      priceCategory: false,
+      area: false,
+      languages: false,
+      accessibility: false,
+      city: false,
+    });
+  };
+
+  const closeAllDropdowns = () => {
+    closeSectionDropdowns();
+    setIsRadiusOpen(false);
+    setIsNearbyOpen(false);
+  };
 
   const toggleSection = (key: keyof FilterOptions) => {
     setOpenSections((prev) => {
@@ -148,19 +166,11 @@ export function OrganizationFilters({
       );
       return nextState;
     });
+    // Opening a filter dropdown should close city-related dropdowns.
+    setIsRadiusOpen(false);
+    setIsNearbyOpen(false);
   };
 
-  const closeAllSections = () => {
-    setOpenSections({
-      organizationType: false,
-      priceCategory: false,
-      area: false,
-      languages: false,
-      accessibility: false,
-      city: false,
-    });
-    setIsRadiusOpen(false);
-  };
   // Toggle city selection is for the nearby city filter
   const toggleCity = (cityName: string) => {
     const next = filters.city.includes(cityName)
@@ -177,7 +187,9 @@ export function OrganizationFilters({
       const target = event.target as HTMLElement | null;
       if (!target) return;
       if (target.closest('[data-organization-filters-popover]')) return;
-      closeAllSections();
+      // Ignore clicks inside the filter component so toggles can open/close properly.
+      if (target.closest('[data-organization-filters]')) return;
+      closeAllDropdowns();
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -217,6 +229,7 @@ export function OrganizationFilters({
     onReset();
     setCitySearchKey((prev) => prev + 1);
     setNearbyCities([]);
+    setIsNearbyOpen(false);
   };
 
   // Filter sections rendered as dropdowns.
@@ -386,7 +399,21 @@ export function OrganizationFilters({
             radiusKm={radiusKm}
             onRadiusChange={setRadiusKm}
             radiusOpen={isRadiusOpen}
-            onRadiusOpenChange={setIsRadiusOpen}
+            onRadiusOpenChange={(value) => {
+              if (value) {
+                closeSectionDropdowns();
+                setIsNearbyOpen(false);
+              }
+              setIsRadiusOpen(value);
+            }}
+            nearbyOpen={isNearbyOpen}
+            onNearbyOpenChange={(value) => {
+              if (value) {
+                closeSectionDropdowns();
+                setIsRadiusOpen(false);
+              }
+              setIsNearbyOpen(value);
+            }}
             nearbyCities={nearbyCities}
             selectedCities={filters.city}
             onToggleCity={toggleCity}

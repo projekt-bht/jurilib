@@ -37,6 +37,8 @@ type CitySearchProps = {
   onRadiusChange: (value: number) => void;
   radiusOpen: boolean;
   onRadiusOpenChange: (value: boolean) => void;
+  nearbyOpen: boolean;
+  onNearbyOpenChange: (value: boolean) => void;
   nearbyCities: { name: string; label: string }[];
   selectedCities: string[];
   onToggleCity: (cityName: string) => void;
@@ -50,6 +52,8 @@ export default function CitySearch({
   onRadiusChange,
   radiusOpen,
   onRadiusOpenChange,
+  nearbyOpen,
+  onNearbyOpenChange,
   nearbyCities,
   selectedCities,
   onToggleCity,
@@ -61,7 +65,6 @@ export default function CitySearch({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const radiusOptionsKm = [0, 5, 10, 15, 20, 25, 30, 40, 50];
-  const [isNearbyOpen, setIsNearbyOpen] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -77,7 +80,7 @@ export default function CitySearch({
       if (!target) return;
       if (target.closest('[data-organization-filters-popover]')) return;
       if (containerRef.current?.contains(target)) return;
-      setIsNearbyOpen(false);
+      onNearbyOpenChange(false);
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -180,9 +183,9 @@ export default function CitySearch({
               <div className="h-6 w-px bg-accent-gray-light" />
               <button
                 type="button"
-                onClick={() => setIsNearbyOpen((prev) => !prev)}
+                onClick={() => onNearbyOpenChange(!nearbyOpen)}
                 className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-foreground transition hover:bg-accent-gray-soft"
-                aria-expanded={isNearbyOpen}
+                aria-expanded={nearbyOpen}
               >
                 <span>Nachbarstädte</span>
                 <span
@@ -196,7 +199,7 @@ export default function CitySearch({
                 </span>
                 <ChevronDown
                   size={14}
-                  className={`transition-transform ${isNearbyOpen ? 'rotate-180' : ''}`}
+                  className={`transition-transform ${nearbyOpen ? 'rotate-180' : ''}`}
                 />
               </button>
             </>
@@ -219,7 +222,7 @@ export default function CitySearch({
             </CommandList>
           </Command>
         )}
-        {nearbyCities.length > 0 && isNearbyOpen && (
+        {nearbyCities.length > 0 && nearbyOpen && (
           <div
             className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
             data-organization-filters-popover
