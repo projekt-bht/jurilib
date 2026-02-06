@@ -33,9 +33,12 @@ import {
   Zap,
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { TargetAudience } from './introduction/target-audience';
+import { TechnicalRequirements } from './introduction/technical-requirements';
 import { Glossary } from './project-overview/glossary';
 import { Licenses } from './project-overview/licenses';
 import { LinksAndResources } from './project-overview/links-and-resources';
@@ -43,9 +46,6 @@ import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 import { Test } from './project-overview/test';
-import { usePathname } from 'next/navigation';
-import { TechnicalRequirements } from './introduction/technical-requirements';
-import { TargetAudience } from './introduction/target-audience';
 import { UserquickStart } from './user-guide/user-quick-start';
 
 type SectionId =
@@ -156,6 +156,48 @@ export default function DocsPage() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const isApiPage = usePathname().includes('/docs/api');
 
+  const allSectionIds = useMemo<SectionId[]>(() => {
+    const ids: string[] = [];
+    navItems.forEach((item) => {
+      ids.push(item.id);
+      item.children?.forEach((child) => {
+        ids.push(child.id);
+        child.children?.forEach((grandchild) => ids.push(grandchild.id));
+      });
+    });
+    return ids as SectionId[];
+  }, []);
+
+  useEffect(() => {
+    if (isApiPage) return;
+
+    const sections = allSectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (visible[0]?.target?.id) {
+          setActiveSection(visible[0].target.id as SectionId);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -70% 0px',
+        threshold: 0.1,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [allSectionIds, isApiPage]);
+
   const scrollToSection = (id: SectionId) => {
     setActiveSection(id);
     setMobileNavOpen(false);
@@ -164,10 +206,6 @@ export default function DocsPage() {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-
-  if (isApiPage) {
-    return <></>;
-  }
 
   return (
     <div className="min-h-screen bg-background">
