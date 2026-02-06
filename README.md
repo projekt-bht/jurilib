@@ -7,9 +7,9 @@
 <h1>JURILIB</h1>
 </div>
 
-Jurilib is a full‑stack legal services platform that connects users with organizations offering legal services. It supports managing cases and appointments through a modular web app and API surface.
+Jurilib is a full‑stack open-source legal services platform that connects users with organizations offering legal services. It supports managing cases and appointments through a modular web app and API surface.
 
-The stack is [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.typescriptlang.org/), with a [Prisma](https://www.prisma.io/docs) data layer. The UI uses [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/docs), with reusable components and API routes organized for feature growth and testing.
+The stack consists of [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.typescriptlang.org/), with a [Prisma](https://www.prisma.io/docs) data layer. The UI uses [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/docs), with reusable components and API routes organized for feature growth and testing.
 
 # Developer Documentation
 
@@ -17,7 +17,7 @@ The stack is [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.types
 
 - Node.js (version v22.14.0)
 - npm (bundled with Node.js)
-- Docker Desktop or [Colima](https://github.com/abiosoft/colima) for the local Postgres container
+- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Colima](https://github.com/abiosoft/colima) for the local Postgres container
 - Recommended VS Code extensions:
   - [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -33,11 +33,11 @@ The stack is [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.types
    - `docker compose -f docker-compose.postgres.yml up -d`
 5. Initialize and seed the database:
    - `npm run db:setup`
-   - `npm run db:seed`
+   - `npm run db:seed` - only for development use
 6. Start the dev server:
    - `npm run dev`
 
-Open the app at [http://localhost:3000](http://localhost:3000). Prisma Studio will be available at [http://localhost:5555](http://localhost:5555).
+Open the app at [http://localhost:3000](http://localhost:3000). [Prisma Studio](https://www.prisma.io/studio) will be available at [http://localhost:5555](http://localhost:51212).
 
 ## Folder / Code Structure
 
@@ -50,7 +50,7 @@ Open the app at [http://localhost:3000](http://localhost:3000). Prisma Studio wi
 - `src/services/` — API client and server-side services
 - `prisma/` — schema, migrations, and seeding
 - `email_templates/` — Handlebars templates for transactional emails
-- `generated/prisma/` — generated Prisma client (do not edit)
+- `generated/prisma/` — generated Prisma client (do not edit manually)
 - `test/` — shared test utilities and mocks
 
 ## Environment Variables / Secrets
@@ -65,7 +65,7 @@ All required variables are defined in the `sample.env`. Variables that contain s
 
 Rules concerning branching strategy and branch naming are described in our [style-guide](./STYLEGUIDE.md). But here is a short summary:
 
-1. Branches normally should created from `dev`.
+1. Branches normally should be created from `dev`.
 2. They are also ideally created through an issue as that connects all commits within that branch to the respective issue.
 
 ### PR workflow
@@ -94,9 +94,10 @@ At Jurilib we value **honest, constructive and appreciative communication**. Whe
 
 Tests are configured with Jest (see [jest.config.ts](jest.config.ts)).
 
-- Run all tests: `npm test`
+- Run all tests (without golden samples): `npm test`
 - Frontend tests only: `npm run test:frontend`
 - Backend tests only: `npm run test:backend`
+- Golden Samples test only: `npm run test:goldenSamples`
 
 TODO: Summarize the main test categories and coverage expectations.
 
@@ -118,24 +119,39 @@ TODO: Document endpoints, request/response shapes, auth requirements, and error 
 
 ## Deployment Guide
 
-TODO: Document deployment steps, environments, and release process.
+Deploying JuriLib is handeled as manually as it get's right now.
+
+1. Login via
+2. sdfbsdfb
 
 ## Known Issues / Technical Debt
 
-TODO: Track known limitations, missing features, and deferred refactors.
+Sorted by Relevance
+
+1. Missing
+   TODO: Track known limitations, missing features, and deferred refactors.
 
 ## Misc
 
 ### Daily Dev Loop
 
 - Ensure the DB container is running.
-- `npm run db:deploy`
 - `npm run dev`
+
+### Bruno API Client
+
+We made sure it's easy to use and test our Backend API. Thus we included a whole Bruno API Collection to be used with the [Bruno API Client](https://www.usebruno.com/) at `.bruno`.
+
+1. Install the [VSCode extension](https://docs.usebruno.com/vs-code-extension/install-config) or [Standalone Application](https://www.usebruno.com/downloads)
+2. Complete necessary Environment Variables at `.bruno/environments/Jurilib.bru` using the `.bruno/environments/Jurilib.example.bru`
+3. Start testing the Collection
 
 ### Modifying the Database Schema
 
 - Schema: `prisma/schema.prisma`
 - Create a migration: `npm run db:dev`
+  - This will automatically start Prisma Studio.
+  - To create a new migration without, use `npx prisma generate` and `npx prisma migrate dev`
 
 ### Frontend Icons
 
@@ -151,7 +167,7 @@ We use [Lucide](https://lucide.dev/icons/) for icons.
 **Usage:**
 
 ```tsx
-const App = () => {
+function ComponentContainingIcon{
   return <Camera size={48} fill="red" />;
 };
 ```
