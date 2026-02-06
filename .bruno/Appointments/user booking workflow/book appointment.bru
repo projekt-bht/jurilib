@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: {{baseURL}}/appointment/{{process.env.APPOINTMENT_ID}}/request
+  url: {{baseURL}}/appointment/:appointmentID/request
   body: none
   auth: none
+}
+
+params:path {
+  appointmentID: {{appointmentID}}
 }
 
 headers {

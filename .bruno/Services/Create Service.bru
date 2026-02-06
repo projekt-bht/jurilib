@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: {{baseURL}}/organization/{{process.env.ORGANIZATION_ID}}/services
+  url: {{baseURL}}/organization/:organizationID/services
   body: json
   auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
 }
 
 body:json {

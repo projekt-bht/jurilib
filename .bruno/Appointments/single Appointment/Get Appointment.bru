@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: {{baseURL}}/appointment/employee/{{process.env.EMPLOYEE_ID}}/{{process.env.APPOINTMENT_ID}}
+  url: {{baseURL}}/appointment/employee/:employeeID/:appointmentID
   body: none
   auth: inherit
+}
+
+params:path {
+  appointmentID: {{appointmentID}}
+  employeeID: {{employeeID}}
 }
 
 settings {

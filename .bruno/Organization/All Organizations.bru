@@ -5,15 +5,18 @@ meta {
 }
 
 get {
-  url: {{baseURL}}/organization?priceCategory=MEDIUM&organizationType=LAW_FIRM&area=Agrarrecht
+  url: {{baseURL}}/organization
   body: none
   auth: inherit
 }
 
 params:query {
-  priceCategory: MEDIUM
-  organizationType: LAW_FIRM
-  area: Agrarrecht
+  ~priceCategory: 
+  ~organizationType: 
+  ~area: 
+  ~city: 
+  ~languages: 
+  ~accessibility: 
 }
 
 settings {

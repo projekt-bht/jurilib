@@ -5,9 +5,13 @@ meta {
 }
 
 delete {
-  url: {{baseURL}}/case/{{process.env.CASE_ID}}
+  url: {{baseURL}}/case/:caseID
   body: none
   auth: inherit
+}
+
+params:path {
+  caseID: {{caseID}}
 }
 
 settings {
