@@ -1,3 +1,5 @@
+import Team from '@/app/team/page';
+
 export function TeamTasks() {
   return (
     <>
@@ -30,6 +32,7 @@ export function TeamTasks() {
       <p>
         <b>Max Uden:</b> Full-Stack-Entwicklung, CI/CD-Pipeline, Projekt-Architektur, Projekt-Setup
       </p>
+      <Team />
     </>
   );
 }
