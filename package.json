@@ -41,6 +41,7 @@
     "handlebars": "^4.7.8",
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.3",
+    "license-checker": "^25.0.1",
     "lucide-react": "^0.552.0",
     "next": "^16.0.7",
     "openai": "^6.8.0",
