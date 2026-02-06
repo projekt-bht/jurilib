@@ -294,19 +294,19 @@ export default function DocsPage() {
 
             {/* Target Audience */}
             <section id="target-audience" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
                 Für wen ist JuriLib?
-              </h3>
+              </h2>
               <TargetAudience />
             </section>
 
             {/* Technical Requirements */}
             <section id="technical-requirements" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Server className="w-5 h-5 text-primary" />
                 Technische Voraussetzungen
-              </h3>
+              </h2>
               <TechnicalRequirements />
             </section>
 
@@ -316,9 +316,9 @@ export default function DocsPage() {
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                   Wie nutze ich JuriLib?
-                </h2>
+                </h1>
               </div>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
@@ -327,18 +327,18 @@ export default function DocsPage() {
 
             {/* User Perspective */}
             <section id="user-perspective" className="mb-8 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
                 Nutzer*innenhandbuch
-              </h3>
+              </h2>
             </section>
 
             {/* User Quick Start */}
             <section id="user-quick-start" className="mb-16 scroll-mt-24">
-              <h4 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+              <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
                 Erste Schritte für Nutzer*innen
-              </h4>
+              </h3>
               <UserQuickStart />
             </section>
 
