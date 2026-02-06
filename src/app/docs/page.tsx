@@ -20,7 +20,6 @@ import {
   Search,
   Server,
   Settings,
-  Shield,
   Users,
   Zap,
 } from 'lucide-react';
@@ -41,6 +40,7 @@ import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 import { Search as SearchTechnical } from './technical-docs/search';
+import { Security } from './technical-docs/security';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
@@ -396,6 +396,15 @@ export default function DocsPage() {
               <SearchTechnical />
             </section>
 
+            {/* Security */}
+            <section id="security" className="mb-16 scroll-mt-24">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Lock className="w-5 h-5 text-primary" />
+                Sicherheit
+              </h2>
+              <Security />
+            </section>
+
             {/* FAQ */}
             <section id="faq" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
@@ -645,47 +654,6 @@ export default function DocsPage() {
                       Gibt Details zu einer bestimmten Lösung/Organisation zurück.
                     </p>
                   </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Security */}
-            <section id="security" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary" />
-                Sicherheit
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6">
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  Datenschutz und Sicherheit sind bei JuriLib von höchster Priorität.
-                </p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      title: 'Datenverschlüsselung',
-                      desc: 'Alle Daten werden über HTTPS/TLS übertragen und verschlüsselt gespeichert.',
-                    },
-                    {
-                      title: 'DSGVO-konform',
-                      desc: 'Die Plattform erfüllt alle Anforderungen der Datenschutz-Grundverordnung.',
-                    },
-                    {
-                      title: 'Vertraulichkeit',
-                      desc: 'Ihre Falldaten werden vertraulich behandelt und nicht an Dritte weitergegeben.',
-                    },
-                    {
-                      title: 'Regelmäßige Audits',
-                      desc: 'Sicherheitsüberprüfungen und Penetrationstests werden regelmäßig durchgeführt.',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3">
-                      <Shield className="w-4 h-4 text-primary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
             </section>
