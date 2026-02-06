@@ -372,6 +372,15 @@ export default function DocsPage() {
               <LawyerQuickStart />
             </section>
 
+            {/* Lawyer Features & Workflows */}
+            <section id="lawyer-features-workflows" className="mb-16 scroll-mt-24">
+              <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                <Gem className="w-5 h-5 text-primary" />
+                Funktionen & Workflows
+              </h3>
+              <UserFeaturesWorkflows />
+            </section>
+
             {/* ############################################################################ */}
 
             {/* Search & Results */}
