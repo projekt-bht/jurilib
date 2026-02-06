@@ -114,10 +114,15 @@ const navItems: NavItem[] = [
           { id: 'lawyer-features-workflows', label: 'Funktionen & Workflows' },
         ],
       },
+    ],
+  },
+  {
+    id: 'technical',
+    label: 'Technische Details',
+    icon: <Code className="w-4 h-4 text-accent-blue" />,
+    children: [
+      { id: 'security', label: 'Sicherheit' },
       { id: 'search', label: 'Suche & Ergebnisse' },
-      { id: 'organizations', label: 'Organisationen' },
-      { id: 'case-management', label: 'Fallverwaltung' },
-      { id: 'account', label: 'Konto & Profil' },
     ],
   },
   {
@@ -132,16 +137,6 @@ const navItems: NavItem[] = [
   { id: 'glossary', label: 'Glossar', icon: <ScrollText className="w-4 h-4 text-accent-blue" /> },
   // ---
   {
-    id: 'technical',
-    label: 'Technische Docs',
-    icon: <Code className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'architecture', label: 'Architektur' },
-      { id: 'api', label: 'API-Referenz' },
-      { id: 'security', label: 'Sicherheit' },
-    ],
-  },
-  {
     id: 'project-overview',
     label: 'Projektübersicht',
     icon: <Monitor className="w-4 h-4 text-accent-blue" />,
@@ -152,6 +147,11 @@ const navItems: NavItem[] = [
       { id: 'sources-and-ai', label: 'Quellen & AI-Disclaimer' },
       { id: 'licenses', label: 'Lizenzangaben' },
       { id: 'glossary', label: 'Glossar' },
+      { id: 'organizations', label: 'Organisationen' },
+      { id: 'case-management', label: 'Fallverwaltung' },
+      { id: 'account', label: 'Konto & Profil' },
+      { id: 'architecture', label: 'Architektur' },
+      { id: 'api', label: 'API-Referenz' },
     ],
   },
 ];
