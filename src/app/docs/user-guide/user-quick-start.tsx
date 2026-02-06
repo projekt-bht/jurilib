@@ -1,6 +1,6 @@
 import { Calendar1, HandshakeIcon, Search } from 'lucide-react';
 
-export function UserquickStart() {
+export function UserQuickStart() {
   return (
     <div className="bg-card border border-border rounded-xl p-6">
       <p className="text-sm text-foreground leading-relaxed mb-4">
