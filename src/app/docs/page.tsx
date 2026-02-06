@@ -1,25 +1,18 @@
 'use client';
 
 import {
-  ArrowLeft,
   ArrowUpRight,
   Award,
-  Bold,
-  Bolt,
   BookOpen,
-  Calendar1,
   CheckCircle2,
   ChevronRight,
   Code,
   Database,
   FileText,
-  Globe,
-  HandshakeIcon,
   HelpCircle,
   Link2,
   Lock,
   MapPinned,
-  MessageSquare,
   Monitor,
   RefreshCw,
   ScrollText,
@@ -27,8 +20,6 @@ import {
   Server,
   Settings,
   Shield,
-  Smartphone,
-  User,
   Users,
   Zap,
 } from 'lucide-react';
@@ -45,8 +36,7 @@ import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
-import { Test } from './project-overview/test';
-import { UserquickStart } from './user-guide/user-quick-start';
+import { UserQuickStart } from './user-guide/user-quick-start';
 
 type SectionId =
   | 'introduction'
@@ -59,6 +49,11 @@ type SectionId =
   | 'lawyer-perspective'
   | 'lawyer-quick-start'
   | 'lawyer-features-workflows'
+  | 'faq'
+  | 'user-faq'
+  | 'lawyer-faq'
+  | 'glossary'
+  // ---
   | 'search'
   | 'organizations'
   | 'case-management'
@@ -67,14 +62,12 @@ type SectionId =
   | 'architecture'
   | 'api'
   | 'security'
-  | 'faq'
   | 'project-overview'
   | 'short-description'
   | 'team-tasks'
   | 'links-and-resources'
   | 'sources-and-ai'
-  | 'licenses'
-  | 'glossary';
+  | 'licenses';
 
 interface NavItem {
   id: SectionId;
@@ -121,6 +114,17 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    id: 'faq',
+    label: 'FAQ',
+    icon: <HelpCircle className="w-4 h-4 text-accent-blue" />,
+    children: [
+      { id: 'user-faq', label: 'Nutzer*innen FAQ' },
+      { id: 'lawyer-faq', label: 'Jurist*innen FAQ' },
+    ],
+  },
+  { id: 'glossary', label: 'Glossar', icon: <ScrollText className="w-4 h-4 text-accent-blue" /> },
+  // ---
+  {
     id: 'technical',
     label: 'Technische Docs',
     icon: <Code className="w-4 h-4 text-accent-blue" />,
@@ -129,11 +133,6 @@ const navItems: NavItem[] = [
       { id: 'api', label: 'API-Referenz' },
       { id: 'security', label: 'Sicherheit' },
     ],
-  },
-  {
-    id: 'faq',
-    label: 'FAQ',
-    icon: <HelpCircle className="w-4 h-4 text-accent-blue" />,
   },
   {
     id: 'project-overview',
@@ -423,7 +422,7 @@ export default function DocsPage() {
                 <Zap className="w-5 h-5 text-primary" />
                 Erste Schritte für Nutzer*innen
               </h2>
-              <UserquickStart />
+              <UserQuickStart />
             </section>
 
             {/* Search & Results */}
