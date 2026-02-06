@@ -439,7 +439,24 @@ export default function DocsPage() {
               <LawyerFAQ />
             </section>
 
+            {/* Glossary */}
+            <section id="glossary" className="mb-16 scroll-mt-24">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <ScrollText className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  Glossar
+                </h1>
+              </div>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
+              <Glossary />
+            </section>
+
             {/* ############################################################################ */}
+
+            <hr />
+            <br />
 
             {/* Organizations */}
             <section id="organizations" className="mb-16 scroll-mt-24">
@@ -729,18 +746,6 @@ export default function DocsPage() {
 
               <span>
                 <Licenses />
-              </span>
-            </section>
-
-            {/* Glossary */}
-            <section id="glossary" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <ScrollText className="w-5 h-5 text-primary" />
-                Glossar
-              </h3>
-
-              <span>
-                <Glossary />
               </span>
             </section>
 
