@@ -21,12 +21,15 @@ import {
   Smartphone,
   Users,
   Zap,
+  Link2,
 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
+
 import { ShortDescription } from './project-overview/short-description';
 import { TeamTasks } from './project-overview/team-tasks';
+import { LinksAndResources } from './project-overview/links-and-resources';
 
 type SectionId =
   | 'getting-started'
@@ -42,7 +45,8 @@ type SectionId =
   | 'faq'
   | 'project-overview'
   | 'short-description'
-  | 'team-tasks';
+  | 'team-tasks'
+  | 'links-and-resources';
 
 interface NavItem {
   id: SectionId;
@@ -706,6 +710,18 @@ export default function DocsPage() {
               <div>
                 <h4 className="font-semibold text-foreground mb-3">Team & Aufgabenverteilung</h4>
                 <TeamTasks />
+              </div>
+            </section>
+
+            {/* Links & Resources */}
+            <section id="links-and-resources" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Link2 className="w-5 h-5 text-primary" />
+                Links & Zugänge
+              </h3>
+
+              <div>
+                <LinksAndResources />
               </div>
             </section>
 
