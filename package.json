@@ -19,6 +19,7 @@
     "test:goldenSamples": "NODE_OPTIONS=--experimental-vm-modules jest --selectProjects goldenSamples"
   },
   "dependencies": {
+    "@azure/storage-blob": "^12.30.0",
     "@getbrevo/brevo": "^3.0.1",
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.3.0",
