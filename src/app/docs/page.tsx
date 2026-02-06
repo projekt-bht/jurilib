@@ -151,8 +151,6 @@ const navItems: NavItem[] = [
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState<SectionId>('project-overview');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const isApiPage = usePathname().includes('/docs/api');
 
   const allSectionIds = useMemo<SectionId[]>(() => {
@@ -199,7 +197,6 @@ export default function DocsPage() {
 
   const scrollToSection = (id: SectionId) => {
     setActiveSection(id);
-    setMobileNavOpen(false);
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -213,16 +210,14 @@ export default function DocsPage() {
         <aside className="hidden md:block w-64 shrink-0 border-r border-border sticky top-23 h-[calc(100vh-5.75rem)] overflow-y-auto">
           <nav className="p-4 flex flex-col gap-1">
             {/* Search */}
-            {/* <div className="relative mb-4">
+            <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Suchen..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition"
               />
-            </div> */}
+            </div>
 
             {navItems.map((item) => (
               <div key={item.id}>
@@ -278,67 +273,9 @@ export default function DocsPage() {
           </nav>
         </aside>
 
-        {/* Mobile Navigation Overlay */}
-        {/* {mobileNavOpen && (
-          <div className="md:hidden fixed inset-0 z-40 bg-background/95 backdrop-blur-sm pt-[73px]">
-            <nav className="p-4 flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-73px)]">
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Suchen..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition"
-                />
-              </div>
-              {navItems.map((item) => (
-                <div key={item.id}>
-                  <button
-                    onClick={() => scrollToSection(item.id)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                    }`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </button>
-                  {item.children && (
-                    <div className="ml-6 mt-1 flex flex-col gap-0.5 border-l border-border pl-3 mb-2">
-                      {item.children.map((child) => (
-                        <button
-                          key={child.id}
-                          onClick={() => scrollToSection(child.id as SectionId)}
-                          className="text-left px-2 py-2 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {child.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <div className="mt-4 pt-4 border-t border-border">
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Zur Startseite
-                </Link>
-              </div>
-            </nav>
-          </div>
-        )} */}
-
         {/* Main Content */}
         <main className="flex-1 min-w-0 px-4 md:px-8 lg:px-12 py-8 md:py-12">
           <div className="max-w-3xl">
-            {/* <div className="flex items-center gap-3 mb-6">
-              <Test />
-            </div> */}
             {/* Getting Started */}
             <section id="introduction" className="mb-12 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
@@ -353,26 +290,6 @@ export default function DocsPage() {
                 JuriLib verbindet Menschen mit rechtlichen Anliegen mit passenden Organisationen und
                 Beratungsstellen. Diese Dokumentation hilft Ihnen, die Plattform optimal zu nutzen.
               </p>
-
-              {/* Supported Platforms */}
-              {/* <div className="bg-secondary/30 border border-border rounded-xl p-6">
-                <h3 className="font-semibold text-foreground mb-3">Systemvoraussetzungen</h3>
-                <div className="flex flex-wrap gap-4">
-                  {[
-                    { icon: <Monitor className="w-4 h-4" />, label: 'Desktop Browser' },
-                    { icon: <Smartphone className="w-4 h-4" />, label: 'Mobile Browser' },
-                    { icon: <Globe className="w-4 h-4" />, label: 'Chrome, Firefox, Safari, Edge' },
-                  ].map((platform) => (
-                    <span
-                      key={platform.label}
-                      className="inline-flex items-center gap-2 text-sm text-muted-foreground"
-                    >
-                      {platform.icon}
-                      {platform.label}
-                    </span>
-                  ))}
-                </div>
-              </div> */}
             </section>
 
             {/* Target Audience */}
