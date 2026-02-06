@@ -18,6 +18,9 @@
     "test:backend": "NODE_OPTIONS=--experimental-vm-modules jest --selectProjects backend",
     "test:goldenSamples": "NODE_OPTIONS=--experimental-vm-modules jest --selectProjects goldenSamples"
   },
+  "scarfSettings": {
+    "enabled": false
+  },
   "dependencies": {
     "@azure/storage-blob": "^12.30.0",
     "@getbrevo/brevo": "^3.0.1",
@@ -60,6 +63,7 @@
     "@types/nodemailer": "^7.0.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-react": "^5.18.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "babel-plugin-react-compiler": "1.0.0",
@@ -71,6 +75,7 @@
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "prisma": "^7.0.1",
+    "swagger-ui-react": "^5.31.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
