@@ -9,6 +9,7 @@ import {
   Code,
   Database,
   FileText,
+  Gavel,
   Gem,
   HelpCircle,
   Link2,
@@ -351,6 +352,14 @@ export default function DocsPage() {
                 Funktionen & Workflows
               </h3>
               <UserFeaturesWorkflows />
+            </section>
+
+            {/* Lawyer Perspective */}
+            <section id="lawyer-perspective" className="mb-8 scroll-mt-24">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Gavel className="w-5 h-5 text-primary" />
+                Jurist*innenhandbuch
+              </h2>
             </section>
 
             {/* ############################################################################ */}
