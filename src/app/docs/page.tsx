@@ -38,17 +38,17 @@ import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 
 type SectionId =
-  | 'getting-started'
-  | 'user-guide'
-  | 'search'
-  | 'organizations'
-  | 'case-management'
-  | 'account'
-  | 'technical'
-  | 'architecture'
-  | 'api'
-  | 'security'
-  | 'faq'
+  //   | 'getting-started'
+  //   | 'user-guide'
+  //   | 'search'
+  //   | 'organizations'
+  //   | 'case-management'
+  //   | 'account'
+  //   | 'technical'
+  //   | 'architecture'
+  //   | 'api'
+  //   | 'security'
+  //   | 'faq'
   | 'project-overview'
   | 'short-description'
   | 'team-tasks'
@@ -65,37 +65,37 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  {
-    id: 'getting-started',
-    label: 'Erste Schritte',
-    icon: <Zap className="w-4 h-4 text-accent-blue" />,
-  },
-  {
-    id: 'user-guide',
-    label: 'Benutzerhandbuch',
-    icon: <BookOpen className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'search', label: 'Suche & Ergebnisse' },
-      { id: 'organizations', label: 'Organisationen' },
-      { id: 'case-management', label: 'Fallverwaltung' },
-      { id: 'account', label: 'Konto & Profil' },
-    ],
-  },
-  {
-    id: 'technical',
-    label: 'Technische Docs',
-    icon: <Code className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'architecture', label: 'Architektur' },
-      { id: 'api', label: 'API-Referenz' },
-      { id: 'security', label: 'Sicherheit' },
-    ],
-  },
-  {
-    id: 'faq',
-    label: 'FAQ',
-    icon: <HelpCircle className="w-4 h-4 text-accent-blue" />,
-  },
+  //   {
+  //     id: 'getting-started',
+  //     label: 'Erste Schritte',
+  //     icon: <Zap className="w-4 h-4 text-accent-blue" />,
+  //   },
+  //   {
+  //     id: 'user-guide',
+  //     label: 'Benutzerhandbuch',
+  //     icon: <BookOpen className="w-4 h-4 text-accent-blue" />,
+  //     children: [
+  //       { id: 'search', label: 'Suche & Ergebnisse' },
+  //       { id: 'organizations', label: 'Organisationen' },
+  //       { id: 'case-management', label: 'Fallverwaltung' },
+  //       { id: 'account', label: 'Konto & Profil' },
+  //     ],
+  //   },
+  //   {
+  //     id: 'technical',
+  //     label: 'Technische Docs',
+  //     icon: <Code className="w-4 h-4 text-accent-blue" />,
+  //     children: [
+  //       { id: 'architecture', label: 'Architektur' },
+  //       { id: 'api', label: 'API-Referenz' },
+  //       { id: 'security', label: 'Sicherheit' },
+  //     ],
+  //   },
+  //   {
+  //     id: 'faq',
+  //     label: 'FAQ',
+  //     icon: <HelpCircle className="w-4 h-4 text-accent-blue" />,
+  //   },
   {
     id: 'project-overview',
     label: 'Projektübersicht',
@@ -112,7 +112,7 @@ const navItems: NavItem[] = [
 ];
 
 export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState<SectionId>('getting-started');
+  const [activeSection, setActiveSection] = useState<SectionId>('project-overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -179,7 +179,7 @@ export default function DocsPage() {
         </aside>
 
         {/* Mobile Navigation Overlay */}
-        {mobileNavOpen && (
+        {/* {mobileNavOpen && (
           <div className="md:hidden fixed inset-0 z-40 bg-background/95 backdrop-blur-sm pt-[73px]">
             <nav className="p-4 flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-73px)]">
               <div className="relative mb-4">
@@ -231,13 +231,13 @@ export default function DocsPage() {
               </div>
             </nav>
           </div>
-        )}
+        )} */}
 
         {/* Main Content */}
         <main className="flex-1 min-w-0 px-4 md:px-8 lg:px-12 py-8 md:py-12">
           <div className="max-w-3xl">
             {/* Getting Started */}
-            <section id="getting-started" className="mb-16 scroll-mt-24">
+            {/* <section id="getting-started" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
                   <Zap className="w-5 h-5 text-white" />
@@ -249,10 +249,10 @@ export default function DocsPage() {
               <p className="text-lg text-muted-foreground leading-relaxed mb-8">
                 JuriLib verbindet Menschen mit rechtlichen Anliegen mit passenden Organisationen und
                 Beratungsstellen. Diese Dokumentation hilft Ihnen, die Plattform optimal zu nutzen.
-              </p>
+              </p> */}
 
-              {/* Quick Start Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {/* Quick Start Cards */}
+            {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
                   {
                     icon: <Search className="w-5 h-5" />,
@@ -279,10 +279,10 @@ export default function DocsPage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">{card.desc}</p>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
-              {/* Supported Platforms */}
-              <div className="bg-secondary/30 border border-border rounded-xl p-6">
+            {/* Supported Platforms */}
+            {/* <div className="bg-secondary/30 border border-border rounded-xl p-6">
                 <h3 className="font-semibold text-foreground mb-3">Systemvoraussetzungen</h3>
                 <div className="flex flex-wrap gap-4">
                   {[
@@ -300,10 +300,10 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* User Guide */}
-            <section id="user-guide" className="mb-16 scroll-mt-24">
+            {/* <section id="user-guide" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-primary/10 text-primary p-2 rounded-lg">
                   <BookOpen className="w-5 h-5" />
@@ -315,10 +315,10 @@ export default function DocsPage() {
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
               </p>
-            </section>
+            </section> */}
 
             {/* Search & Results */}
-            <section id="search" className="mb-16 scroll-mt-24">
+            {/* <section id="search" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Search className="w-5 h-5 text-primary" />
                 Suche & Ergebnisse
@@ -365,10 +365,10 @@ export default function DocsPage() {
                   </p>
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Organizations */}
-            <section id="organizations" className="mb-16 scroll-mt-24">
+            {/* <section id="organizations" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
                 Organisationen
@@ -404,10 +404,10 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Case Management */}
-            <section id="case-management" className="mb-16 scroll-mt-24">
+            {/* <section id="case-management" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary" />
                 Fallverwaltung
@@ -442,10 +442,10 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Account */}
-            <section id="account" className="mb-16 scroll-mt-24">
+            {/* <section id="account" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Settings className="w-5 h-5 text-primary" />
                 Konto & Profil
@@ -479,10 +479,10 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Technical Docs */}
-            <section id="technical" className="mb-16 scroll-mt-24">
+            {/* <section id="technical" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-primary/10 text-primary p-2 rounded-lg">
                   <Code className="w-5 h-5" />
@@ -494,10 +494,10 @@ export default function DocsPage() {
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Technische Details zur JuriLib-Plattform für Entwickler und technische Teams.
               </p>
-            </section>
+            </section> */}
 
             {/* Architecture */}
-            <section id="architecture" className="mb-16 scroll-mt-24">
+            {/* <section id="architecture" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Database className="w-5 h-5 text-primary" />
                 Architektur
@@ -548,10 +548,10 @@ export default function DocsPage() {
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* API Reference */}
-            <section id="api" className="mb-16 scroll-mt-24">
+            {/* <section id="api" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-primary" />
                 API-Referenz
@@ -600,10 +600,10 @@ export default function DocsPage() {
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* Security */}
-            <section id="security" className="mb-16 scroll-mt-24">
+            {/* <section id="security" className="mb-16 scroll-mt-24">
               <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Lock className="w-5 h-5 text-primary" />
                 Sicherheit
@@ -641,10 +641,10 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
+            </section> */}
 
             {/* FAQ */}
-            <section id="faq" className="mb-16 scroll-mt-24">
+            {/* <section id="faq" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-primary/10 text-primary p-2 rounded-lg">
                   <HelpCircle className="w-5 h-5" />
@@ -692,7 +692,7 @@ export default function DocsPage() {
                   </details>
                 ))}
               </div>
-            </section>
+            </section> */}
 
             {/* Projektübersicht */}
             <section id="project-overview" className="mb-16 scroll-mt-24">
