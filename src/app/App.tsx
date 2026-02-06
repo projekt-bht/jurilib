@@ -25,9 +25,5 @@ export default function App({ children }: AppProps) {
     })();
   }, []);
 
-  console.log('Global LoginInfo: ', login);
-
-  if (login === undefined) return <></>;
-
   return <LoginContext.Provider value={{ login, setLogin }}>{children}</LoginContext.Provider>;
 }
