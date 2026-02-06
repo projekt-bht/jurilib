@@ -34,7 +34,6 @@ const frontendCustom = {
   testMatch: [
     '<rootDir>/src/components/**/*.{spec,test}.{ts,tsx}',
     '<rootDir>/src/app/**/*.{spec,test}.{ts,tsx}',
-    '<rootDir>/src/services/client/**/*.{spec,test}.{ts,tsx}',
   ],
   // exclude API routes from FE project to avoid double-running
   testPathIgnorePatterns: [...testPathIgnore, '<rootDir>/src/app/api/'],
@@ -49,8 +48,19 @@ const backendCustom = {
   testMatch: [
     '<rootDir>/src/app/api/**/*.{spec,test}.{ts,tsx}',
     '<rootDir>/src/app/**/route.{spec,test}.{ts,tsx}',
-    '<rootDir>/src/services/server/**/*.{spec,test}.{ts,tsx}',
   ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^~/(.*)$': '<rootDir>/$1',
+    '^@helper/(.*)$': '<rootDir>/helper/$1',
+  },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+};
+const goldenSamplesCustom = {
+  ...shared,
+  displayName: 'goldenSamples',
+  testEnvironment: 'node',
+  testMatch: ['<rootDir>/src/services/server/**/*.{spec,test}.{ts,tsx}'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^~/(.*)$': '<rootDir>/$1',
@@ -62,5 +72,6 @@ const backendCustom = {
 export default async () => {
   const frontend = await createJestConfig(frontendCustom)();
   const backend = await createJestConfig(backendCustom)();
-  return { projects: [frontend, backend] };
+  const goldenSamples = await createJestConfig(goldenSamplesCustom)();
+  return { projects: [frontend, backend, goldenSamples] };
 };

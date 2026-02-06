@@ -15,6 +15,7 @@ export function Navbar() {
       <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
         <Link href="/" className="flex items-center space-x-2">
           <div className="bg-foreground p-2 rounded-lg">
+            {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
             <Image
               src={scale_logo}
               alt="JuriLib Logo"
@@ -27,25 +28,22 @@ export function Navbar() {
         </Link>
 
         <div className="flex items-center gap-x-5">
-          {login && (
-            <Link href="/dashboard" className="flex items-center gap-x-2">
-              <ShieldUser className="text-forground" size={24} />
-              <p>Dashboard</p>
-            </Link>
+          {!login && (
+            <>
+              <Link href="/lawyers" className="flex items-center gap-x-2">
+                <ShieldUser className="text-forground" size={24} />
+                <p>Du bist Jurist*in?</p>
+              </Link>
+              <Link href="/team" className="flex items-center gap-x-2">
+                <User className="text-forground" size={24} />
+                <p>Das Team</p>
+              </Link>
+              <Link href="/organization" className="flex items-center gap-x-2">
+                <Building2 className="text-foreground" size={24} />
+                <p>Organisationen</p>
+              </Link>
+            </>
           )}
-
-          <Link href="/lawyers" className="flex items-center gap-x-2">
-            <ShieldUser className="text-forground" size={24} />
-            <p>Du bist Jurist*in?</p>
-          </Link>
-          <Link href="/team" className="flex items-center gap-x-2">
-            <User className="text-forground" size={24} />
-            <p>Das Team</p>
-          </Link>
-          <Link href="/organization" className="flex items-center gap-x-2">
-            <Building2 className="text-foreground" size={24} />
-            <p>Organisationen</p>
-          </Link>
           <Authentication />
         </div>
       </nav>
