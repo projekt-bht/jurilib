@@ -53,10 +53,12 @@ type SectionId =
   | 'target-audience'
   | 'technical-requirements'
   | 'user-guide'
-  | 'user-quick-start'
   | 'user-perspective'
+  | 'user-quick-start'
+  | 'user-features-workflows'
   | 'lawyer-perspective'
   | 'lawyer-quick-start'
+  | 'lawyer-features-workflows'
   | 'search'
   | 'organizations'
   | 'case-management'
@@ -78,7 +80,7 @@ interface NavItem {
   id: SectionId;
   label: string;
   icon: React.ReactNode;
-  children?: { id: string; label: string }[];
+  children?: { id: string; label: string; children?: { id: string; label: string }[] }[];
 }
 
 const navItems: NavItem[] = [
@@ -96,10 +98,22 @@ const navItems: NavItem[] = [
     label: 'Wie nutze ich JuriLib?',
     icon: <BookOpen className="w-4 h-4 text-accent-blue" />,
     children: [
-      { id: 'user-perspective', label: 'Nutzer*innenhandbuch' },
-      { id: 'user-quick-start', label: 'Erste Schritte für Nutzer*innen' },
-      { id: 'lawyer-perspective', label: 'Jurist*innenhandbuch' },
-      { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
+      {
+        id: 'user-perspective',
+        label: 'Nutzer*innenhandbuch',
+        children: [
+          { id: 'user-quick-start', label: 'Erste Schritte' },
+          { id: 'user-features-workflows', label: 'Funktionen & Workflows' },
+        ],
+      },
+      {
+        id: 'lawyer-perspective',
+        label: 'Jurist*innenhandbuch',
+        children: [
+          { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
+          { id: 'lawyer-features-workflows', label: 'Funktionen & Workflows' },
+        ],
+      },
       { id: 'search', label: 'Suche & Ergebnisse' },
       { id: 'organizations', label: 'Organisationen' },
       { id: 'case-management', label: 'Fallverwaltung' },
@@ -189,17 +203,36 @@ export default function DocsPage() {
                 {item.children && (
                   <div className="ml-6 mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
                     {item.children.map((child) => (
-                      <button
-                        key={child.id}
-                        onClick={() => scrollToSection(child.id as SectionId)}
-                        className={`text-left px-2 py-1.5 rounded-md text-sm transition-colors ${
-                          activeSection === child.id
-                            ? 'text-primary font-medium'
-                            : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        {child.label}
-                      </button>
+                      <div key={child.id} className="flex flex-col gap-0.5">
+                        <button
+                          onClick={() => scrollToSection(child.id as SectionId)}
+                          className={`text-left px-2 py-1.5 rounded-md text-sm transition-colors ${
+                            activeSection === child.id
+                              ? 'text-primary font-medium'
+                              : 'text-muted-foreground hover:text-foreground'
+                          }`}
+                        >
+                          {child.label}
+                        </button>
+
+                        {child.children && (
+                          <div className="ml-4 mt-0.5 flex flex-col gap-0.5 border-l border-border/60 pl-3">
+                            {child.children.map((grandchild) => (
+                              <button
+                                key={grandchild.id}
+                                onClick={() => scrollToSection(grandchild.id as SectionId)}
+                                className={`text-left px-2 py-1.5 rounded-md text-sm transition-colors ${
+                                  activeSection === grandchild.id
+                                    ? 'text-primary font-medium'
+                                    : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                              >
+                                {grandchild.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
