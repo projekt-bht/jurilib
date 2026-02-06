@@ -1,23 +1,28 @@
 export function SourcesAndAI() {
   return (
     <>
-      <h4 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-        Entwicklung
-      </h4>
-
       <div>
         <p>
-          <b>AI:</b> Co-Pilot, Chat-GPT und v0
+          <b>Entwicklung - AI</b>
         </p>
+        <p>Co-Pilot, Chat-GPT und v0</p>
+        <br />
         <p>
-          <b>Quellen:</b> Dokumentation der verwendeten Frameworks und Bibliotheken, StackOverflow
+          <b>Entwicklung - Quellen</b>
         </p>
+        <p> Dokumentation der verwendeten Frameworks und Bibliotheken, StackOverflow</p>
       </div>
 
       <br />
 
-      <h4 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">Anwendung</h4>
-      <p>Innerhalb der Anwendung verwenden wir Open-AI um die Fallbeschreibung zu Vektorisieren.</p>
+      <div>
+        <p>
+          <b>Anwendung - AI</b>
+        </p>
+        <p>
+          Innerhalb der Anwendung verwenden wir Open-AI um die Fallbeschreibung zu Vektorisieren.
+        </p>
+      </div>
     </>
   );
 }
