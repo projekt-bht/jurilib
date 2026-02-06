@@ -317,11 +317,11 @@ export default function DocsPage() {
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Wie nutze ich Jurilib?
+                  Wie nutze ich JuriLib?
                 </h2>
               </div>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                Detaillierte Anleitungen zu allen Funktionen der Jurilib-Plattform.
+                Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
               </p>
             </section>
 
