@@ -374,6 +374,19 @@ export default function DocsPage() {
               <UserFeaturesWorkflows />
             </section>
 
+            {/* Technical Docs */}
+            <section id="technical" className="mb-16 scroll-mt-24">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <Code className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  Technische Dokumentation
+                </h1>
+              </div>
+              <p className="text-foreground leading-relaxed mb-8">Technische Details zu JuriLib.</p>
+            </section>
+
             {/* FAQ */}
             <section id="faq" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
@@ -569,21 +582,6 @@ export default function DocsPage() {
                   ))}
                 </div>
               </div>
-            </section>
-
-            {/* Technical Docs */}
-            <section id="technical" className="mb-16 scroll-mt-24">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-primary/10 text-primary p-2 rounded-lg">
-                  <Code className="w-5 h-5" />
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Technische Dokumentation
-                </h2>
-              </div>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Technische Details zur JuriLib-Plattform für Entwickler und technische Teams.
-              </p>
             </section>
 
             {/* Architecture */}
