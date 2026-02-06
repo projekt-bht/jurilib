@@ -11,14 +11,15 @@ const UpdateSchema = z.strictObject({
   password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
 });
 
-export async function GET(_req: NextRequest) {
-  try {
-    const accounts = await readAccounts();
-    return NextResponse.json(accounts, { status: 200 });
-  } catch (error) {
-    return handleError(error, 'Failed to read Accounts');
-  }
-}
+// POTENTIAL ADMIN ENDPOINT
+// export async function GET(_req: NextRequest) {
+//   try {
+//     const accounts = await readAccounts();
+//     return NextResponse.json(accounts, { status: 200 });
+//   } catch (error) {
+//     return handleError(error, 'Failed to read Accounts');
+//   }
+// }
 
 export async function PATCH(req: NextRequest) {
   try {
