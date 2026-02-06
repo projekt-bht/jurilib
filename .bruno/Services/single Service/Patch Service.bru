@@ -5,7 +5,7 @@ meta {
 }
 
 patch {
-  url: http://localhost:3000/api/organization/{{process.env.ORGANIZATION_ID}}/services/{{process.env.SERVICE_ID}}
+  url: {{baseURL}}/organization/{{process.env.ORGANIZATION_ID}}/services/{{process.env.SERVICE_ID}}
   body: json
   auth: inherit
 }
