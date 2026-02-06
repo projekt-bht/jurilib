@@ -5,9 +5,14 @@ meta {
 }
 
 patch {
-  url: {{baseURL}}/organization/{{process.env.ORGANIZATION_ID}}/services/{{process.env.SERVICE_ID}}
+  url: {{baseURL}}/organization/:organizationID/services/:serviceID
   body: json
   auth: inherit
+}
+
+params:path {
+  serviceID: {{serviceID}}
+  organizationID: {{organizationID}}
 }
 
 body:json {

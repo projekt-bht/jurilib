@@ -5,13 +5,17 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/api/case/{{process.env.CASE_ID}}/documents/?fileName=testwaage
+  url: http://localhost:3000/api/case/:caseID/documents/?fileName=testwaage
   body: none
   auth: inherit
 }
 
 params:query {
   fileName: testwaage
+}
+
+params:path {
+  caseID: {{caseID}}
 }
 
 settings {
