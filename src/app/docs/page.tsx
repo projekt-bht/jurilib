@@ -36,6 +36,7 @@ import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
+import { Test } from './project-overview/test';
 
 type SectionId =
   //   | 'getting-started'
@@ -236,6 +237,9 @@ export default function DocsPage() {
         {/* Main Content */}
         <main className="flex-1 min-w-0 px-4 md:px-8 lg:px-12 py-8 md:py-12">
           <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-6">
+              <Test />
+            </div>
             {/* Getting Started */}
             {/* <section id="getting-started" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
