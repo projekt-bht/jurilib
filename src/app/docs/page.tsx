@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Monitor,
   RefreshCw,
+  ScrollText,
   Search,
   Server,
   Settings,
@@ -29,6 +30,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
 
+import { Glossary } from './project-overview/glossary';
 import { Licenses } from './project-overview/licenses';
 import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
@@ -52,7 +54,8 @@ type SectionId =
   | 'team-tasks'
   | 'links-and-resources'
   | 'sources-and-ai'
-  | 'licenses';
+  | 'licenses'
+  | 'glossary';
 
 interface NavItem {
   id: SectionId;
@@ -759,6 +762,18 @@ export default function DocsPage() {
 
               <span>
                 <Licenses />
+              </span>
+            </section>
+
+            {/* Glossary */}
+            <section id="glossary" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <ScrollText className="w-5 h-5 text-primary" />
+                Glossar
+              </h3>
+
+              <span>
+                <Glossary />
               </span>
             </section>
 
