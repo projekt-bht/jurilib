@@ -9,6 +9,7 @@ import {
   Code,
   Database,
   FileText,
+  Gem,
   HelpCircle,
   Link2,
   Lock,
@@ -36,6 +37,7 @@ import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
+import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
 
 type SectionId =
@@ -341,6 +343,17 @@ export default function DocsPage() {
               </h3>
               <UserQuickStart />
             </section>
+
+            {/* User Features & Workflows */}
+            <section id="user-features-workflows" className="mb-16 scroll-mt-24">
+              <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                <Gem className="w-5 h-5 text-primary" />
+                Funktionen & Workflows
+              </h3>
+              <UserFeaturesWorkflows />
+            </section>
+
+            {/* ############################################################################ */}
 
             {/* Search & Results */}
             <section id="search" className="mb-16 scroll-mt-24">
