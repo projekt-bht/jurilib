@@ -26,6 +26,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
 import { ShortDescription } from './project-overview/short-description';
+import { TeamTasks } from './project-overview/team-tasks';
 
 type SectionId =
   | 'getting-started'
@@ -40,7 +41,8 @@ type SectionId =
   | 'security'
   | 'faq'
   | 'project-overview'
-  | 'short-description';
+  | 'short-description'
+  | 'team-tasks';
 
 interface NavItem {
   id: SectionId;
@@ -87,10 +89,10 @@ const navItems: NavItem[] = [
     icon: <Monitor className="w-4 h-4 text-accent-blue" />,
     children: [
       { id: 'short-description', label: 'Kurzbeschreibung' },
-      { id: 'teamAndTasks', label: 'Team & Aufgabenverteilung' },
-      { id: 'linksAndResources', label: 'Links & Zugänge' },
-      { id: 'sourcesAndAI', label: 'Quellen & AI-Disclaimer' },
-      { id: 'lizenses', label: 'Lizenzangaben' },
+      { id: 'team-tasks', label: 'Team & Aufgabenverteilung' },
+      { id: 'links-and-resources', label: 'Links & Zugänge' },
+      { id: 'sources-and-ai', label: 'Quellen & AI-Disclaimer' },
+      { id: 'licenses', label: 'Lizenzangaben' },
       { id: 'glossary', label: 'Glossar' },
     ],
   },
@@ -112,45 +114,6 @@ export default function DocsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      {/* <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="bg-primary text-primary-foreground p-2.5 rounded-xl transition-transform duration-300 group-hover:scale-110">
-                  <Scale className="w-5 h-5" />
-                </div>
-                <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Sparkles className="w-3 h-3 text-accent" />
-                </div>
-              </div>
-              <span className="text-xl font-bold text-foreground tracking-tight">JuriLib</span>
-            </Link>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-sm text-muted-foreground border-l border-border pl-4">
-              <BookOpen className="w-4 h-4" />
-              Dokumentation
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="hidden md:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Zur Startseite
-            </Link>
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-secondary/50 transition-colors"
-              onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            >
-              {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-      </header> */}
-
       <div className="max-w-7xl mx-auto flex">
         {/* Sidebar Navigation - Desktop */}
         <aside className="hidden md:block w-64 shrink-0 border-r border-border sticky top-23 h-[calc(100vh-5.75rem)] overflow-y-auto">
@@ -730,19 +693,19 @@ export default function DocsPage() {
               </div>
             </section>
 
+            {/* Short Description */}
             <section id="short-description" className="mb-16 scroll-mt-24">
               <div>
                 <h4 className="font-semibold text-foreground mb-3">Kurzbeschreibung</h4>
-                <p className="text-foreground leading-relaxed mb-8">
-                  <ShortDescription />
-                  {/* JuriLib ist eine innovative Plattform, die Menschen mit rechtlichen Anliegen
-                    dabei unterstützt, schnell und unkompliziert passende Organisationen und
-                    Beratungsstellen zu finden. Durch die Nutzung von KI-Technologien analysiert
-                    JuriLib die Problembeschreibung der Nutzer und liefert relevante Ergebnisse aus
-                    einer umfangreichen Datenbank von Rechtsberatungsorganisationen. Unser Ziel ist
-                    es, den Zugang zu rechtlicher Unterstützung zu erleichtern und Menschen in
-                    schwierigen Situationen effektiv zu helfen. */}
-                </p>
+                <ShortDescription />
+              </div>
+            </section>
+
+            {/* Team & Tasks */}
+            <section id="team-tasks" className="mb-16 scroll-mt-24">
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">Team & Aufgabenverteilung</h4>
+                <TeamTasks />
               </div>
             </section>
 
