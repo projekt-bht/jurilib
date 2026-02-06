@@ -31,6 +31,7 @@ import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { FAQ } from './faq/fag';
+import { LawyerFAQ } from './faq/lawyer-faq';
 import { UserFAQ } from './faq/user-faq';
 import { TargetAudience } from './introduction/target-audience';
 import { TechnicalRequirements } from './introduction/technical-requirements';
@@ -403,6 +404,15 @@ export default function DocsPage() {
                 Häufige Nutzer*innenfragen
               </h2>
               <UserFAQ />
+            </section>
+
+            {/* Lawyer FAQ */}
+            <section id="lawyer-faq" className="mb-8 scroll-mt-24">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Gavel className="w-5 h-5 text-primary" />
+                Häufige Jurist*innenfragen
+              </h2>
+              <LawyerFAQ />
             </section>
 
             {/* ############################################################################ */}
