@@ -216,16 +216,6 @@ export default function DocsPage() {
         {/* Sidebar Navigation - Desktop */}
         <aside className="hidden md:block w-64 shrink-0 border-r border-border sticky top-23 h-[calc(100vh-5.75rem)] overflow-y-auto">
           <nav className="p-4 flex flex-col gap-1">
-            {/* Search */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Suchen..."
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition"
-              />
-            </div>
-
             {navItems.map((item) => (
               <div key={item.id}>
                 <button
