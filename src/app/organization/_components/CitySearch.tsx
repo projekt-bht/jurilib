@@ -148,7 +148,7 @@ export default function CitySearch({
               scheduleSearch(next);
             }}
             placeholder="Stadt suchen"
-            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-xs focus-visible:border-0 focus-visible:ring-0"
+            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0"
           />
           <div className="h-6 w-px bg-accent-gray-light" />
           <Select
@@ -157,9 +157,9 @@ export default function CitySearch({
             open={radiusOpen}
             onOpenChange={onRadiusOpenChange}
           >
-            <SelectTrigger className="h-9 border-0 bg-transparent px-2 text-sm shadow-none focus-visible:ring-0">
-              <SelectValue placeholder="Radius" />
-            </SelectTrigger>
+          <SelectTrigger className="h-9 border-0 bg-transparent px-2 text-sm shadow-none ring-0 focus-visible:ring-0">
+            <SelectValue placeholder="Radius" />
+          </SelectTrigger>
             <SelectContent
               position="popper"
               side="bottom"
