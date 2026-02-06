@@ -16,6 +16,8 @@ jobs:
       NEXT_PUBLIC_BACKEND_ROOT: ${{ secrets.NEXT_PUBLIC_BACKEND_ROOT }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       JWT_TTL: ${{ secrets.JWT_TTL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
 
     # Angabe von mehreren Node Versionen erstellt verschiedene Instanzen, die alle das Projekt testen
     # Festgelegt auf 20.x, da unsere Projekt rein in dieser Version entwickelt wird.
