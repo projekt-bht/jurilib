@@ -148,7 +148,7 @@ export default function CitySearch({
               scheduleSearch(next);
             }}
             placeholder="Stadt suchen"
-            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-none focus-visible:border-0 focus-visible:ring-0"
+            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-xs focus-visible:border-0 focus-visible:ring-0"
           />
           <div className="h-6 w-px bg-accent-gray-light" />
           <Select
@@ -164,7 +164,7 @@ export default function CitySearch({
               position="popper"
               side="bottom"
               align="end"
-              className="rounded-xl border border-border bg-background p-1 shadow-lg"
+              className="rounded-xl border border-border bg-background p-1 shadow-lg outline-none"
               data-organization-filters-popover
             >
               {radiusOptionsKm.map((option) => (
@@ -206,7 +206,7 @@ export default function CitySearch({
           )}
         </div>
         {cities.length > 0 && (
-          <Command className="h-auto absolute left-0 right-0 z-20 border border-accent-gray rounded-xl shadow-lg bg-background">
+          <Command className="h-auto absolute left-0 right-0 z-20 border border-accent-gray rounded-xl shadow-lg bg-background outline-none">
             <CommandList>
               <CommandEmpty>Keine Treffer gefunden</CommandEmpty>
               <CommandGroup>
@@ -224,7 +224,7 @@ export default function CitySearch({
         )}
         {nearbyCities.length > 0 && nearbyOpen && (
           <div
-            className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
+            className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
             data-organization-filters-popover
           >
             <div className="max-h-64 space-y-2 overflow-y-auto">

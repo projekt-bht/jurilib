@@ -452,7 +452,7 @@ export function OrganizationFilters({
 
                 {openSections[section.key] && (
                   <div
-                    className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg"
+                    className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
                     data-organization-filters-popover
                   >
                     <div className="max-h-64 space-y-2 overflow-y-auto">
@@ -529,7 +529,7 @@ export function OrganizationFilters({
                 <Button
                   type="button"
                   variant="ghost"
-                  size="icon-xs"
+                  size="icon"
                   onClick={() => {
                     if (chip.key === 'city') {
                       const nextCities = filters.city.filter((item) => item !== chip.value);
@@ -541,7 +541,7 @@ export function OrganizationFilters({
                     }
                     handleCheckboxChange(chip.key, chip.value as FilterValue, false);
                   }}
-                  className="h-5 w-5 rounded-full hover:bg-accent-gray-soft"
+                  className="h-5 w-5 rounded-full p-0 hover:bg-accent-gray-soft"
                   aria-label={`${chip.label} entfernen`}
                 >
                   <X className="h-3 w-3" />
