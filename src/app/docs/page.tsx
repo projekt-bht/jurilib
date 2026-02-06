@@ -272,7 +272,7 @@ export default function DocsPage() {
 
         {/* Main Content */}
         <main className="flex-1 min-w-0 px-4 md:px-8 lg:px-12 py-8 md:py-12">
-          <div className="max-w-3xl">
+          <div className="max-w-6xl">
             {/* Getting Started */}
             <section id="introduction" className="mb-12 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
