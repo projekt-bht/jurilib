@@ -121,8 +121,8 @@ const navItems: NavItem[] = [
     label: 'Technische Details',
     icon: <Code className="w-4 h-4 text-accent-blue" />,
     children: [
-      { id: 'security', label: 'Sicherheit' },
       { id: 'search', label: 'Suche & Ergebnisse' },
+      { id: 'security', label: 'Sicherheit' },
     ],
   },
   {
