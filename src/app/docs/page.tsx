@@ -11,25 +11,27 @@ import {
   FileText,
   Globe,
   HelpCircle,
+  Link2,
   Lock,
   MessageSquare,
   Monitor,
   RefreshCw,
   Search,
+  Server,
   Settings,
   Shield,
   Smartphone,
   Users,
   Zap,
-  Link2,
 } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
 
-import { ShortDescription } from './project-overview/short-description';
-import { TeamTasks } from './project-overview/team-tasks';
 import { LinksAndResources } from './project-overview/links-and-resources';
+import { ShortDescription } from './project-overview/short-description';
+import { SourcesAndAI } from './project-overview/sources-and-ai';
+import { TeamTasks } from './project-overview/team-tasks';
 
 type SectionId =
   | 'getting-started'
@@ -46,7 +48,8 @@ type SectionId =
   | 'project-overview'
   | 'short-description'
   | 'team-tasks'
-  | 'links-and-resources';
+  | 'links-and-resources'
+  | 'sources-and-ai';
 
 interface NavItem {
   id: SectionId;
@@ -730,6 +733,18 @@ export default function DocsPage() {
               <div>
                 <LinksAndResources />
               </div>
+            </section>
+
+            {/* Sources & AI */}
+            <section id="sources-and-ai" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Server className="w-5 h-5 text-primary" />
+                Quellen & AI-Disclaimer
+              </h3>
+
+              <span>
+                <SourcesAndAI />
+              </span>
             </section>
 
             {/* Footer CTA */}
