@@ -27,7 +27,7 @@ export function LinksAndResources() {
             key={card.title}
             className="group relative isolate rounded-2xl
             p-3 overflow-hidden 
-            bg-background border
+            bg-card border
             border-border/40 
             transition-all duration-300
             shadow-sm hover:shadow-md "
