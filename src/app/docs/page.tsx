@@ -401,7 +401,7 @@ export default function DocsPage() {
             <section id="user-faq" className="mb-8 scroll-mt-24">
               <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
-                Häufige Nutzer*innenfragen
+                Häufige Fragen von Nutzer*innen
               </h2>
               <UserFAQ />
             </section>
@@ -410,7 +410,7 @@ export default function DocsPage() {
             <section id="lawyer-faq" className="mb-8 scroll-mt-24">
               <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gavel className="w-5 h-5 text-primary" />
-                Häufige Jurist*innenfragen
+                Häufige Fragen von Jurist*innen
               </h2>
               <LawyerFAQ />
             </section>
