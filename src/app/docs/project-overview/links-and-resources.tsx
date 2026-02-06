@@ -1,4 +1,4 @@
-import { FileText, Github, Globe } from 'lucide-react';
+import { ArrowUpRight, FileText, Github, Globe } from 'lucide-react';
 import Link from 'next/link';
 
 export function LinksAndResources() {
@@ -14,12 +14,12 @@ export function LinksAndResources() {
           },
           {
             icon: <Github className="w-8 h-8" />,
-            title: 'Git-Hub Repository',
+            title: 'Git-Hub',
             link: 'https://github.com/projekt-bht/jurilib',
           },
           {
             icon: <FileText className="w-8 h-8" />,
-            title: 'Confluence Dokumentation',
+            title: 'Confluence',
             link: 'https://projekt-wise25.atlassian.net/wiki/spaces/SOFTWAREEN',
           },
         ].map((card) => (
@@ -40,8 +40,9 @@ export function LinksAndResources() {
                 <div className="w-9 h-9 rounded-xl bg-muted/50 flex items-center justify-center shrink-0">
                   <div className="w-4 h-4 md:w-6 md:h-6 text-accent-blue">{card.icon}</div>
                 </div>
-                <div>
-                  <p className="text-l font-bold text-foreground tracking-tight">{card.title}</p>
+                <div className="inline-flex items-center gap-2 text-m font-bold text-foreground tracking-tight">
+                  {card.title}
+                  <ArrowUpRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>

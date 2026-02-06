@@ -699,16 +699,23 @@ export default function DocsPage() {
 
             {/* Short Description */}
             <section id="short-description" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                Kurzbeschreibung
+              </h3>
               <div>
-                <h4 className="font-semibold text-foreground mb-3">Kurzbeschreibung</h4>
                 <ShortDescription />
               </div>
             </section>
 
             {/* Team & Tasks */}
             <section id="team-tasks" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Team & Aufgabenverteilung
+              </h3>
+
               <div>
-                <h4 className="font-semibold text-foreground mb-3">Team & Aufgabenverteilung</h4>
                 <TeamTasks />
               </div>
             </section>
