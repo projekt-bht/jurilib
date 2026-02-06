@@ -283,7 +283,7 @@ export default function DocsPage() {
                   Einleitung
                 </h1>
               </div>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
                 JuriLib verbindet Menschen mit rechtlichen Anliegen mit passenden Organisationen und
                 Beratungsstellen. Diese Dokumentation hilft Ihnen, die Plattform optimal zu nutzen.
               </p>
@@ -317,7 +317,7 @@ export default function DocsPage() {
                   Wie nutze ich JuriLib?
                 </h1>
               </div>
-              <p className="text-muted-foreground leading-relaxed mb-8">
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
                 Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
               </p>
             </section>
@@ -384,7 +384,9 @@ export default function DocsPage() {
                   Technische Dokumentation
                 </h1>
               </div>
-              <p className="text-foreground leading-relaxed mb-8">Technische Details zu JuriLib.</p>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
+                Technische Details zu JuriLib.
+              </p>
             </section>
 
             {/* Search & Results */}
@@ -415,6 +417,7 @@ export default function DocsPage() {
                   Häufige Fragen
                 </h1>
               </div>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
               <FAQ />
             </section>
 
