@@ -30,7 +30,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { FAQ } from './faq/fag';
+import { FAQ } from './faq/faq';
 import { LawyerFAQ } from './faq/lawyer-faq';
 import { UserFAQ } from './faq/user-faq';
 import { TargetAudience } from './introduction/target-audience';
