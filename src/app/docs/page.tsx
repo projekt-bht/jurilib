@@ -3,6 +3,7 @@
 import {
   ArrowLeft,
   ArrowUpRight,
+  Award,
   BookOpen,
   CheckCircle2,
   ChevronRight,
@@ -28,6 +29,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
 
+import { Licenses } from './project-overview/licenses';
 import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
@@ -49,7 +51,8 @@ type SectionId =
   | 'short-description'
   | 'team-tasks'
   | 'links-and-resources'
-  | 'sources-and-ai';
+  | 'sources-and-ai'
+  | 'licenses';
 
 interface NavItem {
   id: SectionId;
@@ -744,6 +747,18 @@ export default function DocsPage() {
 
               <span>
                 <SourcesAndAI />
+              </span>
+            </section>
+
+            {/* Licenses */}
+            <section id="licenses" className="mb-16 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                Lizenzen
+              </h3>
+
+              <span>
+                <Licenses />
               </span>
             </section>
 
