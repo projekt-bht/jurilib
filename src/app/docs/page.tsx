@@ -31,6 +31,7 @@ import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { FAQ } from './faq/fag';
+import { UserFAQ } from './faq/user-faq';
 import { TargetAudience } from './introduction/target-audience';
 import { TechnicalRequirements } from './introduction/technical-requirements';
 import { Glossary } from './project-overview/glossary';
@@ -393,6 +394,15 @@ export default function DocsPage() {
                 </h1>
               </div>
               <FAQ />
+            </section>
+
+            {/* User FAQ */}
+            <section id="user-faq" className="mb-8 scroll-mt-24">
+              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Häufige Nutzer*innenfragen
+              </h2>
+              <UserFAQ />
             </section>
 
             {/* ############################################################################ */}
