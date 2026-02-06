@@ -25,6 +25,7 @@ import {
 import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
+import { ShortDescription } from './project-overview/short-description';
 
 type SectionId =
   | 'getting-started'
@@ -37,7 +38,9 @@ type SectionId =
   | 'architecture'
   | 'api'
   | 'security'
-  | 'faq';
+  | 'faq'
+  | 'project-overview'
+  | 'short-description';
 
 interface NavItem {
   id: SectionId;
@@ -77,6 +80,19 @@ const navItems: NavItem[] = [
     id: 'faq',
     label: 'FAQ',
     icon: <HelpCircle className="w-4 h-4 text-accent-blue" />,
+  },
+  {
+    id: 'project-overview',
+    label: 'Projektübersicht',
+    icon: <Monitor className="w-4 h-4 text-accent-blue" />,
+    children: [
+      { id: 'short-description', label: 'Kurzbeschreibung' },
+      { id: 'teamAndTasks', label: 'Team & Aufgabenverteilung' },
+      { id: 'linksAndResources', label: 'Links & Zugänge' },
+      { id: 'sourcesAndAI', label: 'Quellen & AI-Disclaimer' },
+      { id: 'lizenses', label: 'Lizenzangaben' },
+      { id: 'glossary', label: 'Glossar' },
+    ],
   },
 ];
 
@@ -247,8 +263,8 @@ export default function DocsPage() {
             {/* Getting Started */}
             <section id="getting-started" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-primary/10 text-primary p-2 rounded-lg">
-                  <Zap className="w-5 h-5" />
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <Zap className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
                   Erste Schritte
@@ -699,6 +715,34 @@ export default function DocsPage() {
                     </div>
                   </details>
                 ))}
+              </div>
+            </section>
+
+            {/* Projektübersicht */}
+            <section id="project-overview" className="mb-16 scroll-mt-24">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <Monitor className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  Projektübersicht
+                </h2>
+              </div>
+            </section>
+
+            <section id="short-description" className="mb-16 scroll-mt-24">
+              <div>
+                <h4 className="font-semibold text-foreground mb-3">Kurzbeschreibung</h4>
+                <p className="text-foreground leading-relaxed mb-8">
+                  <ShortDescription />
+                  {/* JuriLib ist eine innovative Plattform, die Menschen mit rechtlichen Anliegen
+                    dabei unterstützt, schnell und unkompliziert passende Organisationen und
+                    Beratungsstellen zu finden. Durch die Nutzung von KI-Technologien analysiert
+                    JuriLib die Problembeschreibung der Nutzer und liefert relevante Ergebnisse aus
+                    einer umfangreichen Datenbank von Rechtsberatungsorganisationen. Unser Ziel ist
+                    es, den Zugang zu rechtlicher Unterstützung zu erleichtern und Menschen in
+                    schwierigen Situationen effektiv zu helfen. */}
+                </p>
               </div>
             </section>
 
