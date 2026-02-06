@@ -38,6 +38,7 @@ import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
+import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
 
@@ -360,6 +361,15 @@ export default function DocsPage() {
                 <Gavel className="w-5 h-5 text-primary" />
                 Jurist*innenhandbuch
               </h2>
+            </section>
+
+            {/* Lawyer Quick Start */}
+            <section id="lawyer-quick-start" className="mb-16 scroll-mt-24">
+              <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-primary" />
+                Erste Schritte für Jurist*innen
+              </h3>
+              <LawyerQuickStart />
             </section>
 
             {/* ############################################################################ */}
