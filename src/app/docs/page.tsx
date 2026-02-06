@@ -4,13 +4,17 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Award,
+  Bold,
+  Bolt,
   BookOpen,
+  Calendar1,
   CheckCircle2,
   ChevronRight,
   Code,
   Database,
   FileText,
   Globe,
+  HandshakeIcon,
   HelpCircle,
   Link2,
   Lock,
@@ -24,6 +28,7 @@ import {
   Settings,
   Shield,
   Smartphone,
+  User,
   Users,
   Zap,
 } from 'lucide-react';
@@ -41,12 +46,17 @@ import { Test } from './project-overview/test';
 import { usePathname } from 'next/navigation';
 import { TechnicalRequirements } from './introduction/technical-requirements';
 import { TargetAudience } from './introduction/target-audience';
+import { UserquickStart } from './user-guide/user-quick-start';
 
 type SectionId =
   | 'introduction'
   | 'target-audience'
   | 'technical-requirements'
   | 'user-guide'
+  | 'user-quick-start'
+  | 'user-perspective'
+  | 'lawyer-perspective'
+  | 'lawyer-quick-start'
   | 'search'
   | 'organizations'
   | 'case-management'
@@ -83,9 +93,13 @@ const navItems: NavItem[] = [
   },
   {
     id: 'user-guide',
-    label: 'Benutzerhandbuch',
+    label: 'Wie nutze ich JuriLib?',
     icon: <BookOpen className="w-4 h-4 text-accent-blue" />,
     children: [
+      { id: 'user-perspective', label: 'Nutzer*innenhandbuch' },
+      { id: 'user-quick-start', label: 'Erste Schritte für Nutzer*innen' },
+      { id: 'lawyer-perspective', label: 'Jurist*innenhandbuch' },
+      { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
       { id: 'search', label: 'Suche & Ergebnisse' },
       { id: 'organizations', label: 'Organisationen' },
       { id: 'case-management', label: 'Fallverwaltung' },
@@ -256,7 +270,7 @@ export default function DocsPage() {
               <Test />
             </div> */}
             {/* Getting Started */}
-            <section id="getting-started" className="mb-16 scroll-mt-24">
+            <section id="introduction" className="mb-12 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
                   <MapPinned className="w-5 h-5 text-white" />
@@ -270,38 +284,8 @@ export default function DocsPage() {
                 Beratungsstellen. Diese Dokumentation hilft Ihnen, die Plattform optimal zu nutzen.
               </p>
 
-              {/* Quick Start Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                {[
-                  {
-                    icon: <Search className="w-5 h-5" />,
-                    title: 'Problem beschreiben',
-                    desc: 'Beschreiben Sie Ihr Anliegen in eigenen Worten.',
-                  },
-                  {
-                    icon: <Users className="w-5 h-5" />,
-                    title: 'Ergebnisse erhalten',
-                    desc: 'Passende Organisationen werden angezeigt.',
-                  },
-                  {
-                    icon: <MessageSquare className="w-5 h-5" />,
-                    title: 'Kontakt aufnehmen',
-                    desc: 'Nehmen Sie direkt Kontakt auf.',
-                  },
-                ].map((card) => (
-                  <div
-                    key={card.title}
-                    className="bg-card border border-border rounded-xl p-5 hover:border-primary/30 transition-colors"
-                  >
-                    <div className="text-primary mb-3">{card.icon}</div>
-                    <h3 className="font-semibold text-foreground text-sm mb-1">{card.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{card.desc}</p>
-                  </div>
-                ))}
-              </div>
-
               {/* Supported Platforms */}
-              <div className="bg-secondary/30 border border-border rounded-xl p-6">
+              {/* <div className="bg-secondary/30 border border-border rounded-xl p-6">
                 <h3 className="font-semibold text-foreground mb-3">Systemvoraussetzungen</h3>
                 <div className="flex flex-wrap gap-4">
                   {[
@@ -318,7 +302,7 @@ export default function DocsPage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </section>
 
             {/* Target Audience */}
@@ -340,18 +324,35 @@ export default function DocsPage() {
             </section>
 
             {/* User Guide */}
-            <section id="user-guide" className="mb-16 scroll-mt-24">
+            <section id="user-guide" className="mb-12 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-primary/10 text-primary p-2 rounded-lg">
-                  <BookOpen className="w-5 h-5" />
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Benutzerhandbuch
+                  Wie nutze ich JuriLib?
                 </h2>
               </div>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
               </p>
+            </section>
+
+            {/* User Perspective */}
+            <section id="user-perspective" className="mb-8 scroll-mt-24">
+              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Nutzer*innenhandbuch
+              </h3>
+            </section>
+
+            {/* User Quick Start */}
+            <section id="user-quick-start" className="mb-16 scroll-mt-24">
+              <h2 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-primary" />
+                Erste Schritte für Nutzer*innen
+              </h2>
+              <UserquickStart />
             </section>
 
             {/* Search & Results */}
