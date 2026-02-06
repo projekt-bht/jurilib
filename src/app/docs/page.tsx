@@ -12,18 +12,14 @@ import {
   Globe,
   HelpCircle,
   Lock,
-  Menu,
   MessageSquare,
   Monitor,
   RefreshCw,
-  Scale,
   Search,
   Settings,
   Shield,
   Smartphone,
-  Sparkles,
   Users,
-  X,
   Zap,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -101,7 +97,7 @@ export default function DocsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      {/* <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-3 group">
@@ -137,11 +133,11 @@ export default function DocsPage() {
             </button>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <div className="max-w-7xl mx-auto flex">
         {/* Sidebar Navigation - Desktop */}
-        <aside className="hidden md:block w-64 shrink-0 border-r border-border sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        <aside className="hidden md:block w-64 shrink-0 border-r border-border sticky top-23 h-[calc(100vh-5.75rem)] overflow-y-auto">
           <nav className="p-4 flex flex-col gap-1">
             {/* Search */}
             <div className="relative mb-4">
