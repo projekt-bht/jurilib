@@ -42,7 +42,7 @@ type SectionId =
   | 'introduction'
   | 'target-audience'
   | 'technical-requirements'
-  | 'user-guide'
+  | 'jurilib-guide'
   | 'user-perspective'
   | 'user-quick-start'
   | 'user-features-workflows'
@@ -87,7 +87,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    id: 'user-guide',
+    id: 'jurilib-guide',
     label: 'Wie nutze ich JuriLib?',
     icon: <BookOpen className="w-4 h-4 text-accent-blue" />,
     children: [
@@ -310,18 +310,18 @@ export default function DocsPage() {
               <TechnicalRequirements />
             </section>
 
-            {/* User Guide */}
-            <section id="user-guide" className="mb-12 scroll-mt-24">
+            {/* Jurilib Guide */}
+            <section id="jurilib-guide" className="mb-12 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
                   <BookOpen className="w-5 h-5 text-white" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Wie nutze ich JuriLib?
+                  Wie nutze ich Jurilib?
                 </h2>
               </div>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                Detaillierte Anleitungen zu allen Funktionen der JuriLib-Plattform.
+                Detaillierte Anleitungen zu allen Funktionen der Jurilib-Plattform.
               </p>
             </section>
 
@@ -335,10 +335,10 @@ export default function DocsPage() {
 
             {/* User Quick Start */}
             <section id="user-quick-start" className="mb-16 scroll-mt-24">
-              <h2 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+              <h4 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
                 Erste Schritte für Nutzer*innen
-              </h2>
+              </h4>
               <UserQuickStart />
             </section>
 
