@@ -9,10 +9,10 @@ export function LawyerQuickStart() {
 
       <div className="space-y-4">
         <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-          <UserRoundPlus className="w-4 h-4 text-primary shrink-0 m-1" />
-          <p className="text-sm text-foreground">
-            <b>Registriere dich</b>
-          </p>
+          <div className="flex gap-2 text-sm text-primary font-bold items-center">
+            <UserRoundPlus className="w-4 h-4 text-primary shrink-0 m-1" />
+            Registriere dich
+          </div>
           <p className="text-sm text-foreground">
             Registriere dich bei Jurilib. Da wir deine juristische Ausbildung prüfen müssen, kann es
             einige Tage dauern, bis dein Account freigeschaltet wird. Weitere Informationen findest
@@ -21,10 +21,10 @@ export function LawyerQuickStart() {
         </div>
 
         <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-          <Calendar1 className="w-4 h-4 text-primary shrink-0 m-1" />
-          <p className="text-sm text-foreground">
-            <b>Schalte deine Termine frei</b>
-          </p>
+          <div className="flex gap-2 text-sm text-primary font-bold items-center">
+            <Calendar1 className="w-4 h-4 text-primary shrink-0 m-1" />
+            Schalte deine Termine frei
+          </div>
           <p className="text-sm text-foreground">
             Damit Nutzer*innen direkt über Jurilib Termine bei dir buchen können musst du Angeben,
             wann du Zeit für Termine hast.
@@ -32,10 +32,10 @@ export function LawyerQuickStart() {
         </div>
 
         <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-          <SquareCheckBig className="w-4 h-4 text-primary shrink-0 m-1" />
-          <p className="text-sm text-foreground">
-            <b>Fertig</b>
-          </p>
+          <div className="flex gap-2 text-sm text-primary font-bold items-center">
+            <SquareCheckBig className="w-4 h-4 text-primary shrink-0 m-1" />
+            Fertig
+          </div>
           <p className="text-sm text-foreground">
             Jetzt bist du startklar. Du kannst Termine und Fälle jetzt bequem über JuriLib
             verwalten.
