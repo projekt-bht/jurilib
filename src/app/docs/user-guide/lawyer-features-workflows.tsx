@@ -1,10 +1,14 @@
-import { ChevronRight } from 'lucide-react';
+import { Ban, ChevronRight, Loader } from 'lucide-react';
 
 export function LawyerFeaturesWorkflows() {
   return (
     <>
       <div className="bg-card border border-border rounded-xl p-6 mb-8">
-        <p className="text-l text-foreground font-bold leading-relaxed mb-4">Registrierung</p>
+        <div className="flex gap-2 text-l text-foreground font-bold leading-relaxed items-center mb-4">
+          <Loader className="w-4 h-4 text-primary shrink-0 m-1" />
+          Registrierung
+        </div>
+
         <p className="text-m text-foreground/80 leading-relaxed">
           Beim Registrieren kannst du Informationen zu dir bereit stellen. Nutze diese Möglichkeit
           gerne. Diese Informationen helfen später Nutzer*innen dich zu finden. Falls du
@@ -23,9 +27,12 @@ export function LawyerFeaturesWorkflows() {
         <p className="text-m text-foreground/80 leading-relaxed mb-8">
           Wir prüfen die Nachweise asynchron und melden uns bei dir, sobald wir Neuigkeiten haben.
         </p>
-        <p className="text-ml text-foreground/90 font-medium leading-relaxed mb-2">
+
+        <div className="flex gap-2 text-ml text-foreground/90 font-medium leading-relaxed items-center mb-2">
+          <Ban className="w-4 h-4 text-primary shrink-0 m-1" />
           Verwaltung von Organisationen
-        </p>
+        </div>
+
         <p className="text-m text-foreground/80 leading-relaxed mb-2">
           Alle Jurist*innen müssen einer Organisation zugeordnet sein. Die Organisation wird von
           einer oder mehreren Juris*innen verwaltet.
