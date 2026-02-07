@@ -2,10 +2,18 @@
 
 //https://stackoverflow.com/questions/77041616/how-to-fix-referenceerror-navigator-is-not-defined-during-build
 //WebSpeechAPI only exits on client
-import { ArrowUp, BriefcaseBusiness, Building2, CarFront, ReceiptText } from 'lucide-react';
+import {
+  ArrowUp,
+  BriefcaseBusiness,
+  Building2,
+  CarFront,
+  Clock,
+  ReceiptText,
+  X,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import scale_logo from '~/public/scale_logo.svg';
 
@@ -18,9 +26,45 @@ const SpeechToText = dynamic(() => import('./SpeechToText'), { ssr: false });
 // If the input is empty, an error message will be displayed
 // When reentering the input field, the error message will be cleared
 export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => void }) {
-  const [problem, setProblem] = useState('');
+  const [problem, setProblem] = useState(getCachedProblem());
+  const [cachedInquiries, setCachedInquiries] = useState(getCachedInquiries());
+
   const [error, setError] = useState('');
   const [isRecordingDone, setIsRecordingDone] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Cache problemText whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('problemText', problem);
+  }, [problem]);
+
+  function getCachedProblem(): string {
+    return sessionStorage.getItem('problemText') ?? '';
+  }
+
+  function setCachedProblem(query: string) {
+    setProblem(query);
+    sessionStorage.setItem('problemText', query);
+  }
+
+  function getCachedInquiries(): string[] {
+    const stored = sessionStorage.getItem('cachedInquiries');
+    return stored ? JSON.parse(stored) : [];
+  }
+  function removeCachedInquiry(query: string) {
+    const filteredProblems = cachedInquiries.filter((problem) => problem !== query);
+    setCachedInquiries(filteredProblems);
+    sessionStorage.setItem('cachedInquiries', JSON.stringify(filteredProblems));
+  }
+
+  function addCachedInquiry(query: string) {
+    setCachedInquiries((prev) => {
+      const filteredProblems = prev.filter((problem) => problem !== query);
+      const updatedInquiries = [query, ...filteredProblems].slice(0, 5);
+      sessionStorage.setItem('cachedInquiries', JSON.stringify(updatedInquiries));
+      return updatedInquiries;
+    });
+  }
 
   const exampleSearches = [
     {
@@ -61,6 +105,8 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     setIsRecordingDone(true);
     setError('');
     onSubmit(problem);
+    setIsSubmitted(true);
+    addCachedInquiry(problem);
   }
 
   // Handle Enter key for submission
@@ -135,6 +181,39 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
       <p className="hidden md:block text-center text-xs text-muted-foreground">
         {problem.length < 10 && 'Bitte geben Sie mindestens 10 Zeichen ein.'}
       </p>
+      {cachedInquiries.length > 0 && (
+        <div className="mb-6">
+          <p className="text-sm text-muted-foreground text-center mb-3 flex items-center justify-center gap-2">
+            <Clock className="text-base text-center" />
+            Letzte Suchanfragen:
+          </p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {cachedInquiries.map((query, index) => (
+              <Button
+                key={`history-${index}`}
+                type="button"
+                variant="outline"
+                size="sm"
+                className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray hover:shadow-xl transition-all duration-300 hover:scale-105"
+                onClick={() => setCachedProblem(query)}
+              >
+                <span className="truncate max-w-[200px]">{query}</span>
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className="ml-2 opacity-50 hover:opacity-100 hover:text-destructive transition-opacity"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeCachedInquiry(query);
+                  }}
+                >
+                  <X className="w-3 h-3" />
+                </span>
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <span className="text-lg text-accent-foreground text-center mt-4 mb-4">
         Oder wähle ein Beispiel:
