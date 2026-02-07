@@ -90,7 +90,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
           onChange={(e) => setProblem(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => setError('')}
-          placeholder="Erzählen uns von deiner Situation. Was ist passiert? Welche Parteien sind beteiligt? Je mehr Details du angibst, desto besser können wir dir helfen..."
+          placeholder="Erzähle uns von deiner Situation. Was ist passiert? Welche Parteien sind beteiligt? Je mehr Details du angibst, desto besser können wir dir helfen..."
           className="w-full px-4 md:px-5 py-4 bg-transparent text-foreground placeholder-muted-foreground/60 resize-none focus:outline-none text-base leading-relaxed min-h-[280px]"
         />
 
