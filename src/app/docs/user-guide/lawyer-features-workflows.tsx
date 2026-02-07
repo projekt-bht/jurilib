@@ -1,4 +1,4 @@
-import { Ban, ChevronRight, Loader } from 'lucide-react';
+import { Ban, ChevronRight, Loader, SquareCheckBig } from 'lucide-react';
 
 export function LawyerFeaturesWorkflows() {
   return (
@@ -35,7 +35,7 @@ export function LawyerFeaturesWorkflows() {
 
         <p className="text-m text-foreground/80 leading-relaxed mb-2">
           Alle Jurist*innen müssen einer Organisation zugeordnet sein. Die Organisation wird von
-          einer oder mehreren Juris*innen verwaltet.
+          einer oder mehreren Jurist*innen verwaltet.
         </p>
         <div className="space-y-3 ">
           {[
@@ -71,18 +71,25 @@ export function LawyerFeaturesWorkflows() {
       </div>
 
       <div className="bg-card border border-border rounded-xl p-6 mb-8">
-        <p className="text-l text-foreground font-bold leading-relaxed mb-4">Termine</p>
+        <div className="flex gap-2 text-l text-foreground font-bold leading-relaxed items-center mb-4">
+          <Loader className="w-4 h-4 text-primary shrink-0 m-1" />
+          Termine
+        </div>
+
         <div className="space-y-3 ">
           {[
             {
+              statusIcon: 'SquareCheckBig',
               title: 'Termine einstellen',
               desc: 'Als Jurist*in kannst du belieb viele Termine auf unserer Plattform anlegen. Diese werden in der Übersicht deiner zugehörigen Organisation sichtbar und können von nutzenden Personen gebucht werden.',
             },
             {
+              statusIcon: 'SquareCheckBig',
               title: 'Termine einsehen',
               desc: 'Egal, ob Termine nur angelegt, schon bestätigt, oder weiter angepasst wurden. Jeder Termin ist einsehbar.',
             },
             {
+              statusIcon: 'SquareCheckBig',
               title: 'Termine bestätigen/ablehnen',
               desc: [
                 'Sobald ein*e Nutzer*in einen Termin angefragt haben, werden dir diese Termine separat in deinem Dashboard dargestellt und über einen Klick näher inspiziert oder bestätigt werden.',
@@ -91,10 +98,12 @@ export function LawyerFeaturesWorkflows() {
               ],
             },
             {
+              statusIcon: 'SquareCheckBig',
               title: 'Termine manuell anpassen',
               desc: 'Müssen an dem Zeitpunkt, der Zeitdauer, einem Meetinglink oder weiteren Eigenschaften Änderungen vorgenommen werden, ist JuriLib für dich da! Jeder deiner Termine ist flexibel, auch nach Erstellung, einstellbar.',
             },
             {
+              statusIcon: 'Ban',
               title: 'Termine löschen',
               desc: 'Sollten Termine final abgesagt werden, können diese ohne viel Aufwand und mit automatischer Mail an eventuell betroffene Nutzer*innen, gelöscht werden.',
             },
@@ -102,7 +111,16 @@ export function LawyerFeaturesWorkflows() {
             <div key={item.title} className="flex items-start gap-3">
               <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
               <div>
-                <p className="text-sm font-medium text-foreground">{item.title}</p>
+                <div className="flex gap-1 leading-relaxed items-center">
+                  {item.statusIcon === 'SquareCheckBig' && (
+                    <SquareCheckBig className="w-4 h-4 text-primary shrink-0 mt-1" />
+                  )}
+                  {item.statusIcon === 'Ban' && (
+                    <Ban className="w-4 h-4 text-primary shrink-0 mt-1" />
+                  )}
+
+                  <p className="text-sm font-medium text-foreground">{item.title}</p>
+                </div>
                 {Array.isArray(item.desc) ? (
                   item.desc.map((line, index) => (
                     <p key={index} className="text-sm text-foreground/80">
