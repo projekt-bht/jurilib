@@ -1,4 +1,4 @@
-import { TriangleAlert } from 'lucide-react';
+import { Ban, Loader, SquareCheckBig, TriangleAlert } from 'lucide-react';
 
 export function Disclaimer() {
   return (
@@ -47,6 +47,26 @@ export function Disclaimer() {
           Dieses Constraint ist noch nicht eingebaut.
         </li>
       </ul>
+      <br />
+      <p className="text-m text-foreground leading-relaxed">
+        Um zu kennzeicheichnen, auf welchem Stand die dokumentierten Funktionen sind, haben wir sie
+        mit folgenden Labels versehen:
+      </p>
+
+      <div className="flex gap-2 text-sm text-primary items-center">
+        <SquareCheckBig className="w-4 h-4 text-primary shrink-0 m-1" />
+        Diese Funktion ist im Backend bereits vollständig implementiert
+      </div>
+
+      <div className="flex gap-2 text-sm text-primary items-center">
+        <Loader className="w-4 h-4 text-primary shrink-0 m-1" />
+        Diese Funktion ist im Backend bereits teilweise implementiert
+      </div>
+
+      <div className="flex gap-2 text-sm text-primary items-center">
+        <Ban className="w-4 h-4 text-primary shrink-0 m-1" />
+        Diese Funktion ist noch nicht implementiert, aber in Planung
+      </div>
     </div>
   );
 }
