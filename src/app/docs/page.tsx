@@ -384,17 +384,17 @@ export default function DocsPage() {
             </section>
 
             {/* Lawyer Register */}
-            <section id="lawyer-register" className="mb-8 scroll-mt-24">
+            <section id="lawyer-features-register" className="mb-8 scroll-mt-24">
               <LawyerRegister />
             </section>
 
             {/* Lawyer Appointment */}
-            <section id="lawyer-appointment" className="mb-8 scroll-mt-24">
+            <section id="lawyer-features-appointments" className="mb-8 scroll-mt-24">
               <LawyerAppointment />
             </section>
 
             {/* Lawyer Document */}
-            <section id="lawyer-document" className="mb-16 scroll-mt-24">
+            <section id="lawyer-features-documents" className="mb-16 scroll-mt-24">
               <LawyerDocument />
             </section>
 
