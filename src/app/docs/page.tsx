@@ -41,6 +41,7 @@ import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 import { Search as SearchTechnical } from './technical-docs/search';
 import { Security } from './technical-docs/security';
+import { LawyerFeaturesWorkflows } from './user-guide/lawyer-features-workflows';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
@@ -371,7 +372,7 @@ export default function DocsPage() {
                 <Gem className="w-5 h-5 text-primary" />
                 Funktionen & Workflows
               </h3>
-              <UserFeaturesWorkflows />
+              <LawyerFeaturesWorkflows />
             </section>
 
             {/* Technical Docs */}
