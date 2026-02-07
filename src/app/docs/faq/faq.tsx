@@ -9,7 +9,7 @@ export function FAQ() {
           a: [
             'Da es unser Ziel ist den Zugang zum Recht zu demokratisieren ist Jurilib für Nutzer*innen komplett kostenfrei.',
             'ACHTUNG: Das bezieht sich nur auf die Nutzung von Jurilib. Für die juristische Betreuung kann das anders sein!',
-            'Uns ist außerdem bewusst, dass nicht alle Organisationen über die selben finanziellen Mittel verfügen. Daher gibt es hier unterschiedliche Reglungen. Mehr Informationen dazu findest du hier. TODO: Link zu Kosten für Organisationen.',
+            'Uns ist außerdem bewusst, dass nicht alle Organisationen über die selben finanziellen Mittel verfügen. Daher gibt es hier unterschiedliche Reglungen. Mehr Informationen dazu findest du unter \"Kosten\".',
           ],
         },
         {
