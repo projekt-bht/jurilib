@@ -61,6 +61,22 @@ export function UserFeaturesWorkflows() {
               'Neue Termine kannst du wie gehabt entweder über die Suche oder über die Übersicht aller Organisationen finden und anfragen.',
             ],
           },
+          {
+            title: 'Dokumente hochladen',
+            desc: 'In der Übersicht deiner Fälle, kannst du auf der Detailseite neue Dokumente hochladen. Diese sind im Folgenden allgemein für alle beteiligte Personen, sowohl für Klient*in, als auch Jurst*innen, verfügbar.',
+          },
+          {
+            title: 'Dokumente einsehen',
+            desc: 'Nach erfolgreichem Upload eines Dokuments, sind diese im Nachhinein über einen Link auf der Detailseite des jeweiligen Falls verfügbar.',
+          },
+          {
+            title: 'Dokumente löschen',
+            desc: 'Sollten Dokumente nicht länger benötigt sein, oder sogar fälschlicherweise hochgeladen worden sein, können diese ohne große Umwege direkt aus dem Case entfernt werden.',
+          },
+          {
+            title: 'Private Dokumente verwalten',
+            desc: 'In der Übersicht deiner Fälle, kannst du auf der Detailseite neue private Dokumente hochladen. Diese sind im Folgenden nur für dich verfügbar und dienen der persönlichen Organisierung von relevanten Daten.',
+          },
         ].map((item) => (
           <div key={item.title} className="flex items-start gap-3">
             <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
