@@ -144,7 +144,10 @@ export default function Team() {
         <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
-              Entwickler*innen hinter JuriLib
+              <span>Entwickler*innen hinter </span>
+              <span className="bg-linear-to-r from-accent-blue via-accent-purple to-accent-blue bg-clip-text text-transparent animate-gradient">
+                JuriLib
+              </span>
             </h1>
           </div>
         </section>
