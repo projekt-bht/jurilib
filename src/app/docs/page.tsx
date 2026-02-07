@@ -433,7 +433,9 @@ export default function DocsPage() {
                   Häufige Fragen
                 </h1>
               </div>
-              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
+                Hier findest du Antworten auf häufig gestellte Fragen rund um JuriLib.
+              </p>
               <FAQ />
             </section>
 
