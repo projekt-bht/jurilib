@@ -344,7 +344,6 @@ export default function DocsPage() {
                 <Users className="w-5 h-5 text-primary" />
                 Nutzer*innenhandbuch
               </h2>
-              <UserDisclaimer />
             </section>
 
             {/* User Quick Start */}
@@ -362,6 +361,7 @@ export default function DocsPage() {
                 <Gem className="w-5 h-5 text-primary" />
                 Funktionen
               </h3>
+              <UserDisclaimer />
               <UserFeaturesWorkflows />
             </section>
 
