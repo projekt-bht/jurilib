@@ -105,6 +105,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
     setIsRecordingDone(true);
     setError('');
     onSubmit(problem);
+    setIsSubmitted(true);
     addCachedInquiry(problem);
   }
 
@@ -214,47 +215,28 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
         </div>
       )}
 
-      <button
-        type="submit"
-        className="bg-primary text-primary-foreground font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105"
-      >
-        Passende Lösung finden
-      </button>
-
-      <p className="text-accent-gray text-base mt-2 mb-8">
-        Deine Anfrage wird vertraulich behandelt
-      </p>
-
-      <div
-        className={`mt-6 w-full transition-all duration-500 ease-in-out ${
-          isSubmitted
-            ? 'opacity-0 scale-95 max-h-0 overflow-hidden'
-            : 'opacity-100 scale-100 max-h-96'
-        }`}
-      >
-        <span className="text-lg text-accent-foreground text-center mt-4 mb-4">
-          Oder wähle ein Beispiel:
-        </span>
-        <div className="flex flex-wrap gap-4 justify-center pt-4 mb-8">
-          {exampleSearches.map((example) => {
-            const Icon = example.icon;
-            return (
-              <Button
-                key={example.title}
-                type="button"
-                variant="outline"
-                size="sm"
-                className="bg-accent-gray-light/60 text-foreground hover:bg-primary hover:text-primary-foreground border-accent-gray/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
-                onClick={() => {
-                  setProblem(example.description);
-                }}
-              >
-                <Icon className="w-4 h-4 mr-1 inline-block" />
-                {example.title}
-              </Button>
-            );
-          })}
-        </div>
+      <span className="text-lg text-accent-foreground text-center mt-4 mb-4">
+        Oder wähle ein Beispiel:
+      </span>
+      <div className="flex flex-wrap gap-4 justify-center pt-4 mb-8">
+        {exampleSearches.map((example) => {
+          const Icon = example.icon;
+          return (
+            <Button
+              key={example.title}
+              type="button"
+              variant="outline"
+              size="sm"
+              className="bg-accent-gray-light/60 text-foreground hover:bg-primary hover:text-primary-foreground border-accent-gray/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
+              onClick={() => {
+                setProblem(example.description);
+              }}
+            >
+              <Icon className="w-4 h-4 mr-1 inline-block" />
+              {example.title}
+            </Button>
+          );
+        })}
       </div>
     </form>
   );
