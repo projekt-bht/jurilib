@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/appointment/{{process.env.APPOINTMENT_ID}}/cancel
+  url: {{baseURL}}/appointment/:appointmentID/cancel
   body: none
   auth: none
+}
+
+params:path {
+  appointmentID: {{appointmentID}}
 }
 
 headers {

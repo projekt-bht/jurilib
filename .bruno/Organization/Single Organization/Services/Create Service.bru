@@ -1,13 +1,17 @@
 meta {
-  name: Delete Service
+  name: Create Service
   type: http
   seq: 3
 }
 
-delete {
-  url: http://localhost:3000/api/organization/{{process.env.ORGANIZATION_ID}}/services/{{process.env.SERVICE_ID}}
-  body: none
+post {
+  url: {{baseURL}}/organization/:organizationID/services
+  body: json
   auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
 }
 
 body:json {

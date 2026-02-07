@@ -5,9 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/appointment/employee/{{process.env.EMPLOYEE_ID}}/{{process.env.APPOINTMENT_ID}}/confirm
+  url: {{baseURL}}/appointment/employee/:employeeID/:appointmentID/confirm
   body: none
   auth: inherit
+}
+
+params:path {
+  appointmentID: {{appointmentID}}
+  employeeID: {{employeeID}}
 }
 
 headers {

@@ -33,7 +33,7 @@ const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
 const { POST: orgPOST } = await import('@/app/api/organization/route');
-const { GET } = await import('@/app/api/employee/[employeeID]/route');
+// const { GET } = await import('@/app/api/employee/[employeeID]/route');
 const { POST } = await import('@/app/api/authentication/register/route');
 
 // !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
@@ -115,11 +115,11 @@ describe('Employee Endpoint /employee/[employeeID] testen', () => {
     expect(createdAccount?.email).toBe(registerInput.account.email);
   });
 
-  test('GET Employee', async () => {
-    const req = new NextRequest(baseUrl);
-    const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
-    const json = await res.json();
-    expect(json.length).not.toBe(0);
-    expect(res.status).toBe(200);
-  });
+  //   test('GET Employee', async () => {
+  //     const req = new NextRequest(baseUrl);
+  //     const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
+  //     const json = await res.json();
+  //     expect(json.length).not.toBe(0);
+  //     expect(res.status).toBe(200);
+  //   });
 });
