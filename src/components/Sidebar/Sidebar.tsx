@@ -45,6 +45,7 @@ export function Sidebar() {
 
   // Don't render if not logged in
   if (!login) return null;
+  else if (pathname === '/docs') return null; // Don't render on docs page
 
   return (
     <>

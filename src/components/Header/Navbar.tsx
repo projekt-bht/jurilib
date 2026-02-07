@@ -1,31 +1,44 @@
 'use client';
-import { Building2, ShieldUser, User } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowLeft, BookOpen, Building2, ShieldUser, User } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { LoginContext, useLoginContext } from '@/app/LoginContext';
 import { Authentication } from '@/components/Authentication/Authentication';
-import scale_logo from '~/public/scale_logo.svg';
+import { Logo } from '@/components/Header/Logo';
 
 export function Navbar() {
   const { login, setLogin } = useLoginContext();
 
+  const isDocsPage = usePathname().includes('/docs');
+
+  if (isDocsPage) {
+    return (
+      <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
+        {/* <nav className="bg-background text-foreground flex items-center gap-4 p-5 mx-auto border border-border fixed w-full z-50"> */}
+        <div className="gap-4 flex items-center">
+          <Logo />
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-sm text-muted-foreground border-l border-border pl-4">
+            <BookOpen className="w-4 h-4" />
+            Dokumentation
+          </span>
+        </div>
+        <Link
+          href="/"
+          className="hidden md:inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Zur Startseite
+        </Link>
+      </nav>
+    );
+  }
+
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
       <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="bg-foreground p-2 rounded-lg">
-            {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
-            <Image
-              src={scale_logo}
-              alt="JuriLib Logo"
-              width={40}
-              height={40}
-              className="brightness-0 invert gray"
-            />
-          </div>
-          <span className="text-2xl font-bold">JuriLib</span>
-        </Link>
+        {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
+        <Logo />
 
         <div className="flex items-center gap-x-5">
           {!login && (
