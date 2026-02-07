@@ -362,13 +362,32 @@ export default function DocsPage() {
                   Disclaimer
                 </h3>
                 <p className="text-m text-foreground leading-relaxed">
-                  Wir schreiben zwar die Dokumentation für Jurist*innen, allerdings ist Jurilib aus
-                  der Jurist*innen-Perspektive noch nicht nutzbar. Wir beschreiben es hier weil die
-                  Nutzung von Jurilib durch Jurist*innen ein essenzieller Teil der Anwendung ist.
-                  Auch wenn dieser noch nicht öffentlich zur Verfügung steht, ist das Grundgerüst
-                  dafür schon da. So sind große Teile des Backends für Employees schon
-                  implementiert. Die Endpunkte für die Registierung, Anmeldung und sogar
-                  Terminverwaltung wurden schon Impementiert, wenn auch mit Lücken.
+                  Im folgenden wird die User Dokumentation aus der Sicht von Jurist*innen
+                  beschrieben. JuriLib ist für Juris*innen jedoch aktuell noch nicht nutzbar.
+                </p>
+                <br />
+                <p className="text-m text-foreground leading-relaxed">
+                  Wir haben uns aus zwei Gründen entschlossen trotzdem die Doku zu schreiben.
+                </p>
+                <p className="text-m text-foreground leading-relaxed">
+                  <b>1. </b> Die Nutzung von Jurilib durch Jurist*innen stellt einen essenziellen
+                  Teil der Anwendung dar.
+                </p>
+                <p className="text-m text-foreground leading-relaxed">
+                  <b>2. </b> Wir haben Abläufe definiert und große Teile des Backends für Employees
+                  schon implementiert. Auch wenn die Endpunkte noch nicht öffentlich zur Verfügung
+                  steht, ist das Grundgerüst dafür schon da.
+                </p>
+                <p className="text-m text-foreground leading-relaxed">
+                  Die Endpunkte für die Registierung, Anmeldung und sogar Terminverwaltung wurden
+                  schon Impementiert, wenn auch mit Lücken.
+                </p>
+                <br />
+                <p className="text-m text-foreground leading-relaxed">
+                  Daruch, dass die Implementierung noch nicht abgeschlossen ist, stehen die
+                  beschriebenen Funktionen und Workflows nicht für den Ist-Stand, sondern
+                  beschreiben teils schon implementierte, aber nicht nutzbare und teils geplante
+                  Funktionen.
                 </p>
                 <br />
                 <p className="text-m text-foreground leading-relaxed">
