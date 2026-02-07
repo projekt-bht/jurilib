@@ -37,7 +37,7 @@ export function Glossary() {
       </p>
       <br />
       <h4 className="text-l font-bold text-foreground mb-1 flex items-center gap-2">
-        Fallbeschreibung (Search-String???)
+        Fallbeschreibung (Search-String)
       </h4>
       <p>
         Ein String, welcher von den Nutzer*innen entweder über eine Tastatur oder über
