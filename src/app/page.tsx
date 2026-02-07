@@ -29,7 +29,7 @@ export default function Home() {
           <span>Kostenlose & vertrauliche Suche </span>
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
-          <span className="block">Rechliche Hilfe,</span>
+          <span className="block">Rechtliche Hilfe,</span>
           <span className="bg-linear-to-r from-accent-blue via-accent-purple to-accent-blue bg-clip-text text-transparent animate-gradient">
             die genau zu dir passt
           </span>
