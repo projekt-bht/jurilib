@@ -86,7 +86,7 @@ export default function CasePage() {
                 ? cases.map((caseItem, index) => (
                     <div
                       key={caseItem.id}
-                      className="bg-gradient-to-br p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+                      className="bg-gradient-to-br p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group relative overflow-hidden"
                       style={{
                         backgroundImage: `linear-gradient(to bottom right, var(--color-${caseItem.id.slice(0, 2)}), var(--color-alt))`,
                       }}
