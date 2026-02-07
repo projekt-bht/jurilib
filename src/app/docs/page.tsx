@@ -466,7 +466,7 @@ export default function DocsPage() {
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
                 <a
-                  href="mailto:kontakt@jurilib.de"
+                  href="mailto:jurilib@web.de"
                   className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors"
                 >
                   Kontakt aufnehmen
