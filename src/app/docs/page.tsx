@@ -21,6 +21,7 @@ import {
   Search,
   Server,
   Settings,
+  Unplug,
   Users,
   Zap,
 } from 'lucide-react';
@@ -60,11 +61,15 @@ type SectionId =
   | 'lawyer-perspective'
   | 'lawyer-quick-start'
   | 'lawyer-features-workflows'
+  | 'lawyer-features-register'
+  | 'lawyer-features-appointments'
+  | 'lawyer-features-documents'
   | 'costs'
   | 'faq'
   | 'user-faq'
   | 'lawyer-faq'
   | 'glossary'
+  | 'api'
   // ---
   | 'search'
   | 'organizations'
@@ -72,7 +77,6 @@ type SectionId =
   | 'account'
   | 'technical'
   | 'architecture'
-  | 'api'
   | 'security'
   | 'project-overview'
   | 'short-description'
@@ -108,15 +112,18 @@ const navItems: NavItem[] = [
         label: 'Nutzer*innenhandbuch',
         children: [
           { id: 'user-quick-start', label: 'Erste Schritte' },
-          { id: 'user-features-workflows', label: 'Funktionen & Workflows' },
+          { id: 'user-features-workflows', label: 'Funktionen' },
         ],
       },
       {
         id: 'lawyer-perspective',
         label: 'Jurist*innenhandbuch',
         children: [
-          { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
-          { id: 'lawyer-features-workflows', label: 'Funktionen & Workflows' },
+          { id: 'lawyer-quick-start', label: 'Erste Schritte' },
+          { id: 'lawyer-features-register', label: 'Registrierung' },
+          { id: 'lawyer-features-appointments', label: 'Termine' },
+          { id: 'lawyer-features-documents', label: 'Dokumente' },
+
           { id: 'costs', label: 'Kosten' },
         ],
       },
@@ -141,6 +148,7 @@ const navItems: NavItem[] = [
     ],
   },
   { id: 'glossary', label: 'Glossar', icon: <ScrollText className="w-4 h-4 text-accent-blue" /> },
+  { id: 'api', label: 'API-Referenz', icon: <Unplug className="w-4 h-4 text-accent-blue" /> },
   // ---
   {
     id: 'project-overview',
@@ -157,7 +165,6 @@ const navItems: NavItem[] = [
       { id: 'case-management', label: 'Fallverwaltung' },
       { id: 'account', label: 'Konto & Profil' },
       { id: 'architecture', label: 'Architektur' },
-      { id: 'api', label: 'API-Referenz' },
     ],
   },
 ];
@@ -340,7 +347,7 @@ export default function DocsPage() {
             <section id="user-quick-start" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
-                Erste Schritte für Nutzer*innen
+                Erste Schritte
               </h3>
               <UserQuickStart />
             </section>
@@ -349,7 +356,7 @@ export default function DocsPage() {
             <section id="user-features-workflows" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gem className="w-5 h-5 text-primary" />
-                Funktionen & Workflows
+                Funktionen
               </h3>
               <UserFeaturesWorkflows />
             </section>
@@ -367,7 +374,7 @@ export default function DocsPage() {
             <section id="lawyer-quick-start" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
-                Erste Schritte für Jurist*innen
+                Erste Schritte
               </h3>
               <LawyerQuickStart />
             </section>
@@ -376,7 +383,7 @@ export default function DocsPage() {
             <section id="lawyer-features-workflows" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gem className="w-5 h-5 text-primary" />
-                Funktionen & Workflows
+                Funktionen
               </h3>
               <LawyerFeaturesWorkflows />
             </section>
