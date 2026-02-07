@@ -7,160 +7,160 @@ paths:
     patch:
       summary: Reset Password
       operationId: Reset Password
-      description: ""
+      description: ''
       tags:
         - account
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
   /api/account/{accountID}:
     get:
       summary: Get Account
       operationId: Get Account
-      description: ""
+      description: ''
       tags:
         - account
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: accountID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{accountID}}"
+          example: '{{accountID}}'
     patch:
       summary: Update Account
       operationId: Update Account
-      description: ""
+      description: ''
       tags:
         - account
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: accountID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{accountID}}"
+          example: '{{accountID}}'
     delete:
       summary: Delete Account
       operationId: Delete Account
-      description: ""
+      description: ''
       tags:
         - account
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: accountID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{accountID}}"
+          example: '{{accountID}}'
   /api/case:
     post:
       summary: Create Case
       operationId: Create Case
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: Content-Type
           in: header
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
           example: application/json
       requestBody:
-        $ref: "#/components/requestBodies/create_case"
+        $ref: '#/components/requestBodies/create_case'
   /api/case/{caseID}:
     delete:
       summary: Delete Case
       operationId: Delete Case
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: caseID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{caseID}}"
+          example: '{{caseID}}'
     patch:
       summary: Update Case
       operationId: Update Case
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: caseID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{caseID}}"
+          example: '{{caseID}}'
       requestBody:
-        $ref: "#/components/requestBodies/update_case"
+        $ref: '#/components/requestBodies/update_case'
   /api/case/user/{userID}:
     get:
       summary: Get Cases
       operationId: Get Cases
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
   /api/case/{caseID}/documents:
     get:
       summary: Get single File
       operationId: Get single File
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: caseID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{caseID}}"
+          example: '{{caseID}}'
         - name: fileName
           in: query
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
@@ -169,55 +169,55 @@ paths:
     get:
       summary: Get single File
       operationId: Get single File
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: caseID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{caseID}}"
+          example: '{{caseID}}'
         - name: fileName
           in: query
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
           example: waage.png
         - name: private
           in: header
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "true"
+          example: 'true'
   /api/case/{caseID}/documents/employee:
     get:
       summary: Get single File (Employee)
       operationId: Get single File Employee
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: caseID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{caseID}}"
+          example: '{{caseID}}'
         - name: fileName
           in: query
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
@@ -226,154 +226,154 @@ paths:
     get:
       summary: Get Cases
       operationId: Get Cases
-      description: ""
+      description: ''
       tags:
         - case
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
   /api/appointment/organization/{organizationID}:
     get:
       summary: Get Appointments by Organization
       operationId: Get Appointments Organization
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
   /api/appointment/user/{userID}:
     get:
       summary: Get Appointments by User
       operationId: Get Appointments User
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
   /api/appointment/user/{userID}/{appointmentID}:
     get:
       summary: Get User Appointment
       operationId: Get User Appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
         - name: appointmentID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{appointmentID}}"
+          example: '{{appointmentID}}'
   /api/appointment/employee/{employeeID}:
     post:
       summary: Create Appointment
       operationId: Create Appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
       requestBody:
-        $ref: "#/components/requestBodies/create_appointment"
+        $ref: '#/components/requestBodies/create_appointment'
   /api/appointment/employee/{employeeID}/{appointmentID}:
     get:
       summary: Get Appointment
       operationId: Get Appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
         - name: appointmentID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{appointmentID}}"
+          example: '{{appointmentID}}'
   /api/appointment/employee/{employeeID}/{appointmentID}/confirm:
     post:
       summary: Confirm Appointment
       operationId: Confirm Appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
         - name: appointmentID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{appointmentID}}"
+          example: '{{appointmentID}}'
         - name: Content-Type
           in: header
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
@@ -382,272 +382,272 @@ paths:
     post:
       summary: request appointment
       operationId: request appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: appointmentID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{appointmentID}}"
+          example: '{{appointmentID}}'
   /api/appointment/{appointmentID}/cancel:
     post:
       summary: cancel appointment
       operationId: cancel appointment
-      description: ""
+      description: ''
       tags:
         - appointment
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: appointmentID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{appointmentID}}"
+          example: '{{appointmentID}}'
   /api/authentication/login:
     post:
       summary: Login User
       operationId: Login User
-      description: "Authenticate user with email and password"
+      description: 'Authenticate user with email and password'
       tags:
         - authentication
       responses:
-        "200":
-          description: "Successfully authenticated. Returns JWT access token as a cookie."
+        '200':
+          description: 'Successfully authenticated. Returns JWT access token as a cookie.'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/login_response"
+                $ref: '#/components/schemas/login_response'
       parameters:
         - name: Content-Type
           in: header
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
           example: application/json
       requestBody:
-        $ref: "#/components/requestBodies/login_user"
+        $ref: '#/components/requestBodies/login_user'
   /api/authentication/register:
     post:
       summary: Register User
       operationId: Register User
-      description: ""
+      description: ''
       tags:
         - authentication
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       requestBody:
-        $ref: "#/components/requestBodies/register_user"
+        $ref: '#/components/requestBodies/register_user'
   /api/authentication/codeVerification:
     post:
       summary: Verify Code
       operationId: Verify Code
-      description: ""
+      description: ''
       tags:
         - authentication
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
   /api/authentication/resendCode:
     post:
       summary: Resend Code
       operationId: Resend Code
-      description: ""
+      description: ''
       tags:
         - authentication
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
   /api/employee:
     get:
       summary: Get All Employees
       operationId: Get All Employees
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
     post:
       summary: Create Employee
       operationId: Create Employee
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       requestBody:
-        $ref: "#/components/requestBodies/create_employee"
+        $ref: '#/components/requestBodies/create_employee'
   /api/employee/{employeeID}:
     get:
       summary: Get Employee
       operationId: Get Employee
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
     patch:
       summary: Update Employee
       operationId: Update Employee
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
     delete:
       summary: Delete Employee
       operationId: Delete Employee
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: employeeID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{employeeID}}"
+          example: '{{employeeID}}'
   /api/employee/organization/{organizationID}:
     get:
       summary: Get Employees by Organization
       operationId: Get Employees Organization
-      description: ""
+      description: ''
       tags:
         - employee
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
   /api/user:
     get:
       summary: Get All Users
       operationId: Get All Users
-      description: ""
+      description: ''
       tags:
         - user
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
     post:
       summary: Create User
       operationId: Create User
-      description: ""
+      description: ''
       tags:
         - user
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       requestBody:
-        $ref: "#/components/requestBodies/create_user"
+        $ref: '#/components/requestBodies/create_user'
   /api/user/{userID}:
     get:
       summary: Get User
       operationId: Get User
-      description: ""
+      description: ''
       tags:
         - user
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
     patch:
       summary: Update User
       operationId: Update User
-      description: ""
+      description: ''
       tags:
         - user
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
     delete:
       summary: Delete User
       operationId: Delete User
-      description: ""
+      description: ''
       tags:
         - user
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: userID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{userID}}"
+          example: '{{userID}}'
   /api/search:
     get:
       summary: Search
       operationId: Search
-      description: ""
+      description: ''
       tags:
         - search
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: query
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
@@ -655,193 +655,193 @@ paths:
     get:
       summary: All Organizations
       operationId: All Organizations
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: priceCategory
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
         - name: organizationType
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
         - name: area
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
         - name: city
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
         - name: languages
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
         - name: accessibility
           in: query
-          description: ""
+          description: ''
           required: false
           schema:
             type: string
-          example: ""
+          example: ''
     post:
       summary: Create Organization
       operationId: Create Organization
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       requestBody:
-        $ref: "#/components/requestBodies/create_organization"
+        $ref: '#/components/requestBodies/create_organization'
   /api/organization/{organizationID}:
     delete:
       summary: Delete Organization
       operationId: Delete Organization
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
     patch:
       summary: Update Organization
       operationId: Update Organization
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
       requestBody:
-        $ref: "#/components/requestBodies/update_organization"
+        $ref: '#/components/requestBodies/update_organization'
   /api/organization/{organizationID}/services:
     get:
       summary: All Services
       operationId: All Services
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
     post:
       summary: Create Service
       operationId: Create Service
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
       requestBody:
-        $ref: "#/components/requestBodies/create_service"
+        $ref: '#/components/requestBodies/create_service'
   /api/organization/{organizationID}/services/{serviceID}:
     delete:
       summary: Delete Service
       operationId: Delete Service
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
         - name: serviceID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{serviceID}}"
+          example: '{{serviceID}}'
     patch:
       summary: Patch Service
       operationId: Patch Service
-      description: ""
+      description: ''
       tags:
         - organization
       responses:
-        "200":
-          description: ""
+        '200':
+          description: ''
       parameters:
         - name: organizationID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{organizationID}}"
+          example: '{{organizationID}}'
         - name: serviceID
           in: path
-          description: ""
+          description: ''
           required: true
           schema:
             type: string
-          example: "{{serviceID}}"
+          example: '{{serviceID}}'
       requestBody:
-        $ref: "#/components/requestBodies/patch_service"
+        $ref: '#/components/requestBodies/patch_service'
 servers:
-  - url: http://localhost:3000
+  - url: https://jurilib.de
 components:
   schemas:
     create_case:
@@ -908,9 +908,9 @@ components:
           items:
             type: string
           properties:
-            "0":
+            '0':
               type: string
-            "1":
+            '1':
               type: string
         country:
           type: string
@@ -946,7 +946,7 @@ components:
           items:
             type: string
           properties:
-            "0":
+            '0':
               type: string
         country:
           type: string
@@ -981,7 +981,7 @@ components:
       properties:
         access_token:
           type: string
-          description: "JWT token for authentication"
+          description: 'JWT token for authentication'
       required:
         - access_token
     register_user:
@@ -1024,92 +1024,92 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_case"
-      description: ""
+            $ref: '#/components/schemas/create_case'
+      description: ''
       required: true
     update_case:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/update_case"
-      description: ""
+            $ref: '#/components/schemas/update_case'
+      description: ''
       required: true
     upload_file:
       content:
-        "multipart/form-data:":
+        'multipart/form-data:':
           schema:
-            $ref: "#/components/schemas/upload_file"
-      description: ""
+            $ref: '#/components/schemas/upload_file'
+      description: ''
       required: true
     create_appointment:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_appointment"
-      description: ""
+            $ref: '#/components/schemas/create_appointment'
+      description: ''
       required: true
     login_employee:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/login_employee"
-      description: ""
+            $ref: '#/components/schemas/login_employee'
+      description: ''
       required: true
     login_user:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/login_user"
-      description: ""
+            $ref: '#/components/schemas/login_user'
+      description: ''
       required: true
     create_organization:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_organization"
-      description: ""
+            $ref: '#/components/schemas/create_organization'
+      description: ''
       required: true
     update_organization:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/update_organization"
-      description: ""
+            $ref: '#/components/schemas/update_organization'
+      description: ''
       required: true
     create_service:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_service"
-      description: ""
+            $ref: '#/components/schemas/create_service'
+      description: ''
       required: true
     patch_service:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/patch_service"
-      description: ""
+            $ref: '#/components/schemas/patch_service'
+      description: ''
       required: true
     register_user:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/register_user"
-      description: ""
+            $ref: '#/components/schemas/register_user'
+      description: ''
       required: true
     create_employee:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_employee"
-      description: ""
+            $ref: '#/components/schemas/create_employee'
+      description: ''
       required: true
     create_user:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/create_user"
-      description: ""
+            $ref: '#/components/schemas/create_user'
+      description: ''
       required: true
   securitySchemes:
     CookieAuth:
