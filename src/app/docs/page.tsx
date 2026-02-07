@@ -44,9 +44,11 @@ import { TeamTasks } from './project-overview/team-tasks';
 import { Search as SearchTechnical } from './technical-docs/search';
 import { Security } from './technical-docs/security';
 import { Disclaimer } from './user-guide/disclaimer';
+import { LawyerAppointment } from './user-guide/lawyer-appointment';
 import { Costs } from './user-guide/lawyer-costs';
-import { LawyerFeaturesWorkflows } from './user-guide/lawyer-features-workflows';
+import { LawyerDocument } from './user-guide/lawyer-document';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
+import { LawyerRegister } from './user-guide/lawyer-register';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
 
@@ -380,12 +382,26 @@ export default function DocsPage() {
             </section>
 
             {/* Lawyer Features & Workflows */}
-            <section id="lawyer-features-workflows" className="mb-16 scroll-mt-24">
+            <section id="lawyer-features-workflows" className="mb-5 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gem className="w-5 h-5 text-primary" />
                 Funktionen
               </h3>
-              <LawyerFeaturesWorkflows />
+            </section>
+
+            {/* Lawyer Register */}
+            <section id="lawyer-register" className="mb-8 scroll-mt-24">
+              <LawyerRegister />
+            </section>
+
+            {/* Lawyer Appointment */}
+            <section id="lawyer-appointment" className="mb-8 scroll-mt-24">
+              <LawyerAppointment />
+            </section>
+
+            {/* Lawyer Document */}
+            <section id="lawyer-document" className="mb-16 scroll-mt-24">
+              <LawyerDocument />
             </section>
 
             {/* Costs */}
