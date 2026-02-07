@@ -1,6 +1,6 @@
-import { ArrowLeft, CalendarDays, ChevronRight, FolderOpen, Plus, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { CalendarDays, ChevronRight, FolderOpen, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
