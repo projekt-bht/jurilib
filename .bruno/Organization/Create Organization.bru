@@ -1,0 +1,120 @@
+meta {
+  name: Create Organization
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseURL}}/organization
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Testkanzlei",
+    "description": "Kanzlei test",
+    "shortDescription": "Kanzlei shortTest",
+    "email": "testmail@mail.de",
+    "type": "LAW_FIRM",
+    "priceCategory": "FREE",
+    "expertiseAreas": [
+      "Verkehrsrecht",
+      "Arbeitsrecht"
+    ],
+    "country": "Deutschland",
+    "city": "Berlin",
+    "zipCode": "10115",
+    "street": "Musterstraße",
+    "houseNumber": "1A",
+    "averageRating": 4.5,
+    "numberOfRatings": 10
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+example {
+  name: Create Organization Response example
+  
+  request: {
+    url: {{baseURL}}/organization
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "Testkanzlei",
+        "description": "Kanzlei test",
+        "shortDescription": "Kanzlei shortTest",
+        "email": "testmail@mail.de",
+        "type": "LAW_FIRM",
+        "priceCategory": "FREE",
+        "expertiseAreas": [
+          "Verkehrsrecht",
+          "Arbeitsrecht"
+        ],
+        "country": "Deutschland",
+        "city": "Berlin",
+        "zipCode": "10115",
+        "street": "Musterstraße",
+        "houseNumber": "1A",
+        "averageRating": 4.5,
+        "numberOfRatings": 10
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      id: 72cf6503-12f5-4a29-9ddd-46594b2a0252
+      type: USER
+      userid: c02b18bd-3e26-4fa5-9d15-40ac051a4d54
+      vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+      content-type: application/json
+      date: Fri, 06 Feb 2026 13:43:29 GMT
+      connection: keep-alive
+      keep-alive: timeout=5
+      transfer-encoding: chunked
+    }
+  
+    status: {
+      code: 201
+      text: Created
+    }
+  
+    body: {
+      type: json
+      content: '''
+        {
+          "id": "d9996a4e-c4b5-4471-a6f5-969ebc1df5b3",
+          "name": "Testkanzlei",
+          "description": "Kanzlei test",
+          "shortDescription": "Kanzlei shortTest",
+          "email": "testmail@mail.de",
+          "phone": null,
+          "website": null,
+          "imageUrl": null,
+          "accessibility": [],
+          "expertiseAreas": [
+            "Verkehrsrecht",
+            "Arbeitsrecht"
+          ],
+          "type": "LAW_FIRM",
+          "priceCategory": "FREE",
+          "country": "Deutschland",
+          "city": "Berlin",
+          "zipCode": "10115",
+          "street": "Musterstraße",
+          "houseNumber": "1A",
+          "averageRating": 4.5,
+          "numberOfRatings": 10,
+          "createdAt": "2026-02-06T13:43:29.570Z",
+          "updatedAt": "2026-02-06T13:43:29.570Z"
+        }
+      '''
+    }
+  }
+}

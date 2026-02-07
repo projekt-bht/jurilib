@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/case/{{process.env.CASE_ID}}/documents/employee
+  url: http://localhost:3000/api/case/:caseID/documents/employee
   body: multipartForm
   auth: inherit
+}
+
+params:path {
+  caseID: {{caseID}}
 }
 
 body:multipart-form {

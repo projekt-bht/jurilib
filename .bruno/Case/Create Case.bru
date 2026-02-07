@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/case/
+  url: {{baseURL}}/case/
   body: json
   auth: inherit
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "employeeId": "{{process.env.EMPLOYEE_ID}}",
+    "employeeId": "{{employeeID}}",
     "title": "Testcase",
     "description": "Hier mal ein API Test von Bruno"
   }

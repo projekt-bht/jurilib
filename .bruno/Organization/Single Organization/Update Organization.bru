@@ -1,0 +1,41 @@
+meta {
+  name: Update Organization
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseURL}}/organization/:organizationID
+  body: json
+  auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
+}
+
+body:json {
+  {
+    "name": "Testkanzlei",
+    "description": "Kanzlei test",
+    "shortDescription": "Kanzlei shortTest",
+    "email": "testmail@mail.de",
+    "type": "LAW_FIRM",
+    "priceCategory": "FREE",
+    "expertiseAreas": [
+      "Verkehrsrecht"
+    ],
+    "country": "Deutschland",
+    "city": "Berlin",
+    "zipCode": "10115",
+    "street": "Musterstraße",
+    "houseNumber": "1A",
+    "averageRating": 4.5,
+    "numberOfRatings": 10
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

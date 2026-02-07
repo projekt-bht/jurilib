@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/api/appointment/employee/{{process.env.EMPLOYEE_ID}}
+  url: {{baseURL}}/appointment/employee/:employeeID
   body: json
   auth: inherit
+}
+
+params:path {
+  employeeID: {{employeeID}}
 }
 
 body:json {

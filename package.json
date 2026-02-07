@@ -18,6 +18,9 @@
     "test:backend": "NODE_OPTIONS=--experimental-vm-modules jest --selectProjects backend",
     "test:goldenSamples": "NODE_OPTIONS=--experimental-vm-modules jest --selectProjects goldenSamples"
   },
+  "scarfSettings": {
+    "enabled": false
+  },
   "dependencies": {
     "@azure/storage-blob": "^12.30.0",
     "@base-ui/react": "^1.1.0",
@@ -51,6 +54,7 @@
     "react-day-picker": "^9.12.0",
     "react-dom": "19.2.0",
     "react-hook-speech-to-text": "^0.8.0",
+    "swagger-ui-react": "^5.31.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -66,6 +70,7 @@
     "@types/nodemailer": "^7.0.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-react": "^5.18.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "babel-plugin-react-compiler": "1.0.0",

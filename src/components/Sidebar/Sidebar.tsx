@@ -35,7 +35,7 @@ const secondaryItems = [
 // Add new bottom navigation items here
 const bottomItems = [
   { href: '/settings', label: 'Einstellungen', icon: Settings },
-  { href: '/help', label: 'Hilfe', icon: HelpCircle },
+  { href: '/docs', label: 'Hilfe', icon: HelpCircle },
 ];
 
 export function Sidebar() {
@@ -58,6 +58,24 @@ export function Sidebar() {
         <div className="flex flex-col h-full py-3">
           {/* Main Navigation */}
           <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
+            {/* Collapse Toggle */}
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-500 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft overflow-hidden min-h-[40px] cursor-pointer"
+            >
+              {isCollapsed ? (
+                <ChevronRight className="w-4 h-4 mx-auto" />
+              ) : (
+                <>
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="text-sm whitespace-nowrap">Einklappen</span>
+                </>
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="my-3 border-t border-border/50" />
+
             <div className="space-y-0.5">
               {!isCollapsed && (
                 <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
@@ -154,21 +172,6 @@ export function Sidebar() {
                 </Link>
               );
             })}
-
-            {/* Collapse Toggle */}
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-500 w-full text-muted-foreground hover:text-foreground hover:bg-accent-gray-soft overflow-hidden min-h-[40px]"
-            >
-              {isCollapsed ? (
-                <ChevronRight className="w-4 h-4 mx-auto" />
-              ) : (
-                <>
-                  <ChevronLeft className="w-4 h-4" />
-                  <span className="text-sm whitespace-nowrap">Einklappen</span>
-                </>
-              )}
-            </button>
           </div>
         </div>
       </aside>
