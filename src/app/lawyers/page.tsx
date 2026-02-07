@@ -70,7 +70,6 @@ export default function LawyersPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registration submitted:', formData);
     alert('Vielen Dank für Ihre Registrierung! Wir melden uns in Kürze bei Ihnen.');
   };
 
