@@ -5,7 +5,6 @@ import {
   Award,
   BookOpen,
   ChevronRight,
-  Code,
   Database,
   FileText,
   Gavel,
@@ -13,7 +12,6 @@ import {
   HandCoins,
   HelpCircle,
   Link2,
-  Lock,
   MapPinned,
   Monitor,
   RefreshCw,
@@ -41,8 +39,7 @@ import { LinksAndResources } from './project-overview/links-and-resources';
 import { ShortDescription } from './project-overview/short-description';
 import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
-import { Search as SearchTechnical } from './technical-docs/search';
-import { Security } from './technical-docs/security';
+import { Search as SearchTechnical } from './search/search';
 import { LawyerAppointment } from './user-guide/lawyer-appointment';
 import { Costs } from './user-guide/lawyer-costs';
 import { Disclaimer as LawyerDisclaimer } from './user-guide/lawyer-disclaimer';
@@ -68,19 +65,18 @@ type SectionId =
   | 'lawyer-features-appointments'
   | 'lawyer-features-documents'
   | 'costs'
+  | 'search'
   | 'faq'
   | 'user-faq'
   | 'lawyer-faq'
   | 'glossary'
   | 'api'
   // ---
-  | 'search'
   | 'organizations'
   | 'case-management'
   | 'account'
   | 'technical'
   | 'architecture'
-  | 'security'
   | 'project-overview'
   | 'short-description'
   | 'team-tasks'
@@ -133,13 +129,9 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    id: 'technical',
-    label: 'Technische Details',
-    icon: <Code className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'search', label: 'Suche & Ergebnisse' },
-      { id: 'security', label: 'Sicherheit' },
-    ],
+    id: 'search',
+    label: 'Suche & Ergebnisse',
+    icon: <Search className="w-4 h-4 text-accent-blue" />,
   },
   {
     id: 'faq',
@@ -415,37 +407,20 @@ export default function DocsPage() {
               <Costs />
             </section>
 
-            {/* Technical Docs */}
-            <section id="technical" className="mb-8 scroll-mt-24">
+            {/* Search & Results */}
+            <section id="search" className="mb-8 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
-                  <Code className="w-5 h-5 text-white" />
+                  <Search className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Technische Dokumentation
+                  Suche & Ergebnisse
                 </h1>
               </div>
               <p className="text-lg text-foreground/70 leading-relaxed mb-8">
-                Technische Details zu JuriLib.
+                Tipps zur effektiven Nutzung der Suchfunktion und Interpretation der Ergebnisse.
               </p>
-            </section>
-
-            {/* Search & Results */}
-            <section id="search" className="mb-16 scroll-mt-24">
-              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Search className="w-5 h-5 text-primary" />
-                Suche & Ergebnisse
-              </h2>
               <SearchTechnical />
-            </section>
-
-            {/* Security */}
-            <section id="security" className="mb-16 scroll-mt-24">
-              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary" />
-                Sicherheit
-              </h2>
-              <Security />
             </section>
 
             {/* FAQ */}
