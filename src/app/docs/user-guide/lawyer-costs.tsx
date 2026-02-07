@@ -1,4 +1,5 @@
 import { Info } from 'lucide-react';
+import Link from 'next/link';
 
 export function Costs() {
   return (
@@ -33,7 +34,11 @@ export function Costs() {
           Du bist die nicht sicher, ob deine Organisation Anspruch auf die kostenfreie Nutzung hat?
         </h3>
         <p className="text-m text-foreground leading-relaxed">
-          Kontaktiere uns gerne unter jurilib@web.de. TODO: add Link
+          Kontaktiere uns gerne unter{' '}
+          <Link href="mailto:jurilib@web.de">
+            <u>jurilib@web.de</u>
+          </Link>
+          .
         </p>
       </div>
     </>

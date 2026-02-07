@@ -2,25 +2,17 @@
 
 import {
   ArrowUpRight,
-  Award,
   BookOpen,
-  ChevronRight,
-  Code,
-  Database,
-  FileText,
   Gavel,
   Gem,
   HandCoins,
   HelpCircle,
-  Link2,
-  Lock,
   MapPinned,
-  Monitor,
-  RefreshCw,
   ScrollText,
   Search,
   Server,
-  Settings,
+  SquareArrowOutUpRight,
+  Unplug,
   Users,
   Zap,
 } from 'lucide-react';
@@ -35,17 +27,14 @@ import { UserFAQ } from './faq/user-faq';
 import { TargetAudience } from './introduction/target-audience';
 import { TechnicalRequirements } from './introduction/technical-requirements';
 import { Glossary } from './project-overview/glossary';
-import { Licenses } from './project-overview/licenses';
-import { LinksAndResources } from './project-overview/links-and-resources';
-import { ShortDescription } from './project-overview/short-description';
-import { SourcesAndAI } from './project-overview/sources-and-ai';
-import { TeamTasks } from './project-overview/team-tasks';
-import { Search as SearchTechnical } from './technical-docs/search';
-import { Security } from './technical-docs/security';
-import { Disclaimer } from './user-guide/disclaimer';
+import { Search as SearchTechnical } from './search/search';
+import { LawyerAppointment } from './user-guide/lawyer-appointment';
 import { Costs } from './user-guide/lawyer-costs';
-import { LawyerFeaturesWorkflows } from './user-guide/lawyer-features-workflows';
+import { Disclaimer as LawyerDisclaimer } from './user-guide/lawyer-disclaimer';
+import { LawyerDocument } from './user-guide/lawyer-document';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
+import { LawyerRegister } from './user-guide/lawyer-register';
+import { Disclaimer as UserDisclaimer } from './user-guide/user-disclaimer';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
 
@@ -60,26 +49,16 @@ type SectionId =
   | 'lawyer-perspective'
   | 'lawyer-quick-start'
   | 'lawyer-features-workflows'
+  | 'lawyer-features-register'
+  | 'lawyer-features-appointments'
+  | 'lawyer-features-documents'
   | 'costs'
+  | 'search'
   | 'faq'
   | 'user-faq'
   | 'lawyer-faq'
   | 'glossary'
-  // ---
-  | 'search'
-  | 'organizations'
-  | 'case-management'
-  | 'account'
-  | 'technical'
-  | 'architecture'
-  | 'api'
-  | 'security'
-  | 'project-overview'
-  | 'short-description'
-  | 'team-tasks'
-  | 'links-and-resources'
-  | 'sources-and-ai'
-  | 'licenses';
+  | 'api';
 
 interface NavItem {
   id: SectionId;
@@ -108,28 +87,27 @@ const navItems: NavItem[] = [
         label: 'Nutzer*innenhandbuch',
         children: [
           { id: 'user-quick-start', label: 'Erste Schritte' },
-          { id: 'user-features-workflows', label: 'Funktionen & Workflows' },
+          { id: 'user-features-workflows', label: 'Funktionen' },
         ],
       },
       {
         id: 'lawyer-perspective',
         label: 'Jurist*innenhandbuch',
         children: [
-          { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
-          { id: 'lawyer-features-workflows', label: 'Funktionen & Workflows' },
+          { id: 'lawyer-quick-start', label: 'Erste Schritte' },
+          { id: 'lawyer-features-register', label: 'Registrierung' },
+          { id: 'lawyer-features-appointments', label: 'Termine' },
+          { id: 'lawyer-features-documents', label: 'Dokumente' },
+
           { id: 'costs', label: 'Kosten' },
         ],
       },
     ],
   },
   {
-    id: 'technical',
-    label: 'Technische Details',
-    icon: <Code className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'search', label: 'Suche & Ergebnisse' },
-      { id: 'security', label: 'Sicherheit' },
-    ],
+    id: 'search',
+    label: 'Suche & Ergebnisse',
+    icon: <Search className="w-4 h-4 text-accent-blue" />,
   },
   {
     id: 'faq',
@@ -141,29 +119,11 @@ const navItems: NavItem[] = [
     ],
   },
   { id: 'glossary', label: 'Glossar', icon: <ScrollText className="w-4 h-4 text-accent-blue" /> },
-  // ---
-  {
-    id: 'project-overview',
-    label: 'Projektübersicht',
-    icon: <Monitor className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'short-description', label: 'Kurzbeschreibung' },
-      { id: 'team-tasks', label: 'Team & Aufgabenverteilung' },
-      { id: 'links-and-resources', label: 'Links & Zugänge' },
-      { id: 'sources-and-ai', label: 'Quellen & AI-Disclaimer' },
-      { id: 'licenses', label: 'Lizenzangaben' },
-      { id: 'glossary', label: 'Glossar' },
-      { id: 'organizations', label: 'Organisationen' },
-      { id: 'case-management', label: 'Fallverwaltung' },
-      { id: 'account', label: 'Konto & Profil' },
-      { id: 'architecture', label: 'Architektur' },
-      { id: 'api', label: 'API-Referenz' },
-    ],
-  },
+  { id: 'api', label: 'API-Referenz', icon: <Unplug className="w-4 h-4 text-accent-blue" /> },
 ];
 
 export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState<SectionId>('project-overview');
+  const [activeSection, setActiveSection] = useState<SectionId>('introduction');
   const isApiPage = usePathname().includes('/docs/api');
 
   const allSectionIds = useMemo<SectionId[]>(() => {
@@ -340,7 +300,7 @@ export default function DocsPage() {
             <section id="user-quick-start" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
-                Erste Schritte für Nutzer*innen
+                Erste Schritte
               </h3>
               <UserQuickStart />
             </section>
@@ -349,8 +309,9 @@ export default function DocsPage() {
             <section id="user-features-workflows" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gem className="w-5 h-5 text-primary" />
-                Funktionen & Workflows
+                Funktionen
               </h3>
+              <UserDisclaimer />
               <UserFeaturesWorkflows />
             </section>
 
@@ -360,25 +321,39 @@ export default function DocsPage() {
                 <Gavel className="w-5 h-5 text-primary" />
                 Jurist*innenhandbuch
               </h2>
-              <Disclaimer />
+              <LawyerDisclaimer />
             </section>
 
             {/* Lawyer Quick Start */}
             <section id="lawyer-quick-start" className="mb-16 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-primary" />
-                Erste Schritte für Jurist*innen
+                Erste Schritte
               </h3>
               <LawyerQuickStart />
             </section>
 
             {/* Lawyer Features & Workflows */}
-            <section id="lawyer-features-workflows" className="mb-16 scroll-mt-24">
+            <section id="lawyer-features-workflows" className="mb-5 scroll-mt-24">
               <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
                 <Gem className="w-5 h-5 text-primary" />
-                Funktionen & Workflows
+                Funktionen
               </h3>
-              <LawyerFeaturesWorkflows />
+            </section>
+
+            {/* Lawyer Register */}
+            <section id="lawyer-features-register" className="mb-8 scroll-mt-24">
+              <LawyerRegister />
+            </section>
+
+            {/* Lawyer Appointment */}
+            <section id="lawyer-features-appointments" className="mb-8 scroll-mt-24">
+              <LawyerAppointment />
+            </section>
+
+            {/* Lawyer Document */}
+            <section id="lawyer-features-documents" className="mb-16 scroll-mt-24">
+              <LawyerDocument />
             </section>
 
             {/* Costs */}
@@ -390,37 +365,20 @@ export default function DocsPage() {
               <Costs />
             </section>
 
-            {/* Technical Docs */}
-            <section id="technical" className="mb-8 scroll-mt-24">
+            {/* Search & Results */}
+            <section id="search" className="mb-8 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
-                  <Code className="w-5 h-5 text-white" />
+                  <Search className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Technische Dokumentation
+                  Suche & Ergebnisse
                 </h1>
               </div>
               <p className="text-lg text-foreground/70 leading-relaxed mb-8">
-                Technische Details zu JuriLib.
+                Tipps zur effektiven Nutzung der Suchfunktion und Interpretation der Ergebnisse.
               </p>
-            </section>
-
-            {/* Search & Results */}
-            <section id="search" className="mb-16 scroll-mt-24">
-              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Search className="w-5 h-5 text-primary" />
-                Suche & Ergebnisse
-              </h2>
               <SearchTechnical />
-            </section>
-
-            {/* Security */}
-            <section id="security" className="mb-16 scroll-mt-24">
-              <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-primary" />
-                Sicherheit
-              </h2>
-              <Security />
             </section>
 
             {/* FAQ */}
@@ -433,7 +391,9 @@ export default function DocsPage() {
                   Häufige Fragen
                 </h1>
               </div>
-              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
+                Hier findest du Antworten auf häufig gestellte Fragen rund um JuriLib.
+              </p>
               <FAQ />
             </section>
 
@@ -465,304 +425,30 @@ export default function DocsPage() {
                   Glossar
                 </h1>
               </div>
-              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
+                Hier findest du Definitionen und Erklärungen zu den wichtigsten Begriffen rund um
+                JuriLib.
+              </p>
               <Glossary />
             </section>
 
-            {/* ############################################################################ */}
-
-            <hr />
-            <br />
-
-            {/* Organizations */}
-            <section id="organizations" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                Organisationen
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6">
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  JuriLib arbeitet mit verschiedenen Rechtsberatungsorganisationen zusammen. Im
-                  Bereich Organisationen können Sie alle verfügbaren Beratungsstellen durchsuchen
-                  und filtern.
-                </p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      title: 'Organisationsprofil',
-                      desc: 'Jede Organisation hat ein Profil mit Beschreibung, Rechtsgebieten und Kontaktdaten.',
-                    },
-                    {
-                      title: 'Filteroptionen',
-                      desc: 'Filtern Sie nach Rechtsgebiet, Standort oder Art der Organisation.',
-                    },
-                    {
-                      title: 'Detailansicht',
-                      desc: 'Klicken Sie auf eine Organisation, um weitere Informationen und Teammitglieder zu sehen.',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3">
-                      <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Case Management */}
-            <section id="case-management" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Fallverwaltung
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6">
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  Nach der Anmeldung können Sie Ihre Fälle verwalten und den Status Ihrer Anfragen
-                  verfolgen.
-                </p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      title: 'Neuen Fall erstellen',
-                      desc: 'Navigieren Sie zu "Neuer Fall" und beschreiben Sie Ihr Anliegen ausführlich.',
-                    },
-                    {
-                      title: 'Dashboard',
-                      desc: 'Im Dashboard sehen Sie alle aktiven und abgeschlossenen Fälle auf einen Blick.',
-                    },
-                    {
-                      title: 'Status verfolgen',
-                      desc: 'Jeder Fall hat einen Status: Offen, In Bearbeitung oder Abgeschlossen.',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3">
-                      <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Account */}
-            <section id="account" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Settings className="w-5 h-5 text-primary" />
-                Konto & Profil
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6">
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  Verwalten Sie Ihr Benutzerkonto und Profileinstellungen.
-                </p>
-                <div className="space-y-3">
-                  {[
-                    {
-                      title: 'Anmeldung',
-                      desc: 'Melden Sie sich über den Einloggen-Button in der Kopfzeile an.',
-                    },
-                    {
-                      title: 'Profil bearbeiten',
-                      desc: 'Ändern Sie Ihre persönlichen Daten und Benachrichtigungseinstellungen.',
-                    },
-                    {
-                      title: 'Abmelden',
-                      desc: 'Klicken Sie auf Ihr Profilbild und dann auf Abmelden.',
-                    },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3">
-                      <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Architecture */}
-            <section id="architecture" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Database className="w-5 h-5 text-primary" />
-                Architektur
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6 space-y-6">
-                <div>
-                  <h4 className="font-semibold text-foreground mb-3">Tech-Stack</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { label: 'Framework', value: 'Next.js 16 (App Router)' },
-                      { label: 'Sprache', value: 'TypeScript' },
-                      { label: 'Styling', value: 'Tailwind CSS v4' },
-                      { label: 'UI-Bibliothek', value: 'shadcn/ui' },
-                      { label: 'Hosting', value: 'Vercel' },
-                      { label: 'Schriftart', value: 'Inter, Geist Mono' },
-                    ].map((tech) => (
-                      <div
-                        key={tech.label}
-                        className="bg-secondary/40 rounded-lg p-3 border border-border"
-                      >
-                        <p className="text-xs text-muted-foreground mb-0.5">{tech.label}</p>
-                        <p className="text-sm font-medium text-foreground font-mono">
-                          {tech.value}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-foreground mb-3">Projektstruktur</h4>
-                  <div className="bg-foreground/5 rounded-lg p-4 font-mono text-sm leading-relaxed">
-                    <pre className="text-foreground/80 overflow-x-auto">{`jurilib/
-├── app/
-│   ├── page.tsx          # Startseite
-│   ├── layout.tsx        # Root Layout
-│   ├── globals.css       # Globale Styles
-│   ├── dashboard/        # Dashboard
-│   ├── docs/             # Dokumentation
-│   ├── lawyers/          # Juristen-Seite
-│   ├── new-case/         # Neuer Fall
-│   ├── organizations/    # Organisationen
-│   ├── solutions/        # Lösungen
-│   └── team/             # Team-Seite
-├── components/           # Wiederverwendbare Komponenten
-├── contexts/             # React Context Provider
-└── public/               # Statische Dateien`}</pre>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* API Reference */}
+            {/* API */}
             <section id="api" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <RefreshCw className="w-5 h-5 text-primary" />
-                API-Referenz
-              </h3>
-              <div className="bg-card border border-border rounded-xl p-6">
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  JuriLib verwendet serverseitige Datenverarbeitung über Next.js Server Components
-                  und Server Actions.
-                </p>
-
-                <div className="space-y-4">
-                  <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded font-mono">
-                        GET
-                      </span>
-                      <code className="text-sm font-mono text-foreground">/api/organizations</code>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Gibt eine Liste aller verfügbaren Organisationen zurück.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded font-mono">
-                        POST
-                      </span>
-                      <code className="text-sm font-mono text-foreground">/api/search</code>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Sucht passende Organisationen basierend auf der Problembeschreibung.
-                    </p>
-                  </div>
-
-                  <div className="bg-secondary/40 rounded-lg p-4 border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded font-mono">
-                        GET
-                      </span>
-                      <code className="text-sm font-mono text-foreground">/api/solutions/:id</code>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Gibt Details zu einer bestimmten Lösung/Organisation zurück.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Projektübersicht */}
-            <section id="project-overview" className="mb-16 scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-accent-blue text-primary p-2 rounded-lg">
-                  <Monitor className="w-5 h-5 text-white" />
+                  <Unplug className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-                  Projektübersicht
-                </h2>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  API
+                </h1>
               </div>
-            </section>
 
-            {/* Short Description */}
-            <section id="short-description" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-primary" />
-                Kurzbeschreibung
-              </h3>
-              <div>
-                <ShortDescription />
+              <div className="text-xl font-bold text-foreground/70 mb-4 flex items-center gap-2">
+                Hier kommst du zu unserer API-Dokumentation.
+                <Link href="/docs/api">
+                  <SquareArrowOutUpRight className="w-5 h-5 text-primary" />
+                </Link>
               </div>
-            </section>
-
-            {/* Team & Tasks */}
-            <section id="team-tasks" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                Team & Aufgabenverteilung
-              </h3>
-
-              <div>
-                <TeamTasks />
-              </div>
-            </section>
-
-            {/* Links & Resources */}
-            <section id="links-and-resources" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Link2 className="w-5 h-5 text-primary" />
-                Links & Zugänge
-              </h3>
-
-              <div>
-                <LinksAndResources />
-              </div>
-            </section>
-
-            {/* Sources & AI */}
-            <section id="sources-and-ai" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Server className="w-5 h-5 text-primary" />
-                Quellen & AI-Disclaimer
-              </h3>
-
-              <span>
-                <SourcesAndAI />
-              </span>
-            </section>
-
-            {/* Licenses */}
-            <section id="licenses" className="mb-16 scroll-mt-24">
-              <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Award className="w-5 h-5 text-primary" />
-                Lizenzen
-              </h3>
-
-              <span>
-                <Licenses />
-              </span>
             </section>
 
             {/* Footer CTA */}
@@ -780,7 +466,7 @@ export default function DocsPage() {
                   <ArrowUpRight className="w-4 h-4" />
                 </Link>
                 <a
-                  href="mailto:kontakt@jurilib.de"
+                  href="mailto:jurilib@web.de"
                   className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors"
                 >
                   Kontakt aufnehmen

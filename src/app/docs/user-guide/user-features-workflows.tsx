@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { Ban, ChevronRight, SquareCheckBig } from 'lucide-react';
 
 export function UserFeaturesWorkflows() {
   return (
@@ -61,11 +61,40 @@ export function UserFeaturesWorkflows() {
               'Neue Termine kannst du wie gehabt entweder über die Suche oder über die Übersicht aller Organisationen finden und anfragen.',
             ],
           },
+          {
+            statusIcon: 'SquareCheckBig',
+            title: 'Dokumente hochladen',
+            desc: 'In der Übersicht deiner Fälle, kannst du auf der Detailseite neue Dokumente hochladen. Diese sind im Folgenden allgemein für alle beteiligte Personen, sowohl für Klient*in, als auch Jurst*innen, verfügbar.',
+          },
+          {
+            statusIcon: 'SquareCheckBig',
+            title: 'Dokumente einsehen',
+            desc: 'Nach erfolgreichem Upload eines Dokuments, sind diese im Nachhinein über einen Link auf der Detailseite des jeweiligen Falls verfügbar.',
+          },
+          {
+            statusIcon: 'SquareCheckBig',
+            title: 'Dokumente löschen',
+            desc: 'Sollten Dokumente nicht länger benötigt sein, oder sogar fälschlicherweise hochgeladen worden sein, können diese ohne große Umwege direkt aus dem Case entfernt werden.',
+          },
+          {
+            statusIcon: 'Ban',
+            title: 'Private Dokumente verwalten',
+            desc: 'In der Übersicht deiner Fälle, kannst du auf der Detailseite neue private Dokumente hochladen. Diese sind im Folgenden nur für dich verfügbar und dienen der persönlichen Organisierung von relevanten Daten.',
+          },
         ].map((item) => (
           <div key={item.title} className="flex items-start gap-3">
             <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-1" />
             <div>
-              <p className="text-sm font-medium text-foreground">{item.title}</p>
+              <div className="flex gap-1 leading-relaxed items-center">
+                {item.statusIcon === 'SquareCheckBig' && (
+                  <SquareCheckBig className="w-4 h-4 text-primary shrink-0 mt-1" />
+                )}
+                {item.statusIcon === 'Ban' && (
+                  <Ban className="w-4 h-4 text-primary shrink-0 mt-1" />
+                )}
+
+                <p className="text-sm font-medium text-foreground">{item.title}</p>
+              </div>{' '}
               {Array.isArray(item.desc) ? (
                 item.desc.map((line, index) => (
                   <p key={index} className="text-sm text-foreground/80">

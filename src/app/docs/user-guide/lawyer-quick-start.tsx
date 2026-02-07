@@ -16,7 +16,7 @@ export function LawyerQuickStart() {
           <p className="text-sm text-foreground">
             Registriere dich bei Jurilib. Da wir deine juristische Ausbildung prüfen müssen, kann es
             einige Tage dauern, bis dein Account freigeschaltet wird. Weitere Informationen findest
-            du hier. TODO: add Link
+            du unter <b>Registrierung</b>.
           </p>
         </div>
 
