@@ -10,6 +10,7 @@ import {
   FileText,
   Gavel,
   Gem,
+  HandCoins,
   HelpCircle,
   Link2,
   Lock,
@@ -42,6 +43,7 @@ import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 import { Search as SearchTechnical } from './technical-docs/search';
 import { Security } from './technical-docs/security';
+import { Costs } from './user-guide/lawyer-costs';
 import { LawyerFeaturesWorkflows } from './user-guide/lawyer-features-workflows';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
@@ -58,6 +60,7 @@ type SectionId =
   | 'lawyer-perspective'
   | 'lawyer-quick-start'
   | 'lawyer-features-workflows'
+  | 'costs'
   | 'faq'
   | 'user-faq'
   | 'lawyer-faq'
@@ -114,6 +117,7 @@ const navItems: NavItem[] = [
         children: [
           { id: 'lawyer-quick-start', label: 'Erste Schritte für Jurist*innen' },
           { id: 'lawyer-features-workflows', label: 'Funktionen & Workflows' },
+          { id: 'costs', label: 'Kosten' },
         ],
       },
     ],
@@ -424,6 +428,15 @@ export default function DocsPage() {
                 Funktionen & Workflows
               </h3>
               <LawyerFeaturesWorkflows />
+            </section>
+
+            {/* Costs */}
+            <section id="costs" className="mb-16 scroll-mt-24">
+              <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                <HandCoins className="w-5 h-5 text-primary" />
+                Kosten
+              </h3>
+              <Costs />
             </section>
 
             {/* Technical Docs */}
