@@ -143,6 +143,10 @@ export default function OrganizationCalendar({
       setSelectedTime(null);
       //TODO: find better solution instead of refreshing the whole page. Didn't want to migrate fetching the appointment in here now
       // reload page so appointments list is refetched and reflects updated booking status
+
+      //Booking ok, we can clear current cachedProblem
+      sessionStorage.removeItem('problemText');
+
       if (typeof window !== 'undefined') {
         window.location.reload();
       }

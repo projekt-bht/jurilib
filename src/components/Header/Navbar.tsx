@@ -37,6 +37,7 @@ export function Navbar() {
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
       <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
+        {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
         <Logo />
 
         <div className="flex items-center gap-x-5">
