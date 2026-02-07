@@ -467,7 +467,10 @@ export default function DocsPage() {
                   Glossar
                 </h1>
               </div>
-              <p className="text-lg text-foreground/70 leading-relaxed mb-8">TODO</p>
+              <p className="text-lg text-foreground/70 leading-relaxed mb-8">
+                Hier findest du Definitionen und Erklärungen zu den wichtigsten Begriffen rund um
+                JuriLib.
+              </p>
               <Glossary />
             </section>
 
