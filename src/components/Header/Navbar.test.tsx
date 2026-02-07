@@ -26,6 +26,7 @@ jest.unstable_mockModule('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
+  usePathname: () => '/test-path',
 }));
 
 // top-level await

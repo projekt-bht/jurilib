@@ -35,7 +35,7 @@ export async function postLogin(email: string, password: string): Promise<LoginR
   const data = await response.json();
 
   if (!response.ok) {
-    return data.error;
+    return data.message;
   }
 
   return data as LoginResource;

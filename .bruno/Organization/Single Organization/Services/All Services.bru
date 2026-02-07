@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/api/organization/{{process.env.ORGANIZATION_ID}}/services
+  url: {{baseURL}}/organization/:organizationID/services
   body: none
   auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
 }
 
 settings {

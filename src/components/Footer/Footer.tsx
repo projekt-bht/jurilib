@@ -11,6 +11,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="bg-foreground p-2 rounded-lg">
+                 {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
                 <Image
                   src={scale_logo}
                   alt="JuriLib Logo"
