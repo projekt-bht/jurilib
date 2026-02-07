@@ -43,9 +43,9 @@ import { SourcesAndAI } from './project-overview/sources-and-ai';
 import { TeamTasks } from './project-overview/team-tasks';
 import { Search as SearchTechnical } from './technical-docs/search';
 import { Security } from './technical-docs/security';
-import { Disclaimer } from './user-guide/disclaimer';
 import { LawyerAppointment } from './user-guide/lawyer-appointment';
 import { Costs } from './user-guide/lawyer-costs';
+import { Disclaimer as LawyerDisclaimer } from './user-guide/lawyer-disclaimer';
 import { LawyerDocument } from './user-guide/lawyer-document';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { LawyerRegister } from './user-guide/lawyer-register';
@@ -369,7 +369,7 @@ export default function DocsPage() {
                 <Gavel className="w-5 h-5 text-primary" />
                 Jurist*innenhandbuch
               </h2>
-              <Disclaimer />
+              <LawyerDisclaimer />
             </section>
 
             {/* Lawyer Quick Start */}
