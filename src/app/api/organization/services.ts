@@ -1,24 +1,32 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
-import type { Organization } from '~/generated/prisma/client';
-import { Areas } from '~/generated/prisma/client';
+import { createEmbedding } from '@/services/server/vectorizer';
+import type {
+  Accessibility,
+  Language,
+  Organization,
+  OrganizationType,
+  PriceCategory,
+  Prisma,
+} from '~/generated/prisma/client';
+import { Area } from '~/generated/prisma/client';
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 // Create a new organization
-export const createOrganization = async (organization: Organization): Promise<Organization> => {
+export async function createOrganization(organization: Organization): Promise<Organization> {
   try {
-    if (!organization.expertiseArea) {
-      throw new Error('Expertise area is required');
+    if (!organization.expertiseAreas) {
+      throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
     }
 
     // Iterate through expertiseArea and validate each area
-    organization.expertiseArea.forEach((area) => {
-      if (!Object.values(Areas).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+    organization.expertiseAreas.forEach((area) => {
+      if (!Object.values(Area).includes(area)) {
+        throw new ValidationError('invalidInput', 'expertiseArea', area);
       }
     });
 
-    const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
+    const expertiseVector = await createEmbedding(organization.expertiseAreas.toString());
 
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
@@ -28,19 +36,57 @@ export const createOrganization = async (organization: Organization): Promise<Or
             WHERE "id" = ${createdOrganization.id}`;
     return createdOrganization;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
-};
+}
 
 // Read all organizations
-export const readOrganizations = async (): Promise<Organization[]> => {
+// Fetch organizations with optional filter arrays coming from the UI query params.
+// Each filter narrows the result set, and omitted/empty filters are ignored.
+export async function readOrganizations(filters: {
+  skip: number;
+  take: number;
+  priceCategory?: PriceCategory[];
+  organizationType?: OrganizationType[];
+  area?: Area[];
+  languages?: Language[];
+  accessibility?: Accessibility[];
+  city?: string[];
+}): Promise<Organization[]> {
   try {
-    const orgas: Organization[] = await prisma.organization.findMany();
+    // Build a Prisma where clause that mirrors the UI filter selections.
+    const where: Prisma.OrganizationWhereInput = {};
+    if (filters?.priceCategory?.length) {
+      where.priceCategory = { in: filters.priceCategory };
+    }
+    if (filters?.organizationType?.length) {
+      where.type = { in: filters.organizationType };
+    }
+    if (filters?.area?.length) {
+      where.expertiseAreas = { hasSome: filters.area };
+    }
+    if (filters?.languages?.length) {
+      where.employees = { some: { languages: { hasSome: filters.languages } } };
+    }
+    if (filters?.accessibility?.length) {
+      where.accessibility = { hasSome: filters.accessibility };
+    }
+    if (filters?.city?.length) {
+      where.city = { in: filters.city };
+    }
+
+    const orgas: Organization[] = await prisma.organization.findMany({
+      skip: filters.skip,
+      take: filters.take,
+      where,
+    });
     if (!orgas) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organization', null, 404);
     }
     return orgas;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
-};
+}

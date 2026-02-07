@@ -1,4 +1,3 @@
-import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -81,32 +80,6 @@ export function ResultCarousel({ organizations }: { organizations: Organization[
             }`}
           />
         ))}
-      </div>
-
-      {/*Info Message */}
-      <div className="mt-12 bg-background rounded-3xl border border-primary/20 p-8 md:p-12 text-center">
-        <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-          Nichts Passendes dabei?
-        </h3>
-        <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
-          Kein Problem! Beschreibe uns dein Problem einfach noch genauer oder durchsuche
-          eigenständig die Vielzahl unserer vertretenen Organisationen.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            href="/organization"
-            className="inline-flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-md"
-          >
-            Alle Organisationen durchsuchen
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="inline-flex items-center gap-2 px-4 py-3 bg-background text-foreground rounded-full font-semibold hover:bg-background border-2 border-border transition-all duration-300 hover:scale-105 shadow-md hover:shadow-md"
-          >
-            Suche bearbeiten
-          </button>
-        </div>
       </div>
     </>
   );

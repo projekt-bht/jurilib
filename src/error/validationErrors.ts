@@ -11,8 +11,10 @@ export class ValidationError extends Error {
       | 'notFound'
       | 'invalidInput'
       | 'mismatch'
+      | 'missingRequiredValue'
       | 'invalidReference'
-      | 'overlappingAppointment',
+      | 'overlappingAppointment'
+      | 'invalidContentType',
     public field?: string,
     public value?: unknown,
     public statusCode: number = 400
@@ -30,10 +32,14 @@ export class ValidationError extends Error {
         return 'The given input is invalid.';
       case 'mismatch':
         return 'The given ID in the parameter does not match the ID in the body.';
+      case 'missingRequiredValue':
+        return `The value for required field ${this.field} is missing.`;
       case 'invalidReference':
         return 'The reference is invalid.';
       case 'overlappingAppointment':
         return 'The appointment overlaps with an existing appointment.';
+      case 'invalidContentType':
+        return 'Invalid content type, must be application/json';
     }
   }
 }

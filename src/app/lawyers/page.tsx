@@ -70,7 +70,6 @@ export default function LawyersPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registration submitted:', formData);
     alert('Vielen Dank für Ihre Registrierung! Wir melden uns in Kürze bei Ihnen.');
   };
 
@@ -90,7 +89,10 @@ export default function LawyersPage() {
         <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
-              Du bist Jurist*in?
+              <span>Du bist </span>
+              <span className="bg-linear-to-r from-accent-blue via-accent-purple to-accent-blue bg-clip-text text-transparent animate-gradient">
+                Jurist*in?
+              </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty mb-8">
               Werde Teil von JuriLib und erreiche Menschen, die genau deine rechtliche Expertise

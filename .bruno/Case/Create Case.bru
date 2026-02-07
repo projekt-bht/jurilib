@@ -1,0 +1,32 @@
+meta {
+  name: Create Case
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/case/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "employeeId": "{{employeeID}}",
+    "title": "Testcase",
+    "description": "Hier mal ein API Test von Bruno"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  Hier steht was cooles {{employeeID}}
+}

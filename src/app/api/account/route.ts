@@ -1,47 +1,40 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import * as z from 'zod';
+import z from 'zod';
 
-import { Role } from '~/generated/prisma/enums';
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
 
-import { createAccount, readAccounts } from './services';
+import { readAccounts, updatePasswordWithEmail } from './services';
 
-const CreateSchema = z.object({
-  email: z.string(),
-  password: z.string().min(6),
-  role: z.enum(Role),
+const UpdateSchema = z.strictObject({
+  email: z.email(),
+  password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
 });
 
-export async function POST(req: NextRequest) {
+// POTENTIAL ADMIN ENDPOINT
+// export async function GET(_req: NextRequest) {
+//   try {
+//     const accounts = await readAccounts();
+//     return NextResponse.json(accounts, { status: 200 });
+//   } catch (error) {
+//     return handleError(error, 'Failed to read Accounts');
+//   }
+// }
+
+export async function PATCH(req: NextRequest) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
 
+    // validate body
     const body = await req.json();
-    const data = CreateSchema.parse(body);
-    const createdAccount = await createAccount(data);
+    const data = UpdateSchema.parse(body);
+    await updatePasswordWithEmail(data.email, data.password);
 
-    return NextResponse.json(createdAccount, { status: 201 });
+    return NextResponse.json({ message: 'Password updated successfully' }, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleZodError(error);
     }
-    return NextResponse.json(
-      { message: 'Creation failed: ' + (error as Error).message },
-      { status: 400 }
-    );
-  }
-}
-
-export async function GET(_req: NextRequest) {
-  try {
-    const accounts = await readAccounts();
-    return NextResponse.json(accounts, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    return handleError(error, 'Failed to update account');
   }
 }

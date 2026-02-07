@@ -1,54 +1,161 @@
-# JURILIB
+<!-- Logo and Title -->
+<div style="text-align: center;"> 
+<img src="public/scale_logo.svg" alt="jurilib Logo" width="200"/>
 
-## Getting Started
+</br>
 
-- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) oder [Colima](https://github.com/abiosoft/colima) starten
-- `npm install` zum Laden der Abhängigkeiten
-- `.env`aus der `sample.env` Vorlage erstellen. (Kann einfach kopiert und umbenannt werden)
-- Aufsetzen des Datenbank-Containers via Docker:
-  - `docker compose -f docker-compose.postgres.yml up -d`
-- Initialisieren der Datenbank via Script:
-  - `npm run db:setup` - stellt Struktur anhand des gegebenen Schemas her
-  - `npm run db:seed` - erstellt gemockte Daten (pro Organisation, zwei User, drei Services, vier Requests, fünf Appointments)
-- Starten des Webservers:
-  - `npm run dev`
+<h1>JURILIB</h1>
+</div>
 
-Im Anschluss könnt ihr [http://localhost:3000](http://localhost:3000) aufrufen, um die Anwendung zu sehen.
-Zusätzlich steht euch unter [http://localhost:5555](http://localhost:5555) das **Prisma Studio** _(visuelle Darstellung der Datenbank)_ zur Verfügung.
+Jurilib is a full‑stack open-source legal services platform that connects users with organizations offering legal services. It supports managing cases and appointments through a modular web app and API surface.
 
-### Basic Next.js Struktur
+The stack consists of [Next.js](https://nextjs.org/docs) + [TypeScript](https://www.typescriptlang.org/), with a [Prisma](https://www.prisma.io/docs) data layer. The UI uses [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/docs), with reusable components and API routes organized for feature growth and testing.
 
-- `/src/app/page.tsx` bildet die Startpage
-- `/src/app/[PageName]/page.tsx` bilden alle weiteren Frontend-Sites
-- `/src/app/api/[Endpoint]/route.tsx` bilden alle Backend-API's
+# Developer Documentation
 
-Weitere Infos siehe [Learn More](##--Weitere--Ressourcen)
+## Prerequisites & Tools
 
-### Empfohlene VSC Extensions
+- Node.js (version v22.14.0)
+- npm (bundled with Node.js)
+- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Colima](https://github.com/abiosoft/colima) for the local Postgres container
+- Recommended VS Code extensions:
+  - [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
+  - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+  - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-- [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Setup Guide
 
-## Daily Setup
+1. Start either [Docker Desktop](https://docs.docker.com/get-started/get-docker/) or [Colima](https://github.com/abiosoft/colima)
+2. Install dependencies:
+   - `npm install`
+3. Create a `.env` file using `sample.env` as a template (copy and rename).
+4. Start the database container:
+   - `docker compose -f docker-compose.postgres.yml up -d`
+5. Initialize and seed the database:
+   - `npm run db:setup`
+   - `npm run db:seed` - only for development use
+6. Start the dev server:
+   - `npm run dev`
 
-Stellt sicher, dass der Docker Container läuft. Danach...
+Open the app at [http://localhost:3000](http://localhost:3000). [Prisma Studio](https://www.prisma.io/studio) will be available at [http://localhost:5555](http://localhost:51212).
 
-- `npm run db:deploy`
+## Folder / Code Structure
+
+- `src/app/` — Next.js App Router pages and route handlers
+  - `src/app/page.tsx` — landing page
+  - `src/app/<page>/page.tsx` — feature pages (e.g., `dashboard`, `privacy`, `organization`)
+  - `src/app/api/<endpoint>/` — API routes (e.g., `appointment`, `authentication`, `case`, `email`, `organization`, `search`, `user`)
+- `src/components/` — reusable UI and feature components (e.g., `Authentication`, `LandingPage`, `Navbar`)
+- `src/lib/` — shared helpers (`db.ts`, `utils.ts`, `withAuth.ts`, `brevo.ts`)
+- `src/services/` — API client and server-side services
+- `prisma/` — schema, migrations, and seeding
+- `email_templates/` — Handlebars templates for transactional emails
+- `generated/prisma/` — generated Prisma client (do not edit manually)
+- `test/` — shared test utilities and mocks
+
+## Environment Variables / Secrets
+
+Configuration is loaded from `.env` (based on `sample.env`).
+
+All required variables are defined in the `sample.env`. Variables that contain sensitive data (e.g. secrets, api keys) are stored in the `sample.env` with placeholder values. The real values must either be generated or will be given to trusted developers upon request.
+
+## Development Process
+
+### Branches
+
+Rules concerning branching strategy and branch naming are described in our [style-guide](./STYLEGUIDE.md). But here is a short summary:
+
+1. Branches normally should be created from `dev`.
+2. They are also ideally created through an issue as that connects all commits within that branch to the respective issue.
+
+### PR workflow
+
+At Jurilib we value **honest, constructive and appreciative communication**. When communicating with other developers please be sure to so in a way that aligns with these values.
+
+**Before creating a PR**
+
+- make sure all tests pass (both BE and FE tests)
+- make sure your code is following the [style-guide](./STYLEGUIDE.md) (naming, formatting, linting, etc.)
+
+**When creating a PR**
+
+- make sure that the pipeline checks pass
+- select at least one person to review your PR (and notify them separately so they don't miss the request)
+
+**When reviewing a PR**
+
+- be honest with yourself if you have the necessary understanding of the project structure around the PR to judge the quality. If not, contact the person who created the PR and inform them, that they should request someone else.
+- be honest and constructive when communicating problematic code
+- when in doubt ask the person who created the PR to explain certain ideas or constructs to you (usually a good sign that the code would benefit from additional comments)
+- when disagreeing with the person who created the PR feel free to include another reviewer to get another opinion
+- after you have approved the PR please notify the person who created the PR and leave both merging and deleting of the branch up to them
+
+## Test Suite
+
+Tests are configured with Jest (see [jest.config.ts](jest.config.ts)).
+
+- Run all tests (without golden samples): `npm test`
+- Frontend tests only: `npm run test:frontend`
+- Backend tests only: `npm run test:backend`
+- Golden Samples test only: `npm run test:goldenSamples`
+
+TODO: Summarize the main test categories and coverage expectations.
+
+## API Documentation
+
+API routes live under `src/app/api/` and include:
+
+- `account`
+- `appointment`
+- `authentication`
+- `case`
+- `email`
+- `employee`
+- `organization`
+- `search`
+- `user`
+
+TODO: Document endpoints, request/response shapes, auth requirements, and error handling.
+
+## Deployment Guide
+
+Deploying JuriLib is handeled as manually as it get's right now.
+
+1. Login via
+2. sdfbsdfb
+
+## Known Issues / Technical Debt
+
+Sorted by Relevance
+
+1. Missing
+   TODO: Track known limitations, missing features, and deferred refactors.
+
+## Misc
+
+### Daily Dev Loop
+
+- Ensure the DB container is running.
 - `npm run dev`
 
-### Anpassung des Datenbank-Schemas
+### Bruno API Client
 
-- unter `/prisma/schema.prisma` findet ihr das Datenbank-Schema
-- nach Anpassung des Schemas ist eine erneute Migration erforderlich:
-  - `npm run db:dev` wird euch nach einem Namen fragen. Dieser wird in eurer lokalen Migrationshistorie dargestellt.
-  - **Keine Sorge:** hat keine Auswirkungen auf das Deployment oder Inhalt, oder, oder, oder...
+We made sure it's easy to use and test our Backend API. Thus we included a whole Bruno API Collection to be used with the [Bruno API Client](https://www.usebruno.com/) at `.bruno`.
 
-## Frontend Icons
+1. Install the [VSCode extension](https://docs.usebruno.com/vs-code-extension/install-config) or [Standalone Application](https://www.usebruno.com/downloads)
+2. Complete necessary Environment Variables at `.bruno/environments/Jurilib.bru` using the `.bruno/environments/Jurilib.example.bru`
+3. Start testing the Collection
 
-Für die Nutzung von Icons im Frontend, kann die Library [Lucide](https://lucide.dev/icons/) genutzt werden.
-Icons können einfach als React Komponenten implentiert werden.
-Folgende Props können bei jedem Icon angepasst werden:
+### Modifying the Database Schema
+
+- Schema: `prisma/schema.prisma`
+- Create a migration: `npm run db:dev`
+  - This will automatically start Prisma Studio.
+  - To create a new migration without, use `npx prisma generate` and `npx prisma migrate dev`
+
+### Frontend Icons
+
+We use [Lucide](https://lucide.dev/icons/) for icons.
 
 | name                | type    | default      |
 | ------------------- | ------- | ------------ |
@@ -57,20 +164,10 @@ Folgende Props können bei jedem Icon angepasst werden:
 | strokeWidth         | number  | 2            |
 | absoluteStrokeWidth | boolean | false        |
 
-Einfache Implementierung über:
+**Usage:**
 
-```
-const App = () => {
+```tsx
+function ComponentContainingIcon{
   return <Camera size={48} fill="red" />;
 };
 ```
-## Weitere Ressourcen
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Prisma](https://prisma.io/) - ORM
-- [Tailwind CSS](https://tailwindcss.com/)
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!

@@ -1,0 +1,25 @@
+meta {
+  name: request appointment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/appointment/:appointmentID/request
+  body: none
+  auth: none
+}
+
+params:path {
+  appointmentID: {{appointmentID}}
+}
+
+headers {
+  : 
+}
+
+body:json {
+  {
+    
+  }
+}

@@ -1,114 +1,223 @@
-import type { Employee } from '~/generated/prisma/client';
-import { EmployeeCreateInput } from '~/generated/prisma/models';
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  createEmbedding: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
+
+jest.unstable_mockModule('@/app/api/authentication/login/JWTService', () => ({
+  verifyJWT: jest.fn(),
+}));
+
+// Non-mock related implementation:
+
+import {
+  Accessibility,
+  AccountType,
+  Area,
+  type Employee,
+  Gender,
+  Language,
+  OrganizationType,
+  PriceCategory,
+  Pronoun,
+} from '~/generated/prisma/client';
+import type { OrganizationCreateInput } from '~/generated/prisma/models';
+
+jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
+  createEmbedding: jest.fn(async () => {
+    const arr = Array(3072).fill(0.01);
+    return `[${arr.join(',')}]`;
+  }),
+}));
 
 // Alle Imports per await:
 const { NextRequest } = await import('next/server');
 const { prisma } = await import('@/lib/db');
 
 // Dynamisch die API-Funktionen importieren
-const { GET, PATCH, DELETE } = await import('@/app/api/employee/[employeeID]/route');
+const { POST: orgPOST } = await import('@/app/api/organization/route');
+const { GET, PATCH } = await import('@/app/api/employee/[employeeID]/route');
+const { DELETE } = await import('@/app/api/account/[accountID]/route');
+const { POST } = await import('@/app/api/authentication/register/route');
+const { verifyJWT } = await import('@/app/api/authentication/login/JWTService');
 
 // !!!! Viele Tests können aktuell nicht durchgeführt werden, da es keine Account-Erstellung für Employees gibt !!!!
 
 describe('Employee Endpoint /employee/[employeeID] testen', () => {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}/employee/[employeeID]`;
+  const placeholderUrl = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}`;
   let cEmployee: Employee;
 
-  // Currently, there is no Account creation functionality for Employees
+  (verifyJWT as jest.Mock).mockReturnValue({
+    employeeId: 1231,
+    id: 1231241,
+  });
 
-  //   test('POST Employee', async () => {
-  //     const account: AccountCreateInput = {
-  //       email: 'peter' + Math.random() + '@mail.de',
-  //       password: '123456',
-  //       role: 'USER',
-  //     };
+  test('Create Account and Employee', async () => {
+    // Create Organization first
+    const organization: OrganizationCreateInput = {
+      name: 'Test Org for Employee',
+      description: 'Org Description',
+      shortDescription: 'Org Short Desc',
+      email: 'orgemail_test' + Math.random() + '@mail.de',
+      type: OrganizationType.LAW_FIRM,
+      priceCategory: PriceCategory.LOW,
+      expertiseAreas: [Area.Vergaberecht, Area.Arbeitsrecht],
+      accessibility: [Accessibility.Aufzug_vorhanden, Accessibility.Rampe_vorhanden],
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
+      averageRating: 4.5,
+      numberOfRatings: 10,
+    };
 
-  //     const createdAccount = await createAccount(account);
+    const reqOrga = new NextRequest(placeholderUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(organization),
+    });
 
-  //     const user: EmployeeCreateInput = {
-  //       name: 'peter',
-  //       account: {
-  //         connect: { id: createdAccount.id },
-  //       },
-  //     };
+    const resOrga = await orgPOST(reqOrga);
+    const createdOrga = await resOrga.json();
+    expect(resOrga.status).toBe(201);
 
-  //     const createdEmployee = await createEmployee(user, createdAccount.id!);
-  //     cEmployee = createdEmployee;
-  //     expect(createdAccount.id).toBe(createdEmployee.accountId);
-  //   });
+    // Create both account and employee through registration route
+    // TODO: Cannot use RegisterResource here because of
+    // missmatching attributes. Need to refactor RegisterResource first.
+    const registerInput = {
+      account: {
+        email: 'EMPLOYEE_TEST_' + Math.random() + '@mail.de',
+        password: '1234567890',
+        type: AccountType.EMPLOYEE,
+      },
+      entity: {
+        firstname: 'Peter',
+        lastname: 'Muster',
+        gender: Gender.Mann,
+        pronoun: Pronoun.er_ihm,
+        languages: [Language.DEUTSCH, Language.ENGLISCH],
+        organizationId: createdOrga.id,
+        expertiseArea: [Area.Arbeitsrecht, Area.Familienrecht],
+        email: 'peter.muster@mail.de',
+      },
+    };
 
-  //   test('GET Employee', async () => {
-  //     const req = new NextRequest(baseUrl);
-  //     const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
-  //     const json = await res.json();
-  //     expect(json.length).not.toBe(0);
-  //     expect(res.status).toBe(200);
-  //   });
+    const reqRegister = new NextRequest(placeholderUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerInput),
+    });
 
-  test('GET non-existing Employee', async () => {
-    const req = new NextRequest(baseUrl);
-    const res = await GET(req, { params: Promise.resolve({ employeeID: 'non-existing-id' }) });
+    const resRegister = await POST(reqRegister);
+    expect(resRegister?.status).toBe(201);
+
+    const createdEmployee = await resRegister?.json();
+    cEmployee = createdEmployee;
+    expect(createdEmployee.firstname).toBe(registerInput.entity.firstname);
+    expect(createdEmployee.lastname).toBe(registerInput.entity.lastname);
+
+    const createdAccount = await prisma.account.findUnique({
+      where: { email: registerInput.account.email },
+    });
+    expect(createdAccount).not.toBeNull();
+    expect(createdAccount?.id).toBe(createdEmployee.accountId);
+    expect(createdAccount?.email).toBe(registerInput.account.email);
+  });
+
+  test('GET Employee', async () => {
+    const req = new NextRequest(placeholderUrl);
+    const res = await GET(req, { params: Promise.resolve({ employeeID: cEmployee.id }) });
+    const json = await res.json();
+    expect(json.length).not.toBe(0);
+    expect(res.status).toBe(200);
+  });
+
+  // test('GET Employee with invalid UUID', async () => {
+  //   const req = new NextRequest(baseUrl);
+  //   const res = await GET(req, { params: Promise.resolve({ employeeID: 'non-existing-id' }) });
+  //   expect(res.status).toBe(400);
+  // });
+
+  test('GET Employee non-existing', async () => {
+    const req = new NextRequest(placeholderUrl);
+    const res = await GET(req, {
+      params: Promise.resolve({ employeeID: '00000000-4af3-4b8c-8601-000000000000' }),
+    });
     expect(res.status).toBe(404);
   });
 
-  //   test('PATCH Employee name', async () => {
-  //     const getReq = new NextRequest(baseUrl);
-  //     const getRes = await GET(getReq, { params: Promise.resolve({ employeeID: cEmployee.id }) });
-  //     const getJSON = await getRes.json();
+  test('PATCH Employee name (authenticated)', async () => {
+    (verifyJWT as jest.Mock).mockReturnValue({
+      employeeId: cEmployee.id,
+      id: cEmployee.accountId,
+    });
 
-  //     expect(getJSON.length).not.toBe(0);
-  //     expect(getRes.status).toBe(200);
+    const patchReq = new NextRequest(placeholderUrl, {
+      method: 'PATCH',
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
+      body: JSON.stringify({
+        firstname: 'updatedPeter',
+      }),
+    });
 
-  //     const employee: EmployeeCreateInput = {
-  //       id: cEmployee.id,
-  //       name: 'updatedPeter',
-  //       account: {
-  //         connect: { id: cEmployee.accountId },
-  //       },
-  //     };
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ employeeID: cEmployee.id }),
+    });
 
-  //     const patchReq = new NextRequest(baseUrl, {
-  //       headers: { 'content-type': 'application/json' },
-  //       method: 'PATCH',
-  //       body: JSON.stringify(employee),
-  //     });
+    expect(res.status).toBe(200);
 
-  //     const res = await PATCH(patchReq, {
-  //       params: Promise.resolve({ employeeID: cEmployee.id }),
-  //     });
+    const updated = await prisma.employee.findUnique({
+      where: { id: cEmployee.id },
+    });
 
-  //     const updated = await prisma.employee.findFirst({
-  //       where: { name: employee.name },
-  //     });
+    expect(updated?.firstname).toBe('updatedPeter');
+  });
 
-  //     expect(updated?.name).toBe('updatedPeter');
-  //     expect(res.status).toBe(200);
-  //   });
+  test('PATCH User with invalid data (authenticated)', async () => {
+    const data = {
+      id: 12345,
+    };
+    const patchReq = new NextRequest(placeholderUrl, {
+      headers: {
+        'content-type': 'application/json',
+        cookie: 'access_token=fake-token',
+      },
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
 
-  //   test('PATCH User with invalid data', async () => {
-  //     const data = {};
-  //     const patchReq = new NextRequest(baseUrl, {
-  //       headers: { 'content-type': 'application/json' },
-  //       method: 'PATCH',
-  //       body: JSON.stringify(data),
-  //     });
+    const res = await PATCH(patchReq, {
+      params: Promise.resolve({ employeeID: cEmployee.id }),
+    });
+    expect(res.status).toBe(400);
+  });
 
-  //     const res = await PATCH(patchReq, {
-  //       params: Promise.resolve({ employeeID: cEmployee.id }),
-  //     });
-  //     expect(res.status).toBe(400);
-  //   });
-
-  //   test('DELETE Employee', async () => {
-  //     const getReq = new NextRequest(baseUrl);
-  //     const res = await DELETE(getReq, { params: Promise.resolve({ employeeID: cEmployee.id }) });
-  //     expect(res.status).toBe(200);
-  //   });
+  test('DELETE Employee through account', async () => {
+    const getReq = new NextRequest(placeholderUrl);
+    const res = await DELETE(getReq, {
+      params: Promise.resolve({ accountID: cEmployee.accountId }),
+    });
+    expect(res.status).toBe(200);
+    const deleted = await prisma.employee.findUnique({ where: { id: cEmployee.id } });
+    expect(deleted).toBeNull();
+  });
 
   test('DELETE non-existing Employee', async () => {
-    const getReq = new NextRequest(baseUrl);
+    const getReq = new NextRequest(placeholderUrl);
     const res = await DELETE(getReq, {
-      params: Promise.resolve({ employeeID: 'non-existing-id' }),
+      params: Promise.resolve({ accountID: 'non-existing-id' }),
     });
     expect(res.status).toBe(400);
   });

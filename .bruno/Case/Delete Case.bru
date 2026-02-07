@@ -1,0 +1,20 @@
+meta {
+  name: Delete Case
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseURL}}/case/:caseID
+  body: none
+  auth: inherit
+}
+
+params:path {
+  caseID: {{caseID}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

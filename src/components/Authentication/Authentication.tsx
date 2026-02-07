@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 //https://ui.shadcn.com/docs/components/dialog
@@ -14,76 +15,66 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { deleteLogin, postLogin, register } from '@/services/api';
-import type { RegisterResource } from '@/services/Resources';
+import { deleteLogin } from '@/services/api';
+import { TokenType } from '~/generated/prisma/enums';
 
-//TODO Validate with customError
+import ForgotPasswordDialog from './ForgotPasswordDialog';
+import { LoginDialog } from './LoginDialog';
+import NewPasswordDialog from './NewPasswordDialog';
+import { initialRegisterData, RegisterDialog } from './RegisterDialog';
+import { SuccessDialog } from './SuccessDialog';
+import { VerifyDialog } from './VerifyDialog';
+
+export const authTimeoutDuration: number = 1000;
 
 export function Authentication() {
   const { login, setLogin } = useLoginContext();
-  const [isRegister, setIsRegister] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
+  const [registerStep, setRegisterStep] = useState(1);
+  const [registerData, setRegisterData] = useState(initialRegisterData);
 
-  const [successDialog, setSuccessDialog] = useState(false);
-  const [error, setError] = useState('');
+  const [showForgetPasswordDialog, setShowForgetPasswordDialog] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [showNewPasswordDialog, setShowNewPasswordDialog] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form);
+  const [tokenType, setTokenType] = useState<TokenType>(TokenType.EMAIL_VERIFICATION);
 
-    try {
-      if (isRegister) {
-        const inputData: RegisterResource = {
-          account: {
-            email: data.email.toString(),
-            password: data.password.toString(),
-            role: 'USER',
-          },
-          entity: {
-            name: data.name.toString(),
-            address: data.address.toString(),
-            phone: data.phone.toString(),
-          },
-        };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-        const reg = await register(inputData);
-        if (!reg) {
-          setError('Etwas ist schiefgelaufen, überprüfe deine Eingabe');
-        } else {
-          setError('');
-          setShowDialog(false);
-          setSuccessDialog(true);
-        }
-      } else {
-        const loginFromServer = await postLogin(data.email.toString(), data.password.toString());
-        if (loginFromServer) {
-          setLogin(loginFromServer);
-          setShowDialog(false);
-          setError('');
-        } else {
-          setError('Email oder Passwort falsch.');
-        }
-      }
-    } catch (error) {
-      setError(String(error));
-    }
+  const router = useRouter();
+
+  if (login) {
+    return (
+      <>
+        <Button
+          onClick={async () => {
+            setSuccessOpen(true);
+            await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+
+            await deleteLogin();
+            setLogin(false);
+            setSuccessOpen(false);
+            router.push('/');
+          }}
+        >
+          Abmelden
+        </Button>
+
+        {successOpen && (
+          <SuccessDialog
+            open={successOpen}
+            onOpenChange={setSuccessOpen}
+            setPassword={setPassword}
+          />
+        )}
+      </>
+    );
   }
 
-  return login ? (
-    <Button
-      onClick={async () => {
-        await deleteLogin();
-        setLogin(false);
-      }}
-      className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
-      variant="outline"
-    >
-      Abmelden
-    </Button>
-  ) : (
+  return (
     <>
       <Dialog
         open={showDialog}
@@ -91,142 +82,117 @@ export function Authentication() {
           setShowDialog(open);
           if (open) {
             setIsRegister(false);
-            setError('');
           }
         }}
       >
         <DialogTrigger asChild>
-          <Button
-            className="bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-hover-foreground p-2 pr-3 pl-3 rounded-full"
-            variant="outline"
-          >
-            Einloggen
-          </Button>
+          <Button>Einloggen</Button>
         </DialogTrigger>
 
-        <DialogOverlay className=" backdrop-blur-sm" />
-
-        <DialogContent>
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle className="text-center text-lg font-semibold">
-                {isRegister ? 'Registrieren' : 'Login'}
-              </DialogTitle>
-              <DialogDescription className="text-center text-sm mt-3 mb-5">
-                {isRegister
-                  ? 'Erstelle ein neues Konto mit deinen Daten.'
-                  : 'Melde dich mit deinen Daten an.'}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="grid gap-7">
-              {isRegister && (
-                <>
-                  <div className="grid gap-3">
-                    <Label htmlFor="name">Name *</Label>
-                    <Input id="name" name="name" required minLength={3} />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="address">Adresse</Label>
-                    <Input id="address" name="address" />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="phone">Telefon</Label>
-                    <Input id="phone" name="phone" />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="email">Email-Adresse *</Label>
-                    <Input id="email" name="email" type="email" required minLength={3} />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="password">Passwort * </Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
-                    />
-                    <p className="text-red-500">{error}</p>
-                  </div>
-                </>
-              )}
-
-              {!isRegister && (
-                <>
-                  <div className="grid gap-3">
-                    <Label htmlFor="loginEmail">Email-Adresse</Label>
-                    <Input id="loginEmail" name="email" type="email" required minLength={3} />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="loginPassword">Passwort</Label>
-                    <Input
-                      id="loginPassword"
-                      name="password"
-                      type="password"
-                      required
-                      minLength={Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH!)}
-                    />
-                    <p className="text-red-500">{error}</p>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <DialogFooter className="mt-6">
-              <Button type="submit">{isRegister ? 'Registrieren' : 'Anmelden'}</Button>
-            </DialogFooter>
-
-            <DialogFooter className="mt-6">
-              {!isRegister ? (
-                <Button
-                  type="button"
-                  variant="link"
-                  onClick={() => {
-                    setIsRegister(true);
-                    setError('');
-                  }}
-                >
-                  Noch kein Konto? Jetzt registrieren
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="link"
-                  onClick={() => {
-                    setIsRegister(false);
-                    setError('');
-                  }}
-                >
-                  Zurück zum Login
-                </Button>
-              )}
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={successDialog} onOpenChange={setSuccessDialog}>
-        <DialogContent>
+        <DialogOverlay className="backdrop-blur-sm" />
+        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-center text-lg font-semibold">
-              Registrierung erfolgreich!
+            <DialogTitle className="text-2xl">
+              {isRegister ? 'Registrierung' : 'Einloggen'}
             </DialogTitle>
-            <DialogDescription className="text-center text-sm mt-3 mb-5">
-              Du kannst dich nun mit deinen Zugangsdaten anmelden.
+            <DialogDescription>
+              {isRegister
+                ? `Schritt ${registerStep} von 2 – Erstelle dein Konto`
+                : 'Melde dich mit deinen Zugangsdaten an'}
             </DialogDescription>
           </DialogHeader>
 
+          {isRegister ? (
+            <RegisterDialog
+              step={registerStep}
+              setStep={setRegisterStep}
+              registerData={registerData}
+              setRegisterData={setRegisterData}
+              setShowVerification={setShowVerification}
+              onSuccess={() => {
+                setShowDialog(false);
+                setRegisterData(initialRegisterData);
+                setRegisterStep(1);
+              }}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              setTokenType={setTokenType}
+            />
+          ) : (
+            <>
+              <LoginDialog
+                onSuccess={() => setShowDialog(false)}
+                password={password}
+                setPassword={setPassword}
+                showVerifyDialog={setShowVerification}
+                email={email}
+                setEmail={setEmail}
+                setSuccessOpen={setSuccessOpen}
+                setTokenType={setTokenType}
+              />
+              <Button
+                type="button"
+                variant="link"
+                className="w-full"
+                onClick={() => {
+                  setShowDialog(false);
+                  setShowForgetPasswordDialog(true);
+                  setTokenType(TokenType.PASSWORD_RESET);
+                }}
+              >
+                Passwort vergessen?
+              </Button>
+            </>
+          )}
+
           <DialogFooter>
-            <Button onClick={() => setSuccessDialog(false)}>OK</Button>
+            <Button
+              type="button"
+              variant="link"
+              className="w-full"
+              onClick={() => setIsRegister(!isRegister)}
+            >
+              {isRegister ? 'Zurück zum Login' : 'Noch kein Konto? Registrieren'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {showVerification && (
+        <VerifyDialog
+          open={showVerification}
+          onOpenChange={setShowVerification}
+          setShowNewPasswordDialog={setShowNewPasswordDialog}
+          setSuccessOpen={setSuccessOpen}
+          email={email}
+          password={password}
+          type={tokenType}
+        />
+      )}
+
+      {showForgetPasswordDialog && (
+        <ForgotPasswordDialog
+          open={showForgetPasswordDialog}
+          onOpenChange={setShowForgetPasswordDialog}
+          showLogin={setShowDialog}
+          showVerification={setShowVerification}
+          email={email}
+          setEmail={setEmail}
+        />
+      )}
+
+      {showNewPasswordDialog && (
+        <NewPasswordDialog
+          open={showNewPasswordDialog}
+          onOpenChange={setShowNewPasswordDialog}
+          email={email}
+          setSuccessOpen={setSuccessOpen}
+        />
+      )}
+
+      {successOpen && (
+        <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} setPassword={setPassword} />
+      )}
     </>
   );
 }

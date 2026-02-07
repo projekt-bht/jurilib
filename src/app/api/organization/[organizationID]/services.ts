@@ -1,7 +1,8 @@
+import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 import type { Organization } from '~/generated/prisma/client';
-import { Areas } from '~/generated/prisma/client';
+import { Area } from '~/generated/prisma/client';
 
 export const readOrganization = async (organizationID: string): Promise<Organization> => {
   try {
@@ -9,11 +10,12 @@ export const readOrganization = async (organizationID: string): Promise<Organiza
       where: { id: organizationID },
     });
     if (!orga) {
-      throw new Error('Organization not found');
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
     return orga;
   } catch (error) {
-    throw new Error('Database query failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database query failed: ' + (error as Error).message);
   }
 };
 
@@ -24,23 +26,23 @@ export const updateOrganization = async (
   try {
     const existingOrg = await prisma.organization.findUnique({ where: { id: organizationID } });
     if (!existingOrg) {
-      throw new Error('Organization not found for update');
+      throw new ValidationError('notFound', 'organization', organizationID, 404);
     }
 
-    if (!organization.expertiseArea) {
-      throw new Error('Expertise area is required');
+    if (!organization.expertiseAreas) {
+      throw new ValidationError('invalidInput', 'expertiseAreas', organization.expertiseAreas);
     }
 
     // Iterate through expertiseArea and validate each area
-    organization.expertiseArea.forEach((area) => {
-      if (!Object.values(Areas).includes(area)) {
-        throw new Error(`Invalid expertise ${area} found!`);
+    organization.expertiseAreas.forEach((area) => {
+      if (!Object.values(Area).includes(area)) {
+        throw new ValidationError('invalidInput', 'expertiseArea', area);
       }
     });
 
     // Only re-vectorize if expertiseArea has changed
     // Spread operator "...organization" is used to copy all other fields of the organization
-    if (existingOrg.expertiseArea === organization.expertiseArea) {
+    if (existingOrg.expertiseAreas === organization.expertiseAreas) {
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
         data: {
@@ -49,7 +51,7 @@ export const updateOrganization = async (
       });
       return updatedOrganization;
     } else {
-      const expertiseVector = await vectorizeExpertiseArea(organization.expertiseArea.toString());
+      const expertiseVector = await createEmbedding(organization.expertiseAreas.toString());
 
       const updatedOrganization = await prisma.organization.update({
         where: { id: organization.id },
@@ -64,8 +66,12 @@ export const updateOrganization = async (
       return updatedOrganization;
     }
   } catch (error) {
+    if (error instanceof ValidationError) throw error;
     // Hier muss geprüft werden, ob der Fehler von Prisma kommt oder von der Vektorisierung
-    throw new Error('Database update failed or vectorization failed: ' + (error as Error).message);
+    else
+      throw new Error(
+        'Database update failed or vectorization failed: ' + (error as Error).message
+      );
   }
 };
 

@@ -2,15 +2,23 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import * as z from 'zod';
 
-import { Role } from '~/generated/prisma/enums';
+import { deleteEmployeeTx } from '@/app/api/employee/[employeeID]/services';
+import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
+import { deleteUserTx } from '@/app/api/user/[userID]/services';
+import { ValidationError } from '@/error/validationErrors';
+import prisma from '@/lib/db';
+import type { Account } from '~/generated/prisma/client';
+import { AccountType } from '~/generated/prisma/client';
 
-import { deleteAccount, readAccount, updateAccount } from './services';
+import { deleteAccountTx, readAccount, updateAccount } from './services';
 
-const UpdateSchema = z.object({
-  id: z.string().min(36),
-  email: z.string(),
-  password: z.string().min(6),
-  role: z.enum(Role),
+const UpdateSchema = z.strictObject({
+  email: z.email({ message: 'Invalid email format' }).optional(),
+  password: z
+    .string()
+    .min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8)
+    .optional(),
+  isVerified: z.boolean().optional(),
 });
 
 export async function GET(
@@ -19,14 +27,15 @@ export async function GET(
 ) {
   try {
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
 
     const account = await readAccount(accountID);
     return NextResponse.json(account, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: (error as Error).message }, { status: 404 });
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to read Account');
   }
 }
 
@@ -35,48 +44,63 @@ export async function PATCH(
   { params }: { params: Promise<{ accountID: string }> }
 ) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
+    validateHeader(req.headers);
 
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
-    const body = await req.json();
-    const data = UpdateSchema.parse(body);
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
 
-    const updatedAccount = await updateAccount(data, accountID);
+    // validate body
+    const body = await req.json();
+    const data = UpdateSchema.parse(body) as Partial<Account>;
+
+    const updatedAccount = await updateAccount(accountID, data);
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: 'Validation Problem: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleZodError(error);
     }
-    return NextResponse.json(
-      { message: 'Failed to update account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    return handleError(error, 'Failed to update Account');
   }
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ accountID: string }> }
 ) {
   try {
     const { accountID } = await params;
-    if (!accountID) {
-      return NextResponse.json({ message: 'Account ID is required' }, { status: 400 });
-    }
-    await deleteAccount(accountID);
+    validateIds([{ id: accountID, identifier: 'accountID' }]);
+
+    /**
+     * Delete Account and associated User/Employee in a transaction
+     * This ensures that either both records are deleted or none at all
+     */
+    await prisma.$transaction(async (tx) => {
+      // First, delete any associated User or Employee record
+      const account = await tx.account.findUnique({
+        where: { id: accountID },
+      });
+
+      if (!account) {
+        throw new ValidationError('notFound', 'account', accountID, 404);
+      }
+
+      if (account.type === AccountType.USER) {
+        await deleteUserTx(accountID, tx);
+      } else if (account.type === AccountType.EMPLOYEE) {
+        await deleteEmployeeTx(accountID, tx);
+      } else {
+        throw new ValidationError('invalidInput', 'type', account.type);
+      }
+
+      await deleteAccountTx(accountID, tx);
+    });
+
     return NextResponse.json({ message: 'Deleted' }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Failed to delete Account: ' + (error as Error).message },
-      { status: 400 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Failed to delete Account');
   }
 }

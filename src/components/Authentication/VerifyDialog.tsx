@@ -1,0 +1,197 @@
+'use client';
+
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import { useEffect, useState } from 'react';
+
+import { useLoginContext } from '@/app/LoginContext';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { postLogin, postResendCode, postVerify } from '@/services/api';
+import { TokenType } from '~/generated/prisma/enums';
+
+import { CancelDialog } from './CancelDialog';
+import { authTimeoutDuration } from './Authentication';
+
+type VerifyDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  setSuccessOpen: (open: boolean) => void;
+  email: string;
+  password: string;
+  type: TokenType;
+  setShowNewPasswordDialog: (open: boolean) => void;
+};
+
+//https://shadcnstudio.com/docs/components/input-otp
+export function VerifyDialog({
+  open,
+  onOpenChange,
+  setSuccessOpen,
+  email,
+  password,
+  type,
+  setShowNewPasswordDialog,
+}: VerifyDialogProps) {
+  const { login, setLogin } = useLoginContext();
+
+  const cdTime = 120;
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  const [code, setCode] = useState('');
+  const [cancelOpen, setCancelOpen] = useState(false);
+
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [resendCooldown]);
+
+  function isVerifyDialogValid() {
+    return code.length === 6;
+  }
+
+  function canResendCode() {
+    return resendCooldown === 0;
+  }
+
+  async function handleVerify() {
+    try {
+      const verify = await postVerify(email, type, code);
+
+      if (!verify) {
+        setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
+        return;
+      }
+
+      setError('');
+      onOpenChange(false);
+
+      if (type === TokenType.PASSWORD_RESET) {
+        setShowNewPasswordDialog(true);
+      }
+
+      if (type === TokenType.EMAIL_VERIFICATION) {
+        setSuccessOpen(true);
+
+        await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+        const loginFromServer = await postLogin(email, password);
+        if (typeof loginFromServer !== 'string') setLogin(loginFromServer);
+      } else {
+        setError('Dein Code ist nicht richtig, bitte überprüfe deine Eingabe.');
+      }
+    } catch (error) {
+      setError(String(error));
+    }
+  }
+
+  async function resendCode() {
+    if (!canResendCode()) return;
+
+    try {
+      if (type === TokenType.EMAIL_VERIFICATION) {
+        await postResendCode(email, TokenType.EMAIL_VERIFICATION);
+      } else {
+        await postResendCode(email, TokenType.PASSWORD_RESET);
+      }
+      setResendCooldown(cdTime);
+    } catch (error) {
+      setError(String(error));
+    }
+  }
+
+  return (
+    <>
+      <Dialog
+        open={open}
+        onOpenChange={(open) => {
+          if (!open) {
+            setCancelOpen(true);
+          }
+        }}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-center">Verifizierung</DialogTitle>
+            <DialogDescription className="text-center">
+              Bitte bestätige dein Konto mit dem Code, den wir dir per E-Mail gesendet haben.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex justify-center mt-4 gap-2">
+            <InputOTP
+              name="code"
+              maxLength={6}
+              pattern={REGEXP_ONLY_DIGITS}
+              value={code}
+              onChange={(value) => {
+                setCode(value);
+                setError('');
+              }}
+            >
+              <InputOTPGroup className="*:data-[slot=input-otp-slot]:bg-muted gap-2 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:border-transparent *:data-[slot=input-otp-slot]:shadow-sm">
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+
+          <p className="text-sm text-center text-accent-red mt-1">{error}</p>
+
+          <Button
+            type="submit"
+            className="w-full h-12 text-xl"
+            onClick={handleVerify}
+            disabled={!isVerifyDialogValid()}
+          >
+            Bestätigen
+          </Button>
+
+          <div className="text-center">
+            <p className="text-muted-foreground text-sm">
+              Du hast keinen Code erhalten?
+              <Button
+                variant="link"
+                className="pl-1 text-primary hover:underline"
+                onClick={resendCode}
+                disabled={!canResendCode()}
+              >
+                Code erneut senden
+              </Button>
+            </p>
+            {!canResendCode() && (
+              <p className="text-red-600 text-sm">
+                Erneutes senden möglich in:{' '}
+                {new Date(resendCooldown * 1000).toISOString().slice(14, 19)}
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {cancelOpen && (
+        <CancelDialog
+          open={cancelOpen}
+          onOpenChange={setCancelOpen}
+          showVerifyDialog={onOpenChange}
+        />
+      )}
+    </>
+  );
+}

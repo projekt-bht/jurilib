@@ -1,11 +1,10 @@
 import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { Appointment } from '~/generated/prisma/client';
-import type { AppointmentCreateInput } from '~/generated/prisma/models';
 
 type ZodCreateAppointment = {
-  organizationId: string;
-  employeeId: string;
+  // organizationId: string;
+  // employeeId: string;
   dateTimeStart: string;
   duration: number;
 };
@@ -15,8 +14,6 @@ export async function createAppointment(
   employeeID: string,
   appointment: ZodCreateAppointment
 ): Promise<Appointment> {
-  await validateReference(employeeID, appointment.employeeId, appointment.organizationId);
-
   /**
    * determine appointment end time based on start time and duration
    * end time ALWAYS has to be calculated, to avoid overlapping appointments
@@ -24,21 +21,31 @@ export async function createAppointment(
    */
   const startTime = new Date(appointment.dateTimeStart);
   const endTime = new Date(startTime.getTime() + (appointment.duration ?? 30) * 60000);
-  await validateNotOverlapping(startTime, endTime, appointment.employeeId);
+  await validateNotOverlapping(startTime, endTime, employeeID);
 
   try {
     const createdAppointment = await prisma.appointment.create({
+      // If there are errors here, try uncommenting the following line
+      // and maybe use AppointmentCreateInput type assertion
+      // employee object is required for foreign key relation
+
+      // data: {
+      //   employeeId: appointment.employeeId,
+      //   duration: appointment.duration,
+      //   dateTimeStart: startTime,
+      //   dateTimeEnd: endTime,
+      // } as AppointmentCreateInput
       data: {
-        organizationId: appointment.organizationId,
-        employeeId: appointment.employeeId,
+        employeeId: employeeID,
         duration: appointment.duration,
-        dateTimeStart: appointment.dateTimeStart,
+        dateTimeStart: startTime,
         dateTimeEnd: endTime,
-      } as AppointmentCreateInput,
+      },
     });
     return createdAppointment;
   } catch (error) {
-    throw new Error('Database insert failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database insert failed: ' + (error as Error).message);
   }
 }
 
@@ -52,7 +59,8 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
     });
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
@@ -62,19 +70,20 @@ export async function readAllAppointmentsByEmployee(employeeID: string): Promise
  * ####################################################
  */
 
-async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
+// async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string, orgID?: string) {
+async function validateReference(paramEmployeeID: string, bodyEmployeeID?: string) {
   // check if employee exists
   if (!(await prisma.employee.findUnique({ where: { id: paramEmployeeID } }))) {
-    throw new ValidationError('notFound', 'employeeId', paramEmployeeID);
+    throw new ValidationError('notFound', 'employeeId', paramEmployeeID, 404);
   }
   // check if param employeeID matches body employeeID
   else if (bodyEmployeeID && paramEmployeeID !== bodyEmployeeID) {
-    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID);
+    throw new ValidationError('mismatch', 'employeeId', bodyEmployeeID, 404);
   }
   // check if organization exists
-  else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
-    throw new ValidationError('notFound', 'organizationId', orgID);
-  }
+  // else if (orgID && !(await prisma.organization.findUnique({ where: { id: orgID } }))) {
+  //   throw new ValidationError('notFound', 'organizationId', orgID, 404);
+  // }
 }
 
 /**

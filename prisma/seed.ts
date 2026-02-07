@@ -1,13 +1,17 @@
-import { da, fa, fakerDE as faker } from '@faker-js/faker';
+import { fakerDE as faker } from '@faker-js/faker';
 import prisma from '../src/lib/db';
 import {
-  Areas,
+  Area,
   OrganizationType,
   PriceCategory,
   ServiceType,
-  Role,
+  AccountType,
+  Gender,
+  Pronoun,
+  Language,
+  Accessibility,
 } from '../generated/prisma/enums';
-import { vectorizeExpertiseArea } from '@/services/server/vectorizer';
+import { createEmbedding } from '@/services/server/vectorizer';
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
@@ -24,33 +28,43 @@ async function main() {
   await prisma.service.deleteMany();
   await prisma.employee.deleteMany();
   await prisma.user.deleteMany();
-  await prisma.employee.deleteMany();
   await prisma.account.deleteMany();
   await prisma.organization.deleteMany();
 
   // Create 20 Users with accounts
   const userIds: string[] = [];
   for (let i = 0; i < 20; i++) {
-    const userName = faker.person.fullName();
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
 
     const account = await prisma.account.create({
       data: {
         email: faker.internet.email(),
         password: faker.internet.password(),
-        role: Role.USER,
+        type: AccountType.USER,
+        isVerified: true,
       },
     });
 
     const user = await prisma.user.create({
       data: {
-        name: userName,
-        accountId: account.id,
+        firstname: firstName,
+        lastname: lastName,
+        gender: faker.helpers.enumValue(Gender),
+        pronoun: faker.helpers.enumValue(Pronoun),
+        birthdate: faker.date.past({ years: 20, refDate: '2005-01-01' }),
+
         phone: faker.phone.number(),
-        address: faker.location.streetAddress(),
+        country: faker.location.country(),
+        city: faker.location.city(),
+        zipCode: faker.location.zipCode(),
+        street: faker.location.street(),
+        houseNumber: faker.location.buildingNumber(),
+        account: { connect: { id: account.id } },
       },
     });
     userIds.push(user.id);
-    console.log(`created User ${userName} with accID ${account.id}`);
+    console.log(`created User ${firstName} ${lastName} with accID ${account.id}`);
   }
 
   // Create Organizations with related Data
@@ -59,42 +73,63 @@ async function main() {
     // relevant Constants for every creation
     const orgName = faker.company.name();
 
-    const expertiseArea = [faker.helpers.enumValue(Areas)];
+    const expertiseArea = [faker.helpers.enumValue(Area)];
+    const city = faker.location.city();
+    const zipCode = faker.location.zipCode();
+    const description = faker.company.catchPhrase();
+
     const type = faker.helpers.enumValue(OrganizationType);
+    const accessibility = [faker.helpers.enumValue(Accessibility)];
 
     let expertiseVector = null;
+    let cityVector = null;
+    let descriptionVector = null;
+
     if (process.env.OPENAI_API_KEY) {
-      expertiseVector = await vectorizeExpertiseArea(expertiseArea.toString());
+      expertiseVector = await createEmbedding(expertiseArea.toString());
+      cityVector = await createEmbedding(city);
+      descriptionVector = await createEmbedding(description);
     }
 
-    await prisma.$executeRawUnsafe(
-      `
-      INSERT INTO "Organization" (
-        "id", "name", "description", "shortDescription", "email",
-        "phone", "address", "website",
-        "expertiseArea", "expertiseVector", "type", "priceCategory",
-        "createdAt", "updatedAt"
-      )
-      VALUES (
-        $1, $2, $3, $4, $5,
-        $6, $7, $8,
-        $9::"Areas"[], $10::vector, $11::"OrganizationType", $12::"PriceCategory",
-        NOW(), NOW()
-      )
-      `,
-      orgId,
-      orgName,
-      faker.company.catchPhrase(),
-      faker.company.catchPhrase(),
-      faker.internet.email(),
-      faker.phone.number(),
-      faker.location.streetAddress(),
-      faker.internet.url(),
-      expertiseArea,
-      expertiseVector,
-      type,
-      faker.helpers.enumValue(PriceCategory)
-    );
+    const org = await prisma.organization.create({
+      data: {
+        id: orgId,
+        name: orgName,
+        description: description,
+        shortDescription: faker.company.catchPhrase(),
+        email: faker.internet.email(),
+        phone: faker.phone.number(),
+        website: faker.internet.url(),
+        accessibility: accessibility,
+        expertiseAreas: expertiseArea,
+        type: type,
+        priceCategory: faker.helpers.enumValue(PriceCategory),
+        country: zipCode,
+        city: city,
+        zipCode: faker.location.zipCode(),
+        street: faker.location.street(),
+        houseNumber: faker.location.buildingNumber(),
+        imageUrl: faker.image.url(),
+        averageRating: faker.number.int({ min: 1, max: 5 }),
+        numberOfRatings: faker.number.int({ min: 0, max: 1000 }),
+      },
+    });
+
+    if (expertiseVector && cityVector && descriptionVector) {
+      await prisma.$executeRawUnsafe(
+        `
+          UPDATE "Organization" SET
+            "expertiseVector" = $1,
+            "cityVector" = $2,
+            "descriptionVector" = $3
+          WHERE id = $4
+        `,
+        expertiseVector,
+        cityVector,
+        descriptionVector,
+        orgId
+      );
+    }
 
     console.log(`created "${orgName}" (${orgId})`);
 
@@ -105,23 +140,34 @@ async function main() {
         data: {
           email: faker.internet.email(),
           password: faker.internet.password(),
-          role: Role.EMPLOYEE,
+          type: AccountType.EMPLOYEE,
         },
       });
 
-      const employeeName = faker.person.fullName();
+      const languages: Language[] = [];
+      for (let k = 0; k < 2; k++) {
+        languages.push(faker.helpers.enumValue(Language));
+      }
+
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.lastName();
       const employee = await prisma.employee.create({
         data: {
-          name: employeeName,
+          firstname: firstName,
+          lastname: lastName,
+          gender: faker.helpers.enumValue(Gender),
+          pronoun: faker.helpers.enumValue(Pronoun),
+          email: faker.internet.email(),
           organization: { connect: { id: orgId } },
           phone: faker.phone.number(),
           position: faker.person.jobTitle(),
           account: { connect: { id: account.id } },
-          expertiseArea: [faker.helpers.enumValue(Areas)],
+          expertiseAreas: [faker.helpers.enumValue(Area)],
+          languages: languages,
         },
       });
       employeeId.push(employee.id);
-      console.log(`created Employee ${employeeName} in Organization`);
+      console.log(`created Employee ${firstName} ${lastName} in Organization`);
     }
 
     // Create 3 Services per Org
@@ -135,6 +181,8 @@ async function main() {
           description: faker.commerce.productDescription(),
           type: faker.helpers.enumValue(ServiceType),
           pricingModel: 'FIXED',
+          price: parseFloat(faker.commerce.price({ min: 50, max: 500, dec: 2 })),
+          defaultDuration: faker.number.int({ min: 30, max: 120 }),
         },
       });
       serviceIds.push(service.id);
@@ -148,9 +196,7 @@ async function main() {
       const caseItem = await prisma.case.create({
         data: {
           user: { connect: { id: userIds[i % userIds.length] } },
-          organization: { connect: { id: orgId } },
           employee: { connect: { id: employeeId[i % employeeId.length] } },
-          service: { connect: { id: serviceIds[i % serviceIds.length] } },
           title: caseTitle,
           description: faker.lorem.sentence(),
           status: 'OPEN',
@@ -160,8 +206,8 @@ async function main() {
       console.log(`created Case "${caseTitle}" in Organization`);
     }
 
-    // Create 5 Appointments per Org
-    for (let i = 0; i < 5; i++) {
+    // Create 50 Appointments per Org
+    for (let i = 0; i < 50; i++) {
       // creating ralistic appointment times
       const hour = faker.number.int({ min: 8, max: 21 });
       const minute = faker.helpers.arrayElement([0, 15, 30, 45]);
@@ -175,9 +221,8 @@ async function main() {
         data: {
           case: { connect: { id: caseIds[i % caseIds.length] } },
           user: { connect: { id: userIds[i % userIds.length] } },
-          organization: { connect: { id: orgId } },
           employee: { connect: { id: employeeId[i % employeeId.length] } },
-          service: { connect: { id: serviceIds[i % serviceIds.length] } },
+
           duration: duration,
           status: 'OPEN',
           meetingLink: faker.internet.url(),

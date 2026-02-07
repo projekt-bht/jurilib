@@ -2,36 +2,28 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { handleValidationError } from '../../../helper';
+import { handleError, handleZodError, validateIds } from '@/app/api/helper';
+
 import { readAllAppointmentsByOrganization } from './service';
 
-// GET /api/appointment/:organizationID
+// GET /api/appointment/organization/:organizationID
 // Retrieve all appointments of organization
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ organizationID: string }> }
 ) {
   try {
     // validate organizationID
     const { organizationID } = await params;
-    paramsSchema.parse({ organizationID });
+    validateIds([{ id: organizationID, identifier: 'organizationID' }]);
+
     const appointments = await readAllAppointmentsByOrganization(organizationID);
     return NextResponse.json(appointments, { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return handleValidationError(error);
+      return handleZodError(error);
     } else {
-      return NextResponse.json(
-        { message: 'Read failed: ' + (error as Error).message },
-        { status: 400 }
-      );
+      return handleError(error, 'Failed to read Appointments');
     }
   }
 }
-
-/**
- * Validate parameter organizationID
- */
-const paramsSchema = z.object({
-  organizationID: z.string().min(1, 'Organization ID is required'),
-});

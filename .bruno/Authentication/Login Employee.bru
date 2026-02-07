@@ -1,0 +1,27 @@
+meta {
+  name: Login Employee
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseURL}}/authentication/login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "{{employeeMail}}",
+    "password": "{{employeePassword}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Get Cases
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseURL}}/case/employee/:employeeID
+  body: none
+  auth: inherit
+}
+
+params:path {
+  employeeID: {{employeeID}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

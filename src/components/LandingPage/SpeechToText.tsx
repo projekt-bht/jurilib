@@ -4,8 +4,8 @@ import { Mic, MicOff } from 'lucide-react';
 import { useEffect } from 'react';
 import type { ResultType } from 'react-hook-speech-to-text';
 import useSpeechToText from 'react-hook-speech-to-text';
+
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
-import { Button } from '../ui/button';
 
 type SpeechToTextProps = {
   setText: (text: string) => void;
@@ -54,7 +54,7 @@ export default function SpeechToText({ setText, isRecordingDone }: SpeechToTextP
   return !error ? (
     <Mic
       onClick={isRecording ? stopSpeechToText : startSpeechToText}
-      className={`rounded-full size-10 p-2 absolute bottom-6 right-6 
+      className={`rounded-full size-10 p-2 absolute bottom-19 right-3 
                   ${isRecording ? 'bg-accent-red' : 'bg-accent-gray-light'}`}
     >
       {isRecording ? 'Stop Recording' : 'Start Recording'}
@@ -62,7 +62,7 @@ export default function SpeechToText({ setText, isRecordingDone }: SpeechToTextP
   ) : (
     <Tooltip>
       <TooltipTrigger asChild>
-        <MicOff className="rounded-full size-10 p-2 absolute bottom-6 right-6 bg-accent-gray-soft border border-accent-gray-light text-accent-red" />
+        <MicOff className="rounded-full size-10 p-2 absolute bottom-19 right-3 bg-accent-gray-soft border border-accent-gray-light text-accent-red cursor-not-allowed" />
       </TooltipTrigger>
       <TooltipContent>
         <p>Nicht verfügbar in diesem Browser</p>

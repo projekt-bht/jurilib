@@ -1,9 +1,15 @@
+// Prepare mocking for sending emails and vectorizing - must be defined before importing the route handlers
 import { jest } from '@jest/globals';
 
+jest.unstable_mockModule('@/app/api/email/mailer', () => ({
+  sendEmail: jest.fn(),
+}));
+
+// Non-mock related implementation:
 import type { OrganizationCreateInput } from '~/generated/prisma/models';
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => {
+  createEmbedding: jest.fn(async () => {
     const arr = Array(3072).fill(0.01);
     return `[${arr.join(',')}]`;
   }),
@@ -26,7 +32,15 @@ describe('Organization Routen testen', () => {
       email: Math.random() + '@mail.de',
       type: 'LAW_FIRM',
       priceCategory: 'FREE',
-      expertiseArea: ['Verkehrsrecht', 'Arbeitsrecht'],
+      expertiseAreas: ['Verkehrsrecht', 'Arbeitsrecht'],
+      country: 'Deutschland',
+      city: 'Berlin',
+      zipCode: '10115',
+      street: 'Musterstraße',
+      houseNumber: '1A',
+
+      averageRating: 4.5,
+      numberOfRatings: 10,
     };
 
     const req = new NextRequest(baseUrl, {

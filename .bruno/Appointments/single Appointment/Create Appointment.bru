@@ -1,0 +1,27 @@
+meta {
+  name: Create Appointment
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseURL}}/appointment/employee/:employeeID
+  body: json
+  auth: inherit
+}
+
+params:path {
+  employeeID: {{employeeID}}
+}
+
+body:json {
+  {
+    "dateTimeStart":"2026-04-04T23:31:00.000Z",
+    "duration": 60
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

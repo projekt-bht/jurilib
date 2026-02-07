@@ -9,12 +9,24 @@ export async function readAllAppointmentsByOrganization(
   await validateReference(organizationID);
 
   try {
+    // const appointments = await prisma.appointment.findMany({
+    //   where: { organizationId: organizationID },
+    // });
+
+    // Instead of getting appointments through organization,
+    // we get them through employees that belong to the organization
     const appointments = await prisma.appointment.findMany({
-      where: { organizationId: organizationID },
+      where: {
+        employee: {
+          organizationId: organizationID,
+        },
+      },
     });
+
     return appointments;
   } catch (error) {
-    throw new Error('Database read failed: ' + (error as Error).message);
+    if (error instanceof ValidationError) throw error;
+    else throw new Error('Database read failed: ' + (error as Error).message);
   }
 }
 
@@ -27,6 +39,6 @@ export async function readAllAppointmentsByOrganization(
 async function validateReference(organizationID: string) {
   // check if organization exists
   if (!(await prisma.organization.findUnique({ where: { id: organizationID } }))) {
-    throw new ValidationError('notFound', 'organizationId', organizationID);
+    throw new ValidationError('notFound', 'organizationId', organizationID, 404);
   }
 }

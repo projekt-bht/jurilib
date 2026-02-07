@@ -1,0 +1,27 @@
+meta {
+  name: Update Case
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseURL}}/case/:caseID
+  body: json
+  auth: inherit
+}
+
+params:path {
+  caseID: {{caseID}}
+}
+
+body:json {
+  {
+    "description": 123,
+    "title":23
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

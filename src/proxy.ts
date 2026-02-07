@@ -3,18 +3,8 @@ import { NextResponse } from 'next/server';
 
 import { verifyJWT } from './app/api/authentication/login/JWTService';
 
-const requiresAuthRoutes = ['/api/dashboard'];
-const optionalAuthRoutes = ['/api/authentication/login'];
-
 export function proxy(request: NextRequest, response: NextResponse) {
-  const pathname = request.nextUrl.pathname;
-  if (requiresAuthRoutes.includes(pathname)) {
-    return requiresAuthentication(request, response);
-  } else if (optionalAuthRoutes.includes(pathname)) {
-    return optionalAuthentication(request, response);
-  }
-
-  return NextResponse.next();
+  return optionalAuthentication(request, response);
 }
 
 /**
@@ -25,23 +15,7 @@ export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
 
-export function requiresAuthentication(req: NextRequest, res: NextResponse) {
-  try {
-    const loginRes = verifyJWT(req.cookies.get('access_token')?.value);
-    const response = NextResponse.next();
-
-    if (loginRes) {
-      response.headers.set('userID', loginRes.id);
-      response.headers.set('role', loginRes.role);
-    }
-
-    return response;
-  } catch (err) {
-    return NextResponse.next({ status: 401 });
-  }
-}
-
-export function optionalAuthentication(req: NextRequest, res: NextResponse) {
+export function optionalAuthentication(req: NextRequest, _res: NextResponse) {
   try {
     const jwtString = req.cookies.get('access_token')?.value;
     if (!jwtString) {
@@ -51,12 +25,16 @@ export function optionalAuthentication(req: NextRequest, res: NextResponse) {
     const loginRes = verifyJWT(jwtString);
     const response = NextResponse.next();
 
-    if (loginRes) {
-      response.headers.set('userID', loginRes.id);
-      response.headers.set('role', loginRes.role);
-    }
+    // check if userId or employeeId exists
+    if (loginRes.userId) response.headers.set('userID', loginRes.userId);
+    if (loginRes.employeeId) response.headers.set('employeeId', loginRes.employeeId);
+    // set accountID and account type anyways
+    response.headers.set('ID', loginRes.id);
+    response.headers.set('type', loginRes.type);
+
     return response;
-  } catch (err) {
-    return NextResponse.next({ status: 401 });
+  } catch {
+    // only happens, if jwtString exists and is not valid. Hence ...
+    return NextResponse.json({ message: 'Corrupt Access Token' }, { status: 401 });
   }
 }

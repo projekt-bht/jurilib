@@ -1,16 +1,21 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import * as z from 'zod';
+
+import { handleError, handleZodError, validateHeader } from '@/app/api/helper';
 
 import { verifyJWT, verifyPasswordAndCreateJWT } from './JWTService';
 
-//TODO VALIDATE WITH ZOD - TOO LAZY RN
+const AccountLoginSchema = z.strictObject({
+  email: z.email({ message: 'Invalid email format' }),
+  password: z.string().min(Number(process.env.NEXT_PUBLIC_PASSWORD_LENGTH) || 8),
+});
 
 export async function POST(req: NextRequest) {
   try {
-    if (!req.headers.get('content-type')?.includes('application/json')) {
-      return NextResponse.json({ message: 'Invalid content type' }, { status: 415 });
-    }
-    const body = await req.json();
+    validateHeader(req.headers);
+
+    const body = AccountLoginSchema.parse(await req.json());
     const email = body.email;
     const password = body.password;
 
@@ -30,10 +35,10 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    return NextResponse.json(
-      { message: 'Creation failed: ' + (error as Error).message },
-      { status: 400 }
-    );
+    if (error instanceof z.ZodError) {
+      return handleZodError(error);
+    }
+    return handleError(error, 'Creation failed');
   }
 }
 
@@ -42,14 +47,14 @@ export async function GET(_req: NextRequest) {
     const jwtString = _req.cookies.get('access_token')?.value;
     const loginRes = verifyJWT(jwtString);
     return NextResponse.json(loginRes, { status: 200 });
-  } catch (error) {
-    const response = NextResponse.json(false, { status: 200 });
+  } catch {
+    const response = NextResponse.json(false, { status: 400 });
     response.cookies.delete('access_token');
     return response;
   }
 }
 export async function DELETE(_req: NextRequest) {
-  const response = NextResponse.json({ status: 200 });
+  const response = NextResponse.json({ status: 204 });
   response.cookies.delete('access_token');
   return response;
 }

@@ -2,19 +2,28 @@ import bcrypt from 'bcryptjs';
 import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 
-import { ValidationError } from '@/error/validationErrors';
 import prisma from '@/lib/db';
 import type { LoginResource } from '@/services/Resources';
-import type { Account } from '~/generated/prisma/client';
+import type { AccountType } from '~/generated/prisma/enums';
+
+import { sendRegistrationCodeEmail } from '../../email/service';
 
 // Create a new Account
 export const login = async (
   email: string,
   password: string
-): Promise<{ id: string; role: 'USER' | 'EMPLOYEE' } | false> => {
+): Promise<{ id: string; userId?: string; employeeId?: string; type: AccountType } | false> => {
   try {
-    const account: Account | null = await prisma.account.findUnique({
+    /**  Include -> check if the account has a reference to the created User or Employee
+         We need this information on the frontend to fetch User/Employee info
+         ofc, we could just send the accountId and then check if a User exists in that context, but thats kinda cursed
+         Also, this logic makes more sense because we are only validating a login if an account includes a User or Employee
+    */
+
+    //only verified accounts can login
+    const account = await prisma.account.findUnique({
       where: { email: email },
+      include: { user: true, employee: true },
     });
 
     if (!account) {
@@ -24,9 +33,16 @@ export const login = async (
     const isPasswordCorrect = await bcrypt.compare(password, account.password);
     if (!isPasswordCorrect) return false;
 
+    if (!account.isVerified) {
+      await sendRegistrationCodeEmail(email);
+      throw new Error('Account not verified');
+    }
+
     const accountRes = {
       id: account.id,
-      role: account.role,
+      userId: account.user?.id,
+      employeeId: account.employee?.id,
+      type: account.type,
     };
 
     return accountRes;
@@ -51,8 +67,10 @@ export async function verifyPasswordAndCreateJWT(
   if (!secret || !ttl) throw new Error('secret or ttl env variable not set');
 
   const payload: JwtPayload = {
-    sub: isLoggedIn.id,
-    role: isLoggedIn.role,
+    accountId: isLoggedIn.id,
+    userId: isLoggedIn.userId,
+    employeeId: isLoggedIn.employeeId,
+    type: isLoggedIn.type,
   };
 
   const jwtString = jwt.sign(payload, secret, {
@@ -72,13 +90,17 @@ export function verifyJWT(jwtString: string | undefined): LoginResource {
 
   const payload = jwt.verify(jwtString, secret) as JwtPayload;
 
-  const sub = payload.sub;
-  const role = payload.role;
+  const accountId = payload.accountId;
+  const userId = payload.userId;
+  const employeeId = payload.employeeId;
+  const type = payload.type;
   const exp = payload.exp;
 
   const ressource: LoginResource = {
-    id: sub!,
-    role: role,
+    id: accountId,
+    userId: userId,
+    employeeId: employeeId,
+    type: type,
     exp: exp!,
   };
   return ressource;
