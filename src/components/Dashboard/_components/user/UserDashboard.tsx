@@ -1,13 +1,6 @@
-import {
-  ArrowLeft,
-  CalendarDays,
-  ChevronRight,
-  FolderOpen,
-  Link,
-  Plus,
-  Search,
-} from 'lucide-react';
+import { ArrowLeft, CalendarDays, ChevronRight, FolderOpen, Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
@@ -21,6 +14,7 @@ import { CaseCard } from './CaseCard';
 import { StatCards } from './StatCards';
 
 export function UserDashboard() {
+  const router = useRouter();
   const { login } = useLoginContext();
   const userId = (login as LoginResource).userId;
 
@@ -117,6 +111,7 @@ export function UserDashboard() {
                 after:transition-all 
                 after:duration-500 
                 hover:after:w-full"
+                onClick={() => router.push('/appointment')}
               >
                 Alle anzeigen <ChevronRight className="w-4 h-4" />
               </Button>
@@ -147,7 +142,10 @@ export function UserDashboard() {
                   <p className="text-muted-foreground mb-6">
                     Du hast aktuell keine Termine. Buche jetzt deinen nächsten Termin!
                   </p>
-                  <Button className="bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm">
+                  <Button
+                    className="bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm"
+                    onClick={() => router.push('/search')}
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Termin vereinbaren
                   </Button>
@@ -171,6 +169,7 @@ export function UserDashboard() {
                 after:transition-all 
                 after:duration-500 
                 hover:after:w-full"
+                onClick={() => router.push('/case')}
               >
                 Alle anzeigen <ChevronRight className="w-4 h-4" />
               </Button>
