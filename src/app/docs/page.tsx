@@ -8,10 +8,10 @@ import {
   HandCoins,
   HelpCircle,
   MapPinned,
-  Monitor,
   ScrollText,
   Search,
   Server,
+  SquareArrowOutUpRight,
   Unplug,
   Users,
   Zap,
@@ -58,19 +58,7 @@ type SectionId =
   | 'user-faq'
   | 'lawyer-faq'
   | 'glossary'
-  | 'api'
-  // ---
-  | 'organizations'
-  | 'case-management'
-  | 'account'
-  | 'technical'
-  | 'architecture'
-  | 'project-overview'
-  | 'short-description'
-  | 'team-tasks'
-  | 'links-and-resources'
-  | 'sources-and-ai'
-  | 'licenses';
+  | 'api';
 
 interface NavItem {
   id: SectionId;
@@ -132,28 +120,10 @@ const navItems: NavItem[] = [
   },
   { id: 'glossary', label: 'Glossar', icon: <ScrollText className="w-4 h-4 text-accent-blue" /> },
   { id: 'api', label: 'API-Referenz', icon: <Unplug className="w-4 h-4 text-accent-blue" /> },
-  // ---
-  {
-    id: 'project-overview',
-    label: 'Projektübersicht',
-    icon: <Monitor className="w-4 h-4 text-accent-blue" />,
-    children: [
-      { id: 'short-description', label: 'Kurzbeschreibung' },
-      { id: 'team-tasks', label: 'Team & Aufgabenverteilung' },
-      { id: 'links-and-resources', label: 'Links & Zugänge' },
-      { id: 'sources-and-ai', label: 'Quellen & AI-Disclaimer' },
-      { id: 'licenses', label: 'Lizenzangaben' },
-      { id: 'glossary', label: 'Glossar' },
-      { id: 'organizations', label: 'Organisationen' },
-      { id: 'case-management', label: 'Fallverwaltung' },
-      { id: 'account', label: 'Konto & Profil' },
-      { id: 'architecture', label: 'Architektur' },
-    ],
-  },
 ];
 
 export default function DocsPage() {
-  const [activeSection, setActiveSection] = useState<SectionId>('project-overview');
+  const [activeSection, setActiveSection] = useState<SectionId>('introduction');
   const isApiPage = usePathname().includes('/docs/api');
 
   const allSectionIds = useMemo<SectionId[]>(() => {
@@ -460,6 +430,25 @@ export default function DocsPage() {
                 JuriLib.
               </p>
               <Glossary />
+            </section>
+
+            {/* API */}
+            <section id="api" className="mb-16 scroll-mt-24">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-accent-blue text-primary p-2 rounded-lg">
+                  <Unplug className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                  API
+                </h1>
+              </div>
+
+              <div className="text-xl font-bold text-foreground/70 mb-4 flex items-center gap-2">
+                Hier kommst du zu unserer API-Dokumentation.
+                <Link href="/docs/api">
+                  <SquareArrowOutUpRight className="w-5 h-5 text-primary" />
+                </Link>
+              </div>
             </section>
 
             {/* Footer CTA */}
