@@ -56,7 +56,7 @@ export const getCityByRadius = async (lat: number, lon: number, radius: number) 
   url.searchParams.append('subscription-key', azureMapConfig.key);
   url.searchParams.append('entityType', 'Municipality');
   url.searchParams.append('countrySet', 'DE');
-  url.searchParams.append('radius', radius == 0 ? '1' : radius.toString());
+  url.searchParams.append('radius', radius === 0 ? '1' : radius.toString());
 
   const response = await fetch(url.toString() + "&query=''");
   if (!response.ok) {
