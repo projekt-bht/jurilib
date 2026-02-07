@@ -20,6 +20,7 @@ import {
   Search,
   Server,
   Settings,
+  TriangleAlert,
   Users,
   Zap,
 } from 'lucide-react';
@@ -355,6 +356,37 @@ export default function DocsPage() {
                 <Gavel className="w-5 h-5 text-primary" />
                 Jurist*innenhandbuch
               </h2>
+              <div className="bg-accent-red-light border border-border rounded-xl p-6">
+                <h3 className="text-l font-bold text-foreground mb-4 flex items-center gap-2">
+                  <TriangleAlert className="w-5 h-5" />
+                  Disclaimer
+                </h3>
+                <p className="text-m text-foreground leading-relaxed">
+                  Wir schreiben zwar die Dokumentation für Jurist*innen, allerdings ist Jurilib aus
+                  der Jurist*innen-Perspektive noch nicht nutzbar. Wir beschreiben es hier weil die
+                  Nutzung von Jurilib durch Jurist*innen ein essenzieller Teil der Anwendung ist.
+                  Auch wenn dieser noch nicht öffentlich zur Verfügung steht, ist das Grundgerüst
+                  dafür schon da. So sind große Teile des Backends für Employees schon
+                  implementiert. Die Endpunkte für die Registierung, Anmeldung und sogar
+                  Terminverwaltung wurden schon Impementiert, wenn auch mit Lücken.
+                </p>
+                <br />
+                <p className="text-m text-foreground leading-relaxed">
+                  <b>Was Fehlt noch?</b>
+                </p>
+                <ul className="list-disc list-inside text-m text-foreground leading-relaxed">
+                  <li>Es gibt noch kein Frontend für Jurist*innen.</li>
+                  <li>
+                    Es Fehlt die Verifizierung der juristischen Ausbildung während der
+                    Registrierung.
+                  </li>
+                  <li>
+                    Verwaltung von Organisationen: Organisationen sollen insofern keine eigenen
+                    Instanzen abbilden, dass sie nur über Employees (mit bestimmten Rollen)
+                    verwaltet werden sollen. Dieses Constraint ist noch nicht eingebaut.
+                  </li>
+                </ul>
+              </div>
             </section>
 
             {/* Lawyer Quick Start */}
