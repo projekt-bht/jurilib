@@ -49,6 +49,7 @@ import { Disclaimer as LawyerDisclaimer } from './user-guide/lawyer-disclaimer';
 import { LawyerDocument } from './user-guide/lawyer-document';
 import { LawyerQuickStart } from './user-guide/lawyer-quick-start';
 import { LawyerRegister } from './user-guide/lawyer-register';
+import { Disclaimer as UserDisclaimer } from './user-guide/user-disclaimer';
 import { UserFeaturesWorkflows } from './user-guide/user-features-workflows';
 import { UserQuickStart } from './user-guide/user-quick-start';
 
@@ -343,6 +344,7 @@ export default function DocsPage() {
                 <Users className="w-5 h-5 text-primary" />
                 Nutzer*innenhandbuch
               </h2>
+              <UserDisclaimer />
             </section>
 
             {/* User Quick Start */}
