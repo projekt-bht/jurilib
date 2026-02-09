@@ -165,7 +165,7 @@ export default function ProfileView() {
         </div>
 
         {/* Row 1: Profile banner (full width) */}
-        <div className="bg-(--color-background) rounded-2xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
+        <div className="bg-linear-to-r from-accent-red-light/30 via-accent-blue-soft to-background rounded-2xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
           <div className="relative group shrink-0">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center overflow-hidden ring-2 ring-background shadow-md">
               {formData.imageUrl ? (
@@ -433,7 +433,7 @@ export default function ProfileView() {
                 </div>
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label
                   htmlFor="phone"
                   className="text-xs text-muted-foreground flex items-center gap-1"
@@ -443,7 +443,7 @@ export default function ProfileView() {
                 <Input id="phone" type="tel" placeholder="+49 170 1234567" value={formData.phone} />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label htmlFor="confirmPassword" className="text-xs text-muted-foreground">
                   Passwort wiederholen
                 </Label>
@@ -487,9 +487,9 @@ export default function ProfileView() {
               <h3 className="text-sm font-semibold text-destructive">Konto löschen</h3>
             </div>
 
-            <div className="flex items-start gap-3 mb-4">
+            <div className="flex items-start gap-3 mb-4 mt-3">
               <AlertTriangle className="w-4 h-4 text-destructive/70 shrink-0 mt-0.5" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed ">
                 Wenn du dein Konto löschst, werden alle deine Daten, Fälle und Dokumente
                 unwiderruflich entfernt. Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte
                 stelle sicher, dass du alle wichtigen Daten vorher gesichert hast.
