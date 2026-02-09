@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { Gender, Pronoun } from '@/contexts/auth-context';
-import { UserResource } from '@/services/Resources';
+import { AccountResource, UserResource } from '@/services/Resources';
 
 const genderOptions: { value: Gender; label: string }[] = [
   { value: 'MALE', label: 'Männlich' },
@@ -48,6 +48,8 @@ const pronounOptions: { value: Pronoun; label: string }[] = [
 ];
 
 export default function ProfileView() {
+  const { login } = useLoginContext();
+
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [newPassword, setNewPassword] = useState('');
