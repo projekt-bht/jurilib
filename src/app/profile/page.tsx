@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { Gender, Pronoun } from '@/contexts/auth-context';
+import { UserResource } from '@/services/Resources';
 
 const genderOptions: { value: Gender; label: string }[] = [
   { value: 'MALE', label: 'Männlich' },
@@ -54,6 +55,9 @@ export default function ProfileView() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+
+  const [user, setUser] = useState<UserResource>();
+  const [account, setAccount] = useState<AccountResource>();
 
   const [formData, setFormData] = useState({
     title: user?.title || '',
@@ -101,13 +105,6 @@ export default function ProfileView() {
       THEY_THEM: 'they/them',
       OTHER: formData.pronounText || 'Andere',
     };
-
-    updateUser({
-      ...formData,
-      gender: formData.gender as Gender,
-      pronoun: formData.pronoun as Pronoun,
-      pronouns: pronounLabels[formData.pronoun] || formData.pronounText,
-    });
 
     setIsSaving(false);
     setSaveSuccess(true);
