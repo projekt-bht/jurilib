@@ -1,4 +1,9 @@
-import type { LoginResource, RegisterResource, UserResource } from '@/services/Resources';
+import type {
+  AccountResource,
+  LoginResource,
+  RegisterResource,
+  UserResource,
+} from '@/services/Resources';
 import { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
@@ -56,6 +61,14 @@ export async function getUser(userID: string): Promise<UserResource> {
     credentials: 'include' as RequestCredentials,
   });
   return (await response.json()) as UserResource;
+}
+
+export async function getAccount(accountID: string): Promise<AccountResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account/${accountID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as AccountResource;
 }
 
 export async function postVerify(email: string, type: TokenType, code: string) {
