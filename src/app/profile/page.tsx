@@ -19,7 +19,9 @@ import {
   Trash2,
   User,
 } from 'lucide-react';
+import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,11 +37,13 @@ import { getAccount, getUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 
 import { useLoginContext } from '../LoginContext';
-import { Gender, Pronoun } from '~/generated/prisma/enums';
+
+type ValidationMessages<Type> = {
+  [Property in keyof Type]?: string;
+};
 
 export default function ProfileView() {
   const { login } = useLoginContext();
-
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -50,6 +54,8 @@ export default function ProfileView() {
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
+
+  if (!login) notFound();
 
   const [formData, setFormData] = useState({
     title: user?.title || '',
@@ -91,11 +97,6 @@ export default function ProfileView() {
     user();
   }, [login]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setSaveSuccess(false);
-  };
-
   const handleSave = async () => {
     if (newPassword || confirmPassword) {
       if (newPassword.length < 8) {
@@ -112,13 +113,6 @@ export default function ProfileView() {
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 800));
 
-    const pronounLabels: Record<string, string> = {
-      HE_HIM: 'er/ihm',
-      SHE_HER: 'sie/ihr',
-      THEY_THEM: 'they/them',
-      OTHER: formData.pronounText || 'Andere',
-    };
-
     setIsSaving(false);
     setSaveSuccess(true);
     setNewPassword('');
@@ -127,20 +121,25 @@ export default function ProfileView() {
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
+  function update(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  if (!account || !user) return <></>;
+
   return (
-    <section className="py-5 px-4 md:px-8 bg-background scroll-mt-24">
-      <div className="max-w-6xl mx-auto">
-        {/* Header row */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-              <span>Dashboard</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-foreground font-medium">Profil</span>
-            </div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Mein Profil</h1>
+    <section className="bg-card">
+      <div className="bg-card flex-1 w-full p-20 md:p-20 overflow-y-auto md:overflow-y-hidden">
+        <div className="space-y-4">
+          {/* Header */}
+          <div className=" flex items-center justify-between">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-2">
+              Mein Profil
+            </h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-end w-full mb-5">
             {saveSuccess && (
               <span className="text-sm text-emerald-600 font-medium">Gespeichert!</span>
             )}
@@ -165,7 +164,7 @@ export default function ProfileView() {
         </div>
 
         {/* Row 1: Profile banner (full width) */}
-        <div className="bg-card rounded-xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
+        <div className="bg-(--color-background) rounded-2xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
           <div className="relative group shrink-0">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center overflow-hidden ring-2 ring-background shadow-md">
               {formData.imageUrl ? (
@@ -190,18 +189,16 @@ export default function ProfileView() {
               {formData.title && `${formData.title} `}
               {formData.firstname} {formData.lastname}
             </h2>
-            <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-            <p className="text-xs text-muted-foreground"></p>
           </div>
         </div>
 
         {/* Row 2: Personal data | Address */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
           {/* Personal data */}
-          <div className="bg-card rounded-xl border border-border/60 p-4">
+          <div className="bg-(--color-background)  rounded-2xl border border-border/60 p-4">
             <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-                <User className="w-3 h-3 text-primary" />
+              <div className="w-6 h-6 rounded-2xl bg-accent-blue/10 flex items-center justify-center shadow-sm">
+                <User className="w-4 h-4 text-accent-blue" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">Persönliche Daten</h3>
             </div>
@@ -211,99 +208,59 @@ export default function ProfileView() {
                 <Label htmlFor="title" className="text-xs text-muted-foreground">
                   Titel
                 </Label>
-                <Input
-                  id="title"
-                  placeholder="z.B. Dr., Prof."
-                  value={formData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="title" placeholder="z.B. Dr., Prof." value={formData.title} />
+              </div>
+              <div className="flex justify-between w-full max-w-2xl mx-auto">
+                <div className="space-y-0.5 w-1/2 pr-2">
+                  <Label htmlFor="gender" className="text-xs text-muted-foreground">
+                    Geschlecht
+                  </Label>
+                  <Select value={formData.gender}>
+                    <SelectTrigger className="bg-background h-8 text-xs w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </Select>
+                </div>
+
+                <div className="space-y-0.5 w-1/2 pl-2">
+                  <Label htmlFor="pronoun" className="text-xs text-muted-foreground">
+                    Pronomen
+                  </Label>
+                  <Select value={formData.pronoun}>
+                    <SelectTrigger className="bg-background h-8 text-xs w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                  </Select>
+                </div>
               </div>
 
-              <div className="space-y-0.5">
-                <Label>Geschlecht *</Label>
-                <Select value={formData.gender}>
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Auswählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(Gender).map((g) => (
-                      <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
-                        {g.replace(/_/g, ' ')}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.gender === Gender.Andere && (
-                <div className="space-y-2">
-                  <Label>Geschlecht (Text) *</Label>
-                  <Input name="genderText" value={formData.genderText} placeholder="Geschlecht" />
-                </div>
-              )}
-              {formData.pronoun === Pronoun.Andere && (
-                <div className="space-y-2">
-                  <Label>Pronomen (Text)</Label>
-                  <Input name="pronounText" value={formData.pronounText} placeholder="Pronomen" />
-                </div>
-              )}
-
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label htmlFor="firstname" className="text-xs text-muted-foreground">
-                  Vorname <span className="text-destructive">*</span>
+                  Vorname
                 </Label>
                 <Input
                   id="firstname"
+                  name="firstname"
                   value={formData.firstname}
-                  onChange={(e) => handleInputChange('firstname', e.target.value)}
-                  className="bg-background h-8 text-xs"
+                  onChange={update}
                   required
                 />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label htmlFor="lastname" className="text-xs text-muted-foreground">
-                  Nachname <span className="text-destructive">*</span>
+                  Nachname
                 </Label>
                 <Input
                   id="lastname"
+                  name="lastname"
+                  onChange={update}
                   value={formData.lastname}
-                  onChange={(e) => handleInputChange('lastname', e.target.value)}
-                  className="bg-background h-8 text-xs"
                   required
                 />
               </div>
 
-              <div className="space-y-0.5">
-                <Label>Pronomen *</Label>
-                <Select value={formData.gender}>
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Auswählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(Pronoun).map((g) => (
-                      <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
-                        {g.replace(/_/g, ' ')}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-0.5">
-                <Label htmlFor="birthdate" className="text-xs text-muted-foreground">
-                  Geburtsdatum
-                </Label>
-                <Input
-                  id="birthdate"
-                  type="date"
-                  value={String(formData.birthdate)}
-                  onChange={(e) => handleInputChange('birthdate', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
-              </div>
-              <div className="space-y-0.5 col-span-2">
+              <div className="space-y-0.5 mt-5">
                 <Label htmlFor="placeOfBirth" className="text-xs text-muted-foreground">
                   Geburtsort
                 </Label>
@@ -311,7 +268,6 @@ export default function ProfileView() {
                   id="placeOfBirth"
                   placeholder="z.B. Berlin"
                   value={formData.placeOfBirth}
-                  onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
                   className="bg-background h-8 text-xs"
                 />
               </div>
@@ -319,10 +275,10 @@ export default function ProfileView() {
           </div>
 
           {/* Address */}
-          <div className="bg-card rounded-xl border border-border/60 p-4">
+          <div className="bg-(--color-background) rounded-2xl border border-border/60 p-4">
             <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-                <MapPin className="w-3 h-3 text-primary" />
+              <div className="w-6 h-6 rounded-2xl bg-accent-blue/10 flex items-center justify-center shadow-sm">
+                <MapPin className="w-4 h-4 text-accent-blue" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">Adresse</h3>
             </div>
@@ -335,74 +291,44 @@ export default function ProfileView() {
                 >
                   <Globe className="w-3 h-3" /> Land
                 </Label>
-                <Input
-                  id="country"
-                  placeholder="z.B. Deutschland"
-                  value={formData.country}
-                  onChange={(e) => handleInputChange('country', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="country" placeholder="z.B. Deutschland" value={formData.country} />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label
                   htmlFor="street"
                   className="text-xs text-muted-foreground flex items-center gap-1"
                 >
                   <Home className="w-3 h-3" /> Straße
                 </Label>
-                <Input
-                  id="street"
-                  placeholder="Straßenname"
-                  value={formData.street}
-                  onChange={(e) => handleInputChange('street', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="street" placeholder="Straßenname" value={formData.street} />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label
                   htmlFor="houseNumber"
                   className="text-xs text-muted-foreground flex items-center gap-1"
                 >
                   <Hash className="w-3 h-3" /> Hausnummer
                 </Label>
-                <Input
-                  id="houseNumber"
-                  placeholder="z.B. 42"
-                  value={formData.houseNumber}
-                  onChange={(e) => handleInputChange('houseNumber', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="houseNumber" placeholder="z.B. 42" value={formData.houseNumber} />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label htmlFor="zipCode" className="text-xs text-muted-foreground">
                   PLZ
                 </Label>
-                <Input
-                  id="zipCode"
-                  placeholder="z.B. 10115"
-                  value={formData.zipCode}
-                  onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="zipCode" placeholder="z.B. 10115" value={formData.zipCode} />
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 mt-5">
                 <Label
                   htmlFor="city"
                   className="text-xs text-muted-foreground flex items-center gap-1"
                 >
                   <Building2 className="w-3 h-3" /> Stadt
                 </Label>
-                <Input
-                  id="city"
-                  placeholder="z.B. Berlin"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
+                <Input id="city" placeholder="z.B. Berlin" value={formData.city} />
               </div>
             </div>
           </div>
@@ -411,46 +337,20 @@ export default function ProfileView() {
         {/* Row 3: Account & Security | Delete Account */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {/* Account & Security */}
-          <div className="bg-card rounded-xl border border-border/60 p-4">
+          <div className="bg-(--color-background) rounded-2xl border border-border/60 p-4">
             <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-                <Lock className="w-3 h-3 text-primary" />
+              <div className="w-6 h-6 rounded-2xl bg-accent-blue/10 flex items-center justify-center shadow-sm">
+                <Lock className="w-4 h-4 text-accent-blue" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">Konto & Sicherheit</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
               <div className="space-y-0.5">
-                <Label
-                  htmlFor="phone"
-                  className="text-xs text-muted-foreground flex items-center gap-1"
-                >
-                  <Phone className="w-3 h-3" /> Telefon
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+49 170 1234567"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="bg-background h-8 text-xs"
-                />
-              </div>
-
-              <div className="space-y-0.5">
-                <Label
-                  htmlFor="email"
-                  className="text-xs text-muted-foreground flex items-center gap-1"
-                >
+                <Label htmlFor="email" className="text-xs text-muted-foreground">
                   <Mail className="w-3 h-3" /> E-Mail
                 </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={account?.email || ''}
-                  disabled
-                  className="bg-muted h-8 text-xs text-muted-foreground cursor-not-allowed"
-                />
+                <Input id="email" type="email" value={account?.email} disabled />
               </div>
 
               <div className="space-y-0.5">
@@ -467,7 +367,6 @@ export default function ProfileView() {
                       setNewPassword(e.target.value);
                       setPasswordError('');
                     }}
-                    className="bg-background h-8 text-xs pr-7"
                   />
                   <button
                     type="button"
@@ -484,6 +383,16 @@ export default function ProfileView() {
               </div>
 
               <div className="space-y-0.5">
+                <Label
+                  htmlFor="phone"
+                  className="text-xs text-muted-foreground flex items-center gap-1"
+                >
+                  <Phone className="w-3 h-3" /> Telefon
+                </Label>
+                <Input id="phone" type="tel" placeholder="+49 170 1234567" value={formData.phone} />
+              </div>
+
+              <div className="space-y-0.5">
                 <Label htmlFor="confirmPassword" className="text-xs text-muted-foreground">
                   Passwort wiederholen
                 </Label>
@@ -497,7 +406,6 @@ export default function ProfileView() {
                       setConfirmPassword(e.target.value);
                       setPasswordError('');
                     }}
-                    className="bg-background h-8 text-xs pr-7"
                   />
                   <button
                     type="button"
@@ -520,10 +428,10 @@ export default function ProfileView() {
           </div>
 
           {/* Delete Account */}
-          <div className="bg-card rounded-xl border border-destructive/20 p-4 flex flex-col">
+          <div className="bg-(--color-background)  rounded-2xl border border-destructive/20 p-4 flex flex-col">
             <div className="flex items-center gap-2 mb-2.5">
-              <div className="w-6 h-6 rounded-md bg-destructive/10 flex items-center justify-center">
-                <Trash2 className="w-3 h-3 text-destructive" />
+              <div className="w-6 h-6 rounded-2xl bg-destructive/10 flex items-center justify-center">
+                <Trash2 className="w-4 h-4 text-destructive" />
               </div>
               <h3 className="text-sm font-semibold text-destructive">Konto löschen</h3>
             </div>
