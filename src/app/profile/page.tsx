@@ -37,6 +37,7 @@ import { getAccount, getUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 
 import { useLoginContext } from '../LoginContext';
+import { Gender, Pronoun } from '~/generated/prisma/enums';
 
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
@@ -61,14 +62,14 @@ export default function ProfileView() {
     title: user?.title || '',
     firstname: user?.firstname || '',
     lastname: user?.lastname || '',
-    gender: user?.gender || 'MALE',
+    gender: user?.gender || Gender.Keine_Angabe,
     genderText: user?.genderText || '',
-    pronoun: user?.pronoun || 'HE_HIM',
+    pronoun: user?.pronoun || Pronoun.Keine_Angabe,
     pronounText: user?.pronounText || '',
     birthdate: user?.birthdate || '',
     placeOfBirth: user?.placeOfBirth || '',
     phone: user?.phone || '',
-    imageUrl: user?.imageUrl || '',
+    imageUrl: user?.imageUrl ?? '',
     country: user?.country || '',
     city: user?.city || '',
     zipCode: user?.zipCode || '',
@@ -212,27 +213,77 @@ export default function ProfileView() {
               </div>
               <div className="flex justify-between w-full max-w-2xl mx-auto">
                 <div className="space-y-0.5 w-1/2 pr-2">
-                  <Label htmlFor="gender" className="text-xs text-muted-foreground">
-                    Geschlecht
-                  </Label>
-                  <Select value={formData.gender}>
-                    <SelectTrigger className="bg-background h-8 text-xs w-full">
-                      <SelectValue />
+                  <Label className="text-xs text-muted-foreground">Geschlecht *</Label>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(v) =>
+                      setFormData({
+                        ...formData,
+                        gender: v as Gender,
+                        genderText: v === Gender.Andere ? formData.genderText : '',
+                      })
+                    }
+                  >
+                    <SelectTrigger className="bg-background h-8 w-full">
+                      <SelectValue placeholder="Auswählen" />
                     </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(Gender).map((g) => (
+                        <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
+                          {g.replace(/_/g, ' ')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                 </div>
-
-                <div className="space-y-0.5 w-1/2 pl-2">
-                  <Label htmlFor="pronoun" className="text-xs text-muted-foreground">
-                    Pronomen
-                  </Label>
-                  <Select value={formData.pronoun}>
-                    <SelectTrigger className="bg-background h-8 text-xs w-full">
-                      <SelectValue />
+                <div className="space-y-0.5 w-1/2 pr-2">
+                  <Label className="text-xs text-muted-foreground">Pronomen</Label>
+                  <Select
+                    value={formData.pronoun}
+                    onValueChange={(v) =>
+                      setFormData({
+                        ...formData,
+                        pronoun: v as Pronoun,
+                        pronounText: v === Pronoun.Andere ? formData.pronounText : '',
+                      })
+                    }
+                  >
+                    <SelectTrigger className="bg-background h-8 w-full">
+                      <SelectValue placeholder="Auswählen" />
                     </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(Pronoun).map((p) => (
+                        <SelectItem key={p} value={p} className="hover:bg-accent-gray-light">
+                          {p.replace(/_/g, '/')}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                 </div>
               </div>
+
+              {formData.gender === Gender.Andere && (
+                <div className="space-y-0.5 mt-5">
+                  <Label className="text-xs text-muted-foreground">Geschlecht (Text)</Label>
+                  <Input
+                    name="genderText"
+                    value={formData.genderText}
+                    onChange={update}
+                    placeholder="Geschlecht"
+                  />
+                </div>
+              )}
+              {formData.pronoun === Pronoun.Andere && (
+                <div className="space-y-0.5 mt-5">
+                  <Label className="text-xs text-muted-foreground">Pronomen (Text)</Label>
+                  <Input
+                    name="pronounText"
+                    value={formData.pronounText}
+                    onChange={update}
+                    placeholder="Pronomen"
+                  />
+                </div>
+              )}
 
               <div className="space-y-0.5 mt-5">
                 <Label htmlFor="firstname" className="text-xs text-muted-foreground">
