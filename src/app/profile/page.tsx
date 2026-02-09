@@ -35,20 +35,7 @@ import { getAccount, getUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 
 import { useLoginContext } from '../LoginContext';
-
-const genderOptions: { value: Gender; label: string }[] = [
-  { value: 'MALE', label: 'Männlich' },
-  { value: 'FEMALE', label: 'Weiblich' },
-  { value: 'DIVERSE', label: 'Divers' },
-  { value: 'OTHER', label: 'Andere' },
-];
-
-const pronounOptions: { value: Pronoun; label: string }[] = [
-  { value: 'HE_HIM', label: 'er/ihm' },
-  { value: 'SHE_HER', label: 'sie/ihr' },
-  { value: 'THEY_THEM', label: 'they/them' },
-  { value: 'OTHER', label: 'Andere' },
-];
+import { Gender, Pronoun } from '~/generated/prisma/enums';
 
 export default function ProfileView() {
   const { login } = useLoginContext();
@@ -204,10 +191,7 @@ export default function ProfileView() {
               {formData.firstname} {formData.lastname}
             </h2>
             <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-            <p className="text-xs text-muted-foreground">
-              {pronounOptions.find((p) => p.value === formData.pronoun)?.label ||
-                formData.pronounText}
-            </p>
+            <p className="text-xs text-muted-foreground"></p>
           </div>
         </div>
 
@@ -237,38 +221,31 @@ export default function ProfileView() {
               </div>
 
               <div className="space-y-0.5">
-                <Label htmlFor="gender" className="text-xs text-muted-foreground">
-                  Geschlecht
-                </Label>
-                <Select
-                  value={formData.gender}
-                  onValueChange={(v) => handleInputChange('gender', v)}
-                >
-                  <SelectTrigger className="bg-background h-8 text-xs">
-                    <SelectValue />
+                <Label>Geschlecht *</Label>
+                <Select value={formData.gender}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Auswählen" />
                   </SelectTrigger>
                   <SelectContent>
-                    {genderOptions.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>
-                        {o.label}
+                    {Object.values(Gender).map((g) => (
+                      <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
+                        {g.replace(/_/g, ' ')}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {formData.gender === 'OTHER' && (
-                <div className="space-y-0.5 col-span-2">
-                  <Label htmlFor="genderText" className="text-xs text-muted-foreground">
-                    Geschlecht (eigene Angabe)
-                  </Label>
-                  <Input
-                    id="genderText"
-                    placeholder="Bitte angeben"
-                    value={formData.genderText}
-                    onChange={(e) => handleInputChange('genderText', e.target.value)}
-                    className="bg-background h-8 text-xs"
-                  />
+              {formData.gender === Gender.Andere && (
+                <div className="space-y-2">
+                  <Label>Geschlecht (Text) *</Label>
+                  <Input name="genderText" value={formData.genderText} placeholder="Geschlecht" />
+                </div>
+              )}
+              {formData.pronoun === Pronoun.Andere && (
+                <div className="space-y-2">
+                  <Label>Pronomen (Text)</Label>
+                  <Input name="pronounText" value={formData.pronounText} placeholder="Pronomen" />
                 </div>
               )}
 
@@ -299,69 +276,33 @@ export default function ProfileView() {
               </div>
 
               <div className="space-y-0.5">
-                <Label htmlFor="pronoun" className="text-xs text-muted-foreground">
-                  Pronomen
-                </Label>
-                <Select
-                  value={formData.pronoun}
-                  onValueChange={(v) => handleInputChange('pronoun', v)}
-                >
-                  <SelectTrigger className="bg-background h-8 text-xs">
-                    <SelectValue />
+                <Label>Pronomen *</Label>
+                <Select value={formData.gender}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Auswählen" />
                   </SelectTrigger>
                   <SelectContent>
-                    {pronounOptions.map((o) => (
-                      <SelectItem key={o.value} value={o.value}>
-                        {o.label}
+                    {Object.values(Pronoun).map((g) => (
+                      <SelectItem key={g} value={g} className="hover:bg-accent-gray-light">
+                        {g.replace(/_/g, ' ')}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {formData.pronoun === 'OTHER' ? (
-                <div className="space-y-0.5">
-                  <Label htmlFor="pronounText" className="text-xs text-muted-foreground">
-                    Eigene Angabe
-                  </Label>
-                  <Input
-                    id="pronounText"
-                    placeholder="Bitte angeben"
-                    value={formData.pronounText}
-                    onChange={(e) => handleInputChange('pronounText', e.target.value)}
-                    className="bg-background h-8 text-xs"
-                  />
-                </div>
-              ) : (
-                <div className="space-y-0.5">
-                  <Label htmlFor="birthdate" className="text-xs text-muted-foreground">
-                    Geburtsdatum
-                  </Label>
-                  <Input
-                    id="birthdate"
-                    type="date"
-                    value={formData.birthdate}
-                    onChange={(e) => handleInputChange('birthdate', e.target.value)}
-                    className="bg-background h-8 text-xs"
-                  />
-                </div>
-              )}
-
-              {formData.pronoun === 'OTHER' && (
-                <div className="space-y-0.5 col-span-2">
-                  <Label htmlFor="birthdate2" className="text-xs text-muted-foreground">
-                    Geburtsdatum
-                  </Label>
-                  <Input
-                    id="birthdate2"
-                    type="date"
-                    value={formData.birthdate}
-                    onChange={(e) => handleInputChange('birthdate', e.target.value)}
-                    className="bg-background h-8 text-xs"
-                  />
-                </div>
-              )}
-
+              <div className="space-y-0.5">
+                <Label htmlFor="birthdate" className="text-xs text-muted-foreground">
+                  Geburtsdatum
+                </Label>
+                <Input
+                  id="birthdate"
+                  type="date"
+                  value={String(formData.birthdate)}
+                  onChange={(e) => handleInputChange('birthdate', e.target.value)}
+                  className="bg-background h-8 text-xs"
+                />
+              </div>
               <div className="space-y-0.5 col-span-2">
                 <Label htmlFor="placeOfBirth" className="text-xs text-muted-foreground">
                   Geburtsort
@@ -506,7 +447,7 @@ export default function ProfileView() {
                 <Input
                   id="email"
                   type="email"
-                  value={user?.email || ''}
+                  value={account?.email || ''}
                   disabled
                   className="bg-muted h-8 text-xs text-muted-foreground cursor-not-allowed"
                 />
