@@ -1,25 +1,26 @@
 'use client';
 
-import { useState } from 'react';
 import {
-  User,
-  MapPin,
-  Save,
-  Camera,
-  Phone,
-  Calendar,
-  Globe,
+  AlertTriangle,
   Building2,
-  Hash,
-  Home,
+  Calendar,
+  Camera,
   ChevronRight,
-  Lock,
-  Mail,
   Eye,
   EyeOff,
+  Globe,
+  Hash,
+  Home,
+  Lock,
+  Mail,
+  MapPin,
+  Phone,
+  Save,
   Trash2,
-  AlertTriangle,
+  User,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,8 +31,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Gender, Pronoun } from '@/contexts/auth-context';
-import { AccountResource, UserResource } from '@/services/Resources';
+import { getAccount, getUser } from '@/services/api';
+import type { AccountResource, UserResource } from '@/services/Resources';
+
+import { useLoginContext } from '../LoginContext';
 
 const genderOptions: { value: Gender; label: string }[] = [
   { value: 'MALE', label: 'Männlich' },
@@ -78,7 +81,28 @@ export default function ProfileView() {
     zipCode: user?.zipCode || '',
     street: user?.street || '',
     houseNumber: user?.houseNumber || '',
-  });
+  } as UserResource);
+
+  async function load() {
+    if (!login) return;
+    try {
+      const foundUser = await getUser(login.userId!);
+      const foundAccount = await getAccount(login.id);
+      setFormData(foundUser);
+      setUser(foundUser);
+      setAccount(foundAccount);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const user = async () => {
+      return await load();
+    };
+
+    user();
+  }, [login]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
