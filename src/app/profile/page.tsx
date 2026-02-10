@@ -79,6 +79,8 @@ export default function ProfileView() {
     zipCode: user?.zipCode || '',
     street: user?.street || '',
     houseNumber: user?.houseNumber || '',
+    password: '',
+    passwordRepeat: '',
   });
 
   async function load() {
@@ -102,6 +104,8 @@ export default function ProfileView() {
         zipCode: foundUser?.zipCode || '',
         street: foundUser?.street || '',
         houseNumber: foundUser?.houseNumber || '',
+        password: '',
+        passwordRepeat: '',
       });
       setUser(foundUser);
       setAccount(foundAccount);
@@ -313,6 +317,23 @@ export default function ProfileView() {
           phone:
             formData.phone.length > 0 && !isValidGermanPhone(formData.phone)
               ? 'Bitte gib eine gültige deutsche Mobilfunknummer ein (+49 oder 0157...)'
+              : undefined,
+        });
+        break;
+      case 'password':
+        setValidationErrors({
+          ...validationErrors,
+          password: !isStrongPassword(formData.password)
+            ? 'Dein Passwort muss mindestens 8 Zeichen lang sein, eine Ziffer, einen Groß- sowie Kleinbuchstaben und ein Sonderzeichen enthalten.'
+            : undefined,
+        });
+        break;
+      case 'passwordRepeat':
+        setValidationErrors({
+          ...validationErrors,
+          passwordRepeat:
+            formData.passwordRepeat !== formData.password
+              ? 'Die eingegebenen Passwörter stimmen nicht überein.'
               : undefined,
         });
         break;
@@ -683,15 +704,17 @@ export default function ProfileView() {
                 </Label>
                 <div className="relative">
                   <Input
-                    id="newPassword"
+                    id="password"
+                    name="password"
                     type={showNewPassword ? 'text' : 'password'}
                     placeholder="Mind. 8 Zeichen"
-                    value={newPassword}
-                    onChange={(e) => {
-                      setNewPassword(e.target.value);
-                      setPasswordError('');
-                    }}
+                    value={formData.password}
+                    onChange={update}
+                    onBlur={validate}
                   />
+                  {validationErrors.password && (
+                    <p className="text-sm text-accent-red mt-1">{validationErrors.password}</p>
+                  )}
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
@@ -733,15 +756,19 @@ export default function ProfileView() {
                 </Label>
                 <div className="relative">
                   <Input
-                    id="confirmPassword"
+                    id="passwordRepeat"
+                    name="passwordRepeat"
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Passwort bestätigen"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      setPasswordError('');
-                    }}
+                    value={formData.passwordRepeat}
+                    onChange={update}
+                    onBlur={validate}
                   />
+                  {validationErrors.passwordRepeat && (
+                    <p className="text-sm text-accent-red mt-1">
+                      {validationErrors.passwordRepeat}
+                    </p>
+                  )}
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
