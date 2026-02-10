@@ -124,34 +124,36 @@ export default function ProfileView() {
     user();
   }, [login]);
 
-  const handleSave = async () => {
-    if (newPassword || confirmPassword) {
-      if (newPassword.length < 8) {
-        setPasswordError('Passwort muss mindestens 8 Zeichen lang sein.');
-        return;
-      }
-      if (newPassword !== confirmPassword) {
-        setPasswordError('Passwörter stimmen nicht überein.');
-        return;
-      }
-      setPasswordError('');
-    }
-
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    setIsSaving(false);
-    setSaveSuccess(true);
-    setNewPassword('');
-    setConfirmPassword('');
-    setPasswordError('');
-    setTimeout(() => setSaveSuccess(false), 3000);
-  };
-
   function update(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  //Pilgrim Style :P
+  const [validationErrors, setValidationErrors] = React.useState<
+    ValidationMessages<typeof formData>
+  >({});
+
+  function validate(e: React.FocusEvent<HTMLInputElement>) {
+    switch (e.target.name) {
+      case 'firstname':
+        let errorMsgFirst: string | undefined = '';
+
+        if (formData.firstname.length < 1) {
+          errorMsgFirst = 'Dein Vorname muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(formData.firstname)) {
+          errorMsgFirst = 'Dein Vorname darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgFirst = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          firstname: errorMsgFirst,
+        });
+        break;
+    }
   }
 
   if (!account || !user) return <></>;
@@ -326,8 +328,12 @@ export default function ProfileView() {
                   name="firstname"
                   value={formData.firstname}
                   onChange={update}
+                  onBlur={validate}
                   required
                 />
+                {validationErrors.firstname && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.firstname}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
