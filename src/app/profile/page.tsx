@@ -244,6 +244,22 @@ export default function ProfileView() {
           country: errorMsgcountry,
         });
         break;
+      case 'street':
+        let errorMsgstreet: string | undefined = '';
+
+        if (formData.street.length !== 0 && formData.street.length < 2) {
+          errorMsgstreet = 'Die Straße muss aus mindestens 2 Buchstaben bestehen.';
+        } else if (formData.street.length !== 0 && !isOnlyLetter(formData.street)) {
+          errorMsgstreet = 'Die Straße darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgstreet = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          street: errorMsgstreet,
+        });
+        break;
     }
   }
 
@@ -519,7 +535,11 @@ export default function ProfileView() {
                   placeholder="Straßenname"
                   value={formData.street}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.street && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.street}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
