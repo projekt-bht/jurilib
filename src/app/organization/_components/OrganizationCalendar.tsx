@@ -201,18 +201,27 @@ export default function OrganizationCalendar({
             <div className="grid grid-cols-1 gap-3">
               {employees.slice(0, 4).map((employee) => {
                 const isSelected = selectedEmployee?.id === employee.id;
+                // When one employee is selected, visually mute all other cards
+                // so the active choice is unmistakable but still changeable.
+                const isMuted = selectedEmployee && !isSelected;
                 return (
-                <button
-                  key={employee.id}
-                  onClick={() => {
-                    setSelectedEmployee(employee);
-                  }}
-                  className={`rounded-xl px-4 py-3 border-2 text-left bg-accent-white transition-all duration-200 hover:shadow-sm ${isSelected ? 'border-accent-blue-light shadow-sm' : 'border-border'}`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ${isSelected ? 'ring-accent-blue' : 'ring-transparent'}`}
-                    >
+                  <button
+                    key={employee.id}
+                    onClick={() => {
+                      setSelectedEmployee(employee);
+                    }}
+                    className={`rounded-2xl px-4 py-3 border-2 text-left transition-all duration-200 ${
+                      isSelected
+                        ? 'border-accent-blue bg-linear-to-r from-accent-blue-soft to-accent-white shadow-2xl ring-4 ring-accent-blue-light scale-[1.02]'
+                        : 'border-border bg-accent-white hover:border-accent-blue-light hover:bg-accent-blue-soft'
+                    } ${isMuted ? 'opacity-55 hover:opacity-100' : ''}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ${
+                          isSelected ? 'ring-accent-blue' : 'ring-transparent'
+                        }`}
+                      >
                         {employee.firstname
                           .split(' ')
                           .map((n) => n[0])
