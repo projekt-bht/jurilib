@@ -55,7 +55,6 @@ export default function ProfileView() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
@@ -161,9 +160,11 @@ export default function ProfileView() {
     setAccountForm({ ...accountForm, [e.target.name]: e.target.value });
   }
   function discardChanges() {
-    if (!initialuserForm) return;
-    setUserForm(initialuserForm);
-    setValidationErrors({});
+    if (initialuserForm && initialAccountForm) {
+      setUserForm(initialuserForm);
+      setAccountForm(initialAccountForm);
+      setValidationErrors({});
+    }
   }
 
   //Pilgrim Style :P
@@ -907,10 +908,6 @@ export default function ProfileView() {
                   </button>
                 </div>
               </div>
-
-              {passwordError && (
-                <p className="text-xs text-destructive col-span-2">{passwordError}</p>
-              )}
             </div>
           </div>
 
