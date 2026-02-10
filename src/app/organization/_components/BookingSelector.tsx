@@ -4,7 +4,6 @@ import { User, Zap } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
 import type { Employee } from '~/generated/prisma/client';
 
 export enum BookingMode {
@@ -41,24 +40,24 @@ export default function BookingSelector({
         : 'Person auswählen';
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={`space-y-2 ${className ?? ''}`}>
       {/* Tab toggle: pill container, active tab is white with shadow, icons per spec */}
       <Tabs
         value={bookingMode}
         onValueChange={(value) => handleSetBookingMode(value as BookingMode)}
         className="w-full"
       >
-        <TabsList className="w-full rounded-full bg-accent-gray-soft p-1 shadow-inner">
+        <TabsList className="w-full rounded-lg bg-accent-gray-soft p-1 shadow-inner !h-16 items-stretch">
           <TabsTrigger
             value={BookingMode.QUICK}
-            className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground"
+            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground h-14"
           >
             <Zap className="h-4 w-4" />
             Schnellbuchung
           </TabsTrigger>
           <TabsTrigger
             value={BookingMode.EMPLOYEE}
-            className="rounded-full px-4 py-2 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground"
+            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground h-14"
           >
             <User className="h-4 w-4" />
             Mitarbeiter*in

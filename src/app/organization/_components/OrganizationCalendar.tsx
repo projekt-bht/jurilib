@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
@@ -203,23 +202,17 @@ export default function OrganizationCalendar({
               {employees.slice(0, 4).map((employee) => {
                 const isSelected = selectedEmployee?.id === employee.id;
                 return (
-                  <button
-                    key={employee.id}
-                    onClick={() => {
-                      setSelectedEmployee(employee);
-                    }}
-                    className={cn(
-                      'rounded-xl px-4 py-3 border-2 text-left bg-accent-white transition-all duration-200 hover:shadow-sm',
-                      isSelected ? 'border-accent-blue-light shadow-sm' : 'border-border'
-                    )}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={cn(
-                          'relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ring-transparent',
-                          isSelected ? 'ring-accent-blue' : 'ring-transparent'
-                        )}
-                      >
+                <button
+                  key={employee.id}
+                  onClick={() => {
+                    setSelectedEmployee(employee);
+                  }}
+                  className={`rounded-xl px-4 py-3 border-2 text-left bg-accent-white transition-all duration-200 hover:shadow-sm ${isSelected ? 'border-accent-blue-light shadow-sm' : 'border-border'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ${isSelected ? 'ring-accent-blue' : 'ring-transparent'}`}
+                    >
                         {employee.firstname
                           .split(' ')
                           .map((n) => n[0])
@@ -317,14 +310,13 @@ export default function OrganizationCalendar({
                     <Button
                       key={slot.appointmentId}
                       variant="outline"
-                      className={cn(
-                        'rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug',
+                      className={`rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug ${
                         isBooked
                           ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                           : isSelected
                             ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
                             : 'border-border hover:bg-accent-gray-light'
-                      )}
+                      }`}
                       disabled={isBooked}
                       onClick={() => {
                         if (isBooked) return;
