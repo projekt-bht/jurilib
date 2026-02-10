@@ -260,6 +260,20 @@ export default function ProfileView() {
           street: errorMsgstreet,
         });
         break;
+      case 'houseNumber':
+        let errorMsgHouseNumber: string | undefined = '';
+
+        if (formData.houseNumber.length !== 0 && formData.houseNumber.length < 1) {
+          errorMsgHouseNumber = 'Die Hausnummer muss aus mindestens 1 Zeichen bestehen.';
+        } else {
+          errorMsgHouseNumber = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          houseNumber: errorMsgHouseNumber,
+        });
+        break;
     }
   }
 
@@ -555,7 +569,11 @@ export default function ProfileView() {
                   placeholder="z.B. 42"
                   value={formData.houseNumber}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.houseNumber && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.houseNumber}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
