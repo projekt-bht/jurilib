@@ -3,9 +3,7 @@
 import {
   AlertTriangle,
   Building2,
-  Calendar,
   Camera,
-  ChevronRight,
   Eye,
   EyeOff,
   Globe,
@@ -33,11 +31,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getAccount, getUser } from '@/services/api';
+import { getAccount, getUser, patchUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
+import {
+  isOnlyLetter,
+  isStrongPassword,
+  isValidEmail,
+  isValidGermanPhone,
+} from '@/services/validator/validationHelper';
+import { Gender, Pronoun } from '~/generated/prisma/enums';
 
 import { useLoginContext } from '../LoginContext';
-import { Gender, Pronoun } from '~/generated/prisma/enums';
 
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
@@ -69,25 +73,47 @@ export default function ProfileView() {
     birthdate: user?.birthdate || '',
     placeOfBirth: user?.placeOfBirth || '',
     phone: user?.phone || '',
-    imageUrl: user?.imageUrl ?? '',
     country: user?.country || '',
     city: user?.city || '',
     zipCode: user?.zipCode || '',
     street: user?.street || '',
     houseNumber: user?.houseNumber || '',
-  } as UserResource);
+  });
 
   async function load() {
     if (!login) return;
     try {
       const foundUser = await getUser(login.userId!);
       const foundAccount = await getAccount(login.id);
-      setFormData(foundUser);
+      setFormData({
+        title: foundUser?.title || '',
+        firstname: foundUser?.firstname || '',
+        lastname: foundUser?.lastname || '',
+        gender: foundUser?.gender || Gender.Keine_Angabe,
+        genderText: foundUser?.genderText || '',
+        pronoun: foundUser?.pronoun || Pronoun.Keine_Angabe,
+        pronounText: foundUser?.pronounText || '',
+        birthdate: foundUser?.birthdate || '',
+        placeOfBirth: foundUser?.placeOfBirth || '',
+        phone: foundUser?.phone || '',
+        country: foundUser?.country || '',
+        city: foundUser?.city || '',
+        zipCode: foundUser?.zipCode || '',
+        street: foundUser?.street || '',
+        houseNumber: foundUser?.houseNumber || '',
+      });
       setUser(foundUser);
       setAccount(foundAccount);
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function updateUser() {
+    try {
+      if (!login) return;
+      await patchUser(login.userId!, formData);
+    } catch (error) {}
   }
 
   useEffect(() => {
@@ -145,7 +171,7 @@ export default function ProfileView() {
               <span className="text-sm text-emerald-600 font-medium">Gespeichert!</span>
             )}
             <Button
-              onClick={handleSave}
+              onClick={updateUser}
               disabled={isSaving || !formData.firstname || !formData.lastname}
               className="gap-2 h-10 text-sm px-5"
             >
