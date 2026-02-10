@@ -503,7 +503,14 @@ export default function ProfileView() {
                 >
                   <Phone className="w-3 h-3" /> Telefon
                 </Label>
-                <Input id="phone" type="tel" placeholder="+49 170 1234567" value={formData.phone} />
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+49 170 1234567"
+                  value={formData.phone}
+                  onChange={update}
+                />
               </div>
 
               <div className="space-y-0.5 mt-5">
