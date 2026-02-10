@@ -1,7 +1,7 @@
 'use client';
 
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react'; //User icons
+import { Calendar as CalendarIcon, Check, Clock, User } from 'lucide-react'; //User icons
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-// import BookingSelector from './BookingSelector';
+import BookingSelector, { BookingMode } from './BookingSelector';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -39,6 +39,7 @@ type SlotOption = {
 export default function OrganizationCalendar({
   onChange,
   appointments,
+  employees,
 }: OrganizationCalendarProps) {
   const { login } = useLoginContext();
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
@@ -50,8 +51,17 @@ export default function OrganizationCalendar({
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
   const [isBooking, setIsBooking] = useState(false);
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
-  // const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
-  // const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+  const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+
+  // Ensure employee selection is reset when switching into employee mode
+  // so no one is pre-selected on first view.
+  const handleBookingModeChange = (mode: BookingMode) => {
+    setBookingMode(mode);
+    if (mode === BookingMode.EMPLOYEE) {
+      setSelectedEmployee(null);
+    }
+  };
 
   const setDate = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -175,97 +185,117 @@ export default function OrganizationCalendar({
           </p>
         </div>
 
-        {/* save this for later use */}
-        {/*
-          <BookingSelector
-            bookingMode={bookingMode}
-            onBookingModeChange={(mode) => setBookingMode(mode)}
-            selectedEmployee={selectedEmployee}
-          />
+        {/* Booking mode tabs (quick booking vs employee) */}
+        <BookingSelector
+          bookingMode={bookingMode}
+          onBookingModeChange={handleBookingModeChange}
+          selectedEmployee={selectedEmployee}
+        />
 
-          {bookingMode === BookingMode.EMPLOYEE && (
-            <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <User className="w-5 h-5 text-accent-blue" />
-                Wähle einen Mitarbeiter
-              </h3>
-              <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
-                {employees.map((employee) => (
+        {/* Employee list only shown in employee mode; compact layout with avatar ring + check */}
+        {bookingMode === BookingMode.EMPLOYEE && (
+          <div className="mb-2 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <User className="w-5 h-5 text-accent-blue" />
+              Wähle einen Mitarbeiter
+            </h3>
+            <div className="grid grid-cols-1 gap-3">
+              {employees.slice(0, 4).map((employee) => {
+                const isSelected = selectedEmployee?.id === employee.id;
+                return (
                   <button
                     key={employee.id}
                     onClick={() => {
                       setSelectedEmployee(employee);
                     }}
                     className={cn(
-                      // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
-                      'p-4 rounded-xl border-2 transition-all duration-200 text-left',
-                      selectedEmployee?.id === employee.id
-                        ? 'border-accent-blue-light bg-accent-gray-soft shadow-md'
-                        : 'border-border hover:border-primary/50 bg-accent-white'
+                      'rounded-xl px-4 py-3 border-2 text-left bg-accent-white transition-all duration-200 hover:shadow-sm',
+                      isSelected ? 'border-accent-blue-light shadow-sm' : 'border-border'
                     )}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0"></div>
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={cn(
+                          'relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ring-transparent',
+                          isSelected ? 'ring-accent-blue' : 'ring-transparent'
+                        )}
+                      >
+                        {employee.firstname
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')}
+                        {/* Selected state: blue ring + blue check badge */}
+                        {isSelected && (
+                          <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-blue text-accent-white shadow-sm">
+                            <Check className="h-3 w-3" />
+                          </span>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-foreground mb-1 break-words">
-                          
+                        <h4 className="font-semibold text-foreground mb-0.5 break-words">
                           {employee.firstname} {employee.lastname}
                         </h4>
+                        <p className="text-sm text-muted-foreground">{employee.position}</p>
                       </div>
                     </div>
                   </button>
-                ))}
-              </div>
-            </div>
-          )}
-          */}
-
-        <div className="flex items-center gap-2 flex-wrap">
-          <CalendarIcon className="h-5 w-5 text-accent-blue" />
-          <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
-        </div>
-        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
-          <Calendar
-            mode="single"
-            today={new Date()}
-            locale={de}
-            selected={selectedDate}
-            onSelect={(date) => {
-              setDate(date);
-              handleChange(date, null);
-            }}
-            disabled={isDisabledDay}
-            startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
-            endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year
-            className="bg-transparent mx-auto flex-col"
-            /* https://daypicker.dev/docs/styling */
-            classNames={{
-              caption_label: 'font-bold text-xl',
-              day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
-              today:
-                ' flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
-              disabled:
-                '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-            }}
-          />
-
-          <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
-              <span>Heute</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
-              <span>Ausgewählt</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
-              <span>Nicht verfügbar</span>
+                );
+              })}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Calendar is visible immediately in quick booking,
+            or after an employee is picked in employee mode. */}
+        {(bookingMode === BookingMode.QUICK ||
+          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) && (
+          <>
+            <div className="flex items-center gap-2 flex-wrap">
+              <CalendarIcon className="h-5 w-5 text-accent-blue" />
+              <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
+            </div>
+            <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
+              <Calendar
+                mode="single"
+                today={new Date()}
+                locale={de}
+                selected={selectedDate}
+                onSelect={(date) => {
+                  setDate(date);
+                  handleChange(date, null);
+                }}
+                disabled={isDisabledDay}
+                startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
+                endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year
+                className="bg-transparent mx-auto flex-col"
+                /* https://daypicker.dev/docs/styling */
+                classNames={{
+                  caption_label: 'font-bold text-xl',
+                  day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
+                  today:
+                    ' flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
+                  disabled:
+                    '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
+                }}
+              />
+
+              <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
+                  <span>Heute</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
+                  <span>Ausgewählt</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
+                  <span>Nicht verfügbar</span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {selectedDate && (
           <div className="space-y-3">
