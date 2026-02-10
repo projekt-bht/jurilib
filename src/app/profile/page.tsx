@@ -198,6 +198,20 @@ export default function ProfileView() {
           pronounText: errorMsgPronoun,
         });
         break;
+      case 'title':
+        let errorMsgTitle: string | undefined = '';
+
+        if (formData.title.length !== 0 && formData.title.length < 2) {
+          errorMsgTitle = 'Dein Titel muss aus mindestens 2 Zeichen bestehen.';
+        } else {
+          errorMsgTitle = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          title: errorMsgTitle,
+        });
+        break;
     }
   }
 
@@ -288,7 +302,11 @@ export default function ProfileView() {
                   onChange={update}
                   placeholder="z.B. Dr., Prof."
                   value={formData.title}
+                  onBlur={validate}
                 />
+                {validationErrors.title && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.title}</p>
+                )}
               </div>
               <div className="flex justify-between w-full max-w-2xl mx-auto">
                 <div className="space-y-0.5 w-1/2 pr-2">
