@@ -212,6 +212,22 @@ export default function ProfileView() {
           title: errorMsgTitle,
         });
         break;
+      case 'placeOfBirth':
+        let errorMsgbirthPlace: string | undefined = '';
+
+        if (formData.placeOfBirth.length !== 0 && formData.pronounText.length < 1) {
+          errorMsgbirthPlace = 'Dein Geburtsort muss aus mindestens 2 Buchstaben bestehen.';
+        } else if (formData.placeOfBirth.length !== 0 && !isOnlyLetter(formData.placeOfBirth)) {
+          errorMsgbirthPlace = 'Dein Geburtsort darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgbirthPlace = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          placeOfBirth: errorMsgbirthPlace,
+        });
+        break;
     }
   }
 
@@ -435,7 +451,11 @@ export default function ProfileView() {
                   onChange={update}
                   placeholder="z.B. Berlin"
                   value={formData.placeOfBirth}
+                  onBlur={validate}
                 />
+                {validationErrors.placeOfBirth && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.placeOfBirth}</p>
+                )}
               </div>
             </div>
           </div>
