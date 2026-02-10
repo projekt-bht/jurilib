@@ -16,6 +16,7 @@ import {
   Save,
   Trash2,
   User,
+  X,
 } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -52,8 +53,6 @@ export default function ProfileView() {
   const { login } = useLoginContext();
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -83,12 +82,14 @@ export default function ProfileView() {
     passwordRepeat: '',
   });
 
+  const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
+
   async function load() {
     if (!login) return;
     try {
       const foundUser = await getUser(login.userId!);
       const foundAccount = await getAccount(login.id);
-      setFormData({
+      const loadedFormData = {
         title: foundUser?.title || '',
         firstname: foundUser?.firstname || '',
         lastname: foundUser?.lastname || '',
@@ -106,7 +107,10 @@ export default function ProfileView() {
         houseNumber: foundUser?.houseNumber || '',
         password: '',
         passwordRepeat: '',
-      });
+      };
+
+      setFormData(loadedFormData);
+      setInitialFormData(loadedFormData);
       setUser(foundUser);
       setAccount(foundAccount);
     } catch (error) {
@@ -115,10 +119,16 @@ export default function ProfileView() {
   }
 
   async function updateUser() {
+    if (!login) return;
+    setIsSaving(true);
     try {
-      if (!login) return;
       await patchUser(login.userId!, formData);
-    } catch (error) {}
+      setInitialFormData(formData);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   useEffect(() => {
@@ -133,6 +143,12 @@ export default function ProfileView() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  function discardChanges() {
+    if (!initialFormData) return;
+    setFormData(initialFormData);
+    setValidationErrors({});
   }
 
   //Pilgrim Style :P
@@ -340,11 +356,134 @@ export default function ProfileView() {
     }
   }
 
+  function isFormValid() {
+    if (formData.firstname.length < 1 || !isOnlyLetter(formData.firstname)) {
+      return false;
+    }
+
+    if (formData.lastname.length < 1 || !isOnlyLetter(formData.lastname)) {
+      return false;
+    }
+
+    if (
+      formData.gender === Gender.Andere &&
+      (formData.genderText.length < 1 || !isOnlyLetter(formData.genderText))
+    ) {
+      return false;
+    }
+    if (
+      formData.pronoun === Pronoun.Andere &&
+      (formData.pronounText.length < 1 || !isOnlyLetter(formData.pronounText))
+    ) {
+      return false;
+    }
+
+    if (formData.title.length !== 0 && formData.title.length < 2) {
+      return false;
+    }
+
+    if (
+      formData.placeOfBirth.length !== 0 &&
+      (formData.placeOfBirth.length < 1 || !isOnlyLetter(formData.placeOfBirth))
+    ) {
+      return false;
+    }
+
+    if (
+      formData.country.length !== 0 &&
+      (formData.country.length < 2 || !isOnlyLetter(formData.country))
+    ) {
+      return false;
+    }
+
+    if (
+      formData.street.length !== 0 &&
+      (formData.street.length < 2 || !isOnlyLetter(formData.street))
+    ) {
+      return false;
+    }
+
+    if (formData.houseNumber.length !== 0 && formData.houseNumber.length < 1) {
+      return false;
+    }
+
+    if (
+      formData.zipCode.length !== 0 &&
+      (formData.zipCode.length < 2 || !isOnlyNumber(formData.zipCode))
+    ) {
+      return false;
+    }
+
+    if (formData.city.length !== 0 && (formData.city.length < 2 || !isOnlyLetter(formData.city))) {
+      return false;
+    }
+
+    if (formData.phone.length > 0 && !isValidGermanPhone(formData.phone)) {
+      return false;
+    }
+
+    if (formData.password.length > 0 && !isStrongPassword(formData.password)) {
+      return false;
+    }
+    if (formData.password.length > 0 && formData.passwordRepeat !== formData.password) {
+      return false;
+    }
+
+    return true;
+  }
+
   if (!account || !user) return <></>;
+
+  const hasChanges =
+    initialFormData && JSON.stringify(formData) !== JSON.stringify(initialFormData);
 
   return (
     <section className="bg-card">
       <div className="bg-card flex-1 w-full p-20 md:p-20 overflow-y-auto md:overflow-y-hidden">
+        <div className="space-y-4">
+          <div className="relative w-full h-0">
+            <div
+              className={`
+        absolute right-0 top-0 flex items-center gap-3
+        transition-opacity duration-200
+        ${hasChanges ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+      `}
+            >
+              <Button
+                size="sm"
+                onClick={discardChanges}
+                disabled={!hasChanges}
+                className=" bg-accent-red hover:bg-accent-red/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
+              >
+                <X className="w-4 h-4" />
+                Verwerfen
+              </Button>
+
+              <Button
+                onClick={updateUser}
+                disabled={isSaving || !isFormValid()}
+                className=" bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
+              >
+                {isSaving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    Speichern…
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    Speichern
+                  </>
+                )}
+              </Button>
+
+              {saveSuccess && (
+                <span className="text-sm text-emerald-600 font-medium">Gespeichert!</span>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-4">
           {/* Header */}
           <div className=" flex items-center justify-between">
@@ -352,43 +491,13 @@ export default function ProfileView() {
               Mein Profil
             </h1>
           </div>
-          <div className="flex items-center justify-end w-full mb-5">
-            {saveSuccess && (
-              <span className="text-sm text-emerald-600 font-medium">Gespeichert!</span>
-            )}
-            <Button
-              onClick={updateUser}
-              disabled={isSaving || !formData.firstname || !formData.lastname}
-              className="gap-2 h-10 text-sm px-5"
-            >
-              {isSaving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                  Speichern...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  Speichern
-                </>
-              )}
-            </Button>
-          </div>
         </div>
 
         {/* Row 1: Profile banner (full width) */}
-        <div className="bg-linear-to-r from-accent-red-light/30 via-accent-blue-soft to-background rounded-2xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
+        <div className="mt-10 bg-linear-to-r from-accent-red-light/30 via-accent-blue-soft to-background rounded-2xl border border-border/60 px-5 py-4 flex items-center gap-5 mb-3">
           <div className="relative group shrink-0">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center overflow-hidden ring-2 ring-background shadow-md">
-              {formData.imageUrl ? (
-                <img
-                  src={formData.imageUrl || '/placeholder.svg'}
-                  alt={`${formData.firstname} ${formData.lastname}`}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <User className="w-7 h-7 text-primary" />
-              )}
+              <User className="w-7 h-7 text-primary" />
             </div>
             <button
               className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:scale-110 transition-transform"
