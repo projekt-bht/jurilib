@@ -1,6 +1,6 @@
 'use client';
 
-import { User, Zap } from 'lucide-react';
+import { CalendarDays, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -52,8 +52,8 @@ export default function BookingSelector({
             value={BookingMode.QUICK}
             className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground h-14"
           >
-            <Zap className="h-4 w-4" />
-            Schnellbuchung
+            <CalendarDays className="h-4 w-4" />
+            Alle Termine
           </TabsTrigger>
           <TabsTrigger
             value={BookingMode.EMPLOYEE}
