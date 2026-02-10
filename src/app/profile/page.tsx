@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getAccount, getUser, patchUser } from '@/services/api';
+import { getAccount, getUser, patchAccount, patchUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 import {
   isOnlyLetter,
@@ -62,7 +62,7 @@ export default function ProfileView() {
 
   if (!login) notFound();
 
-  const [formData, setFormData] = useState({
+  const [userForm, setUserForm] = useState({
     title: user?.title || '',
     firstname: user?.firstname || '',
     lastname: user?.lastname || '',
@@ -78,18 +78,22 @@ export default function ProfileView() {
     zipCode: user?.zipCode || '',
     street: user?.street || '',
     houseNumber: user?.houseNumber || '',
+  });
+
+  const [accountForm, setAccountForm] = useState({
     password: '',
     passwordRepeat: '',
   });
 
-  const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
+  const [initialuserForm, setInitialuserForm] = useState<typeof userForm | null>(null);
+  const [initialAccountForm, setInitialAccountForm] = useState<typeof accountForm | null>(null);
 
   async function load() {
     if (!login) return;
     try {
       const foundUser = await getUser(login.userId!);
       const foundAccount = await getAccount(login.id);
-      const loadedFormData = {
+      const loadeduserForm = {
         title: foundUser?.title || '',
         firstname: foundUser?.firstname || '',
         lastname: foundUser?.lastname || '',
@@ -105,12 +109,17 @@ export default function ProfileView() {
         zipCode: foundUser?.zipCode || '',
         street: foundUser?.street || '',
         houseNumber: foundUser?.houseNumber || '',
+      };
+
+      const loadedAccountForm = {
         password: '',
         passwordRepeat: '',
       };
 
-      setFormData(loadedFormData);
-      setInitialFormData(loadedFormData);
+      setUserForm(loadeduserForm);
+      setInitialuserForm(loadeduserForm);
+      setInitialAccountForm(loadedAccountForm);
+
       setUser(foundUser);
       setAccount(foundAccount);
     } catch (error) {
@@ -122,8 +131,9 @@ export default function ProfileView() {
     if (!login) return;
     setIsSaving(true);
     try {
-      await patchUser(login.userId!, formData);
-      setInitialFormData(formData);
+      await patchUser(login.userId!, userForm);
+      await patchAccount(login.id, { password: accountForm.password });
+      setInitialuserForm(userForm);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     } finally {
@@ -142,18 +152,23 @@ export default function ProfileView() {
   function update(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setUserForm({ ...userForm, [e.target.name]: e.target.value });
   }
 
+  function updateAccount(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
+    setAccountForm({ ...accountForm, [e.target.name]: e.target.value });
+  }
   function discardChanges() {
-    if (!initialFormData) return;
-    setFormData(initialFormData);
+    if (!initialuserForm) return;
+    setUserForm(initialuserForm);
     setValidationErrors({});
   }
 
   //Pilgrim Style :P
   const [validationErrors, setValidationErrors] = React.useState<
-    ValidationMessages<typeof formData>
+    ValidationMessages<typeof userForm & typeof accountForm>
   >({});
 
   function validate(e: React.FocusEvent<HTMLInputElement>) {
@@ -161,9 +176,9 @@ export default function ProfileView() {
       case 'firstname':
         let errorMsgFirst: string | undefined = '';
 
-        if (formData.firstname.length < 1) {
+        if (userForm.firstname.length < 1) {
           errorMsgFirst = 'Dein Vorname muss aus mindestens 1 Buchstaben bestehen.';
-        } else if (!isOnlyLetter(formData.firstname)) {
+        } else if (!isOnlyLetter(userForm.firstname)) {
           errorMsgFirst = 'Dein Vorname darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgFirst = undefined;
@@ -177,9 +192,9 @@ export default function ProfileView() {
       case 'lastname':
         let errorMsgLast: string | undefined = '';
 
-        if (formData.lastname.length < 1) {
+        if (userForm.lastname.length < 1) {
           errorMsgLast = 'Dein Nachname muss aus mindestens 1 Buchstaben bestehen.';
-        } else if (!isOnlyLetter(formData.lastname)) {
+        } else if (!isOnlyLetter(userForm.lastname)) {
           errorMsgLast = 'Dein Nachname darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgLast = undefined;
@@ -192,9 +207,9 @@ export default function ProfileView() {
       case 'genderText':
         let errorMsgGender: string | undefined = '';
 
-        if (formData.genderText.length < 1) {
+        if (userForm.genderText.length < 1) {
           errorMsgGender = 'Deine Geschlechtsangabe muss aus mindestens 1 Buchstaben bestehen.';
-        } else if (!isOnlyLetter(formData.genderText)) {
+        } else if (!isOnlyLetter(userForm.genderText)) {
           errorMsgGender = 'Deine Geschlechtsangabe darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgGender = undefined;
@@ -207,9 +222,9 @@ export default function ProfileView() {
       case 'pronounText':
         let errorMsgPronoun: string | undefined = '';
 
-        if (formData.pronounText.length < 1) {
+        if (userForm.pronounText.length < 1) {
           errorMsgPronoun = 'Deine Pronomen müssen aus mindestens 1 Buchstaben bestehen.';
-        } else if (!isOnlyLetter(formData.pronounText)) {
+        } else if (!isOnlyLetter(userForm.pronounText)) {
           errorMsgPronoun = 'Deine Pronomen dürfen nur aus Buchstaben bestehen.';
         } else {
           errorMsgPronoun = undefined;
@@ -222,7 +237,7 @@ export default function ProfileView() {
       case 'title':
         let errorMsgTitle: string | undefined = '';
 
-        if (formData.title.length !== 0 && formData.title.length < 2) {
+        if (userForm.title.length !== 0 && userForm.title.length < 2) {
           errorMsgTitle = 'Dein Titel muss aus mindestens 2 Zeichen bestehen.';
         } else {
           errorMsgTitle = undefined;
@@ -236,9 +251,9 @@ export default function ProfileView() {
       case 'placeOfBirth':
         let errorMsgbirthPlace: string | undefined = '';
 
-        if (formData.placeOfBirth.length !== 0 && formData.placeOfBirth.length < 1) {
+        if (userForm.placeOfBirth.length !== 0 && userForm.placeOfBirth.length < 1) {
           errorMsgbirthPlace = 'Dein Geburtsort muss aus mindestens 2 Buchstaben bestehen.';
-        } else if (formData.placeOfBirth.length !== 0 && !isOnlyLetter(formData.placeOfBirth)) {
+        } else if (userForm.placeOfBirth.length !== 0 && !isOnlyLetter(userForm.placeOfBirth)) {
           errorMsgbirthPlace = 'Dein Geburtsort darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgbirthPlace = undefined;
@@ -252,9 +267,9 @@ export default function ProfileView() {
       case 'country':
         let errorMsgcountry: string | undefined = '';
 
-        if (formData.country.length !== 0 && formData.country.length < 2) {
+        if (userForm.country.length !== 0 && userForm.country.length < 2) {
           errorMsgcountry = 'Das angegebene Land muss aus mindestens 2 Buchstaben bestehen.';
-        } else if (formData.country.length !== 0 && !isOnlyLetter(formData.country)) {
+        } else if (userForm.country.length !== 0 && !isOnlyLetter(userForm.country)) {
           errorMsgcountry = 'Das angegeben Land darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgcountry = undefined;
@@ -268,9 +283,9 @@ export default function ProfileView() {
       case 'street':
         let errorMsgstreet: string | undefined = '';
 
-        if (formData.street.length !== 0 && formData.street.length < 2) {
+        if (userForm.street.length !== 0 && userForm.street.length < 2) {
           errorMsgstreet = 'Die Straße muss aus mindestens 2 Buchstaben bestehen.';
-        } else if (formData.street.length !== 0 && !isOnlyLetter(formData.street)) {
+        } else if (userForm.street.length !== 0 && !isOnlyLetter(userForm.street)) {
           errorMsgstreet = 'Die Straße darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgstreet = undefined;
@@ -284,7 +299,7 @@ export default function ProfileView() {
       case 'houseNumber':
         let errorMsgHouseNumber: string | undefined = '';
 
-        if (formData.houseNumber.length !== 0 && formData.houseNumber.length < 1) {
+        if (userForm.houseNumber.length !== 0 && userForm.houseNumber.length < 1) {
           errorMsgHouseNumber = 'Die Hausnummer muss aus mindestens 1 Zeichen bestehen.';
         } else {
           errorMsgHouseNumber = undefined;
@@ -298,9 +313,9 @@ export default function ProfileView() {
       case 'zipCode':
         let errorMsgZipCode: string | undefined = '';
 
-        if (formData.zipCode.length !== 0 && formData.zipCode.length < 2) {
+        if (userForm.zipCode.length !== 0 && userForm.zipCode.length < 2) {
           errorMsgZipCode = 'Die Postleitzahl muss aus mindestens 2 Nummern bestehen.';
-        } else if (formData.zipCode.length !== 0 && !isOnlyNumber(formData.zipCode)) {
+        } else if (userForm.zipCode.length !== 0 && !isOnlyNumber(userForm.zipCode)) {
           errorMsgZipCode = 'Die Postleitzahl darf nur aus Nummern bestehen.';
         } else {
           errorMsgZipCode = undefined;
@@ -314,9 +329,9 @@ export default function ProfileView() {
       case 'city':
         let errorMsgCity: string | undefined = '';
 
-        if (formData.city.length !== 0 && formData.city.length < 2) {
+        if (userForm.city.length !== 0 && userForm.city.length < 2) {
           errorMsgCity = 'Die Stadt muss aus mindestens 2 Buchstaben bestehen.';
-        } else if (formData.city.length !== 0 && !isOnlyLetter(formData.city)) {
+        } else if (userForm.city.length !== 0 && !isOnlyLetter(userForm.city)) {
           errorMsgCity = 'Die Stadt darf nur aus Buchstaben bestehen.';
         } else {
           errorMsgCity = undefined;
@@ -331,7 +346,7 @@ export default function ProfileView() {
         setValidationErrors({
           ...validationErrors,
           phone:
-            formData.phone.length > 0 && !isValidGermanPhone(formData.phone)
+            userForm.phone.length > 0 && !isValidGermanPhone(userForm.phone)
               ? 'Bitte gib eine gültige deutsche Mobilfunknummer ein (+49 oder 0157...)'
               : undefined,
         });
@@ -339,7 +354,7 @@ export default function ProfileView() {
       case 'password':
         setValidationErrors({
           ...validationErrors,
-          password: !isStrongPassword(formData.password)
+          password: !isStrongPassword(accountForm.password)
             ? 'Dein Passwort muss mindestens 8 Zeichen lang sein, eine Ziffer, einen Groß- sowie Kleinbuchstaben und ein Sonderzeichen enthalten.'
             : undefined,
         });
@@ -348,7 +363,7 @@ export default function ProfileView() {
         setValidationErrors({
           ...validationErrors,
           passwordRepeat:
-            formData.passwordRepeat !== formData.password
+            accountForm.passwordRepeat !== accountForm.password
               ? 'Die eingegebenen Passwörter stimmen nicht überein.'
               : undefined,
         });
@@ -357,85 +372,86 @@ export default function ProfileView() {
   }
 
   function isFormValid() {
-    if (formData.firstname.length < 1 || !isOnlyLetter(formData.firstname)) {
+    if (userForm.firstname.length < 1 || !isOnlyLetter(userForm.firstname)) {
       return false;
     }
 
-    if (formData.lastname.length < 1 || !isOnlyLetter(formData.lastname)) {
+    if (userForm.lastname.length < 1 || !isOnlyLetter(userForm.lastname)) {
       return false;
     }
 
     if (
-      formData.gender === Gender.Andere &&
-      (formData.genderText.length < 1 || !isOnlyLetter(formData.genderText))
+      userForm.gender === Gender.Andere &&
+      (userForm.genderText.length < 1 || !isOnlyLetter(userForm.genderText))
     ) {
       return false;
     }
     if (
-      formData.pronoun === Pronoun.Andere &&
-      (formData.pronounText.length < 1 || !isOnlyLetter(formData.pronounText))
+      userForm.pronoun === Pronoun.Andere &&
+      (userForm.pronounText.length < 1 || !isOnlyLetter(userForm.pronounText))
     ) {
       return false;
     }
 
-    if (formData.title.length !== 0 && formData.title.length < 2) {
+    if (userForm.title.length !== 0 && userForm.title.length < 2) {
       return false;
     }
 
     if (
-      formData.placeOfBirth.length !== 0 &&
-      (formData.placeOfBirth.length < 1 || !isOnlyLetter(formData.placeOfBirth))
-    ) {
-      return false;
-    }
-
-    if (
-      formData.country.length !== 0 &&
-      (formData.country.length < 2 || !isOnlyLetter(formData.country))
+      userForm.placeOfBirth.length !== 0 &&
+      (userForm.placeOfBirth.length < 1 || !isOnlyLetter(userForm.placeOfBirth))
     ) {
       return false;
     }
 
     if (
-      formData.street.length !== 0 &&
-      (formData.street.length < 2 || !isOnlyLetter(formData.street))
+      userForm.country.length !== 0 &&
+      (userForm.country.length < 2 || !isOnlyLetter(userForm.country))
     ) {
-      return false;
-    }
-
-    if (formData.houseNumber.length !== 0 && formData.houseNumber.length < 1) {
       return false;
     }
 
     if (
-      formData.zipCode.length !== 0 &&
-      (formData.zipCode.length < 2 || !isOnlyNumber(formData.zipCode))
+      userForm.street.length !== 0 &&
+      (userForm.street.length < 2 || !isOnlyLetter(userForm.street))
     ) {
       return false;
     }
 
-    if (formData.city.length !== 0 && (formData.city.length < 2 || !isOnlyLetter(formData.city))) {
+    if (userForm.houseNumber.length !== 0 && userForm.houseNumber.length < 1) {
       return false;
     }
 
-    if (formData.phone.length > 0 && !isValidGermanPhone(formData.phone)) {
+    if (
+      userForm.zipCode.length !== 0 &&
+      (userForm.zipCode.length < 2 || !isOnlyNumber(userForm.zipCode))
+    ) {
       return false;
     }
 
-    if (formData.password.length > 0 && !isStrongPassword(formData.password)) {
+    if (userForm.city.length !== 0 && (userForm.city.length < 2 || !isOnlyLetter(userForm.city))) {
       return false;
     }
-    if (formData.password.length > 0 && formData.passwordRepeat !== formData.password) {
+
+    if (userForm.phone.length > 0 && !isValidGermanPhone(userForm.phone)) {
+      return false;
+    }
+
+    if (accountForm.password.length > 0 && !isStrongPassword(accountForm.password)) {
+      return false;
+    }
+    if (accountForm.password.length > 0 && accountForm.passwordRepeat !== accountForm.password) {
       return false;
     }
 
     return true;
   }
 
-  if (!account || !user || !initialFormData) return <></>;
+  if (!account || !user || !initialuserForm) return <></>;
 
   const hasChanges =
-    initialFormData && JSON.stringify(formData) !== JSON.stringify(initialFormData);
+    (initialuserForm && JSON.stringify(userForm) !== JSON.stringify(initialuserForm)) ||
+    (initialAccountForm && JSON.stringify(accountForm) !== JSON.stringify(initialAccountForm));
 
   return (
     <section className="bg-card">
@@ -508,8 +524,8 @@ export default function ProfileView() {
           </div>
           <div className="min-w-0">
             <h2 className="text-base font-semibold text-foreground leading-tight truncate">
-              {initialFormData.title && `${initialFormData.title} `}
-              {initialFormData.firstname} {initialFormData.lastname}
+              {initialuserForm.title && `${initialuserForm.title} `}
+              {initialuserForm.firstname} {initialuserForm.lastname}
             </h2>
           </div>
         </div>
@@ -535,7 +551,7 @@ export default function ProfileView() {
                   name="title"
                   onChange={update}
                   placeholder="z.B. Dr., Prof."
-                  value={formData.title}
+                  value={userForm.title}
                   onBlur={validate}
                 />
                 {validationErrors.title && (
@@ -546,12 +562,12 @@ export default function ProfileView() {
                 <div className="space-y-0.5 w-1/2 pr-2">
                   <Label className="text-xs text-muted-foreground">Geschlecht *</Label>
                   <Select
-                    value={formData.gender}
+                    value={userForm.gender}
                     onValueChange={(v) =>
-                      setFormData({
-                        ...formData,
+                      setUserForm({
+                        ...userForm,
                         gender: v as Gender,
-                        genderText: v === Gender.Andere ? formData.genderText : '',
+                        genderText: v === Gender.Andere ? userForm.genderText : '',
                       })
                     }
                   >
@@ -570,12 +586,12 @@ export default function ProfileView() {
                 <div className="space-y-0.5 w-1/2 pr-2">
                   <Label className="text-xs text-muted-foreground">Pronomen</Label>
                   <Select
-                    value={formData.pronoun}
+                    value={userForm.pronoun}
                     onValueChange={(v) =>
-                      setFormData({
-                        ...formData,
+                      setUserForm({
+                        ...userForm,
                         pronoun: v as Pronoun,
-                        pronounText: v === Pronoun.Andere ? formData.pronounText : '',
+                        pronounText: v === Pronoun.Andere ? userForm.pronounText : '',
                       })
                     }
                   >
@@ -593,12 +609,12 @@ export default function ProfileView() {
                 </div>
               </div>
 
-              {formData.gender === Gender.Andere && (
+              {userForm.gender === Gender.Andere && (
                 <div className="space-y-0.5 mt-5">
                   <Label className="text-xs text-muted-foreground">Geschlecht (Text)</Label>
                   <Input
                     name="genderText"
-                    value={formData.genderText}
+                    value={userForm.genderText}
                     onChange={update}
                     placeholder="Geschlecht"
                     onBlur={validate}
@@ -608,12 +624,12 @@ export default function ProfileView() {
                   )}
                 </div>
               )}
-              {formData.pronoun === Pronoun.Andere && (
+              {userForm.pronoun === Pronoun.Andere && (
                 <div className="space-y-0.5 mt-5">
                   <Label className="text-xs text-muted-foreground">Pronomen (Text)</Label>
                   <Input
                     name="pronounText"
-                    value={formData.pronounText}
+                    value={userForm.pronounText}
                     onChange={update}
                     placeholder="Pronomen"
                     onBlur={validate}
@@ -631,7 +647,7 @@ export default function ProfileView() {
                 <Input
                   id="firstname"
                   name="firstname"
-                  value={formData.firstname}
+                  value={userForm.firstname}
                   onChange={update}
                   onBlur={validate}
                   required
@@ -649,7 +665,7 @@ export default function ProfileView() {
                   id="lastname"
                   name="lastname"
                   onChange={update}
-                  value={formData.lastname}
+                  value={userForm.lastname}
                   onBlur={validate}
                   required
                 />
@@ -668,7 +684,7 @@ export default function ProfileView() {
                   name="placeOfBirth"
                   onChange={update}
                   placeholder="z.B. Berlin"
-                  value={formData.placeOfBirth}
+                  value={userForm.placeOfBirth}
                   onBlur={validate}
                 />
                 {validationErrors.placeOfBirth && (
@@ -699,7 +715,7 @@ export default function ProfileView() {
                   id="country"
                   name="country"
                   placeholder="z.B. Deutschland"
-                  value={formData.country}
+                  value={userForm.country}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -719,7 +735,7 @@ export default function ProfileView() {
                   id="street"
                   name="street"
                   placeholder="Straßenname"
-                  value={formData.street}
+                  value={userForm.street}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -739,7 +755,7 @@ export default function ProfileView() {
                   id="houseNumber"
                   name="houseNumber"
                   placeholder="z.B. 42"
-                  value={formData.houseNumber}
+                  value={userForm.houseNumber}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -756,7 +772,7 @@ export default function ProfileView() {
                   id="zipCode"
                   name="zipCode"
                   placeholder="z.B. 10115"
-                  value={formData.zipCode}
+                  value={userForm.zipCode}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -776,7 +792,7 @@ export default function ProfileView() {
                   id="city"
                   name="city"
                   placeholder="z.B. Berlin"
-                  value={formData.city}
+                  value={userForm.city}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -817,8 +833,8 @@ export default function ProfileView() {
                     name="password"
                     type={showNewPassword ? 'text' : 'password'}
                     placeholder="Mind. 8 Zeichen"
-                    value={formData.password}
-                    onChange={update}
+                    value={accountForm.password}
+                    onChange={updateAccount}
                     onBlur={validate}
                   />
                   {validationErrors.password && (
@@ -850,7 +866,7 @@ export default function ProfileView() {
                   name="phone"
                   type="tel"
                   placeholder="+49 170 1234567"
-                  value={formData.phone}
+                  value={userForm.phone}
                   onChange={update}
                   onBlur={validate}
                 />
@@ -869,8 +885,8 @@ export default function ProfileView() {
                     name="passwordRepeat"
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Passwort bestätigen"
-                    value={formData.passwordRepeat}
-                    onChange={update}
+                    value={accountForm.passwordRepeat}
+                    onChange={updateAccount}
                     onBlur={validate}
                   />
                   {validationErrors.passwordRepeat && (
