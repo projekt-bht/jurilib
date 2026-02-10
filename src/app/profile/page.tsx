@@ -168,6 +168,36 @@ export default function ProfileView() {
           lastname: errorMsgLast,
         });
         break;
+      case 'genderText':
+        let errorMsgGender: string | undefined = '';
+
+        if (formData.genderText.length < 1) {
+          errorMsgGender = 'Deine Geschlechtsangabe muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(formData.genderText)) {
+          errorMsgGender = 'Deine Geschlechtsangabe darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgGender = undefined;
+        }
+        setValidationErrors({
+          ...validationErrors,
+          genderText: errorMsgGender,
+        });
+        break;
+      case 'pronounText':
+        let errorMsgPronoun: string | undefined = '';
+
+        if (formData.pronounText.length < 1) {
+          errorMsgPronoun = 'Deine Pronomen müssen aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(formData.pronounText)) {
+          errorMsgPronoun = 'Deine Pronomen dürfen nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgPronoun = undefined;
+        }
+        setValidationErrors({
+          ...validationErrors,
+          pronounText: errorMsgPronoun,
+        });
+        break;
     }
   }
 
@@ -319,7 +349,11 @@ export default function ProfileView() {
                     value={formData.genderText}
                     onChange={update}
                     placeholder="Geschlecht"
+                    onBlur={validate}
                   />
+                  {validationErrors.genderText && (
+                    <p className="text-sm text-accent-red mt-1">{validationErrors.genderText}</p>
+                  )}
                 </div>
               )}
               {formData.pronoun === Pronoun.Andere && (
@@ -330,7 +364,11 @@ export default function ProfileView() {
                     value={formData.pronounText}
                     onChange={update}
                     placeholder="Pronomen"
+                    onBlur={validate}
                   />
+                  {validationErrors.pronounText && (
+                    <p className="text-sm text-accent-red mt-1">{validationErrors.pronounText}</p>
+                  )}
                 </div>
               )}
 
