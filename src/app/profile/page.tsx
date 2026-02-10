@@ -153,6 +153,21 @@ export default function ProfileView() {
           firstname: errorMsgFirst,
         });
         break;
+      case 'lastname':
+        let errorMsgLast: string | undefined = '';
+
+        if (formData.lastname.length < 1) {
+          errorMsgLast = 'Dein Nachname muss aus mindestens 1 Buchstaben bestehen.';
+        } else if (!isOnlyLetter(formData.lastname)) {
+          errorMsgLast = 'Dein Nachname darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgLast = undefined;
+        }
+        setValidationErrors({
+          ...validationErrors,
+          lastname: errorMsgLast,
+        });
+        break;
     }
   }
 
@@ -345,8 +360,13 @@ export default function ProfileView() {
                   name="lastname"
                   onChange={update}
                   value={formData.lastname}
+                  onBlur={validate}
                   required
                 />
+
+                {validationErrors.lastname && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.lastname}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
