@@ -35,6 +35,7 @@ import { getAccount, getUser, patchUser } from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 import {
   isOnlyLetter,
+  isOnlyNumber,
   isStrongPassword,
   isValidEmail,
   isValidGermanPhone,
@@ -272,6 +273,22 @@ export default function ProfileView() {
         setValidationErrors({
           ...validationErrors,
           houseNumber: errorMsgHouseNumber,
+        });
+        break;
+      case 'zipCode':
+        let errorMsgZipCode: string | undefined = '';
+
+        if (formData.zipCode.length !== 0 && formData.zipCode.length < 2) {
+          errorMsgZipCode = 'Die Postleitzahl muss aus mindestens 2 Nummern bestehen.';
+        } else if (formData.zipCode.length !== 0 && !isOnlyNumber(formData.zipCode)) {
+          errorMsgZipCode = 'Die Postleitzahl darf nur aus Nummern bestehen.';
+        } else {
+          errorMsgZipCode = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          zipCode: errorMsgZipCode,
         });
         break;
     }
@@ -586,7 +603,11 @@ export default function ProfileView() {
                   placeholder="z.B. 10115"
                   value={formData.zipCode}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.zipCode && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.zipCode}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
