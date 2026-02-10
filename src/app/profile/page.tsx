@@ -215,7 +215,7 @@ export default function ProfileView() {
       case 'placeOfBirth':
         let errorMsgbirthPlace: string | undefined = '';
 
-        if (formData.placeOfBirth.length !== 0 && formData.pronounText.length < 1) {
+        if (formData.placeOfBirth.length !== 0 && formData.placeOfBirth.length < 1) {
           errorMsgbirthPlace = 'Dein Geburtsort muss aus mindestens 2 Buchstaben bestehen.';
         } else if (formData.placeOfBirth.length !== 0 && !isOnlyLetter(formData.placeOfBirth)) {
           errorMsgbirthPlace = 'Dein Geburtsort darf nur aus Buchstaben bestehen.';
@@ -226,6 +226,22 @@ export default function ProfileView() {
         setValidationErrors({
           ...validationErrors,
           placeOfBirth: errorMsgbirthPlace,
+        });
+        break;
+      case 'country':
+        let errorMsgcountry: string | undefined = '';
+
+        if (formData.country.length !== 0 && formData.country.length < 2) {
+          errorMsgcountry = 'Das angegebene Land muss aus mindestens 2 Buchstaben bestehen.';
+        } else if (formData.country.length !== 0 && !isOnlyLetter(formData.country)) {
+          errorMsgcountry = 'Das angegeben Land darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgcountry = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          country: errorMsgcountry,
         });
         break;
     }
@@ -483,7 +499,11 @@ export default function ProfileView() {
                   placeholder="z.B. Deutschland"
                   value={formData.country}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.country && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.country}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
