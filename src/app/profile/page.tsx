@@ -432,7 +432,7 @@ export default function ProfileView() {
     return true;
   }
 
-  if (!account || !user) return <></>;
+  if (!account || !user || !initialFormData) return <></>;
 
   const hasChanges =
     initialFormData && JSON.stringify(formData) !== JSON.stringify(initialFormData);
@@ -508,8 +508,8 @@ export default function ProfileView() {
           </div>
           <div className="min-w-0">
             <h2 className="text-base font-semibold text-foreground leading-tight truncate">
-              {formData.title && `${formData.title} `}
-              {formData.firstname} {formData.lastname}
+              {initialFormData.title && `${initialFormData.title} `}
+              {initialFormData.firstname} {initialFormData.lastname}
             </h2>
           </div>
         </div>
