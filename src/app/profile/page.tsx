@@ -291,6 +291,22 @@ export default function ProfileView() {
           zipCode: errorMsgZipCode,
         });
         break;
+      case 'city':
+        let errorMsgCity: string | undefined = '';
+
+        if (formData.city.length !== 0 && formData.city.length < 2) {
+          errorMsgCity = 'Die Stadt muss aus mindestens 2 Buchstaben bestehen.';
+        } else if (formData.city.length !== 0 && !isOnlyLetter(formData.city)) {
+          errorMsgCity = 'Die Stadt darf nur aus Buchstaben bestehen.';
+        } else {
+          errorMsgCity = undefined;
+        }
+
+        setValidationErrors({
+          ...validationErrors,
+          city: errorMsgCity,
+        });
+        break;
     }
   }
 
@@ -623,7 +639,11 @@ export default function ProfileView() {
                   placeholder="z.B. Berlin"
                   value={formData.city}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.city && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.city}</p>
+                )}
               </div>
             </div>
           </div>
