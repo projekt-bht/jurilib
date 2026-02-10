@@ -34,10 +34,9 @@ export default function BookingSelector({
 
   const subtitle =
     bookingMode === 'quick'
-      ? 'Nächster verfügbarer Termin'
-      : selectedEmployee
-        ? selectedEmployee.lastname
-        : 'Person auswählen';
+      ? 'Alle freien Termine auf einen Blick – wähle einfach ein Datum.'
+      : 'Wähle zuerst eine Mitarbeiter*in, danach erscheint der Kalender.'; //hier kommt hannes text rein
+  const subtitleClassName = 'text-foreground';
 
   return (
     <div className={`space-y-2 ${className ?? ''}`}>
@@ -64,8 +63,12 @@ export default function BookingSelector({
           </TabsTrigger>
         </TabsList>
       </Tabs>
-      {/* Subtitle reflects current selection context (quick vs. employee) */}
-      <p className="text-sm text-muted-foreground pl-1">{subtitle}</p>
+      {/* Friendly hint, centered below tabs for clarity */}
+      <div className="flex justify-center">
+        <p className={`text-sm ${subtitleClassName} bg-accent-gray-soft px-3 py-1.5 rounded-full`}>
+          {subtitle}
+        </p>
+      </div>
     </div>
   );
 }
