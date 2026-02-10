@@ -307,6 +307,15 @@ export default function ProfileView() {
           city: errorMsgCity,
         });
         break;
+      case 'phone':
+        setValidationErrors({
+          ...validationErrors,
+          phone:
+            formData.phone.length > 0 && !isValidGermanPhone(formData.phone)
+              ? 'Bitte gib eine gültige deutsche Mobilfunknummer ein (+49 oder 0157...)'
+              : undefined,
+        });
+        break;
     }
   }
 
@@ -711,7 +720,11 @@ export default function ProfileView() {
                   placeholder="+49 170 1234567"
                   value={formData.phone}
                   onChange={update}
+                  onBlur={validate}
                 />
+                {validationErrors.phone && (
+                  <p className="text-sm text-accent-red mt-1">{validationErrors.phone}</p>
+                )}
               </div>
 
               <div className="space-y-0.5 mt-5">
