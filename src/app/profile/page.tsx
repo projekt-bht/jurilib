@@ -235,7 +235,13 @@ export default function ProfileView() {
                 <Label htmlFor="title" className="text-xs text-muted-foreground">
                   Titel
                 </Label>
-                <Input id="title" placeholder="z.B. Dr., Prof." value={formData.title} />
+                <Input
+                  id="title"
+                  name="title"
+                  onChange={update}
+                  placeholder="z.B. Dr., Prof."
+                  value={formData.title}
+                />
               </div>
               <div className="flex justify-between w-full max-w-2xl mx-auto">
                 <div className="space-y-0.5 w-1/2 pr-2">
@@ -343,9 +349,10 @@ export default function ProfileView() {
                 </Label>
                 <Input
                   id="placeOfBirth"
+                  name="placeOfBirth"
+                  onChange={update}
                   placeholder="z.B. Berlin"
                   value={formData.placeOfBirth}
-                  className="bg-background h-8 text-xs"
                 />
               </div>
             </div>
@@ -368,7 +375,13 @@ export default function ProfileView() {
                 >
                   <Globe className="w-3 h-3" /> Land
                 </Label>
-                <Input id="country" placeholder="z.B. Deutschland" value={formData.country} />
+                <Input
+                  id="country"
+                  name="country"
+                  placeholder="z.B. Deutschland"
+                  value={formData.country}
+                  onChange={update}
+                />
               </div>
 
               <div className="space-y-0.5 mt-5">
@@ -378,7 +391,13 @@ export default function ProfileView() {
                 >
                   <Home className="w-3 h-3" /> Straße
                 </Label>
-                <Input id="street" placeholder="Straßenname" value={formData.street} />
+                <Input
+                  id="street"
+                  name="street"
+                  placeholder="Straßenname"
+                  value={formData.street}
+                  onChange={update}
+                />
               </div>
 
               <div className="space-y-0.5 mt-5">
@@ -388,14 +407,26 @@ export default function ProfileView() {
                 >
                   <Hash className="w-3 h-3" /> Hausnummer
                 </Label>
-                <Input id="houseNumber" placeholder="z.B. 42" value={formData.houseNumber} />
+                <Input
+                  id="houseNumber"
+                  name="houseNumber"
+                  placeholder="z.B. 42"
+                  value={formData.houseNumber}
+                  onChange={update}
+                />
               </div>
 
               <div className="space-y-0.5 mt-5">
                 <Label htmlFor="zipCode" className="text-xs text-muted-foreground">
                   PLZ
                 </Label>
-                <Input id="zipCode" placeholder="z.B. 10115" value={formData.zipCode} />
+                <Input
+                  id="zipCode"
+                  name="zipCode"
+                  placeholder="z.B. 10115"
+                  value={formData.zipCode}
+                  onChange={update}
+                />
               </div>
 
               <div className="space-y-0.5 mt-5">
@@ -405,7 +436,13 @@ export default function ProfileView() {
                 >
                   <Building2 className="w-3 h-3" /> Stadt
                 </Label>
-                <Input id="city" placeholder="z.B. Berlin" value={formData.city} />
+                <Input
+                  id="city"
+                  name="city"
+                  placeholder="z.B. Berlin"
+                  value={formData.city}
+                  onChange={update}
+                />
               </div>
             </div>
           </div>
