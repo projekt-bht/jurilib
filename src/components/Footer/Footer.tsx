@@ -70,6 +70,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-4">Kontakt</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              {/* Fictional contact data for demo purposes */}
               <li>
                 <Link href="mailto:support@jurilib.de" className="hover:text-foreground transition">
                   support@jurilib.de
@@ -84,7 +85,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-border pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; 2025 JuriLib</p>
+          <p>&copy; 2026 JuriLib · BHT Uni-Projekt · Inhalte fiktiv</p>
         </div>
       </div>
     </footer>
