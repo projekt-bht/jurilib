@@ -24,6 +24,7 @@ import React from 'react';
 
 import { authTimeoutDuration } from '@/components/Authentication/Authentication';
 import { SuccessDialog } from '@/components/Authentication/SuccessDialog';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,7 +71,6 @@ type ValidationMessages<Type> = {
 export default function ProfileView() {
   const { login, setLogin } = useLoginContext();
   const [isSaving, setIsSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -90,26 +90,6 @@ export default function ProfileView() {
   const [initialAccountForm, setInitialAccountForm] = useState<typeof accountForm | null>(null);
 
   if (!login) notFound();
-
-  function createUserForm(user?: UserResource) {
-    return {
-      title: user?.title ?? '',
-      firstname: user?.firstname ?? '',
-      lastname: user?.lastname ?? '',
-      gender: user?.gender ?? Gender.Keine_Angabe,
-      genderText: user?.genderText ?? '',
-      pronoun: user?.pronoun ?? Pronoun.Keine_Angabe,
-      pronounText: user?.pronounText ?? '',
-      birthdate: user?.birthdate ?? '',
-      placeOfBirth: user?.placeOfBirth ?? '',
-      phone: user?.phone ?? '',
-      country: user?.country ?? '',
-      city: user?.city ?? '',
-      zipCode: user?.zipCode ?? '',
-      street: user?.street ?? '',
-      houseNumber: user?.houseNumber ?? '',
-    };
-  }
 
   async function loadData() {
     if (!login) return;
@@ -144,6 +124,7 @@ export default function ProfileView() {
       await deleteLogin();
       setLogin(false);
       setSuccessOpen(false);
+      window.location.reload();
     } catch (error) {
       //TODO, show snackbar Error or something, but not needed rn
       throw new Error(String(error));
@@ -152,8 +133,9 @@ export default function ProfileView() {
 
   async function updateUser() {
     if (!login) return;
-    setIsSaving(true);
     try {
+      setIsSaving(true);
+
       if (initialuserForm) {
         const userDiff = getChangedFields(initialuserForm, userForm);
         if (Object.keys(userDiff).length > 0) {
@@ -168,11 +150,11 @@ export default function ProfileView() {
         await patchAccount(login.id, { password: accountForm.password });
         setInitialAccountForm(accountForm);
       }
-
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 2000);
-    } finally {
+      await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
       setIsSaving(false);
+    } catch (error) {
+      //TODO, show snackbar Error or something, but not needed rn
+      throw new Error(String(error));
     }
   }
 
@@ -530,10 +512,6 @@ export default function ProfileView() {
                   </>
                 )}
               </Button>
-
-              {saveSuccess && (
-                <span className="text-sm text-emerald-600 font-medium">Gespeichert!</span>
-              )}
             </div>
           </div>
         </div>
@@ -1012,6 +990,12 @@ export default function ProfileView() {
       </AlertDialog>
 
       {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
+      {isSaving && (
+        <ResultLoading
+          title="Änderungen werden gespeichert."
+          description="Bitte warte einen Moment."
+        />
+      )}
     </section>
   );
 }
@@ -1025,4 +1009,24 @@ function getChangedFields<T>(initial: T, current: T): Partial<T> {
     }
   }
   return changed;
+}
+
+function createUserForm(user?: UserResource) {
+  return {
+    title: user?.title ?? '',
+    firstname: user?.firstname ?? '',
+    lastname: user?.lastname ?? '',
+    gender: user?.gender ?? Gender.Keine_Angabe,
+    genderText: user?.genderText ?? '',
+    pronoun: user?.pronoun ?? Pronoun.Keine_Angabe,
+    pronounText: user?.pronounText ?? '',
+    birthdate: user?.birthdate ?? '',
+    placeOfBirth: user?.placeOfBirth ?? '',
+    phone: user?.phone ?? '',
+    country: user?.country ?? '',
+    city: user?.city ?? '',
+    zipCode: user?.zipCode ?? '',
+    street: user?.street ?? '',
+    houseNumber: user?.houseNumber ?? '',
+  };
 }
