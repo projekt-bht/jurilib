@@ -48,6 +48,10 @@ export default function OrganizationCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
+  // Tracks the month currently shown by the calendar UI.
+  const [visibleMonth, setVisibleMonth] = useState<Date>(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+  );
   const [isBooking, setIsBooking] = useState(false);
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
   const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
@@ -78,16 +82,40 @@ export default function OrganizationCalendar({
   }, [statusMessage]);
 
   useEffect(() => {
-    const openAppointments = appointments.filter((a) => a.status === AppointmentStatus.OPEN);
+    // Reset date/time selection when the employee context changes
+    // to avoid keeping slots from a different employee.
+    if (bookingMode === BookingMode.EMPLOYEE) {
+      setSelectedDate(undefined);
+      setSelectedTime(null);
+      setSelectedSlot(null);
+    }
+  }, [bookingMode, selectedEmployee]);
 
-    const days: Date[] = openAppointments.map((a) => {
+  useEffect(() => {
+    // In employee mode, only show open appointments for the selected employee.
+    // In quick mode, show all open appointments.
+    // Past appointments are filtered out so users cannot book in the past.
+    const now = new Date();
+    const openAppointments = appointments.filter(
+      (a) => a.status === AppointmentStatus.OPEN && new Date(a.dateTimeStart) >= now
+    );
+    // When no employee is selected in employee mode, return an empty list
+    // to avoid showing unrelated slots.
+    const filteredAppointments =
+      bookingMode === BookingMode.EMPLOYEE
+        ? selectedEmployee
+          ? openAppointments.filter((a) => a.employeeId === selectedEmployee.id)
+          : []
+        : openAppointments;
+
+    const days: Date[] = filteredAppointments.map((a) => {
       // create a new Date instance and normalize to midnight without mutating source
       const d = new Date(a.dateTimeStart);
       d.setHours(0, 0, 0, 0);
       return d;
     });
     // vibe coded hell
-    const slotsByDate: Record<string, SlotOption[]> = openAppointments.reduce(
+    const slotsByDate: Record<string, SlotOption[]> = filteredAppointments.reduce(
       (acc: Record<string, SlotOption[]>, appointment) => {
         if (!appointment.employeeId) return acc;
 
@@ -111,9 +139,10 @@ export default function OrganizationCalendar({
     );
     // vibe coded hell ends
 
+    // Update calendar data sources based on the selected employee context.
     setAvailableSlots(slotsByDate);
     setAvailableDays(days);
-  }, [appointments]);
+  }, [appointments, bookingMode, selectedEmployee]);
 
   function isDisabledDay(date: Date) {
     const normalisedDate = new Date(date);
@@ -173,6 +202,30 @@ export default function OrganizationCalendar({
       time: time ?? selectedTime,
     });
   };
+
+  // Check if the currently visible month has any available days.
+  const visibleYear = visibleMonth.getFullYear();
+  const visibleMonthIndex = visibleMonth.getMonth();
+  const hasDaysInMonth = availableDays.some(
+    (day) => day.getFullYear() === visibleYear && day.getMonth() === visibleMonthIndex
+  );
+  const sortedAvailableDays = availableDays
+    .slice()
+    .sort((a, b) => a.getTime() - b.getTime());
+  // Only show "next available" after the currently visible month
+  // to avoid pointing to past months when browsing the future.
+  const nextAvailableAfterMonth = sortedAvailableDays.find(
+    (day) =>
+      day.getFullYear() > visibleYear ||
+      (day.getFullYear() === visibleYear && day.getMonth() > visibleMonthIndex)
+  );
+  const nextAvailableMonthLabel = nextAvailableAfterMonth
+    ? nextAvailableAfterMonth.toLocaleDateString('de-DE', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
 
   return (
     <div className="px-0 xl:pr-8">
@@ -249,13 +302,46 @@ export default function OrganizationCalendar({
 
         {/* Calendar is visible immediately in quick booking,
             or after an employee is picked in employee mode. */}
+        {/* Empty state when no appointments are available for the current context */}
         {(bookingMode === BookingMode.QUICK ||
-          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) && (
+          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
+          availableDays.length === 0 && (
+            <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+              <p className="text-sm font-semibold text-accent-blue">
+                Keine freien Termine verfügbar
+                {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                  ? ` für ${selectedEmployee.firstname} ${selectedEmployee.lastname}.`
+                  : '.'}
+              </p>
+            </div>
+          )}
+
+        {/* Calendar view only renders when there are available days to show */}
+        {(bookingMode === BookingMode.QUICK ||
+          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
+          availableDays.length > 0 && (
           <>
             <div className="flex items-center gap-2 flex-wrap">
               <CalendarIcon className="h-5 w-5 text-accent-blue" />
               <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
             </div>
+            {/* Month-level hint when the visible month has no available days */}
+            {!hasDaysInMonth && (
+              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+                <p className="text-sm font-semibold text-accent-blue">
+                  Keine freien Termine für diesen Monat.
+                </p>
+                {nextAvailableMonthLabel && (
+                  <p className="text-sm text-accent-blue">
+                    Nächster verfügbarer Termin
+                    {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                      ? ` bei ${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                      : ''}{' '}
+                    ist am {nextAvailableMonthLabel}.
+                  </p>
+                )}
+              </div>
+            )}
             <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
               <Calendar
                 mode="single"
@@ -266,6 +352,7 @@ export default function OrganizationCalendar({
                   setDate(date);
                   handleChange(date, null);
                 }}
+                onMonthChange={(date) => setVisibleMonth(date)}
                 disabled={isDisabledDay}
                 startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
                 endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year

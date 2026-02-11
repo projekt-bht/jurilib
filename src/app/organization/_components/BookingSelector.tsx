@@ -19,7 +19,7 @@ type BookingSelectorProps = {
 };
 export default function BookingSelector({
   className,
-  selectedEmployee = null,
+  selectedEmployee: _selectedEmployee = null,
   bookingMode: bookingModeProp,
   onBookingModeChange,
 }: BookingSelectorProps) {
