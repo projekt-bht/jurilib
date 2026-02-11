@@ -999,7 +999,7 @@ export default function ProfileView() {
   );
 }
 
-//JSON DIFF
+//JSON DIFF -> GENERATED AI
 function getChangedFields<T>(initial: T, current: T): Partial<T> {
   const changed: Partial<T> = {};
   for (const key in current) {
