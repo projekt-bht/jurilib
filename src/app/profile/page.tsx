@@ -22,7 +22,6 @@ import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
-import { authTimeoutDuration } from '@/components/Authentication/Authentication';
 import { SuccessDialog } from '@/components/Authentication/SuccessDialog';
 import { ResultLoading } from '@/components/Loading/ResultLoading';
 import {
@@ -67,6 +66,8 @@ import { useLoginContext } from '../LoginContext';
 type ValidationMessages<Type> = {
   [Property in keyof Type]?: string;
 };
+
+const saveDurationTimeout: number = 1000;
 
 export default function ProfileView() {
   const { login, setLogin } = useLoginContext();
@@ -119,7 +120,7 @@ export default function ProfileView() {
     if (!login) return;
     try {
       setDeleteOpen(true);
-      await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+      await new Promise((resolve) => setTimeout(resolve, saveDurationTimeout));
       await deleteAccount(login.id);
       await deleteLogin();
       setLogin(false);
@@ -139,7 +140,7 @@ export default function ProfileView() {
         const userDiff = getChangedFields(initialuserForm, userForm);
         if (Object.keys(userDiff).length > 0) {
           await patchUser(login.userId!, userDiff as UserResource);
-          setInitialuserForm({ ...userForm });
+          setInitialuserForm(userForm);
         }
       }
       if (
@@ -149,7 +150,7 @@ export default function ProfileView() {
         await patchAccount(login.id, { password: accountForm.password } as AccountResource);
         setInitialAccountForm(accountForm);
       }
-      await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+      await new Promise((resolve) => setTimeout(resolve, saveDurationTimeout));
       setIsSaving(false);
     } catch (error) {
       //TODO, show snackbar Error or something, but not needed rn
