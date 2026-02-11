@@ -1,12 +1,13 @@
 'use client';
-import { ArrowLeft, BookOpen, Building2, FlaskConical, ShieldUser, User, X } from 'lucide-react';
+import { ArrowLeft, BookOpen, Building2, FlaskConical, ShieldUser, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LoginContext, useLoginContext } from '@/app/LoginContext';
 import { Authentication } from '@/components/Authentication/Authentication';
 import { Logo } from '@/components/Header/Logo';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
 export function Navbar() {
   const { login, setLogin } = useLoginContext();
@@ -15,32 +16,59 @@ export function Navbar() {
   const isDocsPage = usePathname().includes('/docs');
   const [showBanner, setShowBanner] = useState(true);
 
-  const Banner = (
-    <div className="bg-accent-blue text-accent-blue-light px-5 py-2 text-xs sm:text-sm flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2 text-center sm:text-left w-full justify-center sm:justify-start">
-        <FlaskConical className="h-4 w-4 flex-shrink-0" />
-        <span className="font-semibold tracking-wide">Beta-Version</span>
-        <span className="hidden sm:inline">
-          – Dies ist ein Hochschulprojekt der BHT Berlin. Alle Inhalte und Organisationen sind fiktiv.
-        </span>
-        <span className="sm:hidden">– Hochschulprojekt der BHT Berlin. Inhalte fiktiv.</span>
-      </div>
-      <button
-        type="button"
-        onClick={() => setShowBanner(false)}
-        className="text-accent-blue-light/80 hover:text-accent-blue-light transition-colors"
-        aria-label="Beta-Banner schließen"
-      >
-        <X className="h-4 w-4" />
-      </button>
-    </div>
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    // Hide modal for this session if the user dismissed it.
+    const stored = window.sessionStorage.getItem('jurilib_beta_modal_hidden');
+    if (stored === '1') {
+      setShowBanner(false);
+    }
+  }, []);
+
+  const BannerModal = (
+    <Dialog open={showBanner} onOpenChange={setShowBanner}>
+      <DialogContent className="border-border bg-background text-foreground sm:max-w-xl">
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 shrink-0 rounded-full bg-accent-blue-light flex items-center justify-center shadow-sm border border-accent-blue-light">
+            <FlaskConical className="h-5 w-5 text-accent-blue" />
+          </div>
+          <div className="space-y-3">
+            <DialogTitle className="text-xl font-medium text-foreground">
+              Hochschulprojekt der BHT Berlin
+            </DialogTitle>
+            <DialogDescription className="text-sm text-foreground">
+              Diese Anwendung ist ein universitäres Projekt im Studiengang Medieninformatik an der
+              BHT, im Modul Projekt. Alle Inhalte, Organisationen und Profile sind fiktiv und dienen
+              ausschließlich der Demonstration.
+            </DialogDescription>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setShowBanner(false);
+                // Persist dismissal for the current session only.
+                if (typeof window !== 'undefined') {
+                  window.sessionStorage.setItem('jurilib_beta_modal_hidden', '1');
+                }
+              }}
+              className="inline-flex h-10 items-center justify-center rounded-md border border-accent-blue-light bg-accent-blue-light px-4 text-sm font-medium text-accent-blue transition-colors hover:bg-accent-blue-soft"
+            >
+              Verstanden
+            </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 
   if (isDocsPage) {
     return (
-      <div className="fixed w-full z-50">
-        {showBanner && Banner}
-        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border">
+      <>
+        {BannerModal}
+        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
           {/* <nav className="bg-background text-foreground flex items-center gap-4 p-5 mx-auto border border-border fixed w-full z-50"> */}
           <div className="gap-4 flex items-center">
             <Logo />
@@ -57,15 +85,15 @@ export function Navbar() {
             Zur Startseite
           </Link>
         </nav>
-      </div>
+      </>
     );
   }
 
   return (
     <LoginContext.Provider value={{ login, setLogin }}>
-      <div className="fixed w-full z-50">
-        {showBanner && Banner}
-        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border">
+      <>
+        {BannerModal}
+        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
           {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
           <Logo />
 
@@ -89,7 +117,7 @@ export function Navbar() {
             <Authentication />
           </div>
         </nav>
-      </div>
+      </>
     </LoginContext.Provider>
   );
 }

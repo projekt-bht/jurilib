@@ -33,8 +33,8 @@ export default function RootLayout({
         {/* TODO fix me later..*/}
         <App>
           <AuthLayout>
-            {/* Offset for fixed header including beta banner */}
-            <div className="pt-[7.75rem]">{children}</div>
+            {/* Offset for fixed header */}
+            <div className="pt-[5.75rem]">{children}</div>
           </AuthLayout>
         </App>
       </body>

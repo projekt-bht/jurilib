@@ -22,8 +22,8 @@ export default function AuthLayout({ children, showFooter = true }: AuthLayoutPr
     return (
       <div className="min-h-screen">
         <Navbar />
-        {/* Height accounts for fixed header including beta banner */}
-        <div className="flex min-h-[calc(100vh-7.75rem)]">
+        {/* Height accounts for fixed header */}
+        <div className="flex min-h-[calc(100vh-5.75rem)]">
           <Sidebar />
           <main className="flex-1 flex flex-col bg-card">{children}</main>
         </div>
