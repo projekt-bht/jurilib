@@ -167,9 +167,21 @@ export default function ProfileView() {
     if (!login) return;
     setIsSaving(true);
     try {
-      await patchUser(login.userId!, userForm);
-      await patchAccount(login.id, { password: accountForm.password });
-      setInitialuserForm(userForm);
+      if (initialuserForm) {
+        const userDiff = getChangedFields(initialuserForm, userForm);
+        if (Object.keys(userDiff).length > 0) {
+          await patchUser(login.userId!, userDiff);
+          setInitialuserForm({ ...userForm });
+        }
+      }
+      if (
+        initialAccountForm &&
+        JSON.stringify(accountForm) !== JSON.stringify(initialAccountForm)
+      ) {
+        await patchAccount(login.id, { password: accountForm.password });
+        setInitialAccountForm(accountForm);
+      }
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     } finally {
@@ -1014,4 +1026,15 @@ export default function ProfileView() {
       {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
     </section>
   );
+}
+
+//JSON DIFF
+function getChangedFields<T>(initial: T, current: T): Partial<T> {
+  const changed: Partial<T> = {};
+  for (const key in current) {
+    if (current[key] !== initial[key]) {
+      changed[key] = current[key];
+    }
+  }
+  return changed;
 }
