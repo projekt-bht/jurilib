@@ -121,3 +121,20 @@ export async function patchAccountPasswordWithEmail(email: string, password: str
 
   return true;
 }
+
+export async function patchUser(userID: string, userRessource: object) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/${userID}`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    body: JSON.stringify(userRessource),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
+}
