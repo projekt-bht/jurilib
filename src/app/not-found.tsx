@@ -6,6 +6,6 @@ export default function NotFoundRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/');
+    router.replace('/');
   }, [router]);
 }
