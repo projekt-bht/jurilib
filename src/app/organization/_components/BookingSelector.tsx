@@ -1,7 +1,7 @@
 'use client';
 
 import { CalendarDays, User } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Employee } from '~/generated/prisma/client';
@@ -27,10 +27,13 @@ export default function BookingSelector({
 
   const bookingMode = bookingModeProp ?? bookingModeState;
   // TODO: replace local state with server-driven defaults once booking preferences come from backend.
-  const handleSetBookingMode = useMemo(
-    () => onBookingModeChange ?? handleSetBookingModeState,
-    [onBookingModeChange]
-  );
+  const handleSetBookingMode = (mode: BookingMode) => {
+    if (onBookingModeChange) {
+      onBookingModeChange(mode);
+      return;
+    }
+    handleSetBookingModeState(mode);
+  };
 
   const subtitle =
     bookingMode === 'quick'
