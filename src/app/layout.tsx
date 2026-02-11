@@ -33,7 +33,7 @@ export default function RootLayout({
         {/* TODO fix me later..*/}
         <App>
           <AuthLayout>
-            {/* Offset for fixed header */}
+            {/* Offset for fixed header (23 is not a Tailwind spacing token, so use 5.75rem). */}
             <div className="pt-[5.75rem]">{children}</div>
           </AuthLayout>
         </App>
