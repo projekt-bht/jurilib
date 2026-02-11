@@ -1,0 +1,20 @@
+meta {
+  name: All Services
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseURL}}/organization/:organizationID/services
+  body: none
+  auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

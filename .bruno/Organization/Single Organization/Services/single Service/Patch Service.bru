@@ -1,0 +1,30 @@
+meta {
+  name: Patch Service
+  type: http
+  seq: 1
+  tags: [
+    Service
+  ]
+}
+
+patch {
+  url: {{baseURL}}/organization/:organizationID/services/:serviceID
+  body: json
+  auth: inherit
+}
+
+params:path {
+  serviceID: {{serviceID}}
+  organizationID: {{organizationID}}
+}
+
+body:json {
+  {
+    "title": "bla keks, irgendein Service"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

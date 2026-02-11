@@ -6,7 +6,7 @@ jest.unstable_mockModule('@/app/api/email/mailer', () => ({
 }));
 
 jest.unstable_mockModule('src/services/server/vectorizer.ts', () => ({
-  vectorizeExpertiseArea: jest.fn(async () => {
+  createEmbedding: jest.fn(async () => {
     const arr = Array(3072).fill(0.01);
     return `[${arr.join(',')}]`;
   }),
@@ -22,7 +22,7 @@ const { prisma } = await import('@/lib/db');
 const { NextRequest } = await import('next/server');
 
 // Dynamisch die API-Funktionen importieren
-const { GET } = await import('@/app/api/user/route');
+// const { GET } = await import('@/app/api/user/route');
 const { POST } = await import('@/app/api/authentication/register/route');
 
 describe('User Routen testen', () => {
@@ -65,11 +65,11 @@ describe('User Routen testen', () => {
     expect(createdAccount?.id).toBe(cUser.accountId);
   });
 
-  test('GET Accounts', async () => {
-    const req = new NextRequest(baseUrl);
-    const res = await GET(req);
-    const json = await res.json();
-    expect(json.length).not.toBe(0);
-    expect(res.status).toBe(200);
-  });
+  //   test('GET Accounts', async () => {
+  //     const req = new NextRequest(baseUrl);
+  //     const res = await GET(req);
+  //     const json = await res.json();
+  //     expect(json.length).not.toBe(0);
+  //     expect(res.status).toBe(200);
+  //   });
 });

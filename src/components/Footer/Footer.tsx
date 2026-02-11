@@ -11,6 +11,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="bg-foreground p-2 rounded-lg">
+                {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
                 <Image
                   src={scale_logo}
                   alt="JuriLib Logo"
@@ -30,8 +31,8 @@ export function Footer() {
             <h4 className="font-semibold text-foreground mb-4">Plattform</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/" className="hover:text-foreground transition">
-                  Für Nutzer*innen
+                <Link href="/docs" className="hover:text-foreground transition">
+                  Dokumentation
                 </Link>
               </li>
               <li>

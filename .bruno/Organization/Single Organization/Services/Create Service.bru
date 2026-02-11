@@ -1,0 +1,28 @@
+meta {
+  name: Create Service
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseURL}}/organization/:organizationID/services
+  body: json
+  auth: inherit
+}
+
+params:path {
+  organizationID: {{organizationID}}
+}
+
+body:json {
+  {
+    "description": "Hier gibts was zu sehen",
+    "type": "DOCUMENT_REVIEW",
+    "price": 23 
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

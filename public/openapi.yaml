@@ -1,0 +1,1119 @@
+openapi: 3.0.0
+info:
+  title: openapi
+  version: 1.0.0
+paths:
+  /api/account:
+    patch:
+      summary: Reset Password
+      operationId: Reset Password
+      description: ''
+      tags:
+        - account
+      responses:
+        '200':
+          description: ''
+  /api/account/{accountID}:
+    get:
+      summary: Get Account
+      operationId: Get Account
+      description: ''
+      tags:
+        - account
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: accountID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{accountID}}'
+    patch:
+      summary: Update Account
+      operationId: Update Account
+      description: ''
+      tags:
+        - account
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: accountID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{accountID}}'
+    delete:
+      summary: Delete Account
+      operationId: Delete Account
+      description: ''
+      tags:
+        - account
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: accountID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{accountID}}'
+  /api/case:
+    post:
+      summary: Create Case
+      operationId: Create Case
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: application/json
+      requestBody:
+        $ref: '#/components/requestBodies/create_case'
+  /api/case/{caseID}:
+    delete:
+      summary: Delete Case
+      operationId: Delete Case
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: caseID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{caseID}}'
+    patch:
+      summary: Update Case
+      operationId: Update Case
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: caseID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{caseID}}'
+      requestBody:
+        $ref: '#/components/requestBodies/update_case'
+  /api/case/user/{userID}:
+    get:
+      summary: Get Cases
+      operationId: Get Cases
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+  /api/case/{caseID}/documents:
+    get:
+      summary: Get single File
+      operationId: Get single File
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: caseID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{caseID}}'
+        - name: fileName
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: testwaage
+  /api/case/{caseID}/documents/user:
+    get:
+      summary: Get single File
+      operationId: Get single File
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: caseID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{caseID}}'
+        - name: fileName
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: waage.png
+        - name: private
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: 'true'
+  /api/case/{caseID}/documents/employee:
+    get:
+      summary: Get single File (Employee)
+      operationId: Get single File Employee
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: caseID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{caseID}}'
+        - name: fileName
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: testwaage
+  /api/case/employee/{employeeID}:
+    get:
+      summary: Get Cases
+      operationId: Get Cases
+      description: ''
+      tags:
+        - case
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+  /api/appointment/organization/{organizationID}:
+    get:
+      summary: Get Appointments by Organization
+      operationId: Get Appointments Organization
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+  /api/appointment/user/{userID}:
+    get:
+      summary: Get Appointments by User
+      operationId: Get Appointments User
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+  /api/appointment/user/{userID}/{appointmentID}:
+    get:
+      summary: Get User Appointment
+      operationId: Get User Appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+        - name: appointmentID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{appointmentID}}'
+  /api/appointment/employee/{employeeID}:
+    post:
+      summary: Create Appointment
+      operationId: Create Appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+      requestBody:
+        $ref: '#/components/requestBodies/create_appointment'
+  /api/appointment/employee/{employeeID}/{appointmentID}:
+    get:
+      summary: Get Appointment
+      operationId: Get Appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+        - name: appointmentID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{appointmentID}}'
+  /api/appointment/employee/{employeeID}/{appointmentID}/confirm:
+    post:
+      summary: Confirm Appointment
+      operationId: Confirm Appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+        - name: appointmentID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{appointmentID}}'
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: application/json
+  /api/appointment/{appointmentID}/request:
+    post:
+      summary: request appointment
+      operationId: request appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: appointmentID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{appointmentID}}'
+  /api/appointment/{appointmentID}/cancel:
+    post:
+      summary: cancel appointment
+      operationId: cancel appointment
+      description: ''
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: appointmentID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{appointmentID}}'
+  /api/authentication/login:
+    post:
+      summary: Login User
+      operationId: Login User
+      description: 'Authenticate user with email and password'
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: 'Successfully authenticated. Returns JWT access token as a cookie.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/login_response'
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: application/json
+      requestBody:
+        $ref: '#/components/requestBodies/login_user'
+  /api/authentication/register:
+    post:
+      summary: Register User
+      operationId: Register User
+      description: ''
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/register_user'
+  /api/authentication/codeVerification:
+    post:
+      summary: Verify Code
+      operationId: Verify Code
+      description: ''
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: ''
+  /api/authentication/resendCode:
+    post:
+      summary: Resend Code
+      operationId: Resend Code
+      description: ''
+      tags:
+        - authentication
+      responses:
+        '200':
+          description: ''
+  /api/employee:
+    get:
+      summary: Get All Employees
+      operationId: Get All Employees
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: Create Employee
+      operationId: Create Employee
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/create_employee'
+  /api/employee/{employeeID}:
+    get:
+      summary: Get Employee
+      operationId: Get Employee
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+    patch:
+      summary: Update Employee
+      operationId: Update Employee
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+    delete:
+      summary: Delete Employee
+      operationId: Delete Employee
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: employeeID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{employeeID}}'
+  /api/employee/organization/{organizationID}:
+    get:
+      summary: Get Employees by Organization
+      operationId: Get Employees Organization
+      description: ''
+      tags:
+        - employee
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+  /api/user:
+    get:
+      summary: Get All Users
+      operationId: Get All Users
+      description: ''
+      tags:
+        - user
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: Create User
+      operationId: Create User
+      description: ''
+      tags:
+        - user
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/create_user'
+  /api/user/{userID}:
+    get:
+      summary: Get User
+      operationId: Get User
+      description: ''
+      tags:
+        - user
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+    patch:
+      summary: Update User
+      operationId: Update User
+      description: ''
+      tags:
+        - user
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+    delete:
+      summary: Delete User
+      operationId: Delete User
+      description: ''
+      tags:
+        - user
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: userID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{userID}}'
+  /api/search:
+    get:
+      summary: Search
+      operationId: Search
+      description: ''
+      tags:
+        - search
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: query
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+  /api/organization:
+    get:
+      summary: All Organizations
+      operationId: All Organizations
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: priceCategory
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: organizationType
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: area
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: city
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: languages
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+        - name: accessibility
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+          example: ''
+    post:
+      summary: Create Organization
+      operationId: Create Organization
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/create_organization'
+  /api/organization/{organizationID}:
+    delete:
+      summary: Delete Organization
+      operationId: Delete Organization
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+    patch:
+      summary: Update Organization
+      operationId: Update Organization
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+      requestBody:
+        $ref: '#/components/requestBodies/update_organization'
+  /api/organization/{organizationID}/services:
+    get:
+      summary: All Services
+      operationId: All Services
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+    post:
+      summary: Create Service
+      operationId: Create Service
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+      requestBody:
+        $ref: '#/components/requestBodies/create_service'
+  /api/organization/{organizationID}/services/{serviceID}:
+    delete:
+      summary: Delete Service
+      operationId: Delete Service
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+        - name: serviceID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{serviceID}}'
+    patch:
+      summary: Patch Service
+      operationId: Patch Service
+      description: ''
+      tags:
+        - organization
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: organizationID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{organizationID}}'
+        - name: serviceID
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+          example: '{{serviceID}}'
+      requestBody:
+        $ref: '#/components/requestBodies/patch_service'
+servers:
+  - url: https://jurilib.de
+components:
+  schemas:
+    create_case:
+      type: object
+      properties:
+        employeeId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+    update_case:
+      type: object
+      properties:
+        description:
+          type: number
+        title:
+          type: number
+    upload_file:
+      type: object
+      properties:
+        file:
+          type: string
+        fileName:
+          type: string
+    create_appointment:
+      type: object
+      properties:
+        dateTimeStart:
+          type: string
+        duration:
+          type: number
+    login_employee:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    login_user:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    create_organization:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        email:
+          type: string
+        type:
+          type: string
+        priceCategory:
+          type: string
+        expertiseAreas:
+          type: array
+          items:
+            type: string
+          properties:
+            '0':
+              type: string
+            '1':
+              type: string
+        country:
+          type: string
+        city:
+          type: string
+        zipCode:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        averageRating:
+          type: number
+        numberOfRatings:
+          type: number
+    update_organization:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        shortDescription:
+          type: string
+        email:
+          type: string
+        type:
+          type: string
+        priceCategory:
+          type: string
+        expertiseAreas:
+          type: array
+          items:
+            type: string
+          properties:
+            '0':
+              type: string
+        country:
+          type: string
+        city:
+          type: string
+        zipCode:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        averageRating:
+          type: number
+        numberOfRatings:
+          type: number
+    create_service:
+      type: object
+      properties:
+        description:
+          type: string
+        type:
+          type: string
+        price:
+          type: number
+    patch_service:
+      type: object
+      properties:
+        title:
+          type: string
+    login_response:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: 'JWT token for authentication'
+      required:
+        - access_token
+    register_user:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    create_employee:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        organizationId:
+          type: string
+    create_user:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+  requestBodies:
+    create_case:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_case'
+      description: ''
+      required: true
+    update_case:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update_case'
+      description: ''
+      required: true
+    upload_file:
+      content:
+        'multipart/form-data:':
+          schema:
+            $ref: '#/components/schemas/upload_file'
+      description: ''
+      required: true
+    create_appointment:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_appointment'
+      description: ''
+      required: true
+    login_employee:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login_employee'
+      description: ''
+      required: true
+    login_user:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login_user'
+      description: ''
+      required: true
+    create_organization:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_organization'
+      description: ''
+      required: true
+    update_organization:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update_organization'
+      description: ''
+      required: true
+    create_service:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_service'
+      description: ''
+      required: true
+    patch_service:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/patch_service'
+      description: ''
+      required: true
+    register_user:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/register_user'
+      description: ''
+      required: true
+    create_employee:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_employee'
+      description: ''
+      required: true
+    create_user:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_user'
+      description: ''
+      required: true
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: JWT access token obtained from /api/authentication/login, sent as a cookie

@@ -2,6 +2,7 @@
 
 import { Heart, Users, Wrench } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 enum Expertise {
   FS = 'Full Stack',
@@ -19,6 +20,8 @@ enum Role {
 }
 
 export default function Team() {
+  const isDocs = usePathname().includes('/docs');
+
   const teamMembers = [
     {
       name: 'Hanna JEST Dolzycka',
@@ -137,136 +140,140 @@ export default function Team() {
   //   },
   // ];
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
-          <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
-              Entwickler*innen hinter JuriLib
-            </h1>
-          </div>
-        </section>
+  if (!isDocs) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="py-20 px-4 bg-linear-to-b from-primary/5 to-background">
+            <div className="max-w-6xl mx-auto text-center">
+              <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
+                <span>Entwickler*innen hinter </span>
+                <span className="bg-linear-to-r from-accent-blue via-accent-purple to-accent-blue bg-clip-text text-transparent animate-gradient">
+                  JuriLib
+                </span>
+              </h1>
+            </div>
+          </section>
 
-        {/* Motivation Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto ">
-            <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-linear-to-br from-accent-red to-accent-red/60 p-4 rounded-xl shrink-0 shadow-sm">
-                <Heart className="w-8 h-8 text-accent-white" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-foreground mb-4">Unsere Motivation</h2>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                  Wir glauben, dass jeder Mensch Zugang zu qualifizierter Rechtsberatung haben
-                  sollte. Zu oft scheitert die Suche nach dem richtigen Rechtsbeistand an fehlender
-                  Transparenz und komplexen Prozessen.
-                </p>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  JuriLib wurde gegründet, um diese Hürden zu überwinden. Wir kombinieren modernste
-                  Technologie mit rechtlicher Expertise, um Menschen schnell und unkompliziert mit
-                  den passenden Rechtsdienstleistern zu verbinden.
-                </p>
+          {/* Motivation Section */}
+          <section className="py-16 px-4">
+            <div className="max-w-6xl mx-auto ">
+              <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
+                <div className="bg-linear-to-br from-accent-red to-accent-red/60 p-4 rounded-xl shrink-0 shadow-sm">
+                  <Heart className="w-8 h-8 text-accent-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold text-foreground mb-4">Unsere Motivation</h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                    Wir glauben, dass jeder Mensch Zugang zu qualifizierter Rechtsberatung haben
+                    sollte. Zu oft scheitert die Suche nach dem richtigen Rechtsbeistand an
+                    fehlender Transparenz und komplexen Prozessen.
+                  </p>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    JuriLib wurde gegründet, um diese Hürden zu überwinden. Wir kombinieren
+                    modernste Technologie mit rechtlicher Expertise, um Menschen schnell und
+                    unkompliziert mit den passenden Rechtsdienstleistern zu verbinden.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Team Members */}
-        <section className="py-16 px-4 bg-muted/30">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-foreground text-center mb-12">Das sind Wir</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {teamMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="bg-background rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-2xl transition-shadow duration-300 animate-fade-in hover:scale-105"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => window.open(member.profile)}
-                >
-                  <div className="aspect-square overflow-hidden bg-muted relative">
-                    <Image
-                      src={member.image || '/placeholder.svg'}
-                      alt={member.name}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-foreground mb-1">{member.name}</h3>
-                    <p className="text-primary font-medium mb-3">{member.role}</p>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">{member.bio}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {member.expertise.map((skill, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 bg-accent-gray-soft text-primary text-sm rounded-full border border-primary/10 shadow-sm"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+          {/* Team Members */}
+          <section className="py-16 px-4 bg-muted/30">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground text-center mb-12">Das sind Wir</h2>
+              <div className="grid md:grid-cols-3 gap-8">
+                {teamMembers.map((member, index) => (
+                  <div
+                    key={index}
+                    className="bg-background rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-2xl transition-shadow duration-300 animate-fade-in hover:scale-105"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    onClick={() => window.open(member.profile)}
+                  >
+                    <div className="aspect-square overflow-hidden bg-muted relative">
+                      <Image
+                        src={member.image || '/placeholder.svg'}
+                        alt={member.name}
+                        fill
+                        className="object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-1">{member.name}</h3>
+                      <p className="text-primary font-medium mb-3">{member.role}</p>
+                      <p className="text-muted-foreground mb-4 leading-relaxed">{member.bio}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {member.expertise.map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1 bg-accent-gray-soft text-primary text-sm rounded-full border border-primary/10 shadow-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        {/* Tools Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-linear-to-br from-accent-amber/90 to-accent-amber/60 p-4 rounded-xl shrink-0">
-                <Wrench className="w-8 h-8 text-accent-white" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-3xl font-bold text-foreground mb-6">Das nutzen wir</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Wir setzen auf moderne, bewährte Technologien für eine schnelle, sichere und
-                  skalierbare Plattform.
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {tools.map((tool, index) => (
-                    <a
-                      key={index}
-                      href={tool.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
-                    >
-                      <Image
-                        src={tool.logo}
-                        alt={tool.name}
-                        width={24}
-                        height={24}
-                        className="object-contain"
-                      />
-                      <span className="font-semibold text-foreground">{tool.name}</span>
-                    </a>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Process Section */}
-        <section className="py-16 px-4 bg-muted/30">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
-              <div className="bg-linear-to-br from-accent-emerald/80 to-accent-emerald/60 p-4 rounded-xl shrink-0 shadow-sm">
-                <Users className="w-8 h-8 text-white" />
+          </section>
+          {/* Tools Section */}
+          <section className="py-16 px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
+                <div className="bg-linear-to-br from-accent-amber/90 to-accent-amber/60 p-4 rounded-xl shrink-0">
+                  <Wrench className="w-8 h-8 text-accent-white" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold text-foreground mb-6">Das nutzen wir</h2>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Wir setzen auf moderne, bewährte Technologien für eine schnelle, sichere und
+                    skalierbare Plattform.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {tools.map((tool, index) => (
+                      <a
+                        key={index}
+                        href={tool.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
+                      >
+                        <Image
+                          src={tool.logo}
+                          alt={tool.name}
+                          width={24}
+                          height={24}
+                          className="object-contain"
+                        />
+                        <span className="font-semibold text-foreground">{tool.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">
-                <h2 className="text-3xl font-bold text-foreground mb-6">
-                  Ihr sucht uns? Hier findet ihr uns!
-                </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  Open Source, denn gute Software sollte für alle zugänglich sein.
-                </p>
+            </div>
+          </section>
 
-                {/* {processSteps.map((step, index) => (
+          {/* Process Section */}
+          <section className="py-16 px-4 bg-muted/30">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-start gap-6 bg-card rounded-2xl p-8 shadow-lg border border-border">
+                <div className="bg-linear-to-br from-accent-emerald/80 to-accent-emerald/60 p-4 rounded-xl shrink-0 shadow-sm">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold text-foreground mb-6">
+                    Ihr sucht uns? Hier findet ihr uns!
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-8">
+                    Open Source, denn gute Software sollte für alle zugänglich sein.
+                  </p>
+
+                  {/* {processSteps.map((step, index) => (
                     <div
                       key={index}
                       className="flex items-start gap-4 p-6 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
@@ -281,37 +288,85 @@ export default function Team() {
                     </div>
                   ))} */}
 
-                <div className="flex items-center gap-6">
-                  <Image
-                    src={github}
-                    alt="GitHub Repository Screenshot"
-                    width={200}
-                    height={200}
-                    className="rounded-xl"
-                  />
-                  <div>
-                    <h2 className="text-2xl font-bold text-foreground mb-2">
-                      JuriLib ist Open Source!
-                    </h2>
-                    <p className="text-muted-foreground">
-                      Schaut gerne in unserem{' '}
-                      <a
-                        href="https://github.com/projekt-bht/jurilib"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary underline hover:text-primary/80"
-                      >
-                        GitHub Repository
-                      </a>{' '}
-                      vorbei, um den Code einzusehen.
-                    </p>
+                  <div className="flex items-center gap-6">
+                    <Image
+                      src={github}
+                      alt="GitHub Repository Screenshot"
+                      width={200}
+                      height={200}
+                      className="rounded-xl"
+                    />
+                    <div>
+                      <h2 className="text-2xl font-bold text-foreground mb-2">
+                        JuriLib ist Open Source!
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Schaut gerne in unserem{' '}
+                        <a
+                          href="https://github.com/projekt-bht/jurilib"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary underline hover:text-primary/80"
+                        >
+                          GitHub Repository
+                        </a>{' '}
+                        vorbei, um den Code einzusehen.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </main>
-    </div>
-  );
+          </section>
+        </main>
+      </div>
+    );
+  } else {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <main className="flex-1">
+          {/* Team Members */}
+          <section className="py-16 px-4 bg-muted/30">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-foreground text-center mb-12">Das sind Wir</h2>
+              <div className="grid md:grid-cols-3 gap-8">
+                {teamMembers.map((member, index) => (
+                  <div
+                    key={index}
+                    className="bg-background rounded-2xl overflow-hidden shadow-lg border border-border hover:shadow-2xl transition-shadow duration-300 animate-fade-in hover:scale-105"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    onClick={() => window.open(member.profile)}
+                  >
+                    <div className="aspect-square overflow-hidden bg-muted relative">
+                      <Image
+                        src={member.image || '/placeholder.svg'}
+                        alt={member.name}
+                        fill
+                        className="object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-1">{member.name}</h3>
+                      <p className="text-primary font-medium mb-3">{member.role}</p>
+                      <p className="text-muted-foreground mb-4 leading-relaxed">{member.bio}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {member.expertise.map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1 bg-accent-gray-soft text-primary text-sm rounded-full border border-primary/10 shadow-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 }

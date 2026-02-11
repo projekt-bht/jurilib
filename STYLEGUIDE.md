@@ -72,14 +72,15 @@ This styleguide defines coding conventions and workflow practices for the projec
 
 ### 2.1 Branch Structure
 
-| Branch       | Purpose                                  | Rules / Protection                                          |
-| ------------ | ---------------------------------------- | ----------------------------------------------------------- |
-| **main**     | Production                               | only changed through PRs                                    |
-| **dev**      | Stage / Integration                      | Created from `main` branch, PRs -> `main`, minimum 1 review |
-| **setup/\*** |  For initial setup, may be deleted later | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
-| **feat/\***  |  Adding new features                     | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
-| **fix/\***   | Self explanatory                         | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
-| **bug/\***   | Can be used interchangeably to fix/\*    | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| Branch       | Purpose                                       | Rules / Protection                                          |
+| ------------ | --------------------------------------------- | ----------------------------------------------------------- |
+| **main**     | Production                                    | only changed through PRs                                    |
+| **dev**      | Stage / Integration                           | Created from `main` branch, PRs -> `main`, minimum 1 review |
+| **setup/\*** |  For initial setup, may be deleted later      | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **feat/\***  |  Adding new features                          | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **fix/\***   | Self explanatory                              | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **bug/\***   | Can be used interchangeably to fix/\*         | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
+| **docs/\***  | Used if only documentation is added or edited | Created from `dev` branch, PRs -> `dev`, minimum 1 review   |
 
 ### 2.2 Creating Branch
 

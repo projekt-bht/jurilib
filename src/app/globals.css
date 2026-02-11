@@ -40,6 +40,7 @@
   --color-accent-black-light: var(--accent-black-light);
   --color-accent-white: var(--accent-white);
   --color-accent-red: var(--destructive);
+  --color-accent-red-light: var(--accent-red-light);
   --radius-sm: calc(var(--radius) - 4px); /* Rundung für Badges oder kleine Elemente */
   --radius-md: calc(
     var(--radius) - 2px
@@ -83,6 +84,7 @@
   --accent-black-light: rgb(64 64 64);
   --accent-white: rgb(255 255 255);
   --accent-red: rgb(239, 37, 27);
+  --accent-red-light: rgb(245, 212, 211);
 }
 
 .dark {
