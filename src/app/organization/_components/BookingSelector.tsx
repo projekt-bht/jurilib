@@ -37,9 +37,9 @@ export default function BookingSelector({
 
   const subtitle =
     bookingMode === 'quick'
-      ? 'Alle freien Termine auf einen Blick – wähle einfach ein Datum.'
-      : 'Wähle zuerst eine Mitarbeiter*in, danach erscheint der Kalender.'; //hier kommt hannes text rein
-  const subtitleClassName = 'text-foreground';
+      ? 'Alle freien Termine auf einen Blick. Buche schnell und unkompliziert deinen Wunschtermin.'
+      : 'Du möchtest einen Termin bei einer bestimmten Mitarbeiter*in buchen? Kein Problem, du hast die Wahl.';
+  const subtitleClassName = 'text-muted-foreground';
 
   return (
     <div className={`space-y-2 ${className ?? ''}`}>
@@ -49,26 +49,28 @@ export default function BookingSelector({
         onValueChange={(value) => handleSetBookingMode(value as BookingMode)}
         className="w-full"
       >
-        <TabsList className="w-full rounded-lg bg-accent-gray-soft p-1 shadow-inner !h-16 items-stretch">
+        <TabsList className="w-full rounded-lg bg-accent-gray-soft p-1 shadow-inner h-16! items-stretch">
           <TabsTrigger
             value={BookingMode.QUICK}
-            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground h-14"
+            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground"
           >
-            <CalendarDays className="h-4 w-4" />
-            Alle Termine
+            <CalendarDays className="h-5 w-5" />
+            <span className="ml-2 font-bold">Alle Termine</span>
           </TabsTrigger>
           <TabsTrigger
             value={BookingMode.EMPLOYEE}
-            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground h-14"
+            className="h-full rounded-lg px-4 py-0 text-sm font-semibold data-[state=active]:bg-accent-white data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=inactive]:text-muted-foreground"
           >
-            <User className="h-4 w-4" />
-            Mitarbeiter*in
+            <User className="h-5 w-5" />
+            <span className="ml-2 font-bold">Mitarbeiter*innen</span>
           </TabsTrigger>
         </TabsList>
       </Tabs>
       {/* Friendly hint, centered below tabs for clarity */}
-      <div className="flex justify-center">
-        <p className={`text-sm ${subtitleClassName} bg-accent-gray-soft px-3 py-1.5 rounded-full`}>
+      <div className="flex justify-center items-center">
+        <p
+          className={`text-sm font-medium ${subtitleClassName} text-center px-3 py-1.5 rounded-full`}
+        >
           {subtitle}
         </p>
       </div>
