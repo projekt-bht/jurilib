@@ -333,7 +333,7 @@ export default function OrganizationCalendar({
         )}
 
         {/* Calendar is visible immediately in quick booking,
-            or after an employee is picked in employee mode. */}
+            or when in employee mode (even if no employee selected yet). */}
         {/* Empty state when no appointments are available for the current context */}
         {(bookingMode === BookingMode.QUICK ||
           (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
@@ -348,79 +348,89 @@ export default function OrganizationCalendar({
             </div>
           )}
 
-        {/* Calendar view only renders when there are available days to show */}
-        {(bookingMode === BookingMode.QUICK ||
-          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
-          availableDays.length > 0 && (
-            <>
-              {/* Month-level hint when the visible month has no available days */}
-              {!hasDaysInMonth && (
-                <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-                  <p className="text-sm font-semibold text-accent-blue">
-                    Keine freien Termine für diesen Monat.
+        {/* Calendar view - shown in quick mode or employee mode (disabled if no employee selected) */}
+        {(bookingMode === BookingMode.QUICK || bookingMode === BookingMode.EMPLOYEE) && (
+          <>
+            {/* Month-level hint when the visible month has no available days */}
+            {!hasDaysInMonth && (
+              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+                <p className="text-sm font-semibold text-accent-blue">
+                  Keine freien Termine für diesen Monat.
+                </p>
+                {nextAvailableMonthLabel && (
+                  <p className="text-sm text-accent-blue">
+                    Nächster verfügbarer Termin
+                    {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                      ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                      : ''}{' '}
+                    ist am {nextAvailableMonthLabel}.
                   </p>
-                  {nextAvailableMonthLabel && (
-                    <p className="text-sm text-accent-blue">
-                      Nächster verfügbarer Termin
-                      {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
-                        ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
-                        : ''}{' '}
-                      ist am {nextAvailableMonthLabel}.
-                    </p>
-                  )}
-                </div>
-              )}
-
-              <div className="flex items-center gap-2 flex-wrap">
-                <CalendarDays className="h-5 w-5 text-accent-blue" />
-                <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
+                )}
               </div>
-              <div className="rounded-xl border border-border space-y-4 w-full shadow-sm p-4">
-                <div className="h-120">
-                  <Calendar
-                    mode="single"
-                    today={new Date()}
-                    locale={de}
-                    selected={selectedDate}
-                    onSelect={(date) => {
-                      setDate(date);
-                      handleChange(date, null);
-                    }}
-                    onMonthChange={(date) => setVisibleMonth(date)}
-                    disabled={isDisabledDay}
-                    startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
-                    endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)}
-                    className="mx-auto flex-col text-foreground"
-                    /* https://daypicker.dev/docs/styling */
-                    classNames={{
-                      caption_label: 'font-bold text-xl',
-                      day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white hover:cursor-pointer hover:bg-accent-blue-light',
-                      today: '!border !border-accent-blue/40 !bg-accent-blue-soft',
-                      disabled:
-                        'line-through text-foreground opacity-50 hover:cursor-not-allowed hover:bg-accent-gray-light',
-                    }}
-                  />
+            )}
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <CalendarDays className="h-5 w-5 text-accent-blue" />
+              <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
+            </div>
+            <div
+              className={`rounded-xl border border-border space-y-4 w-full shadow-sm p-4 ${
+                bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
+                  ? 'opacity-50 pointer-events-none'
+                  : ''
+              }`}
+            >
+              <div className="h-120">
+                <Calendar
+                  mode="single"
+                  today={new Date()}
+                  locale={de}
+                  selected={selectedDate}
+                  onSelect={(date) => {
+                    setDate(date);
+                    handleChange(date, null);
+                  }}
+                  onMonthChange={(date) => setVisibleMonth(date)}
+                  disabled={(date) => {
+                    // Disable all dates if no employee selected in employee mode
+                    if (bookingMode === BookingMode.EMPLOYEE && !selectedEmployee) {
+                      return true;
+                    }
+                    return isDisabledDay(date);
+                  }}
+                  startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
+                  endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)}
+                  className="mx-auto flex-col text-foreground"
+                  /* https://daypicker.dev/docs/styling */
+                  classNames={{
+                    caption_label: 'font-bold text-xl',
+                    day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white hover:cursor-pointer hover:bg-accent-blue-light',
+                    today: '!border !border-accent-blue/40 !bg-accent-blue-soft',
+                    disabled:
+                      'line-through bg-accent-gray-light text-accent-gray opacity-60 hover:cursor-not-allowed',
+                  }}
+                />
+              </div>
+
+              <div className="border-t border-border" />
+
+              <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-accent-blue/40 bg-accent-blue-soft" />
+                  <span>Heute</span>
                 </div>
-
-                <div className="border-t border-border" />
-
-                <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
-                  <div className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-accent-blue/40 bg-accent-blue-soft" />
-                    <span>Heute</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
-                    <span>Ausgewählt</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
-                    <span>Nicht verfügbar</span>
-                  </div>
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
+                  <span>Ausgewählt</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
+                  <span>Nicht verfügbar</span>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
 
         {selectedDate && (
           <div className="space-y-3">
