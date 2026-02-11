@@ -332,27 +332,19 @@ export default function OrganizationCalendar({
           </div>
         )}
 
-        {/* Calendar is visible immediately in quick booking,
-            or when in employee mode (even if no employee selected yet). */}
-        {/* Empty state when no appointments are available for the current context */}
-        {(bookingMode === BookingMode.QUICK ||
-          (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
-          availableDays.length === 0 && (
-            <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-              <p className="text-sm font-semibold text-accent-blue">
-                Keine freien Termine verfügbar
-                {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
-                  ? ` für ${selectedEmployee.firstname} ${selectedEmployee.lastname}.`
-                  : '.'}
-              </p>
-            </div>
-          )}
-
         {/* Calendar view - shown in quick mode or employee mode (disabled if no employee selected) */}
         {(bookingMode === BookingMode.QUICK || bookingMode === BookingMode.EMPLOYEE) && (
           <>
+            {bookingMode === BookingMode.QUICK && availableDays.length === 0 && (
+              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+                <p className="text-sm font-semibold text-accent-blue">
+                  Keine freien Termine verfügbar
+                </p>
+              </div>
+            )}
+
             {/* Month-level hint when the visible month has no available days */}
-            {!hasDaysInMonth && (
+            {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
               <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
                 <p className="text-sm font-semibold text-accent-blue">
                   Keine freien Termine für diesen Monat.
