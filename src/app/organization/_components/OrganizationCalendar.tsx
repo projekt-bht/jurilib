@@ -1,17 +1,17 @@
 'use client';
 
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Clock } from 'lucide-react'; //User icons
-import { useEffect, useState } from 'react';
+import { CalendarDays, Clock, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
 import type { Appointment, Employee } from '~/generated/prisma/client';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-// import BookingSelector from './BookingSelector';
+import BookingSelector, { BookingMode } from './BookingSelector';
 
 type OrganizationCalendarProps = {
   onChange?: (selection: { date?: Date; time?: string | null }) => void;
@@ -39,7 +39,9 @@ type SlotOption = {
 export default function OrganizationCalendar({
   onChange,
   appointments,
+  employees,
 }: OrganizationCalendarProps) {
+  const router = useRouter();
   const { login } = useLoginContext();
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
   const [availableSlots, setAvailableSlots] = useState<Record<string, SlotOption[]>>({});
@@ -48,10 +50,25 @@ export default function OrganizationCalendar({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<SlotOption | null>(null);
+  // Tracks the month currently shown by the calendar UI.
+  const [visibleMonth, setVisibleMonth] = useState<Date>(
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+  );
   const [isBooking, setIsBooking] = useState(false);
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
-  // const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
-  // const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+  const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+  const [isEmployeeDropdownOpen, setIsEmployeeDropdownOpen] = useState(false);
+  const employeeDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Ensure employee selection is reset when switching into employee mode
+  // so no one is pre-selected on first view.
+  const handleBookingModeChange = (mode: BookingMode) => {
+    setBookingMode(mode);
+    if (mode === BookingMode.EMPLOYEE) {
+      setSelectedEmployee(null);
+    }
+  };
 
   const setDate = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -60,25 +77,64 @@ export default function OrganizationCalendar({
   };
 
   useEffect(() => {
-    if (statusMessage) {
-      const timer = setTimeout(() => {
-        setShowStatusMessage(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [statusMessage]);
+    if (!showStatusMessage || statusMessage !== 'Termin erfolgreich gebucht!') return;
+
+    const timer = setTimeout(() => {
+      router.push('/appointment');
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [router, showStatusMessage, statusMessage]);
 
   useEffect(() => {
-    const openAppointments = appointments.filter((a) => a.status === AppointmentStatus.OPEN);
+    // Reset date/time selection when the employee context changes
+    // to avoid keeping slots from a different employee.
+    if (bookingMode === BookingMode.EMPLOYEE) {
+      setSelectedDate(undefined);
+      setSelectedTime(null);
+      setSelectedSlot(null);
+    }
+  }, [bookingMode, selectedEmployee]);
 
-    const days: Date[] = openAppointments.map((a) => {
+  useEffect(() => {
+    if (!isEmployeeDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (employeeDropdownRef.current && target && !employeeDropdownRef.current.contains(target)) {
+        setIsEmployeeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isEmployeeDropdownOpen]);
+
+  useEffect(() => {
+    // In employee mode, only show open appointments for the selected employee.
+    // In quick mode, show all open appointments.
+    // Past appointments are filtered out so users cannot book in the past.
+    const now = new Date();
+    const openAppointments = appointments.filter(
+      (a) => a.status === AppointmentStatus.OPEN && new Date(a.dateTimeStart) >= now
+    );
+    // When no employee is selected in employee mode, return an empty list
+    // to avoid showing unrelated slots.
+    const filteredAppointments =
+      bookingMode === BookingMode.EMPLOYEE
+        ? selectedEmployee
+          ? openAppointments.filter((a) => a.employeeId === selectedEmployee.id)
+          : []
+        : openAppointments;
+
+    const days: Date[] = filteredAppointments.map((a) => {
       // create a new Date instance and normalize to midnight without mutating source
       const d = new Date(a.dateTimeStart);
       d.setHours(0, 0, 0, 0);
       return d;
     });
     // vibe coded hell
-    const slotsByDate: Record<string, SlotOption[]> = openAppointments.reduce(
+    const slotsByDate: Record<string, SlotOption[]> = filteredAppointments.reduce(
       (acc: Record<string, SlotOption[]>, appointment) => {
         if (!appointment.employeeId) return acc;
 
@@ -102,9 +158,10 @@ export default function OrganizationCalendar({
     );
     // vibe coded hell ends
 
+    // Update calendar data sources based on the selected employee context.
     setAvailableSlots(slotsByDate);
     setAvailableDays(days);
-  }, [appointments]);
+  }, [appointments, bookingMode, selectedEmployee]);
 
   function isDisabledDay(date: Date) {
     const normalisedDate = new Date(date);
@@ -147,9 +204,7 @@ export default function OrganizationCalendar({
       //Booking ok, we can clear current cachedProblem
       sessionStorage.removeItem('problemText');
 
-      if (typeof window !== 'undefined') {
-        window.location.reload();
-      }
+      // Navigation happens after the success message is shown.
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
       setShowStatusMessage(true);
@@ -165,9 +220,31 @@ export default function OrganizationCalendar({
     });
   };
 
+  // Check if the currently visible month has any available days.
+  const visibleYear = visibleMonth.getFullYear();
+  const visibleMonthIndex = visibleMonth.getMonth();
+  const hasDaysInMonth = availableDays.some(
+    (day) => day.getFullYear() === visibleYear && day.getMonth() === visibleMonthIndex
+  );
+  const sortedAvailableDays = availableDays.slice().sort((a, b) => a.getTime() - b.getTime());
+  // Only show "next available" after the currently visible month
+  // to avoid pointing to past months when browsing the future.
+  const nextAvailableAfterMonth = sortedAvailableDays.find(
+    (day) =>
+      day.getFullYear() > visibleYear ||
+      (day.getFullYear() === visibleYear && day.getMonth() > visibleMonthIndex)
+  );
+  const nextAvailableMonthLabel = nextAvailableAfterMonth
+    ? nextAvailableAfterMonth.toLocaleDateString('de-DE', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
+
   return (
-    <div className="px-0 xl:pr-8">
-      <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
+    <div className="">
+      <div className="bg-accent-white p-6 shadow-lg rounded-lg space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
         <div className="space-y-1">
           <h2 className="text-3xl font-bold">Termin buchen</h2>
           <p className="text-base text-muted-foreground">
@@ -175,97 +252,177 @@ export default function OrganizationCalendar({
           </p>
         </div>
 
-        {/* save this for later use */}
-        {/*
-          <BookingSelector
-            bookingMode={bookingMode}
-            onBookingModeChange={(mode) => setBookingMode(mode)}
-            selectedEmployee={selectedEmployee}
-          />
+        {/* Booking mode tabs (quick booking vs employee) */}
+        <BookingSelector
+          bookingMode={bookingMode}
+          onBookingModeChange={handleBookingModeChange}
+          selectedEmployee={selectedEmployee}
+        />
 
-          {bookingMode === BookingMode.EMPLOYEE && (
-            <div className="mb-6 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <User className="w-5 h-5 text-accent-blue" />
-                Wähle einen Mitarbeiter
-              </h3>
-              <div className="grid grid-cols-1 gap-4 2xl:grid-cols-2">
-                {employees.map((employee) => (
-                  <button
-                    key={employee.id}
-                    onClick={() => {
-                      setSelectedEmployee(employee);
-                    }}
-                    className={cn(
-                      // cn merges the base classes with either the active or inactive variant; keeps the card markup clean while toggling selection state
-                      'p-4 rounded-xl border-2 transition-all duration-200 text-left',
-                      selectedEmployee?.id === employee.id
-                        ? 'border-accent-blue-light bg-accent-gray-soft shadow-md'
-                        : 'border-border hover:border-primary/50 bg-accent-white'
-                    )}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 rounded-full bg-accent-gray-soft text-muted-foreground flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-xl font-bold shadow-md shrink-0"></div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-foreground mb-1 break-words">
-                          
+        {/* Employee dropdown only shown in employee mode */}
+        {bookingMode === BookingMode.EMPLOYEE && (
+          <div>
+            <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+              <User className="w-5 h-5 text-accent-blue" />
+              <span>Wähle eine Mitarbeiter*in</span>
+            </h3>
+            <div className="relative w-full" ref={employeeDropdownRef}>
+              <button
+                onClick={() => setIsEmployeeDropdownOpen(!isEmployeeDropdownOpen)}
+                className="w-full px-4 py-3 rounded-2xl border-2 border-border bg-accent-white text-foreground text-base transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background cursor-pointer text-left flex justify-between items-center"
+              >
+                <span>
+                  {selectedEmployee
+                    ? `${selectedEmployee.firstname} ${selectedEmployee.lastname}${
+                        selectedEmployee.pronounText
+                          ? ` (${selectedEmployee.pronounText.replace('_', '/')})`
+                          : selectedEmployee.pronoun
+                            ? ` (${selectedEmployee.pronoun.replace('_', '/')})`
+                            : ''
+                      }`
+                    : '-- Bitte auswählen --'}
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform ${isEmployeeDropdownOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+              </button>
+
+              {isEmployeeDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto ">
+                  {employees.map((employee) => (
+                    <button
+                      key={employee.id}
+                      onClick={() => {
+                        setSelectedEmployee(employee);
+                        setIsEmployeeDropdownOpen(false);
+                      }}
+                      className={`w-full px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                        selectedEmployee?.id === employee.id
+                          ? 'bg-accent-blue-soft text-accent-blue font-semibold'
+                          : 'hover:bg-accent-blue-soft'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-semibold">
+                          {employee.title ? `${employee.title} ` : ''}
                           {employee.firstname} {employee.lastname}
-                        </h4>
+                          {employee.pronounText
+                            ? ` (${employee.pronounText.replace('_', '/')})`
+                            : employee.pronoun
+                              ? ` (${employee.pronoun.replace('_', '/')})`
+                              : ''}
+                          <div className="text-sm text-muted-foreground">{employee.position}</div>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-          */}
-
-        <div className="flex items-center gap-2 flex-wrap">
-          <CalendarIcon className="h-5 w-5 text-accent-blue" />
-          <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
-        </div>
-        <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
-          <Calendar
-            mode="single"
-            today={new Date()}
-            locale={de}
-            selected={selectedDate}
-            onSelect={(date) => {
-              setDate(date);
-              handleChange(date, null);
-            }}
-            disabled={isDisabledDay}
-            startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
-            endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year
-            className="bg-transparent mx-auto flex-col"
-            /* https://daypicker.dev/docs/styling */
-            classNames={{
-              caption_label: 'font-bold text-xl',
-              day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
-              today:
-                ' flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
-              disabled:
-                '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-            }}
-          />
-
-          <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
-              <span>Heute</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
-              <span>Ausgewählt</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
-              <span>Nicht verfügbar</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Calendar view - shown in quick mode or employee mode (disabled if no employee selected) */}
+        {(bookingMode === BookingMode.QUICK || bookingMode === BookingMode.EMPLOYEE) && (
+          <>
+            {bookingMode === BookingMode.QUICK && availableDays.length === 0 && (
+              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+                <p className="text-sm font-semibold text-accent-blue">
+                  Keine freien Termine verfügbar
+                </p>
+              </div>
+            )}
+
+            {/* Month-level hint when the visible month has no available days */}
+            {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
+              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
+                <p className="text-sm font-semibold text-accent-blue">
+                  Keine freien Termine für diesen Monat.
+                </p>
+                {nextAvailableMonthLabel && (
+                  <p className="text-sm text-accent-blue">
+                    Nächster verfügbarer Termin
+                    {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                      ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                      : ''}{' '}
+                    ist am {nextAvailableMonthLabel}.
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <CalendarDays className="h-5 w-5 text-accent-blue" />
+              <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
+            </div>
+            <div
+              className={`rounded-xl border border-border space-y-4 w-full shadow-sm p-4 ${
+                bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
+                  ? 'opacity-50 pointer-events-none'
+                  : ''
+              }`}
+            >
+              <div className="h-120">
+                <Calendar
+                  mode="single"
+                  today={new Date()}
+                  locale={de}
+                  selected={selectedDate}
+                  onSelect={(date) => {
+                    setDate(date);
+                    handleChange(date, null);
+                  }}
+                  onMonthChange={(date) => setVisibleMonth(date)}
+                  disabled={(date) => {
+                    // Disable all dates if no employee selected in employee mode
+                    if (bookingMode === BookingMode.EMPLOYEE && !selectedEmployee) {
+                      return true;
+                    }
+                    return isDisabledDay(date);
+                  }}
+                  startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
+                  endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)}
+                  className="mx-auto flex-col text-foreground"
+                  /* https://daypicker.dev/docs/styling */
+                  classNames={{
+                    caption_label: 'font-bold text-xl',
+                    day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white hover:cursor-pointer hover:bg-accent-blue-light',
+                    today: '!border !border-accent-blue/40 !bg-accent-blue-soft',
+                    disabled:
+                      'line-through bg-accent-gray-light text-accent-gray opacity-60 hover:cursor-not-allowed',
+                  }}
+                />
+              </div>
+
+              <div className="border-t border-border" />
+
+              <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-accent-blue/40 bg-accent-blue-soft" />
+                  <span>Heute</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
+                  <span>Ausgewählt</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
+                  <span>Nicht verfügbar</span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {selectedDate && (
           <div className="space-y-3">
@@ -279,7 +436,20 @@ export default function OrganizationCalendar({
                 const slotsForSelectedDate: SlotOption[] =
                   availableSlots[selectedDate?.toDateString() || ''] || [];
 
-                return slotsForSelectedDate.map((slot: SlotOption) => {
+                {
+                  /* Copilot: planned slot sorting implementation */
+                }
+                const sortedSlots = [...slotsForSelectedDate].sort((a, b) => {
+                  const getStartMinutes = (label: string) => {
+                    const start = label.split(' - ')[0] ?? '';
+                    const [h, m] = start.split(':');
+                    return Number(h) * 60 + Number(m);
+                  };
+
+                  return getStartMinutes(a.label) - getStartMinutes(b.label);
+                });
+
+                return sortedSlots.map((slot: SlotOption) => {
                   const isBooked = bookedSlotIds.includes(slot.appointmentId);
                   const isSelected = selectedSlot?.appointmentId === slot.appointmentId;
 
@@ -287,14 +457,13 @@ export default function OrganizationCalendar({
                     <Button
                       key={slot.appointmentId}
                       variant="outline"
-                      className={cn(
-                        'rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug',
+                      className={`rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal wrap-break-word leading-snug ${
                         isBooked
                           ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                           : isSelected
                             ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
                             : 'border-border hover:bg-accent-gray-light'
-                      )}
+                      }`}
                       disabled={isBooked}
                       onClick={() => {
                         if (isBooked) return;
@@ -312,7 +481,7 @@ export default function OrganizationCalendar({
 
             {selectedDate && selectedTime && (
               <div className="flex justify-center gap-6 mt-6 p-4 bg-accent-blue-soft border border-accent-blue-light rounded-lg animate-fade-in">
-                <p className=" text-xl font-bold text-foreground">
+                <p className=" text-lg font-semibold text-foreground">
                   {selectedDate.toLocaleDateString('de-DE', {
                     weekday: 'long',
                     day: 'numeric',
@@ -320,19 +489,24 @@ export default function OrganizationCalendar({
                     year: 'numeric',
                   })}
                 </p>
-                <p className="text-xl font-bold text-accent-blue">{selectedTime} Uhr</p>
+                <p className="text-lg font-semibold text-accent-blue">{selectedTime} Uhr</p>
               </div>
             )}
 
             {login && (
               <div className="space-y-2 pt-2">
-                <Button
-                  className="bg-primary text-primary-foreground text-lg font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
-                  disabled={!selectedDate || !selectedTime || isBooking}
-                  onClick={confirmBooking}
-                >
-                  {isBooking ? 'Termin wird angefragt...' : 'Termin anfragen'}
-                </Button>
+                {!isBooking && !statusMessage && (
+                  <div className="flex justify-center">
+                    <Button
+                      className={`w-full text-lg rounded-lg font-semibold
+                      ${!selectedDate || !selectedTime ? 'bg-accent-gray/60 cursor-not-allowed' : 'bg-accent-blue text-accent-white hover:bg-accent-blue/80'}`}
+                      disabled={!selectedDate || !selectedTime || isBooking}
+                      onClick={confirmBooking}
+                    >
+                      Termin buchen
+                    </Button>
+                  </div>
+                )}
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
                     <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
