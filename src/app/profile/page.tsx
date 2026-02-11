@@ -18,7 +18,7 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
@@ -32,7 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getAccount, getUser, patchAccount, patchUser } from '@/services/api';
+import {
+  deleteAccount,
+  deleteLogin,
+  getAccount,
+  getUser,
+  patchAccount,
+  patchUser,
+} from '@/services/api';
 import type { AccountResource, UserResource } from '@/services/Resources';
 import {
   isOnlyLetter,
@@ -58,6 +65,7 @@ export default function ProfileView() {
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
+  const router = useRouter();
 
   if (!login) notFound();
 
@@ -123,6 +131,16 @@ export default function ProfileView() {
       setAccount(foundAccount);
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async function delAccount() {
+    if (!login) return;
+    try {
+      await deleteAccount(login.id);
+      await deleteLogin();
+    } catch (error) {
+      //Show error if something goes wrong
     }
   }
 
@@ -935,13 +953,7 @@ export default function ProfileView() {
                 size="sm"
                 className="gap-1.5 text-xs h-8"
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      'Bist du sicher, dass du dein Konto unwiderruflich löschen möchtest?'
-                    )
-                  ) {
-                    // handle deletion
-                  }
+                  delAccount();
                 }}
               >
                 <Trash2 className="w-3 h-3" />
