@@ -14,6 +14,8 @@ import {
   PricingModel,
 } from '../generated/prisma/enums';
 import { createEmbedding } from '@/services/server/vectorizer';
+import path from 'path';
+import fs from 'fs';
 
 // code inspired by:
 // https://blog.alexrusin.com/prisma-seeding-quickly-populate-your-database-for-development/
@@ -277,8 +279,13 @@ async function main() {
       const accessibility = orgData.accessibility as Accessibility[];
 
       let expertiseVector = null;
+      let cityVector = null;
+      let descriptionVector = null;
+
       if (process.env.OPENAI_API_KEY) {
-        expertiseVector = await vectorizeExpertiseArea(expertiseAreas.toString());
+        expertiseVector = await createEmbedding(orgData.expertiseAreas.toString());
+        cityVector = await createEmbedding(orgData.city);
+        descriptionVector = await createEmbedding(orgData.description);
       }
 
       const org = await prisma.organization.create({
@@ -304,10 +311,18 @@ async function main() {
         },
       });
 
-      if (expertiseVector) {
+      if (expertiseVector && cityVector && descriptionVector) {
         await prisma.$executeRawUnsafe(
-          `UPDATE "Organization" SET "expertiseVector" = $1 WHERE id = $2`,
+          `
+          UPDATE "Organization" SET
+            "expertiseVector" = $1,
+            "cityVector" = $2,
+            "descriptionVector" = $3
+          WHERE id = $4
+        `,
           expertiseVector,
+          cityVector,
+          descriptionVector,
           org.id
         );
       }
