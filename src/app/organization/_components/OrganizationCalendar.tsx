@@ -244,7 +244,7 @@ export default function OrganizationCalendar({
 
   return (
     <div className="">
-      <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
+      <div className="bg-accent-white p-6 shadow-lg rounded-lg space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
         <div className="space-y-1">
           <h2 className="text-3xl font-bold">Termin buchen</h2>
           <p className="text-base text-muted-foreground">
