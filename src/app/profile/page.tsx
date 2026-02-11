@@ -997,7 +997,7 @@ export default function ProfileView() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogCancel variant="secondary">Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
