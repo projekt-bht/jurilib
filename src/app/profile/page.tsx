@@ -382,81 +382,8 @@ export default function ProfileView() {
         break;
     }
   }
-
   function isFormValid() {
-    if (userForm.firstname.length < 1 || !isOnlyLetter(userForm.firstname)) {
-      return false;
-    }
-
-    if (userForm.lastname.length < 1 || !isOnlyLetter(userForm.lastname)) {
-      return false;
-    }
-
-    if (
-      userForm.gender === Gender.Andere &&
-      (userForm.genderText.length < 1 || !isOnlyLetter(userForm.genderText))
-    ) {
-      return false;
-    }
-    if (
-      userForm.pronoun === Pronoun.Andere &&
-      (userForm.pronounText.length < 1 || !isOnlyLetter(userForm.pronounText))
-    ) {
-      return false;
-    }
-
-    if (userForm.title.length !== 0 && userForm.title.length < 2) {
-      return false;
-    }
-
-    if (
-      userForm.placeOfBirth.length !== 0 &&
-      (userForm.placeOfBirth.length < 1 || !isOnlyLetter(userForm.placeOfBirth))
-    ) {
-      return false;
-    }
-
-    if (
-      userForm.country.length !== 0 &&
-      (userForm.country.length < 2 || !isOnlyLetter(userForm.country))
-    ) {
-      return false;
-    }
-
-    if (
-      userForm.street.length !== 0 &&
-      (userForm.street.length < 2 || !isOnlyLetter(userForm.street))
-    ) {
-      return false;
-    }
-
-    if (userForm.houseNumber.length !== 0 && userForm.houseNumber.length < 1) {
-      return false;
-    }
-
-    if (
-      userForm.zipCode.length !== 0 &&
-      (userForm.zipCode.length < 2 || !isOnlyNumber(userForm.zipCode))
-    ) {
-      return false;
-    }
-
-    if (userForm.city.length !== 0 && (userForm.city.length < 2 || !isOnlyLetter(userForm.city))) {
-      return false;
-    }
-
-    if (userForm.phone.length > 0 && !isValidGermanPhone(userForm.phone)) {
-      return false;
-    }
-
-    if (accountForm.password.length > 0 && !isStrongPassword(accountForm.password)) {
-      return false;
-    }
-    if (accountForm.password.length > 0 && accountForm.passwordRepeat !== accountForm.password) {
-      return false;
-    }
-
-    return true;
+    return Object.values(validationErrors).filter(Boolean).length === 0;
   }
 
   const hasChanges =
