@@ -42,7 +42,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/team" className="hover:text-foreground transition">
-                  Für Uns
+                  Das Team
                 </Link>
               </li>
             </ul>
