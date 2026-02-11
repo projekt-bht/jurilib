@@ -1,8 +1,8 @@
 'use client';
 
 import { de } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Check, Clock, User } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { CalendarDays, Clock, User } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,8 @@ export default function OrganizationCalendar({
   const [bookedSlotIds, setBookedSlotIds] = useState<string[]>([]);
   const [bookingMode, setBookingMode] = useState<BookingMode>(BookingMode.QUICK); // track current booking mode (quick/employee)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null); // currently chosen employee (null for quick mode)
+  const [isEmployeeDropdownOpen, setIsEmployeeDropdownOpen] = useState(false);
+  const employeeDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Ensure employee selection is reset when switching into employee mode
   // so no one is pre-selected on first view.
@@ -90,6 +92,20 @@ export default function OrganizationCalendar({
       setSelectedSlot(null);
     }
   }, [bookingMode, selectedEmployee]);
+
+  useEffect(() => {
+    if (!isEmployeeDropdownOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (employeeDropdownRef.current && target && !employeeDropdownRef.current.contains(target)) {
+        setIsEmployeeDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isEmployeeDropdownOpen]);
 
   useEffect(() => {
     // In employee mode, only show open appointments for the selected employee.
@@ -226,7 +242,7 @@ export default function OrganizationCalendar({
     : null;
 
   return (
-    <div className="px-0 xl:pr-8">
+    <div className="">
       <div className="bg-accent-white p-6 shadow-lg rounded-xl space-y-6 mb-10 flex flex-col px-4 sm:px-6 lg:px-10 flex-start max-w-5xl border border-border">
         <div className="space-y-1">
           <h2 className="text-3xl font-bold">Termin buchen</h2>
@@ -242,58 +258,75 @@ export default function OrganizationCalendar({
           selectedEmployee={selectedEmployee}
         />
 
-        {/* Employee list only shown in employee mode; compact layout with avatar ring + check */}
+        {/* Employee dropdown only shown in employee mode */}
         {bookingMode === BookingMode.EMPLOYEE && (
-          <div className="mb-2 rounded-xl border border-border bg-accent-white p-4 shadow-sm">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+          <div>
+            <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
               <User className="w-5 h-5 text-accent-blue" />
-              Wähle einen Mitarbeiter
+              <span>Wähle eine Mitarbeiter*in</span>
             </h3>
-            <div className="grid grid-cols-1 gap-3">
-              {employees.slice(0, 4).map((employee) => {
-                const isSelected = selectedEmployee?.id === employee.id;
-                // When one employee is selected, visually mute all other cards
-                // so the active choice is unmistakable but still changeable.
-                const isMuted = selectedEmployee && !isSelected;
-                return (
-                  <button
-                    key={employee.id}
-                    onClick={() => {
-                      setSelectedEmployee(employee);
-                    }}
-                    className={`rounded-2xl px-4 py-3 border-2 text-left transition-all duration-200 ${
-                      isSelected
-                        ? 'border-accent-blue bg-linear-to-r from-accent-blue-soft to-accent-white shadow-2xl ring-4 ring-accent-blue-light scale-[1.02]'
-                        : 'border-border bg-accent-white hover:border-accent-blue-light hover:bg-accent-blue-soft'
-                    } ${isMuted ? 'opacity-55 hover:opacity-100' : ''}`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`relative w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-base font-bold shadow-md shrink-0 ring-2 ${
-                          isSelected ? 'ring-accent-blue' : 'ring-transparent'
-                        }`}
-                      >
-                        {employee.firstname
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')}
-                        {/* Selected state: blue ring + blue check badge */}
-                        {isSelected && (
-                          <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-blue text-accent-white shadow-sm">
-                            <Check className="h-3 w-3" />
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-foreground mb-0.5 break-words">
+            <div className="relative w-full" ref={employeeDropdownRef}>
+              <button
+                onClick={() => setIsEmployeeDropdownOpen(!isEmployeeDropdownOpen)}
+                className="w-full px-4 py-3 rounded-2xl border-2 border-border bg-accent-white text-foreground text-base transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background cursor-pointer text-left flex justify-between items-center"
+              >
+                <span>
+                  {selectedEmployee
+                    ? `${selectedEmployee.firstname} ${selectedEmployee.lastname}${
+                        selectedEmployee.pronounText
+                          ? ` (${selectedEmployee.pronounText.replace('_', '/')})`
+                          : selectedEmployee.pronoun
+                            ? ` (${selectedEmployee.pronoun.replace('_', '/')})`
+                            : ''
+                      }`
+                    : '-- Bitte auswählen --'}
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform ${isEmployeeDropdownOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+              </button>
+
+              {isEmployeeDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto ">
+                  {employees.map((employee) => (
+                    <button
+                      key={employee.id}
+                      onClick={() => {
+                        setSelectedEmployee(employee);
+                        setIsEmployeeDropdownOpen(false);
+                      }}
+                      className={`w-full px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                        selectedEmployee?.id === employee.id
+                          ? 'bg-accent-blue-soft text-accent-blue font-semibold'
+                          : 'hover:bg-accent-blue-soft'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-semibold">
+                          {employee.title ? `${employee.title} ` : ''}
                           {employee.firstname} {employee.lastname}
-                        </h4>
-                        <p className="text-sm text-muted-foreground">{employee.position}</p>
+                          {employee.pronounText
+                            ? ` (${employee.pronounText.replace('_', '/')})`
+                            : employee.pronoun
+                              ? ` (${employee.pronoun.replace('_', '/')})`
+                              : ''}
+                          <div className="text-sm text-muted-foreground">{employee.position}</div>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                );
-              })}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -319,10 +352,6 @@ export default function OrganizationCalendar({
           (bookingMode === BookingMode.EMPLOYEE && selectedEmployee)) &&
           availableDays.length > 0 && (
             <>
-              <div className="flex items-center gap-2 flex-wrap">
-                <CalendarIcon className="h-5 w-5 text-accent-blue" />
-                <h2 className="text-2xl font-semibold">Wähle ein Datum</h2>
-              </div>
               {/* Month-level hint when the visible month has no available days */}
               {!hasDaysInMonth && (
                 <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
@@ -333,49 +362,57 @@ export default function OrganizationCalendar({
                     <p className="text-sm text-accent-blue">
                       Nächster verfügbarer Termin
                       {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
-                        ? ` bei ${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                        ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
                         : ''}{' '}
                       ist am {nextAvailableMonthLabel}.
                     </p>
                   )}
                 </div>
               )}
-              <div className="rounded-md shadow-sm bg-accent-gray-soft space-y-4 w-full pl-4 pr-4">
-                <Calendar
-                  mode="single"
-                  today={new Date()}
-                  locale={de}
-                  selected={selectedDate}
-                  onSelect={(date) => {
-                    setDate(date);
-                    handleChange(date, null);
-                  }}
-                  onMonthChange={(date) => setVisibleMonth(date)}
-                  disabled={isDisabledDay}
-                  startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)} // calendar cannot go back in time
-                  endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)} // limits last possible month to now + 1 year
-                  className="bg-transparent mx-auto flex-col"
-                  /* https://daypicker.dev/docs/styling */
-                  classNames={{
-                    caption_label: 'font-bold text-xl',
-                    day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white text-xs sm:text-sm hover:border-accent-gray-light hover:bg-accent-gray-light hover:cursor-pointer',
-                    today:
-                      ' flex items-center justify-center rounded !bg-accent-white !border-[3px] !border-accent-blue-light !text-foreground font-bold ring-2 ring-accent-blue-light ring-offset-transparent data-[selected=true]:ring-0 ',
-                    disabled:
-                      '!bg-transparent !border-none !shadow-none !outline-none text-muted-foreground hover:!bg-transparent hover:!border-none hover:!shadow-none hover:!outline-none hover:!cursor-not-allowed',
-                  }}
-                />
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <CalendarDays className="h-5 w-5 text-accent-blue" />
+                <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
+              </div>
+              <div className="rounded-xl border border-border space-y-4 w-full shadow-sm p-4">
+                <div className="h-120">
+                  <Calendar
+                    mode="single"
+                    today={new Date()}
+                    locale={de}
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      setDate(date);
+                      handleChange(date, null);
+                    }}
+                    onMonthChange={(date) => setVisibleMonth(date)}
+                    disabled={isDisabledDay}
+                    startMonth={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
+                    endMonth={new Date(new Date().getFullYear() + 1, new Date().getMonth(), 1)}
+                    className="mx-auto flex-col text-foreground"
+                    /* https://daypicker.dev/docs/styling */
+                    classNames={{
+                      caption_label: 'font-bold text-xl',
+                      day: 'w-full h-full flex items-center justify-center rounded-lg bg-accent-white hover:cursor-pointer hover:bg-accent-blue-light',
+                      today: '!border !border-accent-blue/40 !bg-accent-blue-soft',
+                      disabled:
+                        'line-through text-foreground opacity-50 hover:cursor-not-allowed hover:bg-accent-gray-light',
+                    }}
+                  />
+                </div>
+
+                <div className="border-t border-border" />
 
                 <div className="flex justify-center items-center gap-6 px-2 pb-2 flex-wrap">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span className="inline-flex h-5 w-5 items-center justify-center rounded border-2 border-accent-blue-light" />
+                  <div className="flex items-center gap-2 text-sm text-foreground">
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-accent-blue/40 bg-accent-blue-soft" />
                     <span>Heute</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-foreground">
                     <span className="inline-flex h-5 w-5 rounded bg-accent-blue" />
                     <span>Ausgewählt</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-foreground">
                     <span className="inline-flex h-5 w-5 rounded bg-accent-gray-light" />
                     <span>Nicht verfügbar</span>
                   </div>
@@ -396,7 +433,20 @@ export default function OrganizationCalendar({
                 const slotsForSelectedDate: SlotOption[] =
                   availableSlots[selectedDate?.toDateString() || ''] || [];
 
-                return slotsForSelectedDate.map((slot: SlotOption) => {
+                {
+                  /* Copilot: planned slot sorting implementation */
+                }
+                const sortedSlots = [...slotsForSelectedDate].sort((a, b) => {
+                  const getStartMinutes = (label: string) => {
+                    const start = label.split(' - ')[0] ?? '';
+                    const [h, m] = start.split(':');
+                    return Number(h) * 60 + Number(m);
+                  };
+
+                  return getStartMinutes(a.label) - getStartMinutes(b.label);
+                });
+
+                return sortedSlots.map((slot: SlotOption) => {
                   const isBooked = bookedSlotIds.includes(slot.appointmentId);
                   const isSelected = selectedSlot?.appointmentId === slot.appointmentId;
 
@@ -404,7 +454,7 @@ export default function OrganizationCalendar({
                     <Button
                       key={slot.appointmentId}
                       variant="outline"
-                      className={`rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal break-words leading-snug ${
+                      className={`rounded-lg border font-semibold text-center w-full px-4 text-base whitespace-normal wrap-break-word leading-snug ${
                         isBooked
                           ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                           : isSelected
@@ -428,7 +478,7 @@ export default function OrganizationCalendar({
 
             {selectedDate && selectedTime && (
               <div className="flex justify-center gap-6 mt-6 p-4 bg-accent-blue-soft border border-accent-blue-light rounded-lg animate-fade-in">
-                <p className=" text-xl font-bold text-foreground">
+                <p className=" text-lg font-semibold text-foreground">
                   {selectedDate.toLocaleDateString('de-DE', {
                     weekday: 'long',
                     day: 'numeric',
@@ -436,19 +486,24 @@ export default function OrganizationCalendar({
                     year: 'numeric',
                   })}
                 </p>
-                <p className="text-xl font-bold text-accent-blue">{selectedTime} Uhr</p>
+                <p className="text-lg font-semibold text-accent-blue">{selectedTime} Uhr</p>
               </div>
             )}
 
             {login && (
               <div className="space-y-2 pt-2">
-                <Button
-                  className="bg-primary text-primary-foreground text-lg font-bold hover:bg-primary-hover hover:text-primary-hover-foreground px-4 py-3 rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 w-full"
-                  disabled={!selectedDate || !selectedTime || isBooking}
-                  onClick={confirmBooking}
-                >
-                  {isBooking ? 'Termin wird angefragt...' : 'Termin anfragen'}
-                </Button>
+                {!isBooking && !statusMessage && (
+                  <div className="flex justify-center">
+                    <Button
+                      className={`w-full text-lg rounded-lg font-semibold
+                      ${!selectedDate || !selectedTime ? 'bg-accent-gray/60 cursor-not-allowed' : 'bg-accent-blue text-accent-white hover:bg-accent-blue/80'}`}
+                      disabled={!selectedDate || !selectedTime || isBooking}
+                      onClick={confirmBooking}
+                    >
+                      Termin buchen
+                    </Button>
+                  </div>
+                )}
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
                     <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
