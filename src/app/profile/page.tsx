@@ -18,7 +18,7 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
@@ -79,28 +79,8 @@ export default function ProfileView() {
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
-  const router = useRouter();
 
-  if (!login) notFound();
-
-  const [userForm, setUserForm] = useState({
-    title: user?.title || '',
-    firstname: user?.firstname || '',
-    lastname: user?.lastname || '',
-    gender: user?.gender || Gender.Keine_Angabe,
-    genderText: user?.genderText || '',
-    pronoun: user?.pronoun || Pronoun.Keine_Angabe,
-    pronounText: user?.pronounText || '',
-    birthdate: user?.birthdate || '',
-    placeOfBirth: user?.placeOfBirth || '',
-    phone: user?.phone || '',
-    country: user?.country || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    street: user?.street || '',
-    houseNumber: user?.houseNumber || '',
-  });
-
+  const [userForm, setUserForm] = useState(() => createUserForm(user));
   const [accountForm, setAccountForm] = useState({
     password: '',
     passwordRepeat: '',
@@ -109,42 +89,49 @@ export default function ProfileView() {
   const [initialuserForm, setInitialuserForm] = useState<typeof userForm | null>(null);
   const [initialAccountForm, setInitialAccountForm] = useState<typeof accountForm | null>(null);
 
-  async function load() {
+  if (!login) notFound();
+
+  function createUserForm(user?: UserResource) {
+    return {
+      title: user?.title ?? '',
+      firstname: user?.firstname ?? '',
+      lastname: user?.lastname ?? '',
+      gender: user?.gender ?? Gender.Keine_Angabe,
+      genderText: user?.genderText ?? '',
+      pronoun: user?.pronoun ?? Pronoun.Keine_Angabe,
+      pronounText: user?.pronounText ?? '',
+      birthdate: user?.birthdate ?? '',
+      placeOfBirth: user?.placeOfBirth ?? '',
+      phone: user?.phone ?? '',
+      country: user?.country ?? '',
+      city: user?.city ?? '',
+      zipCode: user?.zipCode ?? '',
+      street: user?.street ?? '',
+      houseNumber: user?.houseNumber ?? '',
+    };
+  }
+
+  async function loadData() {
     if (!login) return;
     try {
       const foundUser = await getUser(login.userId!);
       const foundAccount = await getAccount(login.id);
-      const loadeduserForm = {
-        title: foundUser?.title || '',
-        firstname: foundUser?.firstname || '',
-        lastname: foundUser?.lastname || '',
-        gender: foundUser?.gender || Gender.Keine_Angabe,
-        genderText: foundUser?.genderText || '',
-        pronoun: foundUser?.pronoun || Pronoun.Keine_Angabe,
-        pronounText: foundUser?.pronounText || '',
-        birthdate: foundUser?.birthdate || '',
-        placeOfBirth: foundUser?.placeOfBirth || '',
-        phone: foundUser?.phone || '',
-        country: foundUser?.country || '',
-        city: foundUser?.city || '',
-        zipCode: foundUser?.zipCode || '',
-        street: foundUser?.street || '',
-        houseNumber: foundUser?.houseNumber || '',
-      };
+      const loadedUserForm = createUserForm(foundUser);
 
       const loadedAccountForm = {
         password: '',
         passwordRepeat: '',
       };
 
-      setUserForm(loadeduserForm);
-      setInitialuserForm(loadeduserForm);
+      setUserForm(loadedUserForm);
+      setInitialuserForm(loadedUserForm);
       setInitialAccountForm(loadedAccountForm);
 
       setUser(foundUser);
       setAccount(foundAccount);
     } catch (error) {
-      console.log(error);
+      //TODO, show snackbar Error or something, but not needed rn
+      throw new Error(String(error));
     }
   }
 
@@ -191,7 +178,7 @@ export default function ProfileView() {
 
   useEffect(() => {
     const user = async () => {
-      return await load();
+      return await loadData();
     };
 
     user();
@@ -207,13 +194,6 @@ export default function ProfileView() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
     setAccountForm({ ...accountForm, [e.target.name]: e.target.value });
-  }
-  function discardChanges() {
-    if (initialuserForm && initialAccountForm) {
-      setUserForm(initialuserForm);
-      setAccountForm(initialAccountForm);
-      setValidationErrors({});
-    }
   }
 
   //Pilgrim Style :P
@@ -497,11 +477,19 @@ export default function ProfileView() {
     return true;
   }
 
-  if (!account || !user || !initialuserForm) return <></>;
-
   const hasChanges =
     (initialuserForm && JSON.stringify(userForm) !== JSON.stringify(initialuserForm)) ||
     (initialAccountForm && JSON.stringify(accountForm) !== JSON.stringify(initialAccountForm));
+
+  function discardChanges() {
+    if (initialuserForm && initialAccountForm) {
+      setUserForm(initialuserForm);
+      setAccountForm(initialAccountForm);
+      setValidationErrors({});
+    }
+  }
+
+  if (!account || !user || !initialuserForm) return <></>;
 
   return (
     <section className="bg-card">
