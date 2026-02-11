@@ -75,7 +75,7 @@ export default function ProfileView() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
@@ -118,13 +118,12 @@ export default function ProfileView() {
   async function delAccount() {
     if (!login) return;
     try {
-      setSuccessOpen(true);
+      setDeleteOpen(true);
       await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
       await deleteAccount(login.id);
       await deleteLogin();
       setLogin(false);
-      setSuccessOpen(false);
-      window.location.reload();
+      setDeleteOpen(false);
     } catch (error) {
       //TODO, show snackbar Error or something, but not needed rn
       throw new Error(String(error));
@@ -989,7 +988,7 @@ export default function ProfileView() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
+      {deleteOpen && <SuccessDialog open={deleteOpen} onOpenChange={setDeleteOpen} />}
       {isSaving && (
         <ResultLoading
           title="Änderungen werden gespeichert."
