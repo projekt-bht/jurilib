@@ -138,7 +138,7 @@ export default function ProfileView() {
       if (initialuserForm) {
         const userDiff = getChangedFields(initialuserForm, userForm);
         if (Object.keys(userDiff).length > 0) {
-          await patchUser(login.userId!, userDiff);
+          await patchUser(login.userId!, userDiff as UserResource);
           setInitialuserForm({ ...userForm });
         }
       }
@@ -146,7 +146,7 @@ export default function ProfileView() {
         initialAccountForm &&
         JSON.stringify(accountForm) !== JSON.stringify(initialAccountForm)
       ) {
-        await patchAccount(login.id, { password: accountForm.password });
+        await patchAccount(login.id, { password: accountForm.password } as AccountResource);
         setInitialAccountForm(accountForm);
       }
       await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));

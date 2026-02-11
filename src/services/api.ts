@@ -122,11 +122,11 @@ export async function patchAccountPasswordWithEmail(email: string, password: str
   return true;
 }
 
-export async function patchUser(userID: string, userRessource: object) {
+export async function patchUser(userID: string, userResource: UserResource) {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/${userID}`;
   const response = await fetch(url, {
     method: 'PATCH',
-    body: JSON.stringify(userRessource),
+    body: JSON.stringify(userResource),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -139,11 +139,11 @@ export async function patchUser(userID: string, userRessource: object) {
   return true;
 }
 
-export async function patchAccount(accountID: string, accountRessource: object) {
+export async function patchAccount(accountID: string, accountResource: AccountResource) {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account/${accountID}`;
   const response = await fetch(url, {
     method: 'PATCH',
-    body: JSON.stringify(accountRessource),
+    body: JSON.stringify(accountResource),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
