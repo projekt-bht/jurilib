@@ -2,6 +2,7 @@
 
 import { de } from 'date-fns/locale';
 import { CalendarDays, Clock, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -40,6 +41,7 @@ export default function OrganizationCalendar({
   appointments,
   employees,
 }: OrganizationCalendarProps) {
+  const router = useRouter();
   const { login } = useLoginContext();
   const [availableDays, setAvailableDays] = useState<Date[]>([]);
   const [availableSlots, setAvailableSlots] = useState<Record<string, SlotOption[]>>({});
@@ -75,13 +77,14 @@ export default function OrganizationCalendar({
   };
 
   useEffect(() => {
-    if (statusMessage) {
-      const timer = setTimeout(() => {
-        setShowStatusMessage(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [statusMessage]);
+    if (!showStatusMessage || statusMessage !== 'Termin erfolgreich gebucht!') return;
+
+    const timer = setTimeout(() => {
+      router.push('/appointment');
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [router, showStatusMessage, statusMessage]);
 
   useEffect(() => {
     // Reset date/time selection when the employee context changes
@@ -201,9 +204,7 @@ export default function OrganizationCalendar({
       //Booking ok, we can clear current cachedProblem
       sessionStorage.removeItem('problemText');
 
-      if (typeof window !== 'undefined') {
-        window.location.reload();
-      }
+      // Navigation happens after the success message is shown.
     } catch {
       setStatusMessage('Buchung fehlgeschlagen. Bitte erneut versuchen.');
       setShowStatusMessage(true);
