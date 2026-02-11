@@ -20,15 +20,14 @@ export default function Impressum() {
                   <FlaskConical className="h-5 w-5 text-accent-blue" />
                 </div>
                 <div>
-                  <AlertTitle className="text-base font-semibold">
-                    Hochschulprojekt – Beta-Version
-                  </AlertTitle>
-                  <AlertDescription className="text-sm text-muted-foreground">
-                    JuriLib ist ein studentisches Projekt im Rahmen eines Studiengangs an der Berliner
-                    Hochschule für Technik (BHT). Es handelt sich um einen Prototyp zu
-                    Demonstrationszwecken. Alle dargestellten Organisationen, Personen, Bewertungen und
-                    Inhalte sind <strong className="font-semibold text-foreground">fiktiv</strong> und
-                    dienen ausschliesslich der Veranschaulichung.
+                  <AlertTitle className="text-base font-semibold">Hochschulprojekt</AlertTitle>
+                  <AlertDescription className="text-sm text-foreground">
+                    JuriLib ist ein studentisches Projekt im Rahmen des Studiengangs
+                    Medieninformatik an der Berliner Hochschule für Technik (BHT), im Modul Projekt.
+                    Es handelt sich um einen Prototyp zu Demonstrationszwecken. Alle dargestellten
+                    Organisationen, Personen, Bewertungen und Inhalte sind{' '}
+                    <strong className="font-semibold">fiktiv</strong> und dienen ausschliesslich der
+                    Veranschaulichung.
                   </AlertDescription>
                 </div>
               </div>
@@ -55,8 +54,10 @@ export default function Impressum() {
           <section className="space-y-3">
             <h2 className="text-2xl font-semibold text-foreground">Projektkontext</h2>
             <p>
-              Diese Webanwendung wurde im Rahmen eines universitären Projekts an der Berliner Hochschule
-              für Technik (BHT) entwickelt.
+              Diese Webanwendung wurde im Rahmen des Studiengangs
+              <strong className="font-semibold text-foreground"> Medieninformatik</strong> an der
+              Berliner Hochschule für Technik (BHT) entwickelt, im Modul
+              <strong className="font-semibold text-foreground"> Projekt</strong>.
             </p>
             <p>
               Sie dient ausschließlich Lehr- und Demonstrationszwecken. Es handelt sich nicht um ein
@@ -67,16 +68,17 @@ export default function Impressum() {
           <section className="space-y-3">
             <h2 className="text-2xl font-semibold text-foreground">Haftung und Inhalte</h2>
             <p>
-              Die Inhalte dieser Website wurden im Rahmen eines Studienprojekts erarbeitet und dienen der
-              technischen sowie konzeptionellen Demonstration.
+              Die Inhalte dieser Website wurden im Rahmen eines Studienprojekts erarbeitet und
+              dienen der technischen sowie konzeptionellen Demonstration.
             </p>
             <p>
-              Trotz sorgfältiger Ausarbeitung im Projektkontext kann keine Gewähr für die Richtigkeit,
-              Vollständigkeit oder Aktualität der bereitgestellten Informationen übernommen werden.
+              Trotz sorgfältiger Ausarbeitung im Projektkontext kann keine Gewähr für die
+              Richtigkeit, Vollständigkeit oder Aktualität der bereitgestellten Informationen
+              übernommen werden.
             </p>
             <p>
               Alle dargestellten Organisationen, Personen, Rechtsberatungsangebote, Bewertungen und
-              sonstigen Inhalte sind vollständig fiktiv oder gemockt.
+              sonstigen Inhalte sind vollständig fiktiv.
             </p>
             <p>Es bestehen keinerlei reale Bezüge zu existierenden Personen oder Institutionen.</p>
           </section>
@@ -84,8 +86,9 @@ export default function Impressum() {
             <h2 className="text-2xl font-semibold text-foreground">Keine Rechtsberatung</h2>
             <p>Diese Plattform bietet keine tatsächliche Rechtsberatung an.</p>
             <p>
-              Sämtliche Inhalte, Hinweise, Empfehlungen und Vermittlungsangebote sind Bestandteil eines
-              universitären Demonstrationsprojekts. Sie ersetzen keine professionelle rechtliche Beratung.
+              Sämtliche Inhalte, Hinweise, Empfehlungen und Vermittlungsangebote sind Bestandteil
+              eines universitären Demonstrationsprojekts. Sie ersetzen keine professionelle
+              rechtliche Beratung.
             </p>
             <p>
               Für konkrete rechtliche Fragestellungen wenden Sie sich bitte an eine entsprechend
@@ -95,17 +98,21 @@ export default function Impressum() {
           <section className="space-y-3">
             <h2 className="text-2xl font-semibold text-foreground">Urheberrecht</h2>
             <p>
-              Die im Rahmen dieses Projekts erstellten Inhalte und Werke unterliegen dem deutschen
-              Urheberrecht.
+              Die im Rahmen dieses Projekts erstellten Inhalte, Texte, Konzepte, Designs sowie der
+              zugrunde liegende Quellcode unterliegen dem deutschen Urheberrecht.
             </p>
             <p>
-              Eine Vervielfältigung, Bearbeitung oder Verbreitung außerhalb der urheberrechtlichen
-              Grenzen bedarf der vorherigen schriftlichen Zustimmung der jeweiligen Urheber*innen.
+              Die Urheber- und Nutzungsrechte an diesem Projekt liegen ausschließlich bei den
+              beteiligten Projektmitgliedern.
+            </p>
+            <p>
+              Eine Vervielfältigung, Bearbeitung, Verbreitung oder sonstige Verwertung außerhalb der
+              Grenzen des Urheberrechts ist ohne vorherige schriftliche Zustimmung des Projektteams
+              nicht gestattet.
             </p>
           </section>
-          <div className="rounded-lg border border-accent-amber-light bg-accent-amber-soft p-5 text-sm text-foreground">
-            <p className="font-semibold mb-2">Zuletzt aktualisiert</p>
-            <p>Februar 2026</p>
+          <div className="border-t border-border pt-6 text-sm text-foreground">
+            Zuletzt aktualisiert: Februar 2026
           </div>
         </div>
       </div>
