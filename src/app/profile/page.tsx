@@ -22,6 +22,18 @@ import { notFound, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
+import { authTimeoutDuration } from '@/components/Authentication/Authentication';
+import { SuccessDialog } from '@/components/Authentication/SuccessDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,7 +57,6 @@ import {
   isOnlyLetter,
   isOnlyNumber,
   isStrongPassword,
-  isValidEmail,
   isValidGermanPhone,
 } from '@/services/validator/validationHelper';
 import { Gender, Pronoun } from '~/generated/prisma/enums';
@@ -57,11 +68,14 @@ type ValidationMessages<Type> = {
 };
 
 export default function ProfileView() {
-  const { login } = useLoginContext();
+  const { login, setLogin } = useLoginContext();
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
 
   const [user, setUser] = useState<UserResource>();
   const [account, setAccount] = useState<AccountResource>();
@@ -137,10 +151,15 @@ export default function ProfileView() {
   async function delAccount() {
     if (!login) return;
     try {
+      setSuccessOpen(true);
+      await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
       await deleteAccount(login.id);
       await deleteLogin();
+      setLogin(false);
+      setSuccessOpen(false);
     } catch (error) {
-      //Show error if something goes wrong
+      //TODO, show snackbar Error or something, but not needed rn
+      throw new Error(String(error));
     }
   }
 
@@ -953,7 +972,7 @@ export default function ProfileView() {
                 size="sm"
                 className="gap-1.5 text-xs h-8"
                 onClick={() => {
-                  delAccount();
+                  setShowDeleteDialog(true);
                 }}
               >
                 <Trash2 className="w-3 h-3" />
@@ -963,6 +982,36 @@ export default function ProfileView() {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
+              Konto wirklich löschen?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm leading-relaxed">
+              Möchtest du dein Konto wirklich unwiderruflich löschen? Alle deine persönlichen Daten,
+              Fälle, Dokumente und gespeicherten Informationen werden dauerhaft entfernt und können
+              nicht wiederhergestellt werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                delAccount();
+              }}
+            >
+              <Trash2 className="w-4 h-4" />
+              Konto löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {successOpen && <SuccessDialog open={successOpen} onOpenChange={setSuccessOpen} />}
     </section>
   );
 }
