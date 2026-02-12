@@ -8,6 +8,7 @@ import type { Organization } from '~/generated/prisma/browser';
 import { ResultLoading } from '../Loading/ResultLoading';
 import { ProblemSearchField } from './ProblemSearchField';
 import { ResultCarousel } from './ResultCarusel';
+import { Button } from '../ui/button';
 
 export function Search() {
   const [results, setResults] = useState<Organization[]>([]);
@@ -92,7 +93,7 @@ export function Search() {
               </div>
             )}
             {/*Info Message */}
-            <div className="mt-12 bg-background rounded-3xl border border-primary/20 px-12 py-8 md:px-16 md:py-12 text-center max-w-5xl mx-auto">
+            <div className="bg-background rounded-3xl border border-primary/20 px-12 py-8 md:px-16 md:py-12 text-center max-w-5xl mx-auto">
               <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
                 Nichts Passendes dabei?
               </h3>
@@ -108,12 +109,12 @@ export function Search() {
                   Alle Organisationen durchsuchen
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-                <button
+                <Button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="inline-flex items-center gap-2 px-4 py-3 bg-background text-foreground rounded-full font-semibold hover:bg-background border-2 border-border transition-all duration-300 hover:scale-105 shadow-md hover:shadow-md"
+                  className="inline-flex items-center gap-2 px-4 py-3 bg-background text-foreground rounded-full font-semibold hover:bg-background border-2 border-border transition-all duration-300 hover:scale-105 shadow-md hover:shadow-md cursor-pointer"
                 >
                   Suche bearbeiten
-                </button>
+                </Button>
               </div>
             </div>
           </>
