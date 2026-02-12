@@ -51,7 +51,7 @@ export function Sidebar() {
     <>
       <aside
         className={`
-          hidden lg:flex lg:fixed lg:top-[90px] lg:left-0 lg:h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30 flex-col
+          hidden lg:flex lg:fixed lg:top-22.5 lg:left-0 lg:h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30 flex-col
           transition-all duration-300 ease-in-out will-change-[width]
           ${isCollapsed ? 'lg:w-16' : 'lg:w-56'}
         `}
@@ -75,14 +75,16 @@ export function Sidebar() {
             </button>
 
             {/* Divider */}
-            <div className="my-3 border-t border-border/50" />
+            <div className=" border-t border-border/50" />
 
             <div className="space-y-0.5">
-              {!isCollapsed && (
-                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Für dich
-                </p>
-              )}
+              <p
+                className={`px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider h-6 transition-opacity duration-300 ${
+                  isCollapsed ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                Für dich
+              </p>
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -115,11 +117,13 @@ export function Sidebar() {
 
             {/* Secondary Navigation */}
             <div className="space-y-0.5">
-              {!isCollapsed && (
-                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Entdecken
-                </p>
-              )}
+              <p
+                className={`px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider h-6 transition-opacity duration-300 ${
+                  isCollapsed ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                Entdecken
+              </p>
               {secondaryItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
