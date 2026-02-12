@@ -1,6 +1,14 @@
 import prisma from '@/lib/db';
 import type { CaseUpdateInput } from '~/generated/prisma/models';
 
+export async function getCase(caseID: string) {
+  try {
+    return await prisma.case.findUnique({ where: { id: caseID } });
+  } catch (error) {
+    throw new Error('Pulling case information failed: ' + (error as Error).message);
+  }
+}
+
 export async function updateCase(caseID: string, caseBody: CaseUpdateInput) {
   try {
     const updatedCase = await prisma.case.update({
