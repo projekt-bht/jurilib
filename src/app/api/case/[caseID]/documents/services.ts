@@ -117,3 +117,36 @@ export async function updateDocumentArray(caseID: string, documentUrl: string) {
     throw new Error('Failed to update case document URLs: ' + (error as Error).message);
   }
 }
+
+export async function deleteBlob(caseID: string, fileName: string, userID?: string) {
+  // Delete blob from Azure Storage
+  try {
+    const blobServiceClient = new BlobServiceClient(`${storageBaseURL}?${sasToken}`);
+    const containerClient = blobServiceClient.getContainerClient('');
+    const blobName = userID ? `${caseID}/${userID}/${fileName}` : `${caseID}/${fileName}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    await blockBlobClient.delete();
+  } catch (error) {
+    throw new Error('Failed to delete blob from Azure: ' + (error as Error).message);
+  }
+
+  // Remove document URL from case
+  const caseData = await prisma.case.findUnique({
+    where: { id: caseID },
+    select: { documentsURL: true },
+  });
+
+  if (caseData) {
+    const updatedDocuments = caseData.documentsURL.filter(
+      (docUrl: string) => !docUrl.includes(`fileName=${fileName}`)
+    );
+
+    await prisma.case.update({
+      where: { id: caseID },
+      data: {
+        documentsURL: updatedDocuments,
+      },
+    });
+  }
+}

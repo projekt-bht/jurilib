@@ -9,7 +9,13 @@ import type { UserLoginResource } from '@/services/Resources';
 
 import { isCaseUserMatch } from '../../../helpers';
 import { blobHeaderSchema } from '../route';
-import { generateDocumentUrl, getBlob, updateDocumentArray, uploadBlob } from '../services';
+import {
+  deleteBlob,
+  generateDocumentUrl,
+  getBlob,
+  updateDocumentArray,
+  uploadBlob,
+} from '../services';
 
 // POST /api/case/:caseID/documents/user
 // Upload a blob to azure as an user
@@ -95,6 +101,41 @@ export const GET = withUserAuth(
 
       if (await isCaseUserMatch(caseID, account.userId)) {
         return await getBlob(caseID, fileName, privateFlag ? account.userId : undefined);
+      } else {
+        return unauthorized();
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      }
+      return handleError(error, 'Failed to download blob');
+    }
+  }
+);
+
+// DELETE /api/case/:caseID/documents/user
+// Delete a blob from azure as an user
+export const DELETE = withUserAuth(
+  async (
+    req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      const { private: privateFlag } = blobHeaderSchema.parse({
+        private: req.headers.get('private'),
+      });
+      const { caseID } = await params;
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+
+      const fileName = req.nextUrl.searchParams.get('fileName');
+      if (!fileName) {
+        throw new ValidationError('missingRequiredValue', 'fileName', 400);
+      }
+
+      if (await isCaseUserMatch(caseID, account.userId)) {
+        await deleteBlob(caseID, fileName, privateFlag ? account.userId : undefined);
+        return NextResponse.json({ message: 'Document deleted successfully' }, { status: 200 });
       } else {
         return unauthorized();
       }
