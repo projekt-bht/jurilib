@@ -20,7 +20,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
-import { calcActiveCases, fetchBackendData } from '@/components/Dashboard/helper';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,8 +33,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getCase, getEmployee, getUserAppointment } from '@/services/api';
-import type { AppointmentResource, EmployeeResource, LoginResource } from '@/services/Resources';
+import type {
+  AppointmentResource,
+  CaseResource,
+  EmployeeResource,
+  LoginResource,
+} from '@/services/Resources';
 import type { AppointmentStatus } from '~/generated/prisma/enums';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 
 const statusConfig: Record<
   AppointmentStatus,
@@ -112,7 +117,7 @@ function formatDateTime(date: string) {
 
 export default function AppointmentDetailView() {
   const router = useRouter();
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(true);
   const [isCancelling, setIsCancelling] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [fetchesDone, setFetchesDone] = useState(false);
@@ -122,9 +127,9 @@ export default function AppointmentDetailView() {
 
   const [appointment, setAppointment] = useState<AppointmentResource>();
   const [employee, setEmployee] = useState<EmployeeResource>();
+  const [_case, setCase] = useState<CaseResource>();
 
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const { appointmentID } = useParams();
 
   useEffect(() => {
@@ -136,7 +141,10 @@ export default function AppointmentDetailView() {
 
         const appointmentData = await getUserAppointment(userId, appointmentID as string);
         const employeeData = await getEmployee(appointmentData.employeeId);
-        const caseData = await getCase(appointmentData.caseId!);
+        if (appointmentData.caseId) {
+          const caseData = await getCase(appointmentData.caseId!);
+          setCase(caseData);
+        }
 
         setAppointment(appointmentData);
         setEmployee(employeeData);
@@ -145,8 +153,6 @@ export default function AppointmentDetailView() {
         setError(
           error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
         );
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -215,9 +221,7 @@ export default function AppointmentDetailView() {
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                {appointment.caseId || 'Termin'}
-              </h1>
+              <h1 className="text-2xl font-bold text-foreground tracking-tight">Termin</h1>
               <Badge
                 variant="secondary"
                 className={`${config.bgColor} ${config.color} border-0 text-xs px-2 py-0.5 font-medium`}
@@ -226,9 +230,7 @@ export default function AppointmentDetailView() {
                 {config.label}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Termin mit {employee.firstname + ' ' + employee.lastname}
-            </p>
+            <p className="text-sm text-muted-foreground">ID: {appointment.id}</p>
           </div>
 
           {canCancel && (
@@ -400,8 +402,8 @@ export default function AppointmentDetailView() {
                   </div>
                   <h2 className="text-sm font-semibold text-foreground">Zugehöriger Fall</h2>
                 </div>
-                <p className="text-sm font-medium text-foreground mb-1">{appointment.caseId}</p>
-                <p className="text-xs text-muted-foreground mb-3">Fall-ID: {appointment.caseId}</p>
+                <p className="text-xs text-muted-foreground mb-3">Titel: {_case?.title}</p>
+                <p className="text-xs text-muted-foreground mb-3">Fall-ID: {_case?.id}</p>
               </div>
             )}
 
@@ -421,8 +423,10 @@ export default function AppointmentDetailView() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Termin-ID</p>
-                  <p className="text-xs font-mono text-muted-foreground">{appointment.id}</p>
+                  <p className="text-xs text-muted-foreground">Aktualisiert am</p>
+                  <p className="text-xs font-medium text-foreground">
+                    {formatDateTime(appointment.updatedAt)}
+                  </p>
                 </div>
               </div>
             </div>
