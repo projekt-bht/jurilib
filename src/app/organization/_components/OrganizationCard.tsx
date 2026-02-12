@@ -1,4 +1,5 @@
-import { ArrowRight, Clock, MapPin } from 'lucide-react';
+import { ArrowRight, Clock, MapPin, PersonStanding, Star } from 'lucide-react';
+import { useState } from 'react';
 
 import type { Organization } from '~/generated/prisma/client';
 
@@ -7,6 +8,8 @@ import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 // TODO: Verfügbare Termine anzeigen, wenn der Endpunkt fertig ist
 
 export function OrganizationCard({ organization }: { organization: Organization }) {
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+
   return (
     <div
       id={`OrganizationCard_${organization.id}`}
@@ -14,19 +17,63 @@ export function OrganizationCard({ organization }: { organization: Organization 
     >
       <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="relative p-4 flex flex-col min-h-[250px]">
-        <div className="flex items-start gap-6 mb-4">
+      <div className="relative p-4 flex flex-col min-h-62.5">
+        <div className="flex items-center gap-6 mb-4">
           <div className="w-24 h-24 rounded-full bg-linear-to-br from-accent-blue to-accent-purple flex items-center justify-center text-accent-white text-3xl font-bold shadow-lg shrink-0">
             {organization.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0 text-left">
-            <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2">
+            <h3 className="text-[clamp(1rem,2.2vw,1.5rem)] font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2 whitespace-nowrap tracking-tight">
               {organization.name}
             </h3>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-accent-amber fill-accent-amber" />
+                <div>
+                  <span className="font-bold text-lg text-foreground">
+                    {organization.averageRating}
+                  </span>
+                  <span className="text-sm text-muted-foreground ml-1">
+                    ({organization.numberOfRatings})
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {organization.accessibility.length > 0 && (
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setIsAccessibilityOpen(true)}
+                    onMouseLeave={() => setIsAccessibilityOpen(false)}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setIsAccessibilityOpen((prev) => !prev)}
+                      className="h-6 w-6 rounded-full bg-background flex items-center justify-center text-foreground transition border border-primary"
+                      aria-expanded={isAccessibilityOpen}
+                      aria-label="Barrierefreiheit"
+                    >
+                      <PersonStanding className="w-5 h-5" />
+                    </button>
+                    {isAccessibilityOpen && (
+                      <div className="absolute left-0 top-full mt-2 w-56 rounded-lg border border-border bg-background p-2 shadow-lg z-10">
+                        <div className="space-y-1">
+                          {organization.accessibility.map((acc) => (
+                            <div key={acc.toString()} className="px-2 py-1 text-sm text-foreground">
+                              {acc.toString().replace(/_/g, ' ')}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="ml-auto w-fit">
+                <OrganisationTypeBadge type={organization.type} />
+              </div>
+            </div>
           </div>
-          <OrganisationTypeBadge type={organization.type} />
         </div>
-
         <p className="text-muted-foreground leading-relaxed text-[15px] mb-6 text-left">
           {organization.shortDescription}
         </p>
