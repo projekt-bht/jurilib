@@ -1,5 +1,6 @@
 import type {
   AppointmentResource,
+  EmployeeResource,
   LoginResource,
   RegisterResource,
   UserResource,
@@ -131,4 +132,12 @@ export async function cancelAppointment(appointmentID: string) {
     credentials: 'include' as RequestCredentials,
   });
   return;
+}
+
+export async function getEmployee(employeeId: string): Promise<EmployeeResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${employeeId}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as EmployeeResource;
 }
