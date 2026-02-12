@@ -1,13 +1,11 @@
 import type {
-  AppointmentResource,
-  CaseResource,
-  EmployeeResource,
   AccountResource,
   LoginResource,
   RegisterResource,
   UserResource,
 } from '@/services/Resources';
-import { TokenType } from '~/generated/prisma/enums';
+import type { Appointment, Case, Employee } from '~/generated/prisma/browser';
+import type { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/register`;
@@ -168,18 +166,17 @@ export async function deleteAccount(accountID: string) {
   return;
 }
 
-
 export async function getUserAppointment(
   userID: string,
   appointmentID: string
-): Promise<AppointmentResource | null> {
+): Promise<Appointment | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/user/${userID}/${appointmentID}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
 
   if (!response.ok) return null;
-  return (await response.json()) as AppointmentResource;
+  return (await response.json()) as Appointment;
 }
 
 export async function cancelAppointment(appointmentID: string) {
@@ -195,7 +192,7 @@ export async function cancelAppointment(appointmentID: string) {
   return;
 }
 
-export async function getEmployee(employeeId: string): Promise<EmployeeResource | null> {
+export async function getEmployee(employeeId: string): Promise<Employee | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${employeeId}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
@@ -203,10 +200,10 @@ export async function getEmployee(employeeId: string): Promise<EmployeeResource 
 
   if (!response.ok) return null;
 
-  return (await response.json()) as EmployeeResource;
+  return (await response.json()) as Employee;
 }
 
-export async function getCase(caseID: string): Promise<CaseResource | null> {
+export async function getCase(caseID: string): Promise<Case | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}case/${caseID}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
@@ -214,6 +211,5 @@ export async function getCase(caseID: string): Promise<CaseResource | null> {
 
   if (!response.ok) return null;
 
-  return (await response.json()) as CaseResource;
+  return (await response.json()) as Case;
 }
-
