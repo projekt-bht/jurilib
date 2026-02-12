@@ -31,12 +31,12 @@ export function Navbar() {
           </div>
           <div className="space-y-2">
             <DialogTitle className="text-xl font-medium text-foreground">
-              Hochschulprojekt der BHT Berlin
+              Hochschulprojekt der Berliner Hochschule für Technik (BHT)
             </DialogTitle>
             <DialogDescription className="text-sm text-foreground">
-              Diese Anwendung ist ein universitäres Projekt im Studiengang Medieninformatik an der
-              BHT, im Modul Projekt. Alle Inhalte, Organisationen und Profile sind fiktiv und dienen
-              ausschließlich der Demonstration.
+              Diese Anwendung ist ein Hochschulprojekt im Studiengang Medieninformatik an der BHT.
+              Alle Inhalte, Organisationen und Profile sind fiktiv und dienen ausschließlich der
+              Demonstration.
             </DialogDescription>
           </div>
         </div>
@@ -49,7 +49,7 @@ export function Navbar() {
                 window.localStorage.setItem('jurilib_info_modal_seen', '1');
               }
             }}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-accent-blue-light bg-accent-blue-light px-4 text-sm font-medium text-accent-blue transition-colors hover:bg-accent-blue-soft"
+            className="cursor-pointer inline-flex h-10 items-center justify-center rounded-md border border-accent-blue-light bg-accent-blue-light px-4 text-sm font-medium text-accent-blue transition-colors hover:bg-accent-blue-soft"
           >
             Verstanden
           </button>
