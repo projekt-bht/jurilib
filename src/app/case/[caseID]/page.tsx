@@ -12,6 +12,7 @@ import {
   FileText,
   FolderOpen,
   Image,
+  Link,
   Trash2,
   Upload,
 } from 'lucide-react';
@@ -19,15 +20,18 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { fetchBackendData } from '@/components/Dashboard/helper';
 import { Button } from '@/components/ui/button';
-import type { UserLoginResource } from '@/services/Resources';
-import type { Case, CaseStatus } from '~/generated/prisma/client';
+import type { Employee, Organization } from '~/generated/prisma/browser';
+import type { Appointment, Case, CaseStatus } from '~/generated/prisma/client';
 
 export default function CaseDetailPage({ params }: { params: Promise<{ caseID: string }> }) {
   const router = useRouter();
   const { login } = useLoginContext();
-  const userId = (login as UserLoginResource).userId;
   const [caseData, setCaseData] = useState<Case | null>(null);
+  const [employee, setEmployee] = useState<Employee | null>(null);
+  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [documents, setDocuments] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -66,7 +70,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
 
   // Fetch case data
   useEffect(() => {
-    const fetchCaseData = async () => {
+    const fetchData = async () => {
       if (!caseID) return;
 
       try {
@@ -76,9 +80,29 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
           throw new Error('Failed to fetch case data');
         }
 
-        const data = await response.json();
-        setCaseData(data);
-        setDocuments(data.documentsURL ?? []);
+        const caseData = await response.json();
+        setCaseData(caseData);
+        setDocuments(caseData.documentsURL ?? []);
+        const resEmployee = await fetchBackendData('/employee', caseData.employeeId, 'Employee');
+        const employeeData = await resEmployee.json();
+        setEmployee(employeeData);
+
+        const resOrganization = await fetchBackendData(
+          'organization',
+          employeeData.organizationId,
+          'Organization'
+        );
+        const organizationData = await resOrganization.json();
+        setOrganization(organizationData);
+
+        // Fetch appointments for this case
+        const appointmentsRes = await fetchBackendData(
+          '/appointment/case',
+          caseData.id,
+          'Appointments'
+        );
+        const appointmentsData: Appointment[] = await appointmentsRes.json();
+        setAppointments(appointmentsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load case');
       } finally {
@@ -86,7 +110,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
       }
     };
 
-    fetchCaseData();
+    fetchData();
   }, [caseID, login]);
 
   const handleFileUpload = useCallback(
@@ -304,6 +328,15 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
                 </span>
               </div>
             </div>
+            {/* Description */}
+            <div>
+              <label className="text-sm font-semibold text-muted-foreground mb-3 block">
+                Beschreibung
+              </label>
+              <p className="text-foreground leading-relaxed">
+                {caseData.description || 'Keine Beschreibung vorhanden'}
+              </p>
+            </div>
 
             {/* Created Date */}
             <div>
@@ -340,14 +373,104 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
             </div>
           </div>
 
-          {/* Description */}
+          <div className="border-t border-border grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+            {/* Organization */}
+            <div>
+              <label className="text-sm font-semibold text-muted-foreground mb-3 block">
+                Zuständige Organisation
+              </label>
+              <p className="text-foreground leading-relaxed">
+                {organization?.name ?? 'Keine Organisation vorhanden'}
+              </p>
+            </div>
+
+            {/* Employee Name */}
+            <div>
+              <label className="text-sm font-semibold text-muted-foreground mb-3 block">
+                Zuständige*r Mitarbeiter*in
+              </label>
+              <p className="text-foreground leading-relaxed">
+                {`${employee?.firstname} ${employee?.lastname}` || 'Keine Person vorhanden'}
+              </p>
+            </div>
+          </div>
+
+          {/* Appointments Section */}
           <div className="border-t border-border pt-6">
             <label className="text-sm font-semibold text-muted-foreground mb-3 block">
-              Beschreibung
+              Termine
             </label>
-            <p className="text-foreground leading-relaxed">
-              {caseData.description || 'Keine Beschreibung vorhanden'}
-            </p>
+            {appointments.length > 0 ? (
+              <div className="space-y-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {appointments.map((appointment) => (
+                  <div
+                    key={appointment.id}
+                    className="shadow-md border-border border rounded-lg p-4 hover:bg-secondary/80 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 font-medium text-foreground mb-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>
+                            {new Date(appointment.dateTimeStart).toLocaleDateString('de-DE', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          appointment.status === 'CONFIRMED'
+                            ? 'bg-green-100 text-green-700'
+                            : appointment.status === 'CANCELED'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-blue-100 text-blue-700'
+                        }`}
+                      >
+                        {appointment.status === 'CONFIRMED'
+                          ? 'Bestätigt'
+                          : appointment.status === 'CANCELED'
+                            ? 'Abgesagt'
+                            : 'Offen'}
+                      </div>
+                    </div>
+                    {appointment.notes && (
+                      <p className="text-sm text-foreground text-muted-foreground line-clamp-2">
+                        {appointment.notes}
+                      </p>
+                    )}
+                    {appointment.meetingLink && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                        <Link className="w-3 h-3" />
+                        <a
+                          href={appointment.meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary"
+                        >
+                          Teilnehmen
+                        </a>
+                      </div>
+                    )}
+                    {appointment.location && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                        <Calendar className="w-3 h-3" />
+                        <span>{appointment.location}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="shadow-md border-border border rounded-lg p-8 text-center">
+                <Calendar className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">Keine Termine vorhanden</p>
+              </div>
+            )}
           </div>
         </div>
 
