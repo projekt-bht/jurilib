@@ -37,7 +37,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-16 px-4 bg-background relative overflow-hidden">
+    <section className="py-16 px-4 bg-card relative overflow-hidden">
       <div className="absolute inset-0 opacity-5">
         <Image src={tabletImage} alt="" fill className="object-cover" />
       </div>
@@ -47,7 +47,7 @@ export default function HowItWorks() {
             Wie funktioniert JuriLib?
           </h2>
           <p className="text-muted-foreground text-2xl">
-            Einfache Schritte zu Deiner passenden Rechtsberatung
+            Einfache Schritte zu deiner passenden Rechtsberatung
           </p>
         </div>
 
