@@ -1,5 +1,6 @@
 import type {
   AppointmentResource,
+  CaseResource,
   EmployeeResource,
   LoginResource,
   RegisterResource,
@@ -140,4 +141,12 @@ export async function getEmployee(employeeId: string): Promise<EmployeeResource>
     credentials: 'include' as RequestCredentials,
   });
   return (await response.json()) as EmployeeResource;
+}
+
+export async function getCase(caseID: string): Promise<CaseResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}case/${caseID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as CaseResource;
 }
