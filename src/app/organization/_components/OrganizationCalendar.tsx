@@ -264,7 +264,7 @@ export default function OrganizationCalendar({
           <div>
             <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
               <User className="w-5 h-5 text-accent-blue" />
-              <span>Wähle eine Mitarbeiter*in</span>
+              <span>Wähle ein*e Mitarbeiter*in</span>
             </h3>
             <div className="relative w-full" ref={employeeDropdownRef}>
               <Button
@@ -337,44 +337,55 @@ export default function OrganizationCalendar({
         {/* Calendar view - shown in quick mode or employee mode (disabled if no employee selected) */}
         {(bookingMode === BookingMode.QUICK || bookingMode === BookingMode.EMPLOYEE) && (
           <>
-            {bookingMode === BookingMode.QUICK && availableDays.length === 0 && (
-              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-                <p className="text-sm font-semibold text-accent-blue">
-                  Keine freien Termine verfügbar
-                </p>
-              </div>
-            )}
-
-            {/* Month-level hint when the visible month has no available days */}
-            {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
-              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-                <p className="text-sm font-semibold text-accent-blue">
-                  Keine freien Termine für diesen Monat.
-                </p>
-                {nextAvailableMonthLabel && (
-                  <p className="text-sm text-accent-blue">
-                    Nächster verfügbarer Termin
-                    {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
-                      ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
-                      : ''}{' '}
-                    ist am {nextAvailableMonthLabel}.
-                  </p>
-                )}
-              </div>
-            )}
-
             <div className="flex items-center gap-2 flex-wrap">
               <CalendarDays className="h-5 w-5 text-accent-blue" />
               <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
             </div>
-            <div
-              className={`rounded-xl border border-border space-y-4 w-full shadow-sm p-4 ${
-                bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
-                  ? 'opacity-50 pointer-events-none'
-                  : ''
-              }`}
-            >
-              <div className="h-120">
+
+            <div className="rounded-xl border border-border space-y-4 w-full shadow-sm p-4 relative">
+              {/* Empty state messages positioned absolutely centered over calendar */}
+              {bookingMode === BookingMode.QUICK && !hasDaysInMonth && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-20 w-max">
+                  <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                    Keine freien Termine für diesen Monat
+                  </p>
+                </div>
+              )}
+              {/* Empty state messages positioned absolutely centered over calendar */}
+              {bookingMode === BookingMode.EMPLOYEE && !selectedEmployee && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-50 w-max">
+                  <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                    Bitte wähle eine*e Mitarbeiter*in aus
+                  </p>
+                </div>
+              )}
+
+              {/* Month-level hint when the visible month has no available days */}
+              {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-20 w-max">
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                      Keine freien Termine für diesen Monat.
+                    </p>
+                    {nextAvailableMonthLabel && (
+                      <p className="text-sm text-accent-blue whitespace-nowrap">
+                        Nächster verfügbarer Termin
+                        {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                          ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                          : ''}{' '}
+                        ist am {nextAvailableMonthLabel}.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+              <div
+                className={`h-120 ${
+                  bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
+                    ? 'opacity-50 pointer-events-none'
+                    : ''
+                }`}
+              >
                 <Calendar
                   mode="single"
                   today={new Date()}
