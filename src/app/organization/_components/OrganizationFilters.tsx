@@ -6,11 +6,11 @@ import {
   ChevronDown,
   Earth,
   PersonStanding,
-  Scale,
   Tag,
   Trash2,
   X,
 } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import {
   OrganizationType as OrganizationTypeEnum,
   PriceCategory as PriceCategoryEnum,
 } from '~/generated/prisma/enums';
+import scale_logo from '~/public/scale_logo.svg';
 
 import CitySearch from './CitySearch';
 
@@ -187,8 +188,7 @@ export function OrganizationFilters({
       const target = event.target as HTMLElement | null;
       if (!target) return;
       if (target.closest('[data-organization-filters-popover]')) return;
-      // Ignore clicks inside the filter component so toggles can open/close properly.
-      if (target.closest('[data-organization-filters]')) return;
+      if (target.closest('[data-organization-filters-trigger]')) return;
       closeAllDropdowns();
     };
 
@@ -222,7 +222,7 @@ export function OrganizationFilters({
 
   // Used for reset button + active badge.
   const isActiveFilters = activeFilterCount > 0;
-  const defaultHoverClassName = 'hover:bg-accent-blue-soft cursor-pointer';
+  const defaultHoverClassName = 'hover:bg-accent-gray-light/50 cursor-pointer';
 
   // Reset all filters back to default state.
   const handleResetClick = () => {
@@ -254,7 +254,7 @@ export function OrganizationFilters({
     {
       key: 'priceCategory',
       title: 'Preisklasse',
-      icon: <Scale className="w-4 h-4" />,
+      icon: <Tag className="w-4 h-4" />,
       items: Object.values(PriceCategoryEnum).map((price) => ({
         value: price,
         label: priceCategoryMeta[price].label,
@@ -265,7 +265,7 @@ export function OrganizationFilters({
     {
       key: 'area',
       title: 'Fachbereich',
-      icon: <Tag className="w-4 h-4" />,
+      icon: <Image src={scale_logo} alt="Scale Logo" className="w-4 h-4" />,
       scroll: true,
       items: sortedAreas.map((area) => ({
         value: area,
@@ -282,7 +282,8 @@ export function OrganizationFilters({
         label: language
           .toString()
           .toLocaleLowerCase('de')
-          .replace(/^./, (char) => char.toLocaleUpperCase('de')),
+          .replace(/^./, (char) => char.toLocaleUpperCase('de'))
+          .replace(/_/g, ' '),
       })),
     },
     {
@@ -318,8 +319,8 @@ export function OrganizationFilters({
       text: 'text-accent-purple',
     },
     priceCategory: {
-      container: 'bg-accent-emerald-light border-accent-emerald',
-      text: 'text-accent-emerald',
+      container: 'bg-accent-amber-light border-accent-amber',
+      text: 'text-accent-amber',
     },
     area: {
       container: 'bg-accent-amber-light border-accent-amber',
@@ -330,8 +331,8 @@ export function OrganizationFilters({
       text: 'text-accent-blue',
     },
     accessibility: {
-      container: 'bg-accent-gray-soft border-accent-gray-light',
-      text: 'text-foreground',
+      container: 'bg-accent-emerald-light border-accent-emerald',
+      text: 'text-accent-emerald',
     },
     city: {
       container: 'bg-accent-gray-light border-accent-gray',
@@ -428,7 +429,8 @@ export function OrganizationFilters({
                 <button
                   type="button"
                   onClick={() => toggleSection(section.key)}
-                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-accent-gray"
+                  data-organization-filters-trigger
+                  className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-accent-gray/50"
                   aria-expanded={openSections[section.key]}
                 >
                   <span className="flex items-center gap-2">
@@ -437,7 +439,7 @@ export function OrganizationFilters({
                   </span>
                   <span className="flex items-center gap-2">
                     <span
-                      className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
+                      className={`min-w-8 rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
                         selectedCount > 0 ? 'opacity-100' : 'opacity-0'
                       }`}
                     >
@@ -452,7 +454,7 @@ export function OrganizationFilters({
 
                 {openSections[section.key] && (
                   <div
-                    className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
+                    className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-max max-w-[90vw] rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
                     data-organization-filters-popover
                   >
                     <div className="max-h-64 space-y-2 overflow-y-auto">
@@ -488,7 +490,11 @@ export function OrganizationFilters({
                                 aria-label={`Filter nach ${item.label}`}
                               />
                               {item.icon}
-                              <span className={item.labelClassName ?? ''}>{item.label}</span>
+                              <span
+                                className={`whitespace-normal wrap-break-word ${item.labelClassName ?? ''}`}
+                              >
+                                {item.label}
+                              </span>
                             </Label>
                           ))}
                         </div>
