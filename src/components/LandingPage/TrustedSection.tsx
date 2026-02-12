@@ -9,7 +9,7 @@ import lawyer2 from '~/public/lawyer2-stockfootage.jpg';
 import lawyer3 from '~/public/lawyer3-stockfootage.jpg';
 
 const trustPoints = [
-  { icon: Heart, text: 'Inklusiv und barrierefrei' },
+  { icon: Heart, text: 'Inklusiv und barrierearm' },
   { icon: Award, text: 'Geprüfte Expert*innen' },
   { icon: LanguagesIcon, text: 'Mehrsprachige Angebote' },
   { icon: CheckCircle2, text: 'Vielfältige Auswahl' },
