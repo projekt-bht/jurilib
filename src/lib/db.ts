@@ -10,6 +10,9 @@ declare global {
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
+  pool: {
+    connectionTimeoutMillis: 5000, // 5s timeout
+  },
 });
 
 export const prisma = global.prisma ?? new PrismaClient({ adapter });
