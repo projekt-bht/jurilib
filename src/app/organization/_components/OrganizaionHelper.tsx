@@ -10,18 +10,18 @@ export function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   switch (type) {
     case OrganizationType.LAW_FIRM:
       displayType = 'Kanzlei';
-      icon = <Building className="w-4 h-4 text-accent-gray" />;
+      icon = <Building className="w-4 h-4 text-background" />;
       break;
     case OrganizationType.ASSOCIATION:
       displayType = 'Verein';
-      icon = <Building2 className="w-4 h-4 text-accent-gray" />;
+      icon = <Building2 className="w-4 h-4 text-background" />;
       break;
     default:
       displayType = 'Keine Angabe';
-      icon = <Info className="w-4 h-4 text-accent-gray" />;
+      icon = <Info className="w-4 h-4 text-background" />;
   }
   return (
-    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground inline-flex items-center gap-1 shadow-sm">
+    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue/80 border border-accent-blue text-background inline-flex items-center gap-1 shadow-sm">
       {icon}
       {displayType}
     </span>
