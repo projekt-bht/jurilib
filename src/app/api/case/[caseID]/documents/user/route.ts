@@ -39,7 +39,7 @@ export const POST = withUserAuth(
 
         // Convert file to base64
         const fileBuffer = await file.arrayBuffer();
-        const fileBase64 = Buffer.from(fileBuffer).toString('base64');
+        const fileBase64 = Buffer.from(fileBuffer);
 
         // Upload blob to Azure
         const uploadedBlob = await uploadBlob(
