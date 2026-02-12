@@ -164,12 +164,12 @@ export default function AppointmentPage() {
                             >
                               {upcoming ? 'Anstehend' : 'Abgelaufen'}
                             </span>
-                            <button
+                            <Button
                               onClick={() => router.push(`/appointment/${appointment.id}`)}
-                              className="ml-auto px-4 py-1 rounded-full bg-white/30 text-white text-xs font-medium hover:bg-white/40 transition-colors"
+                              className="ml-auto px-4 py-1 rounded-full bg-white/30 text-white text-xs font-medium hover:bg-white/40 transition-colors cursor-pointer"
                             >
                               Details →
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       </div>
