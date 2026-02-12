@@ -310,7 +310,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
           )}
         </div>
 
-        <div className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md">
+        <div className="bg-background border p-6 mt-6 rounded-lg w-full border-border shadow-md">
           <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
             <FolderOpen className="w-6 h-6 text-accent-blue inline-block mr-2" />
             Fall-Informationen
@@ -396,7 +396,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
           </div>
 
           {/* Appointments Section */}
-          <div className="border-t border-border pt-6">
+          <div className=" pt-6">
             <label className="text-sm font-semibold text-muted-foreground mb-3 block">
               Termine
             </label>
@@ -474,7 +474,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
           </div>
         </div>
 
-        <div className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md">
+        <div className="bg-background border p-6 mt-6 rounded-lg w-full border-border shadow-md">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
               <FileText className="w-6 h-6 text-accent-blue inline-block mr-2" />
