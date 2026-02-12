@@ -1,4 +1,9 @@
-import type { LoginResource, RegisterResource, UserResource } from '@/services/Resources';
+import type {
+  AppointmentResource,
+  LoginResource,
+  RegisterResource,
+  UserResource,
+} from '@/services/Resources';
 import { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
@@ -118,4 +123,12 @@ export async function getUserAppointment(
     credentials: 'include' as RequestCredentials,
   });
   return (await response.json()) as AppointmentResource;
+}
+
+export async function cancelAppointment(appointmentID: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${appointmentID}`;
+  await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return;
 }
