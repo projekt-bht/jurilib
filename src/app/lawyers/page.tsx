@@ -45,34 +45,6 @@ export default function LawyersPage() {
     },
   ];
 
-  // const features = [
-  //   {
-  //     icon: Star,
-  //     text: 'Detailliertes Profil für deine Organisation',
-  //     color: 'text-accent-amber/70 fill-accent-amber-light',
-  //   },
-  //   {
-  //     icon: Clock,
-  //     text: 'Integriertes Terminbuchungssystem',
-  //     color: 'text-accent-purple/70',
-  //   },
-  //   {
-  //     icon: Award,
-  //     text: 'Bewertungen und Empfehlungen',
-  //     color: 'text-accent-emerald/70',
-  //   },
-  //   {
-  //     icon: Users,
-  //     text: 'Team-Vorstellung und Expertenprofil',
-  //     color: 'text-accent-blue/70',
-  //   },
-  // ];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert('Vielen Dank für Ihre Registrierung! Wir melden uns in Kürze bei Ihnen.');
-  };
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -137,31 +109,6 @@ export default function LawyersPage() {
           </div>
         </section>
 
-        {/* Features Section */}
-        {/* <section className="py-16 px-4 bg-muted/30">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-foreground text-center mb-12">
-              Was dich bei uns erwartet
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center gap-4 bg-card p-6 rounded-xl shadow hover:shadow-xl border border-border transition-all duration-300 animate-fade-in"
-                  >
-                    <div className="p-3 rounded-lg">
-                      <Icon className={`w-6 h-6 ${feature.color}`} />
-                    </div>
-                    <p className="text-lg font-medium text-foreground">{feature.text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section> */}
-
         {/* Registration Form */}
         <section id="registration" className="py-16 px-4 scroll-mt-32">
           <div className="max-w-4xl mx-auto">
@@ -174,7 +121,7 @@ export default function LawyersPage() {
                 von 24 Stunden bei dir.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
