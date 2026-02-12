@@ -264,12 +264,14 @@ export default function LawyersPage() {
                   </p>
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full bg-primary text-primary-foreground py-6 text-lg rounded-full hover:bg-primary-hover transition hover:scale-105"
-                >
-                  Registrierung anfragen
-                </Button>
+                <div className="flex justify-center">
+                  <Button
+                    type="submit"
+                    className="w-1/2 bg-primary text-primary-foreground py-6 text-lg rounded-lg hover:bg-primary-hover transition hover:scale-101"
+                  >
+                    Registrierung anfragen
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
