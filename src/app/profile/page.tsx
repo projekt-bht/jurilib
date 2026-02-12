@@ -404,46 +404,6 @@ export default function ProfileView() {
     <section className="bg-card">
       <div className="bg-card flex-1 w-full p-20 md:p-20 overflow-y-auto md:overflow-y-hidden">
         <div className="space-y-4">
-          <div className="relative w-full h-0">
-            <div
-              className={`
-        absolute right-0 top-0 flex items-center gap-3
-        transition-opacity duration-200
-        ${hasChanges ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-      `}
-            >
-              <Button
-                size="sm"
-                onClick={discardChanges}
-                disabled={!hasChanges}
-                className=" bg-accent-red hover:bg-accent-red/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
-              >
-                <X className="w-4 h-4" />
-                Verwerfen
-              </Button>
-
-              <Button
-                onClick={updateUser}
-                disabled={isSaving || !isFormValid()}
-                className=" bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
-              >
-                {isSaving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    Speichern…
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    Speichern
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
           {/* Header */}
           <div className=" flex items-center justify-between">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-2">
@@ -882,6 +842,45 @@ export default function ProfileView() {
               >
                 <Trash2 className="w-3 h-3" />
                 Konto endgültig löschen
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="space-y-4 pt-5">
+          <div className="relative w-full h-0">
+            <div
+              className={`
+        absolute right-0 top-0 flex items-center gap-3
+        transition-opacity duration-200
+        ${hasChanges ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+      `}
+            >
+              <Button
+                size="sm"
+                onClick={discardChanges}
+                disabled={!hasChanges}
+                className=" bg-accent-red hover:bg-accent-red/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
+              >
+                <X className="w-4 h-4" />
+                Verwerfen
+              </Button>
+
+              <Button
+                onClick={updateUser}
+                disabled={isSaving || !isFormValid()}
+                className=" bg-accent-blue hover:bg-accent-blue/90 cursor-pointer shadow-sm gap-2 h-10 px-5 "
+              >
+                {isSaving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    Speichern…
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    Speichern
+                  </>
+                )}
               </Button>
             </div>
           </div>
