@@ -103,30 +103,3 @@ export type EmployeeResource = {
   expertiseAreas: string[];
   imageUrl?: string;
 };
-
-export type AppointmentResource = {
-  id: string;
-  caseId?: string;
-  userId?: string;
-  employeeId: string;
-  duration: number;
-  status: AppointmentStatus;
-  location?: string;
-  meetingLink?: string;
-  dateTimeStart: string;
-  dateTimeEnd: string;
-  notes?: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type CaseResource = {
-  id: string;
-  employeeId: string;
-  userId: string;
-  title: string;
-  description: string;
-  documentsURL: string;
-  status: CaseStatus;
-  createdAt: string;
-};
