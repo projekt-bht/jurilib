@@ -119,7 +119,7 @@ export function Authentication() {
                 </div>
                 <div className="p-2">
                   <Link
-                    href="/settings"
+                    href="/profile"
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent-gray-soft text-foreground text-sm transition"
                     onClick={() => setProfileMenuOpen(false)}
                   >
