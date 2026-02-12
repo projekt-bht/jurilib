@@ -137,7 +137,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
           onKeyDown={handleKeyDown}
           onFocus={() => setError('')}
           placeholder="Erzähle uns von deiner Situation. Was ist passiert? Welche Parteien sind beteiligt? Je mehr Details du angibst, desto besser können wir dir helfen..."
-          className="w-full px-4 md:px-5 py-4 bg-transparent text-foreground placeholder-muted-foreground/60 resize-none focus:outline-none text-base leading-relaxed min-h-[280px]"
+          className="w-full px-4 md:px-5 py-4 bg-transparent text-foreground placeholder-muted-foreground/60 resize-none focus:outline-none text-base leading-relaxed min-h-70"
         />
 
         {/*Display error message, if error is truthy*/}
@@ -178,7 +178,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
         </div>
       </div>
 
-      <p className="hidden md:block text-center text-xs text-muted-foreground">
+      <p className="hidden md:block text-center text-sm text-muted-foreground pb-5d">
         {problem.length < 10 && 'Bitte geben Sie mindestens 10 Zeichen ein.'}
       </p>
       {cachedInquiries.length > 0 && (
@@ -194,10 +194,10 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
                 type="button"
                 variant="outline"
                 size="sm"
-                className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="bg-card text-accent-gray hover:bg-primary hover:text-primary-foreground border-accent-gray hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 onClick={() => setCachedProblem(query)}
               >
-                <span className="truncate max-w-[200px]">{query}</span>
+                <span className="truncate max-w-50">{query}</span>
                 <span
                   role="button"
                   tabIndex={0}
@@ -227,7 +227,7 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
               type="button"
               variant="outline"
               size="sm"
-              className="bg-accent-gray-light/60 text-foreground hover:bg-primary hover:text-primary-foreground border-accent-gray/40 hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="bg-primary text-background hover:bg-accent-gray hover:text-primary-foreground border-accent-gray hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer"
               onClick={() => {
                 setProblem(example.description);
               }}
