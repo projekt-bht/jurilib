@@ -1,4 +1,4 @@
-import { ArrowUpRight, ChevronDown, Mail, Phone } from 'lucide-react';
+import { ArrowUpRight, Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,10 +11,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="bg-background p-2 rounded-lg">
-                {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
-                <Image src={scale_logo} alt="JuriLib Logo" width={25} height={25} />
-              </div>
+              {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
+              <Image
+                src={scale_logo}
+                alt="JuriLib Logo"
+                width={25}
+                height={25}
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
               <span className="font-semibold text-background">JuriLib</span>
             </div>
             <p className="text-background text-sm">
