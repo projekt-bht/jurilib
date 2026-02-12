@@ -9,6 +9,7 @@ import { calcActiveAppointments, fetchBackendData } from '@/components/Dashboard
 import { Button } from '@/components/ui/button';
 import type { LoginResource } from '@/services/Resources';
 import type { Appointment } from '~/generated/prisma/browser';
+import { AppointmentCard } from '@/components/Dashboard/_components/user/AppointmentCard';
 
 const appointmentColors: string[] = [
   'from-accent-blue/85 to-accent-purple/85',
@@ -102,79 +103,11 @@ export default function AppointmentPage() {
           {activeAppointments > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.isArray(appointments)
-                ? appointments.map((appointment, index) => {
-                    const { date, time } = formatDateTime(appointment.dateTimeStart);
-                    const upcoming = isUpcoming(appointment.dateTimeStart);
-
-                    return (
-                      <div
-                        key={appointment.id}
-                        className="bg-gradient-to-br p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group relative overflow-hidden"
-                      >
-                        {/* Gradient background */}
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-br ${
-                            appointmentColors[index % appointmentColors.length]
-                          } rounded-2xl opacity-85`}
-                        />
-
-                        {/* Content */}
-                        <div className="relative z-10">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-white mb-2">Termin buchen</h3>
-                            </div>
-                          </div>
-
-                          {/* Appointment Details */}
-                          <div className="space-y-2 mb-4 border-t border-white/20 pt-4">
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Datum:</span>
-                              <span className="text-white font-semibold">{date}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Uhrzeit:</span>
-                              <span className="text-white font-semibold">{time}</span>
-                            </div>
-                            {appointment.duration && (
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-white/70">Dauer:</span>
-                                <span className="text-white">
-                                  {appointment.duration}{' '}
-                                  {appointment.duration === 1 ? 'Minute' : 'Minuten'}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Termin-ID:</span>
-                              <span className="text-white font-mono text-xs">
-                                {appointment.id.slice(0, 8)}...
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Status and Action */}
-                          <div className="flex gap-2 pt-4 border-t border-white/20 flex-wrap">
-                            <span
-                              className={`px-3 py-1 rounded-full text-white text-xs font-medium ${
-                                upcoming
-                                  ? 'bg-accent-emerald/40 text-white'
-                                  : 'bg-white/20 text-white/80'
-                              }`}
-                            >
-                              {upcoming ? 'Anstehend' : 'Abgelaufen'}
-                            </span>
-                            <button
-                              onClick={() => router.push(`/appointment/${appointment.id}`)}
-                              className="ml-auto px-4 py-1 rounded-full bg-white/30 text-white text-xs font-medium hover:bg-white/40 transition-colors"
-                            >
-                              Details →
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
+                ? appointments
+                    .slice(0, 4)
+                    .map((appointment) => (
+                      <AppointmentCard key={appointment.id} appointment={appointment} />
+                    ))
                 : null}
             </div>
           ) : (
