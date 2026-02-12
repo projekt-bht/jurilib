@@ -1,6 +1,8 @@
-'use client';
-
-export function ResultLoading() {
+type ResultLoadingProps = {
+  title: string;
+  description: string;
+};
+export function ResultLoading({ title, description }: ResultLoadingProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm">
       {/* Background decoration */}
@@ -24,7 +26,7 @@ export function ResultLoading() {
 
         {/* Loading text with animated dots */}
         <div className="flex items-center justify-center gap-2 mb-2">
-          <h3 className="text-4xl font-semibold text-foreground">Analyse läuft</h3>
+          <h3 className="text-4xl font-semibold text-foreground">{title}</h3>
           <div className="flex gap-1.5 pt-5">
             <span
               className="w-2 h-2 bg-accent-blue rounded-full animate-bounce"
@@ -41,7 +43,7 @@ export function ResultLoading() {
           </div>
         </div>
 
-        <p className="text-xl text-muted-foreground">Wir suchen passende Ergebnisse für dich.</p>
+        <p className="text-xl text-muted-foreground">{description}</p>
       </div>
     </div>
   );
