@@ -2,10 +2,10 @@
 import { Sparkles } from 'lucide-react';
 
 import { UserDashboard } from '@/components/Dashboard/_components/user/UserDashboard';
-import ChooseUs from '@/components/LandingPage/ChooseUs';
 import HowItWorks from '@/components/LandingPage/HowItWorks';
 import OurOffer from '@/components/LandingPage/OurOffer';
 import { Search } from '@/components/LandingPage/Search';
+import TruestedSection from '@/components/LandingPage/TrustedSection';
 
 import { useLoginContext } from './LoginContext';
 
@@ -41,7 +41,7 @@ export default function Home() {
       </div>
       <Search />
       <HowItWorks />
-      <ChooseUs />
+      <TruestedSection />
       <OurOffer />
     </>
   );
