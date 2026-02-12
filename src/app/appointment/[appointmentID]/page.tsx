@@ -39,7 +39,7 @@ import type {
   EmployeeResource,
   LoginResource,
 } from '@/services/Resources';
-import type { AppointmentStatus } from '~/generated/prisma/enums';
+import { AppointmentStatus } from '~/generated/prisma/enums';
 import { ResultLoading } from '@/components/Loading/ResultLoading';
 
 const statusConfig: Record<
@@ -117,7 +117,7 @@ function formatDateTime(date: string) {
 
 export default function AppointmentDetailView() {
   const router = useRouter();
-  const [showCancelDialog, setShowCancelDialog] = useState(true);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [fetchesDone, setFetchesDone] = useState(false);
@@ -185,7 +185,8 @@ export default function AppointmentDetailView() {
 
   const config = statusConfig[appointment.status];
   const StatusIcon = config.icon;
-  const canCancel = appointment.status === 'OPEN' || appointment.status === 'CONFIRMED';
+  const canCancel =
+    AppointmentStatus.OPEN || AppointmentStatus.CONFIRMED || AppointmentStatus.REQUESTED;
 
   const handleCancel = async () => {
     setIsCancelling(true);
@@ -232,18 +233,6 @@ export default function AppointmentDetailView() {
             </div>
             <p className="text-sm text-muted-foreground">ID: {appointment.id}</p>
           </div>
-
-          {canCancel && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="gap-1.5 shrink-0"
-              onClick={() => setShowCancelDialog(true)}
-            >
-              <XCircle className="w-4 h-4" />
-              Absagen
-            </Button>
-          )}
         </div>
 
         {/* Main content grid */}
@@ -371,7 +360,7 @@ export default function AppointmentDetailView() {
           </div>
 
           {/* Right sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Employee card */}
             <div className="bg-card rounded-xl border border-border/60 p-5">
               <div className="flex items-center gap-2 mb-4">
@@ -433,6 +422,20 @@ export default function AppointmentDetailView() {
           </div>
         </div>
       </div>
+
+      {canCancel && (
+        <div className="max-w-3/4 mx-auto flex justify-end mt-10">
+          <Button
+            variant="destructive"
+            size="sm"
+            className="w-30 h-10 gap-1.5"
+            onClick={() => setShowCancelDialog(true)}
+          >
+            <XCircle className="w-4 h-4" />
+            Absagen
+          </Button>
+        </div>
+      )}
 
       {/* Cancel Dialog */}
       <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
