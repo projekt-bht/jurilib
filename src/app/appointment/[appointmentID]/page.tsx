@@ -34,13 +34,9 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cancelAppointment, getCase, getEmployee, getUserAppointment } from '@/services/api';
-import type {
-  AppointmentResource,
-  CaseResource,
-  EmployeeResource,
-  LoginResource,
-} from '@/services/Resources';
+import type { LoginResource } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
+import { Appointment, Case, Employee } from '~/generated/prisma/browser';
 
 export default function AppointmentDetailView() {
   const router = useRouter();
@@ -53,9 +49,9 @@ export default function AppointmentDetailView() {
   const { login } = useLoginContext();
   const userId = (login as LoginResource).userId;
 
-  const [appointment, setAppointment] = useState<AppointmentResource>();
-  const [employee, setEmployee] = useState<EmployeeResource>();
-  const [_case, setCase] = useState<CaseResource>();
+  const [appointment, setAppointment] = useState<Appointment>();
+  const [employee, setEmployee] = useState<Employee>();
+  const [_case, setCase] = useState<Case>();
 
   const [error, setError] = useState<string | null>(null);
   const { appointmentID } = useParams();
@@ -448,7 +444,7 @@ const statusConfig: Record<
   },
 };
 
-function formatFullDate(date: string) {
+function formatFullDate(date: Date) {
   const d = new Date(date);
 
   return d.toLocaleDateString('de-DE', {
@@ -459,7 +455,7 @@ function formatFullDate(date: string) {
   });
 }
 
-function formatTime(date: string) {
+function formatTime(date: Date) {
   const d = new Date(date);
 
   return d.toLocaleTimeString('de-DE', {
@@ -468,7 +464,7 @@ function formatTime(date: string) {
   });
 }
 
-function formatDateTime(date: string) {
+function formatDateTime(date: Date) {
   const d = new Date(date);
 
   return d.toLocaleString('de-DE', {
