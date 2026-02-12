@@ -46,7 +46,7 @@ export default function HowItWorks() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground tracking-tight mb-4 md:mb-6">
             Wie funktioniert JuriLib?
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-2xl">
             Einfache Schritte zu Deiner passenden Rechtsberatung
           </p>
         </div>
@@ -62,7 +62,7 @@ export default function HowItWorks() {
                 <div className={`${step.iconBgColor} rounded-full p-4 mb-4`}>
                   <Icon className={`w-8 h-8 ${step.iconColor}`} />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   {index + 1}. {step.title}
                 </h3>
                 <p className="text-muted-foreground text-sm">{step.description}</p>
