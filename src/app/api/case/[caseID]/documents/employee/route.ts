@@ -40,10 +40,10 @@ export const POST = withEmployeeAuth(
 
         // Convert file to base64
         const fileBuffer = await file.arrayBuffer();
-        const fileBase64 = Buffer.from(fileBuffer).toString('base64');
+        const bufferArray = Buffer.from(fileBuffer);
 
         // Upload blob to Azure (no private flag for employees, always public)
-        const uploadedBlob = await uploadBlob(caseID, fileName, fileBase64);
+        const uploadedBlob = await uploadBlob(caseID, fileName, bufferArray);
 
         // Generate the API-relative document URL (public, not private)
         const documentUrl = generateDocumentUrl(caseID, fileName, false);
