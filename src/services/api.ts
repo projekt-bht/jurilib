@@ -108,3 +108,14 @@ export async function patchAccountPasswordWithEmail(email: string, password: str
 
   return true;
 }
+
+export async function getUserAppointment(
+  userID: string,
+  appointmentID: string
+): Promise<AppointmentResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/user/${userID}/${appointmentID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as AppointmentResource;
+}
