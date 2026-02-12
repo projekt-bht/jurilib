@@ -129,12 +129,13 @@ export const DELETE = withUserAuth(
       validateIds([{ id: caseID, identifier: 'caseID' }]);
 
       const fileName = req.nextUrl.searchParams.get('fileName');
+      const fileUri = req.nextUrl.toString().split('fileName=')[1];
       if (!fileName) {
         throw new ValidationError('missingRequiredValue', 'fileName', 400);
       }
 
       if (await isCaseUserMatch(caseID, account.userId)) {
-        await deleteBlob(caseID, fileName, privateFlag ? account.userId : undefined);
+        await deleteBlob(caseID, fileName, fileUri, privateFlag ? account.userId : undefined);
         return NextResponse.json({ message: 'Document deleted successfully' }, { status: 200 });
       } else {
         return unauthorized();

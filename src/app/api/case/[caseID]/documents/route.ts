@@ -82,13 +82,12 @@ export async function DELETE(
     }
 
     const fileName = req.nextUrl.searchParams.get('fileName');
+    const fileUri = req.nextUrl.toString().split('fileName=')[1];
     if (!fileName) {
       throw new ValidationError('missingRequiredValue', 'fileName', 400);
     }
 
     const loginResource: LoginResource = verifyJWT(token);
-    const { BlobServiceClient } = await import('@azure/storage-blob');
-    const prisma = (await import('@/lib/db')).default;
 
     const sasToken = process.env.AZURE_BLOB_SAS;
     const storageBaseURL = process.env.AZURE_STORAGE_BASE_URL;
@@ -98,13 +97,11 @@ export async function DELETE(
     }
 
     let isAuthorized = false;
-    let userID: string | undefined;
 
     // Check if it's a user request
     if (loginResource.userId) {
       if (await isCaseUserMatch(caseID, loginResource.userId)) {
         isAuthorized = true;
-        userID = loginResource.userId;
       }
     }
 
@@ -119,7 +116,7 @@ export async function DELETE(
       return unauthorized();
     }
     // Delete blob from Azure Storage and remove document URL from case
-    await deleteBlob(caseID, fileName);
+    await deleteBlob(caseID, fileName, fileUri);
 
     return NextResponse.json({ message: 'Document deleted successfully' }, { status: 200 });
   } catch (error) {

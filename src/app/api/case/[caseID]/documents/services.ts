@@ -118,7 +118,12 @@ export async function updateDocumentArray(caseID: string, documentUrl: string) {
   }
 }
 
-export async function deleteBlob(caseID: string, fileName: string, userID?: string) {
+export async function deleteBlob(
+  caseID: string,
+  fileName: string,
+  fileURI: string,
+  userID?: string
+) {
   // Delete blob from Azure Storage
   try {
     const blobServiceClient = new BlobServiceClient(`${storageBaseURL}?${sasToken}`);
@@ -139,7 +144,7 @@ export async function deleteBlob(caseID: string, fileName: string, userID?: stri
 
   if (caseData) {
     const updatedDocuments = caseData.documentsURL.filter(
-      (docUrl: string) => !docUrl.includes(`fileName=${fileName}`)
+      (docUrl: string) => !docUrl.includes(`fileName=${fileURI}`)
     );
 
     await prisma.case.update({
