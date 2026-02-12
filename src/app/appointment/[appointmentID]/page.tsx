@@ -20,6 +20,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +33,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getCase, getEmployee, getUserAppointment } from '@/services/api';
+import { cancelAppointment, getCase, getEmployee, getUserAppointment } from '@/services/api';
 import type {
   AppointmentResource,
   CaseResource,
@@ -40,7 +41,6 @@ import type {
   LoginResource,
 } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
-import { ResultLoading } from '@/components/Loading/ResultLoading';
 
 const statusConfig: Record<
   AppointmentStatus,
@@ -140,14 +140,18 @@ export default function AppointmentDetailView() {
         }
 
         const appointmentData = await getUserAppointment(userId, appointmentID as string);
-        const employeeData = await getEmployee(appointmentData.employeeId);
-        if (appointmentData.caseId) {
-          const caseData = await getCase(appointmentData.caseId!);
-          setCase(caseData);
-        }
+        if (appointmentData) {
+          const employeeData = await getEmployee(appointmentData.employeeId);
+          if (employeeData) {
+            setAppointment(appointmentData);
+            setEmployee(employeeData);
+          }
 
-        setAppointment(appointmentData);
-        setEmployee(employeeData);
+          if (appointmentData?.caseId) {
+            const caseData = await getCase(appointmentData.caseId!);
+            if (caseData) setCase(caseData);
+          }
+        }
         setFetchesDone(true);
       } catch (error) {
         setError(
@@ -158,6 +162,19 @@ export default function AppointmentDetailView() {
 
     fetchData();
   }, [login, userId]);
+
+  async function handleCancelAppointment() {
+    try {
+      await cancelAppointment(appointmentID as string);
+      setIsCancelling(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsCancelling(false);
+      setShowCancelDialog(false);
+      router.push('/appointment');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten');
+    }
+  }
 
   if (!login || !userId || !fetchesDone) return <></>;
 
@@ -187,16 +204,6 @@ export default function AppointmentDetailView() {
   const StatusIcon = config.icon;
   const canCancel =
     AppointmentStatus.OPEN || AppointmentStatus.CONFIRMED || AppointmentStatus.REQUESTED;
-
-  const handleCancel = async () => {
-    setIsCancelling(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsCancelling(false);
-    setShowCancelDialog(false);
-    // In production: mutate/refetch data
-    router.push('/appointment');
-  };
 
   const handleCopyLink = () => {
     if (appointment.meetingLink) {
@@ -446,15 +453,15 @@ export default function AppointmentDetailView() {
               Termin absagen?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-sm leading-relaxed">
-              Möchten Sie diesen Termin wirklich absagen? Der Berater wird über die Absage
-              informiert. Sie können bei Bedarf einen neuen Termin vereinbaren.
+              Möchtest du diesen Termin wirklich absagen? Der Berater wird über die Absage
+              informiert. Du kannst bei Bedarf einen neuen Termin vereinbaren.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isCancelling}>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90 gap-1.5"
-              onClick={handleCancel}
+              onClick={handleCancelAppointment}
               disabled={isCancelling}
             >
               {isCancelling ? (
