@@ -121,6 +121,9 @@ export default function AppointmentDetailView() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [fetchesDone, setFetchesDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [isCanceledAppointment, setIsCanceledAppointment] = useState(false);
 
   const { login } = useLoginContext();
   const userId = (login as LoginResource).userId;
@@ -139,6 +142,7 @@ export default function AppointmentDetailView() {
           throw new Error('Benutzer-ID ist ungültig oder wurde nicht gefunden.');
         }
 
+        setLoading(true);
         const appointmentData = await getUserAppointment(userId, appointmentID as string);
         if (appointmentData) {
           const employeeData = await getEmployee(appointmentData.employeeId);
@@ -153,6 +157,9 @@ export default function AppointmentDetailView() {
           }
         }
         setFetchesDone(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        setLoading(false);
       } catch (error) {
         setError(
           error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
@@ -167,6 +174,7 @@ export default function AppointmentDetailView() {
     try {
       await cancelAppointment(appointmentID as string);
       setIsCancelling(true);
+      setLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setIsCancelling(false);
       setShowCancelDialog(false);
@@ -212,6 +220,11 @@ export default function AppointmentDetailView() {
       setTimeout(() => setLinkCopied(false), 2000);
     }
   };
+
+  if (loading) {
+    const text = isCancelling ? 'Termin wird abgesagt...' : 'Termin wird geladen...';
+    return <ResultLoading title={text} description="Bitte warte einen Moment." />;
+  }
 
   return (
     <section className="py-8 md:py-12 px-6 bg-background">
