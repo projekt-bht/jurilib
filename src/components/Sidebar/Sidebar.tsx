@@ -11,6 +11,7 @@ import {
   Plus,
   Settings,
   Users,
+  UserPen,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,6 +35,7 @@ const secondaryItems = [
 
 // Add new bottom navigation items here
 const bottomItems = [
+  { href: '/profile', label: 'Mein Profil', icon: UserPen },
   { href: '/settings', label: 'Einstellungen', icon: Settings },
   { href: '/docs', label: 'Hilfe', icon: HelpCircle },
 ];
