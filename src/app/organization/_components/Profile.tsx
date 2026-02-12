@@ -1,5 +1,8 @@
+'use client';
+
 import { Separator } from '@radix-ui/react-separator';
-import { Info, Users } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, Users } from 'lucide-react';
+import { useState } from 'react';
 
 import type { Employee, Organization } from '~/generated/prisma/client';
 
@@ -15,6 +18,8 @@ export function Profile({
   organization: Organization;
   employees: Employee[];
 }) {
+  const [isTeamExpanded, setIsTeamExpanded] = useState(false);
+
   return (
     <div
       id={`${organization.id}_Profile`}
@@ -49,12 +54,12 @@ export function Profile({
         </div>
 
         <Separator className="my-6 h-px bg-border w-full" />
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center">
           <ProfileInfos
             id={organization.id}
             website={organization.website}
             phone={organization.phone}
-            address={`${organization.zipCode} ${organization.city}, ${organization.street} ${organization.houseNumber}`}
+            address={`${organization.street} ${organization.houseNumber}, ${organization.zipCode} ${organization.city}`}
             email={organization.email}
           />
         </div>
@@ -65,7 +70,7 @@ export function Profile({
         id={`${organization.id}_Description`}
         className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
       >
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-1">
           <Info className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Über uns
         </h2>
@@ -78,16 +83,26 @@ export function Profile({
           id={`${organization.id}_Employees`}
           className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
         >
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
-            <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
-            Unser Team
-          </h2>
-          {/* TODO implement pagination */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {employees.map((e) => (
-              <EmployeeCard key={e.id} employee={e} />
-            ))}
-          </div>
+          <button onClick={() => setIsTeamExpanded(!isTeamExpanded)} className="w-full text-left">
+            <h2
+              className={`text-xl font-bold flex items-center gap-2 ${isTeamExpanded ? 'mb-4' : ''}`}
+            >
+              <Users className="w-6 h-6 text-accent-blue shrink-0 mr-2" />
+              <span className="flex-1">Unser Team</span>
+              {isTeamExpanded ? (
+                <ChevronUp className="w-7 h-7 text-foreground shrink-0" />
+              ) : (
+                <ChevronDown className="w-7 h-7 text-foreground shrink-0" />
+              )}
+            </h2>
+          </button>
+          {isTeamExpanded && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {employees.map((e) => (
+                <EmployeeCard key={e.id} employee={e} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
