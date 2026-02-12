@@ -176,12 +176,31 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
     }
   }
 
-  const getFileNameFromUrl = (url: string): string => {
+  function getFileNameFromUrl(url: string): string {
     const params = new URLSearchParams(url.split('?')[1]);
-    return params.get('fileName') ?? 'Unbekannter Dateiname';
-  };
+    const fileName = params.get('fileName') ?? 'Unbekannter Dateiname';
 
-  const getFileIconAndColor = (fileName: string) => {
+    return fileName;
+  }
+
+  function getShortenedFileNameFromUrl(url: string): string {
+    const params = new URLSearchParams(url.split('?')[1]);
+    const fileName = params.get('fileName') ?? 'Unbekannter Dateiname';
+
+    if (fileName.length > 25) {
+      const lastDotIndex = fileName.lastIndexOf('.');
+      if (lastDotIndex > 0) {
+        const nameWithoutExt = fileName.substring(0, lastDotIndex);
+        const ext = fileName.substring(lastDotIndex);
+        const maxNameLength = 28 - ext.length - 3; // 3 for "..."
+        return nameWithoutExt.substring(0, maxNameLength) + '..' + ext;
+      }
+      return fileName.substring(0, 25) + '...';
+    }
+    return fileName;
+  }
+
+  function getFileIconAndColor(fileName: string) {
     const ext = fileName.split('.').pop()?.toLowerCase();
 
     const fileTypeConfig: Record<string, { icon: React.ReactNode; color: string }> = {
@@ -198,7 +217,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
     return (
       fileTypeConfig[ext ?? ''] || { icon: <File className="w-5 h-5" />, color: 'text-gray-400' }
     );
-  };
+  }
 
   if (loading) {
     return (
@@ -341,99 +360,113 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
             <span className="text-sm text-muted-foreground">{documents.length} Dateien</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Upload Section */}
-            <label
-              htmlFor="file-upload"
-              className="shadow-md rounded-xl p-8 border hover:border-dashed border-border hover:border-primary/50 hover:bg-secondary/80 transition-colors cursor-pointer"
-            >
-              <input
-                id="file-upload"
-                type="file"
-                onChange={handleFileUpload}
-                disabled={uploading}
-                className="hidden"
-                accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.pptx,.png,.jpg,.jpeg,.gif"
-                data-fd-max-file-size="52428800"
-              />
-              <div className="flex flex-col items-center justify-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Upload className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-center">
-                  <span className="font-semibold text-foreground hover:text-primary transition-colors">
-                    Datei auswählen
-                  </span>
-                  <p className="text-xs text-muted-foreground mb-2">(max. 50MB)</p>
-                  <Label className="min-h-9 rounded-md py-1 px-2 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-gray-soft flex justify-center items-center gap-2">
-                    <div className="relative w-4 h-4">
-                      <Checkbox
-                        checked={isPrivate}
-                        onCheckedChange={(checked) => setIsPrivate(checked === true)}
-                        className="w-4 h-4 border-2 border-gray-300 rounded data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                        aria-label="Privat"
-                      />
-                      {isPrivate && (
-                        <Check className="absolute inset-0 w-4 h-4 text-white pointer-events-none" />
-                      )}
-                    </div>
-                    <span>Nur für mich sichtbar</span>
-                  </Label>
-                </div>
-                {uploading && (
-                  <div className="flex items-center gap-2 text-sm text-primary">
-                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    Wird hochgeladen...
+            <div>
+              <label className="text-sm font-semibold text-muted-foreground mb-3 block">
+                Dokumente hochladen
+              </label>
+              {/* Upload Section */}
+              <label
+                htmlFor="file-upload"
+                className="shadow-md rounded-xl p-8 border hover:border-dashed border-border hover:border-primary/50 hover:bg-secondary/80 transition-colors cursor-pointer block"
+              >
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  className="hidden"
+                  accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.pptx,.png,.jpg,.jpeg,.gif"
+                  data-fd-max-file-size="52428800"
+                />
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-primary" />
                   </div>
-                )}
-              </div>
-            </label>
-            {/* Documents List */}
-            {documents.length > 0 ? (
-              <div className="space-y-3">
-                {documents.map((docUrl, index) => {
-                  const fileName = getFileNameFromUrl(docUrl);
-                  const { icon, color } = getFileIconAndColor(fileName);
+                  <div className="text-center">
+                    <span className="font-semibold text-foreground hover:text-primary transition-colors">
+                      Datei auswählen
+                    </span>
+                    <p className="text-xs text-muted-foreground mb-2">(max. 50MB)</p>
+                    <Label className="min-h-9 rounded-md py-1 px-2 text-sm font-medium text-foreground transition-colors cursor-pointer hover:bg-accent-gray-soft flex justify-center items-center gap-2">
+                      <div className="relative w-4 h-4">
+                        <Checkbox
+                          checked={isPrivate}
+                          onCheckedChange={(checked) => setIsPrivate(checked === true)}
+                          className="w-4 h-4 border-2 border-gray-300 rounded data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                          aria-label="Privat"
+                        />
+                        {isPrivate && (
+                          <Check className="absolute inset-0 w-4 h-4 text-white pointer-events-none" />
+                        )}
+                      </div>
+                      <span>Nur für mich sichtbar</span>
+                    </Label>
+                  </div>
+                  {uploading && (
+                    <div className="flex items-center gap-2 text-sm text-primary">
+                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      Wird hochgeladen...
+                    </div>
+                  )}
+                </div>
+              </label>
+            </div>
 
-                  return (
-                    <div
-                      key={index}
-                      className="shadow-md border-border border rounded-lg p-4 flex items-center justify-between hover:bg-secondary/80 transition-colors"
-                    >
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className={color}>{icon}</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-foreground truncate">{fileName}</p>
-                          <p className="text-xs text-muted-foreground">Dokument</p>
+            {/* Documents List */}
+            <div>
+              <label className="text-sm font-semibold text-muted-foreground mb-3 block">
+                Deine Dokumente
+              </label>
+              {documents.length > 0 ? (
+                <div className="space-y-3">
+                  {documents.map((docUrl, index) => {
+                    const fileName = getFileNameFromUrl(docUrl);
+                    const shortenedFileName = getShortenedFileNameFromUrl(docUrl);
+                    const { icon, color } = getFileIconAndColor(fileName);
+
+                    return (
+                      <div
+                        key={index}
+                        className="shadow-md border-border border rounded-lg p-4 flex items-center justify-between hover:bg-secondary/80 transition-colors"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className={color}>{icon}</div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground truncate">
+                              {shortenedFileName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">Dokument</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleDownloadDocument(docUrl, fileName)}
+                            className="p-2 hover:bg-primary/10 rounded-lg transition-colors text-primary cursor-pointer"
+                            title="Download"
+                          >
+                            <Download className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteDocument(docUrl)}
+                            className="p-2 hover:bg-red-500/10 rounded-lg transition-colors text-red-500 cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleDownloadDocument(docUrl, fileName)}
-                          className="p-2 hover:bg-primary/10 rounded-lg transition-colors text-primary cursor-pointer"
-                          title="Download"
-                        >
-                          <Download className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteDocument(docUrl)}
-                          className="p-2 hover:bg-red-500/10 rounded-lg transition-colors text-red-500 cursor-pointer"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="shadow-md border-border border  rounded-lg p-8 text-center">
-                <div className="w-12 h-12 rounded-lg bg-muted/50 flex items-center justify-center mx-auto mb-4">
-                  <FileText className="w-6 h-6 text-muted-foreground" />
+                    );
+                  })}
                 </div>
-                <p className="text-muted-foreground">Noch keine Dokumente hochgeladen</p>
-              </div>
-            )}
+              ) : (
+                <div className="shadow-md border-border border  rounded-lg p-8 text-center">
+                  <div className="w-12 h-12 rounded-lg bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                    <FileText className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <p className="text-muted-foreground">Noch keine Dokumente hochgeladen</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
