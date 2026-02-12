@@ -1,25 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
-  CalendarDays,
-  MapPin,
-  Video,
-  Clock,
-  User,
-  FileText,
-  ArrowLeft,
-  ExternalLink,
-  XCircle,
   AlertTriangle,
-  CheckCircle2,
-  Copy,
+  ArrowLeft,
+  CalendarDays,
   Check,
+  CheckCircle2,
+  Clock,
+  Copy,
+  ExternalLink,
+  FileText,
+  MapPin,
+  User,
+  Video,
+  XCircle,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { useLoginContext } from '@/app/LoginContext';
+import { calcActiveCases, fetchBackendData } from '@/components/Dashboard/helper';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,29 +31,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useLoginContext } from '@/app/LoginContext';
-import { AppointmentResource, LoginResource } from '@/services/Resources';
-import { calcActiveCases, fetchBackendData } from '@/components/Dashboard/helper';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { getUserAppointment } from '@/services/api';
-import { AppointmentStatus } from '~/generated/prisma/enums';
-
-interface Appointment {
-  id: string;
-  caseId?: string;
-  caseName?: string;
-  userId?: string;
-  employeeId: string;
-  employeeName: string;
-  duration: number;
-  status: AppointmentStatus;
-  location?: string;
-  meetingLink?: string;
-  dateTimeStart: Date;
-  dateTimeEnd: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { AppointmentResource, LoginResource } from '@/services/Resources';
+import type { AppointmentStatus } from '~/generated/prisma/enums';
 
 const statusConfig: Record<
   AppointmentStatus,
@@ -132,6 +115,8 @@ export default function AppointmentDetailView() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [fetchesDone, setFetchesDone] = useState(false);
+
   const { login } = useLoginContext();
   const userId = (login as LoginResource).userId;
 
@@ -151,6 +136,7 @@ export default function AppointmentDetailView() {
         console.log(appointmentData);
         setAppointment(appointmentData);
         console.log(appointment);
+        setFetchesDone(true);
       } catch (error) {
         setError(
           error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
@@ -162,6 +148,8 @@ export default function AppointmentDetailView() {
 
     fetchData();
   }, [login, userId]);
+
+  if (!login || !userId || !fetchesDone) return <></>;
 
   if (!appointment) {
     return (
@@ -209,7 +197,7 @@ export default function AppointmentDetailView() {
 
   return (
     <section className="py-8 md:py-12 px-6 bg-background">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3/4 mx-auto">
         {/* Back */}
         <Link
           href="/appointment"
@@ -257,8 +245,8 @@ export default function AppointmentDetailView() {
             {/* Date & Time card */}
             <div className="bg-card rounded-xl border border-border/60 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <CalendarDays className="w-4 h-4 text-primary" />
+                <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
+                  <CalendarDays className="w-4 h-4 text-blue-600" />
                 </div>
                 <h2 className="text-sm font-semibold text-foreground">Datum & Uhrzeit</h2>
               </div>
@@ -295,11 +283,11 @@ export default function AppointmentDetailView() {
             {/* Location / Meeting Link card */}
             <div className="bg-card rounded-xl border border-border/60 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
                   {appointment.location ? (
-                    <MapPin className="w-4 h-4 text-primary" />
+                    <MapPin className="w-4 h-4 text-blue-600" />
                   ) : (
-                    <Video className="w-4 h-4 text-primary" />
+                    <Video className="w-4 h-4 text-blue-600" />
                   )}
                 </div>
                 <h2 className="text-sm font-semibold text-foreground">
@@ -314,10 +302,10 @@ export default function AppointmentDetailView() {
                     href={`https://maps.google.com/?q=${encodeURIComponent(appointment.location)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                    className="text-blue-600 inline-flex items-center gap-1.5 text-xs hover:underline"
                   >
                     In Google Maps öffnen
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3 h-3 text-blue-600" />
                   </a>
                 </div>
               ) : appointment.meetingLink ? (
@@ -349,10 +337,10 @@ export default function AppointmentDetailView() {
                     href={appointment.meetingLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                    className="text-blue-600 inline-flex items-center gap-1.5 text-xs hover:underline"
                   >
                     Meeting beitreten
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-3 h-3 text-blue-600" />
                   </a>
                 </div>
               ) : (
@@ -364,8 +352,8 @@ export default function AppointmentDetailView() {
             {appointment.notes && (
               <div className="bg-card rounded-xl border border-border/60 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-primary" />
+                  <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-blue-600" />
                   </div>
                   <h2 className="text-sm font-semibold text-foreground">Notizen</h2>
                 </div>
@@ -379,8 +367,8 @@ export default function AppointmentDetailView() {
             {/* Employee card */}
             <div className="bg-card rounded-xl border border-border/60 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <User className="w-4 h-4 text-primary" />
+                <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 text-blue-600" />
                 </div>
                 <h2 className="text-sm font-semibold text-foreground">Berater</h2>
               </div>
@@ -401,8 +389,8 @@ export default function AppointmentDetailView() {
             {appointment.caseId && (
               <div className="bg-card rounded-xl border border-border/60 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-primary" />
+                  <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-blue-600" />
                   </div>
                   <h2 className="text-sm font-semibold text-foreground">Zugehöriger Fall</h2>
                 </div>
@@ -414,8 +402,8 @@ export default function AppointmentDetailView() {
             {/* Meta info */}
             <div className="bg-card rounded-xl border border-border/60 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-primary" />
+                <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-blue-600" />
                 </div>
                 <h2 className="text-sm font-semibold text-foreground">Details</h2>
               </div>
