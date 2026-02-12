@@ -130,7 +130,7 @@ export default function AppointmentDetailView() {
   }
 
   return (
-    <section className="py-8 md:py-12 px-6 bg-background">
+    <section className="h-screen overflow-auto py-8 md:py-12 px-6 bg-background">
       <div className="max-w-3/4 mx-auto">
         {/* Back */}
         <Link
