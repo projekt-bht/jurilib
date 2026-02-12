@@ -16,7 +16,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
@@ -112,25 +112,7 @@ export default function AppointmentDetailView() {
   if (!login || !userId || !fetchesDone) return <></>;
 
   if (!appointment || !employee) {
-    return (
-      <section className="py-12 px-6 bg-background">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-            <CalendarDays className="w-7 h-7 text-muted-foreground" />
-          </div>
-          <h1 className="text-xl font-semibold mb-2">Termin nicht gefunden</h1>
-          <p className="text-sm text-muted-foreground mb-6">
-            Der angeforderte Termin existiert nicht oder wurde entfernt.
-          </p>
-          <Link href="/appointment">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Zurück zu Termine
-            </Button>
-          </Link>
-        </div>
-      </section>
-    );
+    return notFound();
   }
 
   const config = statusConfig[appointment.status];
