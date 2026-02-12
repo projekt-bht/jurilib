@@ -294,7 +294,7 @@ export default function AppointmentDetailView() {
                 <div className="bg-accent-blue-light w-8 h-8 rounded-lg flex items-center justify-center">
                   <User className="w-4 h-4 text-blue-600" />
                 </div>
-                <h2 className="text-sm font-semibold text-foreground">Berater</h2>
+                <h2 className="text-sm font-semibold text-foreground">Ansprechperson</h2>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center shrink-0">
@@ -355,7 +355,7 @@ export default function AppointmentDetailView() {
           <Button
             variant="destructive"
             size="sm"
-            className="w-30 h-10 gap-1.5"
+            className="w-30 h-10 gap-1.5 cursor-pointer"
             onClick={() => setShowCancelDialog(true)}
           >
             <XCircle className="w-4 h-4" />
@@ -378,9 +378,11 @@ export default function AppointmentDetailView() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isCancelling}>Abbrechen</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer" disabled={isCancelling}>
+              Abbrechen
+            </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 gap-1.5"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 gap-1.5 cursor-pointer"
               onClick={handleCancelAppointment}
               disabled={isCancelling}
             >
