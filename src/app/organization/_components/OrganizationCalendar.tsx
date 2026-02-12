@@ -267,9 +267,10 @@ export default function OrganizationCalendar({
               <span>Wähle eine Mitarbeiter*in</span>
             </h3>
             <div className="relative w-full" ref={employeeDropdownRef}>
-              <button
+              <Button
                 onClick={() => setIsEmployeeDropdownOpen(!isEmployeeDropdownOpen)}
-                className="w-full px-4 py-3 rounded-2xl border-2 border-border bg-accent-white text-foreground text-base transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background cursor-pointer text-left flex justify-between items-center"
+                variant="ghost"
+                className="w-full px-4 py-3 rounded-lg border-2 border-border bg-accent-white text-foreground text-md transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background text-left flex justify-between items-center"
               >
                 <span>
                   {selectedEmployee
@@ -295,24 +296,25 @@ export default function OrganizationCalendar({
                     d="M19 14l-7 7m0 0l-7-7m7 7V3"
                   />
                 </svg>
-              </button>
+              </Button>
 
               {isEmployeeDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto ">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto text-left">
                   {employees.map((employee) => (
-                    <button
+                    <Button
                       key={employee.id}
+                      variant="ghost"
                       onClick={() => {
                         setSelectedEmployee(employee);
                         setIsEmployeeDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                      className={`w-full px-4 py-7 text-left border-b border-border last:border-b-0 transition-colors rounded-none justify-start ${
                         selectedEmployee?.id === employee.id
-                          ? 'bg-accent-blue-soft text-accent-blue font-semibold'
-                          : 'hover:bg-accent-blue-soft'
+                          ? 'bg-accent-gray-soft text-accent-blue font-semibold'
+                          : 'bg-transparent text-foreground hover:bg-accent-gray-soft'
                       }`}
                     >
-                      <div>
+                      <div className="w-full">
                         <div className="font-semibold">
                           {employee.title ? `${employee.title} ` : ''}
                           {employee.firstname} {employee.lastname}
@@ -324,7 +326,7 @@ export default function OrganizationCalendar({
                           <div className="text-sm text-muted-foreground">{employee.position}</div>
                         </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -462,7 +464,7 @@ export default function OrganizationCalendar({
                           ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                           : isSelected
                             ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
-                            : 'border-border hover:bg-accent-gray-light'
+                            : 'border-border hover:bg-accent-blue hover:border-accent-blue hover:text-accent-white'
                       }`}
                       disabled={isBooked}
                       onClick={() => {
