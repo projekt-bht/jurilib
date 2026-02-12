@@ -43,7 +43,7 @@ export default function FeaturesGrid() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground tracking-tight mb-4 md:mb-6">
             Unser Versprechen
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-2xl">
             Rechtliche Unterstützung, die genau zu Dir passt!
           </p>
         </div>
