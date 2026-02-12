@@ -16,8 +16,8 @@ export default function Impressum() {
             <p>
               Diese Webanwendung wurde im Rahmen des Studiengangs
               <strong className="font-semibold text-foreground"> Medieninformatik</strong> an der
-              Berliner Hochschule für Technik (BHT) entwickelt, im Modul
-              <strong className="font-semibold text-foreground"> Projekt</strong>.
+              Berliner Hochschule für Technik (BHT), im Modul
+              <strong className="font-semibold text-foreground"> Projekt</strong>, entwickelt.
             </p>
             <p>
               Sie dient ausschließlich Lehr- und Demonstrationszwecken. Es handelt sich nicht um ein
