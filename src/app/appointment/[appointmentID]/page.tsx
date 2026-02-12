@@ -42,79 +42,6 @@ import type {
 } from '@/services/Resources';
 import { AppointmentStatus } from '~/generated/prisma/enums';
 
-const statusConfig: Record<
-  AppointmentStatus,
-  { label: string; color: string; bgColor: string; dotColor: string; icon: typeof CheckCircle2 }
-> = {
-  OPEN: {
-    label: 'Offen',
-    color: 'text-blue-700',
-    bgColor: 'bg-blue-50',
-    dotColor: 'bg-blue-500',
-    icon: Clock,
-  },
-  CONFIRMED: {
-    label: 'Bestätigt',
-    color: 'text-emerald-700',
-    bgColor: 'bg-emerald-50',
-    dotColor: 'bg-emerald-500',
-    icon: CheckCircle2,
-  },
-  CANCELED: {
-    label: 'Abgesagt',
-    color: 'text-red-700',
-    bgColor: 'bg-red-50',
-    dotColor: 'bg-red-500',
-    icon: XCircle,
-  },
-  COMPLETED: {
-    label: 'Abgeschlossen',
-    color: 'text-gray-700',
-    bgColor: 'bg-gray-100',
-    dotColor: 'bg-gray-500',
-    icon: CheckCircle2,
-  },
-  REQUESTED: {
-    label: 'Angefragt',
-    color: 'text-blue-700',
-    bgColor: 'bg-blue-100',
-    dotColor: 'bg-blue-500',
-    icon: CheckCircle2,
-  },
-};
-
-function formatFullDate(date: string) {
-  const d = new Date(date);
-
-  return d.toLocaleDateString('de-DE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
-
-function formatTime(date: string) {
-  const d = new Date(date);
-
-  return d.toLocaleTimeString('de-DE', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function formatDateTime(date: string) {
-  const d = new Date(date);
-
-  return d.toLocaleString('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 export default function AppointmentDetailView() {
   const router = useRouter();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -122,8 +49,6 @@ export default function AppointmentDetailView() {
   const [linkCopied, setLinkCopied] = useState(false);
   const [fetchesDone, setFetchesDone] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const [isCanceledAppointment, setIsCanceledAppointment] = useState(false);
 
   const { login } = useLoginContext();
   const userId = (login as LoginResource).userId;
@@ -494,4 +419,79 @@ export default function AppointmentDetailView() {
       </AlertDialog>
     </section>
   );
+}
+
+//HELPER FROM v0
+
+const statusConfig: Record<
+  AppointmentStatus,
+  { label: string; color: string; bgColor: string; dotColor: string; icon: typeof CheckCircle2 }
+> = {
+  OPEN: {
+    label: 'Offen',
+    color: 'text-blue-700',
+    bgColor: 'bg-blue-50',
+    dotColor: 'bg-blue-500',
+    icon: Clock,
+  },
+  CONFIRMED: {
+    label: 'Bestätigt',
+    color: 'text-emerald-700',
+    bgColor: 'bg-emerald-50',
+    dotColor: 'bg-emerald-500',
+    icon: CheckCircle2,
+  },
+  CANCELED: {
+    label: 'Abgesagt',
+    color: 'text-red-700',
+    bgColor: 'bg-red-50',
+    dotColor: 'bg-red-500',
+    icon: XCircle,
+  },
+  COMPLETED: {
+    label: 'Abgeschlossen',
+    color: 'text-gray-700',
+    bgColor: 'bg-gray-100',
+    dotColor: 'bg-gray-500',
+    icon: CheckCircle2,
+  },
+  REQUESTED: {
+    label: 'Angefragt',
+    color: 'text-blue-700',
+    bgColor: 'bg-blue-100',
+    dotColor: 'bg-blue-500',
+    icon: CheckCircle2,
+  },
+};
+
+function formatFullDate(date: string) {
+  const d = new Date(date);
+
+  return d.toLocaleDateString('de-DE', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+function formatTime(date: string) {
+  const d = new Date(date);
+
+  return d.toLocaleTimeString('de-DE', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function formatDateTime(date: string) {
+  const d = new Date(date);
+
+  return d.toLocaleString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
