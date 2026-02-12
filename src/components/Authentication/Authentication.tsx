@@ -87,7 +87,7 @@ export function Authentication() {
             <div className="text-right">
               <p className="text-lg">{user.firstname}</p>
               <p className="text-xs text-muted-foreground">
-                `({user.pronoun?.replace(/_/g, '/') ?? ''})`
+                ({user.pronoun?.replace(/_/g, '/') ?? ''})
               </p>
             </div>
             <div className="w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-blue/60 flex items-center justify-center overflow-hidden">
