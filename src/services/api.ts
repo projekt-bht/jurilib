@@ -119,34 +119,47 @@ export async function patchAccountPasswordWithEmail(email: string, password: str
 export async function getUserAppointment(
   userID: string,
   appointmentID: string
-): Promise<AppointmentResource> {
+): Promise<AppointmentResource | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/user/${userID}/${appointmentID}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
+
+  if (!response.ok) return null;
   return (await response.json()) as AppointmentResource;
 }
 
 export async function cancelAppointment(appointmentID: string) {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${appointmentID}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${appointmentID}/cancel`;
   await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
     credentials: 'include' as RequestCredentials,
   });
   return;
 }
 
-export async function getEmployee(employeeId: string): Promise<EmployeeResource> {
+export async function getEmployee(employeeId: string): Promise<EmployeeResource | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${employeeId}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
+
+  if (!response.ok) return null;
+
   return (await response.json()) as EmployeeResource;
 }
 
-export async function getCase(caseID: string): Promise<CaseResource> {
+export async function getCase(caseID: string): Promise<CaseResource | null> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}case/${caseID}`;
   const response = await fetch(url, {
     credentials: 'include' as RequestCredentials,
   });
+
+  if (!response.ok) return null;
+
   return (await response.json()) as CaseResource;
 }
