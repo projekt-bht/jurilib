@@ -34,9 +34,11 @@ async function fetchOrganizations(
     { cache: 'no-store' }
   );
 
-  if (!res.ok) return [];
+  if (res.status === 400) throw new Error(`Failed to fetch organizations: ${res.statusText}`);
 
-  return (await res.json()) as Organization[];
+  const data = (await res.json()) as Organization[];
+
+  return data;
 }
 
 const steps = 10;
@@ -74,7 +76,12 @@ export default function OrganizationsPage() {
 
     try {
       const fetched = await fetchOrganizations(nextSkip, steps, nextFilters);
-
+      if (nextSkip === 0 && fetched.length === 0) {
+        setOrganizations([]);
+        setSkip(0);
+        setHasMore(false);
+        return;
+      }
       setOrganizations((prev) => {
         // De-dupe by id to avoid duplicate React keys when merging pages.
         const merged = nextSkip === 0 ? fetched : [...prev, ...fetched];
@@ -85,8 +92,7 @@ export default function OrganizationsPage() {
       setSkip(nextSkip + steps);
       setHasMore(fetched.length === steps);
     } catch {
-      // Surface a friendly error and keep previous results on screen.
-      setErrorMessage('Organisationen konnten nicht geladen werden.');
+      setErrorMessage('Fehler beim Laden der Organisationen. Bitte versuche es erneut.');
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -157,7 +163,6 @@ export default function OrganizationsPage() {
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-6 px-4 pb-10">
       <div className="w-full max-w-6xl">
-        <p className="text-4xl text-foreground font-bold">Organisationsliste</p>
         <div className="h-6" />
 
         {/* w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
@@ -171,7 +176,7 @@ export default function OrganizationsPage() {
       </div>
       <div className="h-8" />
 
-      {organizations.length > 0 ? (
+      {organizations.length > 0 && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-6xl">
             {organizations.map((orga) => (
@@ -196,17 +201,7 @@ export default function OrganizationsPage() {
               Keine weiteren Organisationen verfügbar.
             </div>
           )}
-
-          <div className="mb-8 text-muted-foreground pt-6">
-            Deine Anfrage wird vertraulich behandelt.
-          </div>
         </>
-      ) : (
-        <div className="flex flex-col justify-center items-center h-full text-center gap-y-10">
-          <p className="text-5xl font-bold text-foreground">
-            Leider konnten wir keine passende Organisation finden.
-          </p>
-        </div>
       )}
     </div>
   );
