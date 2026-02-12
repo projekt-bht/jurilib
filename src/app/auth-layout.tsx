@@ -20,7 +20,7 @@ export default function AuthLayout({ children, showFooter = true }: AuthLayoutPr
   // Logged in view with sidebar, no footer
   if (login) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-card">
         <Navbar />
         <div className="flex min-h-[calc(100vh-5.75rem)]">
           <Sidebar />
