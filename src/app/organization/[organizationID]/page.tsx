@@ -51,7 +51,7 @@ export default async function OrganizationDetailPage({
         <Profile organization={organization} employees={employees} />
       </div>
       {/* Right Column - Booking Section */}
-      <div className="w-full xl:w-3/7 h-fit self-start pt-8 pr-8">
+      <div className="w-full xl:w-3/7 h-fit self-start pt-8 pr-8 pl-8 xl:pl-0">
         <OrganizationCalendar appointments={appointments} employees={employees} />
       </div>
     </div>
