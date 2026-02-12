@@ -1,4 +1,7 @@
 import { CheckCircle2, ClipboardClock, MessageSquare, Search } from 'lucide-react';
+import Image from 'next/image';
+
+import tabletImage from '~/public/table-stockfootage.jpg';
 
 const steps = [
   {
@@ -34,10 +37,13 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-16 px-4 bg-background">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-16 px-4 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 opacity-5">
+        <Image src={tabletImage} alt="" fill className="object-cover" />
+      </div>
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground tracking-tight mb-4 md:mb-6">
             Wie funktioniert JuriLib?
           </h2>
           <p className="text-muted-foreground text-lg">
