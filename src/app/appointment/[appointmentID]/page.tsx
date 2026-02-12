@@ -33,8 +33,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getUserAppointment } from '@/services/api';
-import type { AppointmentResource, LoginResource } from '@/services/Resources';
+import { getCase, getEmployee, getUserAppointment } from '@/services/api';
+import type { AppointmentResource, EmployeeResource, LoginResource } from '@/services/Resources';
 import type { AppointmentStatus } from '~/generated/prisma/enums';
 
 const statusConfig: Record<
@@ -70,7 +70,7 @@ const statusConfig: Record<
     icon: CheckCircle2,
   },
   REQUESTED: {
-    label: 'Offen',
+    label: 'Angefragt',
     color: 'text-blue-700',
     bgColor: 'bg-blue-100',
     dotColor: 'bg-blue-500',
@@ -121,6 +121,8 @@ export default function AppointmentDetailView() {
   const userId = (login as LoginResource).userId;
 
   const [appointment, setAppointment] = useState<AppointmentResource>();
+  const [employee, setEmployee] = useState<EmployeeResource>();
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { appointmentID } = useParams();
@@ -133,9 +135,11 @@ export default function AppointmentDetailView() {
         }
 
         const appointmentData = await getUserAppointment(userId, appointmentID as string);
-        console.log(appointmentData);
+        const employeeData = await getEmployee(appointmentData.employeeId);
+        const caseData = await getCase(appointmentData.caseId!);
+
         setAppointment(appointmentData);
-        console.log(appointment);
+        setEmployee(employeeData);
         setFetchesDone(true);
       } catch (error) {
         setError(
@@ -151,7 +155,7 @@ export default function AppointmentDetailView() {
 
   if (!login || !userId || !fetchesDone) return <></>;
 
-  if (!appointment) {
+  if (!appointment || !employee) {
     return (
       <section className="py-12 px-6 bg-background">
         <div className="max-w-3xl mx-auto text-center">
@@ -222,7 +226,9 @@ export default function AppointmentDetailView() {
                 {config.label}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">Termin mit {appointment.employeeId}</p>
+            <p className="text-sm text-muted-foreground">
+              Termin mit {employee.firstname + ' ' + employee.lastname}
+            </p>
           </div>
 
           {canCancel && (
@@ -378,7 +384,7 @@ export default function AppointmentDetailView() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">
-                    {appointment.employeeId}
+                    {employee.firstname + ' ' + employee.lastname}
                   </p>
                   <p className="text-xs text-muted-foreground">Rechtsberater</p>
                 </div>
