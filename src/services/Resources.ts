@@ -1,4 +1,4 @@
-import type { AccountType, Gender, Pronoun } from '~/generated/prisma/enums';
+import type { AccountType, AppointmentStatus, Gender, Pronoun } from '~/generated/prisma/enums';
 
 export type AccountResource = {
   id?: string;
@@ -96,4 +96,19 @@ export type EmployeeResource = {
   languages: string[];
   expertiseAreas: string[];
   imageUrl?: string;
+};
+
+export type AppointmentResource = {
+  id: string;
+  caseId?: string;
+  userId?: string;
+  employeeId: string;
+  duration: number;
+  status: AppointmentStatus;
+  location?: string;
+  meetingLink?: string;
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  notes?: string;
+  createdAt: string;
 };
