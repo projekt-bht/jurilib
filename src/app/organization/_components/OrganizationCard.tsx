@@ -1,7 +1,7 @@
 import { ArrowRight, Clock, MapPin, PersonStanding, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { Organization } from '~/generated/prisma/client';
+import type { Accessibility, Organization } from '~/generated/prisma/client';
 
 import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 
@@ -9,6 +9,9 @@ import { ExpertiseAreaBadge, OrganisationTypeBadge } from './OrganizaionHelper';
 
 export function OrganizationCard({ organization }: { organization: Organization }) {
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const accessibilityArr: Accessibility[] = organization.accessibility
+    ? organization.accessibility
+    : [];
 
   return (
     <div
@@ -39,7 +42,7 @@ export function OrganizationCard({ organization }: { organization: Organization 
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {organization.accessibility.length > 0 && (
+                {accessibilityArr.length > 0 && (
                   <div
                     className="relative"
                     onMouseEnter={() => setIsAccessibilityOpen(true)}
@@ -54,17 +57,6 @@ export function OrganizationCard({ organization }: { organization: Organization 
                     >
                       <PersonStanding className="w-5 h-5" />
                     </button>
-                    {isAccessibilityOpen && (
-                      <div className="absolute left-0 top-full mt-2 w-56 rounded-lg border border-border bg-background p-2 shadow-lg z-10">
-                        <div className="space-y-1">
-                          {organization.accessibility.map((acc) => (
-                            <div key={acc.toString()} className="px-2 py-1 text-sm text-foreground">
-                              {acc.toString().replace(/_/g, ' ')}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
