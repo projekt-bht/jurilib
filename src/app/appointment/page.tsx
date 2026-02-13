@@ -1,14 +1,15 @@
 'use client';
 
-import { ArrowLeft, CalendarDays } from 'lucide-react';
+import { ArrowLeft, CalendarDays, ChevronDown } from 'lucide-react';
 import { notFound, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { AppointmentCard } from '@/components/Dashboard/_components/user/AppointmentCard';
 import { calcActiveAppointments, fetchBackendData } from '@/components/Dashboard/helper';
 import { Button } from '@/components/ui/button';
 import type { LoginResource } from '@/services/Resources';
-import type { Appointment } from '~/generated/prisma/browser';
+import { AppointmentStatus, type Appointment } from '~/generated/prisma/browser';
 
 const appointmentColors: string[] = [
   'from-accent-blue/85 to-accent-purple/85',
@@ -23,9 +24,11 @@ export default function AppointmentPage() {
   const userId = (login as LoginResource).userId;
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [activeAppointments, setActiveAppointments] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRequestedOpen, setIsRequestedOpen] = useState(true);
+  const [isConfirmedOpen, setIsConfirmedOpen] = useState(false);
+  const [isFinishedOpen, setIsFinishedOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -41,7 +44,6 @@ export default function AppointmentPage() {
         );
         const appointmentsData: Appointment[] = await appointmentsRes.json();
         setAppointments(appointmentsData);
-        setActiveAppointments(calcActiveAppointments(appointmentsData));
       } catch (error) {
         setError(
           error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
@@ -57,6 +59,18 @@ export default function AppointmentPage() {
   if (error) {
     return notFound();
   }
+
+  const requestedAppointments = appointments.filter(
+    (appointment) => appointment.status === AppointmentStatus.REQUESTED
+  );
+  const confirmedAppointments = appointments.filter(
+    (appointment) => appointment.status === AppointmentStatus.CONFIRMED
+  );
+  const finishedAppointments = appointments.filter(
+    (appointment) =>
+      appointment.status === AppointmentStatus.CANCELED ||
+      appointment.status === AppointmentStatus.COMPLETED
+  );
 
   const formatDateTime = (dateTime: string | Date) => {
     const date = new Date(dateTime);
@@ -84,7 +98,7 @@ export default function AppointmentPage() {
                 Meine Termine
               </h1>
               <p className="text-lg text-muted-foreground pl-5">
-                {activeAppointments} {activeAppointments === 1 ? 'Termin' : 'Termine'} insgesamt
+                {appointments.length} {appointments.length === 1 ? 'Termin' : 'Termine'} insgesamt
               </p>
             </div>
             <Button
@@ -99,84 +113,96 @@ export default function AppointmentPage() {
           </div>
 
           {/* Appointments Grid */}
-          {activeAppointments > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.isArray(appointments)
-                ? appointments.map((appointment, index) => {
-                    const { date, time } = formatDateTime(appointment.dateTimeStart);
-                    const upcoming = isUpcoming(appointment.dateTimeStart);
-
-                    return (
-                      <div
-                        key={appointment.id}
-                        className="bg-gradient-to-br p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group relative overflow-hidden"
-                      >
-                        {/* Gradient background */}
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-br ${
-                            appointmentColors[index % appointmentColors.length]
-                          } rounded-2xl opacity-85`}
-                        />
-
-                        {/* Content */}
-                        <div className="relative z-10">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-white mb-2">Termin buchen</h3>
-                            </div>
-                          </div>
-
-                          {/* Appointment Details */}
-                          <div className="space-y-2 mb-4 border-t border-white/20 pt-4">
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Datum:</span>
-                              <span className="text-white font-semibold">{date}</span>
-                            </div>
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Uhrzeit:</span>
-                              <span className="text-white font-semibold">{time}</span>
-                            </div>
-                            {appointment.duration && (
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-white/70">Dauer:</span>
-                                <span className="text-white">
-                                  {appointment.duration}{' '}
-                                  {appointment.duration === 1 ? 'Minute' : 'Minuten'}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Termin-ID:</span>
-                              <span className="text-white font-mono text-xs">
-                                {appointment.id.slice(0, 8)}...
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Status and Action */}
-                          <div className="flex gap-2 pt-4 border-t border-white/20 flex-wrap">
-                            <span
-                              className={`px-3 py-1 rounded-full text-white text-xs font-medium ${
-                                upcoming
-                                  ? 'bg-accent-emerald/40 text-white'
-                                  : 'bg-white/20 text-white/80'
-                              }`}
-                            >
-                              {upcoming ? 'Anstehend' : 'Abgelaufen'}
-                            </span>
-                            <button
-                              onClick={() => router.push(`/appointment/${appointment.id}`)}
-                              className="ml-auto px-4 py-1 rounded-full bg-white/30 text-white text-xs font-medium hover:bg-white/40 transition-colors"
-                            >
-                              Details →
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
+          {appointments.length > 0 ? (
+            <>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setIsRequestedOpen((prev) => !prev)}
+                  className="flex w-full items-center justify-between text-left cursor-pointer"
+                >
+                  <h1 className="text-xl font-semibold text-foreground mb-4">
+                    Angefragte Termine - {requestedAppointments.length}
+                  </h1>
+                  <ChevronDown
+                    className={`w-5 h-5 text-foreground transition-transform duration-300 ${
+                      isRequestedOpen ? 'rotate-180' : 'rotate-0'
+                    }`}
+                  />
+                </button>
+                {isRequestedOpen && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.isArray(requestedAppointments) && requestedAppointments.length > 0 ? (
+                      requestedAppointments.map((appointment) => (
+                        <AppointmentCard key={appointment.id} appointment={appointment} />
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Keine angefragten Termine vorhanden.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setIsConfirmedOpen((prev) => !prev)}
+                  className="flex w-full items-center justify-between text-left cursor-pointer"
+                >
+                  <h1 className="text-xl font-semibold text-foreground mb-4">
+                    Bestätigte Termine - {confirmedAppointments.length}
+                  </h1>
+                  <ChevronDown
+                    className={`w-5 h-5 text-foreground transition-transform duration-300 ${
+                      isConfirmedOpen ? 'rotate-180' : 'rotate-0'
+                    }`}
+                  />
+                </button>
+                {isConfirmedOpen && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.isArray(confirmedAppointments) && confirmedAppointments.length > 0 ? (
+                      confirmedAppointments.map((appointment) => (
+                        <AppointmentCard key={appointment.id} appointment={appointment} />
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Keine bestätigten Termine vorhanden.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setIsFinishedOpen((prev) => !prev)}
+                  className="flex w-full items-center justify-between text-left cursor-pointer"
+                >
+                  <h1 className="text-xl font-semibold text-foreground mb-4">
+                    Beendete / Abgesagte Termine - {finishedAppointments.length}
+                  </h1>
+                  <ChevronDown
+                    className={`w-5 h-5 text-foreground transition-transform duration-300 ${
+                      isFinishedOpen ? 'rotate-180' : 'rotate-0'
+                    }`}
+                  />
+                </button>
+                {isFinishedOpen && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.isArray(finishedAppointments) && finishedAppointments.length > 0 ? (
+                      finishedAppointments.map((appointment) => (
+                        <AppointmentCard key={appointment.id} appointment={appointment} />
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Keine beendeten oder abgesagten Termine vorhanden.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <div className="bg-linear-to-r from-accent-blue-light/30 via-accent-blue-soft to-background p-12 md:p-16 text-center rounded-2xl shadow-md relative overflow-hidden">
               {/* Decorative background elements */}

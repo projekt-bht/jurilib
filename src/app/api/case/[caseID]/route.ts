@@ -3,12 +3,12 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { handleError, handleZodError, validateHeader, validateIds } from '@/app/api/helper';
-import { withEmployeeAuth } from '@/lib/withAuth';
-import type { EmployeeLoginResource } from '@/services/Resources';
+import { withEmployeeAuth, withUserAuth } from '@/lib/withAuth';
+import type { EmployeeLoginResource, UserLoginResource } from '@/services/Resources';
 import { CaseStatus } from '~/generated/prisma/enums';
 
-import { isCaseEmployeeMatch } from '../helpers';
-import { deleteCase } from './services';
+import { isCaseEmployeeMatch, isCaseUserMatch } from '../helpers';
+import { deleteCase, getCase } from './services';
 import { updateCase } from './services';
 
 const caseUpdateSchema = z.strictObject({
@@ -18,6 +18,41 @@ const caseUpdateSchema = z.strictObject({
   documentsURL: z.array(z.string()).optional(),
   status: z.enum(CaseStatus).optional(),
 });
+
+// GET /api/case/:caseID
+// get all information about a specific case for user
+export const GET = withUserAuth(
+  async (
+    _req: NextRequest,
+    { params }: { params: Promise<{ caseID: string }> },
+    account: UserLoginResource
+  ) => {
+    try {
+      // validate URL Param
+
+      const { caseID } = await params;
+      console.log('userid: ', account.userId);
+      console.log('caseid: ', caseID);
+      validateIds([{ id: caseID, identifier: 'caseID' }]);
+
+      if (await isCaseUserMatch(caseID, account.userId)) {
+        // handle update/patch
+        console.log('fine');
+        const caseDetails = await getCase(caseID);
+        return NextResponse.json(caseDetails, { status: 200 });
+      } else {
+        // unauthorized
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return handleZodError(error);
+      } else {
+        return handleError(error, 'Failed to pull Case Details');
+      }
+    }
+  }
+);
 
 // PATCH /api/case/:caseID
 // Update a case
