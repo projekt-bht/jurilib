@@ -263,7 +263,7 @@ async function main() {
 
       console.log();
     }
-  } else {
+  } else if (process.env.NODE_ENV === 'production') {
     console.log('PROD Seed started...');
     console.log(`Loading ${organizationsData.length} organizations...`);
     console.log(`Loading ${employeesData.length} employees...`);
@@ -352,7 +352,7 @@ async function main() {
       const account = await prisma.account.create({
         data: {
           email: empData.email,
-          password: '12345_Lachs', // Use a default hashed password
+          password: '12345_Lachs',
           type: AccountType.EMPLOYEE,
           isVerified: false,
         },
@@ -360,23 +360,22 @@ async function main() {
 
       const expertiseAreas = empData.expertiseAreas as Area[];
       const languages = empData.languages as Language[];
-
       const employee = await prisma.employee.create({
         data: {
-          accountId: account.id,
           title: empData.title || undefined,
           firstname: empData.firstname,
           lastname: empData.lastname,
-          pronoun: empData.pronoun ? (empData.pronoun as Pronoun) : undefined,
-          pronounText: empData.pronounText || undefined,
           gender: empData.gender as Gender,
           genderText: empData.genderText || undefined,
+          pronoun: empData.pronoun ? (empData.pronoun as Pronoun) : undefined,
+          pronounText: empData.pronounText || undefined,
           imageUrl: empData.imageUrl || undefined,
           phone: empData.phone || undefined,
-          organizationId: orgId,
-          position: empData.position || undefined,
           email: empData.email,
+          organization: { connect: { id: orgId } },
+          position: empData.position || undefined,
           description: empData.description || undefined,
+          account: { connect: { id: account.id } },
           expertiseAreas: expertiseAreas,
           languages: languages,
         },
