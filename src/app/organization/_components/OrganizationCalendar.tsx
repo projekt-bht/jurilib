@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import type { Appointment, Employee } from '~/generated/prisma/client';
@@ -523,6 +524,10 @@ export default function OrganizationCalendar({
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
                     <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
+                    <ResultLoading
+                      title="Termin wird gebucht..."
+                      description="Bitte warten Sie, bis der Termin gebucht wurde."
+                    />
                   </div>
                 )}
               </div>
