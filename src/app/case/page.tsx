@@ -82,7 +82,6 @@ export default function CasePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.isArray(cases)
                 ? cases
-                    .slice(0, 4)
                     .map((caseItem, index) => (
                       <CaseCard
                         key={caseItem.id}
