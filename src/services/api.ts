@@ -4,7 +4,7 @@ import type {
   RegisterResource,
   UserResource,
 } from '@/services/Resources';
-import type { Appointment, Case, Employee } from '~/generated/prisma/browser';
+import type { Appointment, Case, Employee, Organization } from '~/generated/prisma/browser';
 import type { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
@@ -212,4 +212,15 @@ export async function getCase(caseID: string): Promise<Case | null> {
   if (!response.ok) return null;
 
   return (await response.json()) as Case;
+}
+
+export async function getOrganization(organizationID: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${organizationID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return null;
+
+  return (await response.json()) as Organization;
 }
