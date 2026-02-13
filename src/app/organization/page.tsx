@@ -163,6 +163,12 @@ export default function OrganizationsPage() {
   return (
     <div className="bg-card flex flex-col justify-start items-center min-h-screen pt-6 px-4 pb-10">
       <div className="w-full max-w-6xl">
+        <h1 className="text-5xl font-bold text-foreground mb-6 text-balance">
+          <span>Übersicht aller </span>
+          <span className="bg-linear-to-r from-accent-blue via-accent-purple to-accent-blue bg-clip-text text-transparent animate-gradient">
+            Organisationen
+          </span>
+        </h1>
         <div className="h-6" />
 
         {/* w-full keeps filters aligned to the card grid width; max-w-6xl prevents over-wide UI on large screens */}
