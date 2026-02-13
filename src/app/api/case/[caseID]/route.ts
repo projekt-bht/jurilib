@@ -29,15 +29,11 @@ export const GET = withUserAuth(
   ) => {
     try {
       // validate URL Param
-
       const { caseID } = await params;
-      console.log('userid: ', account.userId);
-      console.log('caseid: ', caseID);
       validateIds([{ id: caseID, identifier: 'caseID' }]);
 
       if (await isCaseUserMatch(caseID, account.userId)) {
         // handle update/patch
-        console.log('fine');
         const caseDetails = await getCase(caseID);
         return NextResponse.json(caseDetails, { status: 200 });
       } else {
