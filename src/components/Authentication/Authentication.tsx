@@ -87,7 +87,7 @@ export function Authentication() {
             <div className="text-right">
               <p className="text-lg">{user.firstname}</p>
               <p className="text-xs text-muted-foreground">
-                ({user.pronoun?.replace(/_/g, '/') ?? ''})
+                {user.pronoun ? `(${user.pronoun.replace(/_/g, '/')})` : ''}
               </p>
             </div>
             <div className="w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-blue/60 flex items-center justify-center overflow-hidden">
@@ -133,12 +133,11 @@ export function Authentication() {
                     onClick={async () => {
                       setSuccessOpen(true);
                       await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
-
+                      router.push('/');
                       await deleteLogin();
                       setLogin(false);
                       setSuccessOpen(false);
                       setProfileMenuOpen(false);
-                      router.push('/');
                     }}
                   >
                     <LogOut className="w-4 h-4" />
