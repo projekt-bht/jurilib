@@ -128,7 +128,9 @@ export function ProblemSearchField({ onSubmit }: { onSubmit: (text: string) => v
             height={20}
             className="text-foreground"
           />
-          <span className="text-sm font-medium text-foreground">Dein rechtliches Anliegen</span>
+          <span className="text-sm font-medium text-muted-foreground">
+            Dein rechtliches Anliegen
+          </span>
         </div>
         <SpeechToText setText={setProblem} isRecordingDone={isRecordingDone} />
         <textarea
