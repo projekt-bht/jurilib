@@ -24,8 +24,6 @@ export const GET = withUserAuth(
     account: UserLoginResource
   ) => {
     try {
-      //validate header
-      validateHeader(req.headers);
       // validate params
       const { userID, appointmentID } = await params;
       validateIds([

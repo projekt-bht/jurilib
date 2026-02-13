@@ -32,7 +32,7 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
       {
         role: 'system',
         content:
-          'Du bist ein juristisch versiertes Modell. Ordne den kommenden User Prompt genau EINEM der juristischen Fachgebiet zu.' +
+          'Du bist ein juristisch versiertes Modell. Ordne den kommenden User Prompt einem oder mehreren juristischen Fachgebiet zu.' +
           possibleAreas.join(', ') +
           '. Falls der Prompt nicht juristisch ist, gib "#" zurück.',
       },
@@ -49,10 +49,13 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
           type: 'object',
           properties: {
             area: {
-              type: 'string',
-              enum: [...possibleAreas, '#'],
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: [...possibleAreas],
+              },
               description:
-                'Ordne den Text genau einem juristischen Fachgebiet zu, nur wenn eindeutig vorhanden, sonst null',
+                'Ordne den Text einem oder mehreren juristischen Fachgebieten zu. Wenn kein juristischer Bezug vorhanden ist, gib ein leeres Array zurück.',
             },
             city: {
               type: 'string',
@@ -84,7 +87,7 @@ export async function vectorizeSearch(query: string): Promise<VectorFormat> {
   const parsedQuery: VectorFormat = JSON.parse(expandedQuery);
 
   const responseEmbedding: VectorFormat = {
-    area: await createEmbedding(parsedQuery.area),
+    area: await createEmbedding(parsedQuery.area.toString()),
   };
 
   if (parsedQuery.city) responseEmbedding.city = await createEmbedding(parsedQuery.city);
