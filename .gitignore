@@ -49,3 +49,6 @@ next-env.d.ts
 
 /generated/prisma
 .bruno/Azure/*
+
+# production dummy data
+/prisma/proddata/*
