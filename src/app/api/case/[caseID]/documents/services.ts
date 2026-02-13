@@ -34,7 +34,7 @@ export function generateDocumentUrl(
   return `${baseUrl}?${searchParams.toString()}`;
 }
 
-export async function uploadBlob(caseID: string, fileName: string, file: string, userID?: string) {
+export async function uploadBlob(caseID: string, fileName: string, file: Buffer, userID?: string) {
   try {
     if (!sasToken) {
       throw new Error('Azure SAS token not configured');
@@ -46,10 +46,7 @@ export async function uploadBlob(caseID: string, fileName: string, file: string,
     const blobName = userID ? `${caseID}/${userID}/${fileName}` : `${caseID}/${fileName}`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-    // Convert base64 string to Buffer if needed
-    const fileBuffer = Buffer.from(file, 'base64');
-
-    await blockBlobClient.upload(fileBuffer, fileBuffer.length);
+    await blockBlobClient.upload(file, file.length);
 
     return {
       name: blobName,
@@ -73,18 +70,17 @@ export async function getBlob(caseID: string, fileName: string, userID?: string)
     const blobUrl = userID
       ? `${storageBaseURL}/${caseID}/${userID}/${fileName}?${sasToken}`
       : `${storageBaseURL}/${caseID}/${fileName}?${sasToken}`;
-
     // Fetch the blob from Azure
     const response = await fetch(blobUrl);
     if (!response.ok) {
       throw new ValidationError('notFound', 'fileName', fileName, 404);
     }
-
-    const blob = await response.blob();
-    return new NextResponse(blob, {
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return new NextResponse(buffer, {
       headers: {
         'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Type': blob.type || 'application/octet-stream',
+        'Content-Type': response.headers.get('content-type') ?? 'application/octet-stream',
       },
     });
   } catch (error) {
@@ -119,5 +115,43 @@ export async function updateDocumentArray(caseID: string, documentUrl: string) {
     }
   } catch (error) {
     throw new Error('Failed to update case document URLs: ' + (error as Error).message);
+  }
+}
+
+export async function deleteBlob(
+  caseID: string,
+  fileName: string,
+  fileURI: string,
+  userID?: string
+) {
+  // Delete blob from Azure Storage
+  try {
+    const blobServiceClient = new BlobServiceClient(`${storageBaseURL}?${sasToken}`);
+    const containerClient = blobServiceClient.getContainerClient('');
+    const blobName = userID ? `${caseID}/${userID}/${fileName}` : `${caseID}/${fileName}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    await blockBlobClient.delete();
+  } catch (error) {
+    throw new Error('Failed to delete blob from Azure: ' + (error as Error).message);
+  }
+
+  // Remove document URL from case
+  const caseData = await prisma.case.findUnique({
+    where: { id: caseID },
+    select: { documentsURL: true },
+  });
+
+  if (caseData) {
+    const updatedDocuments = caseData.documentsURL.filter(
+      (docUrl: string) => !docUrl.includes(`fileName=${fileURI}`)
+    );
+
+    await prisma.case.update({
+      where: { id: caseID },
+      data: {
+        documentsURL: updatedDocuments,
+      },
+    });
   }
 }

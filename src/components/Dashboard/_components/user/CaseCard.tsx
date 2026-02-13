@@ -1,7 +1,9 @@
 'use client';
 import { GripVertical, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import {
   type Case,
   CaseStatus,
@@ -12,6 +14,7 @@ import {
 import { fetchBackendData, notFound } from '../../helper';
 
 export function CaseCard({ color, caseItem }: { color: string; caseItem: Case }) {
+  const router = useRouter();
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +52,9 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
   return (
     <div
       id={caseItem.id}
+      onClick={() => {
+        router.push(`/case/${caseItem.id}`);
+      }}
       key={caseItem.title}
       className={` bg-linear-to-br ${color}
                     rounded-2xl p-5

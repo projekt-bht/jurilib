@@ -1,5 +1,11 @@
-import type { LoginResource, RegisterResource, UserResource } from '@/services/Resources';
-import { TokenType } from '~/generated/prisma/enums';
+import type {
+  AccountResource,
+  LoginResource,
+  RegisterResource,
+  UserResource,
+} from '@/services/Resources';
+import type { Appointment, Case, Employee, Organization } from '~/generated/prisma/browser';
+import type { TokenType } from '~/generated/prisma/enums';
 
 export async function register(inputData: RegisterResource): Promise<RegisterResource | false> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/register`;
@@ -58,6 +64,14 @@ export async function getUser(userID: string): Promise<UserResource> {
   return (await response.json()) as UserResource;
 }
 
+export async function getAccount(accountID: string): Promise<AccountResource> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account/${accountID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+  return (await response.json()) as AccountResource;
+}
+
 export async function postVerify(email: string, type: TokenType, code: string) {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}authentication/codeVerification`;
   const response = await fetch(url, {
@@ -107,4 +121,106 @@ export async function patchAccountPasswordWithEmail(email: string, password: str
   if (!response.ok) return false;
 
   return true;
+}
+
+export async function patchUser(userID: string, userResource: UserResource) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}user/${userID}`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    body: JSON.stringify(userResource),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
+}
+
+export async function patchAccount(accountID: string, accountResource: AccountResource) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account/${accountID}`;
+  const response = await fetch(url, {
+    method: 'PATCH',
+    body: JSON.stringify(accountResource),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return false;
+
+  return true;
+}
+
+export async function deleteAccount(accountID: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}account/${accountID}`;
+  await fetch(url, {
+    method: 'DELETE',
+    credentials: 'include' as RequestCredentials,
+  });
+  return;
+}
+
+export async function getUserAppointment(
+  userID: string,
+  appointmentID: string
+): Promise<Appointment | null> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/user/${userID}/${appointmentID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return null;
+  return (await response.json()) as Appointment;
+}
+
+export async function cancelAppointment(appointmentID: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}appointment/${appointmentID}/cancel`;
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include' as RequestCredentials,
+  });
+  return;
+}
+
+export async function getEmployee(employeeId: string): Promise<Employee | null> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}employee/${employeeId}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return null;
+
+  return (await response.json()) as Employee;
+}
+
+export async function getCase(caseID: string): Promise<Case | null> {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}case/${caseID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return null;
+
+  return (await response.json()) as Case;
+}
+
+export async function getOrganization(organizationID: string) {
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_ROOT}organization/${organizationID}`;
+  const response = await fetch(url, {
+    credentials: 'include' as RequestCredentials,
+  });
+
+  if (!response.ok) return null;
+
+  return (await response.json()) as Organization;
 }

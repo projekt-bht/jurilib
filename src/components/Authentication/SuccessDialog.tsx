@@ -9,7 +9,7 @@ import { authTimeoutDuration } from './Authentication';
 type SuccessDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  setPassword: (password: string) => void;
+  setPassword?: (password: string) => void;
 };
 
 export function SuccessDialog({ open, onOpenChange, setPassword }: SuccessDialogProps) {
@@ -20,7 +20,7 @@ export function SuccessDialog({ open, onOpenChange, setPassword }: SuccessDialog
 
     const timer = setTimeout(() => {
       onOpenChange(false);
-      setPassword('');
+      if (setPassword) setPassword('');
     }, authTimeoutDuration);
 
     return () => clearTimeout(timer);

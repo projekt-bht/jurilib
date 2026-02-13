@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import type { Employee } from '~/generated/prisma/browser';
 import { Accessibility, Gender } from '~/generated/prisma/browser';
@@ -86,18 +86,24 @@ describe('Organization Profile Component', () => {
     expect(document.getElementById(`${mockOrganization.id}_Employees`)).toBeInTheDocument();
   });
 
-  it('renders profile employee card by id', () => {
+  it('renders profile employee card by id after expanding team section', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    const teamButton = screen.getByText('Unser Team').closest('button');
+    fireEvent.click(teamButton!);
     expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).toBeInTheDocument();
   });
 
-  it('renders employee name in profile', () => {
+  it('renders employee name in profile after expanding team section', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    const teamButton = screen.getByText('Unser Team').closest('button');
+    fireEvent.click(teamButton!);
     expect(screen.getByText('Max Mustermann')).toBeInTheDocument();
   });
 
-  it('renders employee position in profile', () => {
+  it('renders employee position in profile after expanding team section', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    const teamButton = screen.getByText('Unser Team').closest('button');
+    fireEvent.click(teamButton!);
     expect(screen.getByText('Rechtsanwalt')).toBeInTheDocument();
   });
 
@@ -118,6 +124,8 @@ describe('Organization Profile Component', () => {
 
   it('renders profile expertise area', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    const teamButton = screen.getByText('Unser Team').closest('button');
+    fireEvent.click(teamButton!);
     expect(screen.getAllByText('Steuerrecht')[0]).toBeInTheDocument();
   });
 
@@ -140,7 +148,7 @@ describe('Organization Profile Component', () => {
     render(<Profile organization={mockOrganization} employees={mockEmployees} />);
     expect(
       screen.getByText(
-        `${mockOrganization.zipCode} ${mockOrganization.city}, ${mockOrganization.street} ${mockOrganization.houseNumber}`
+        `${mockOrganization.street} ${mockOrganization.houseNumber}, ${mockOrganization.zipCode} ${mockOrganization.city}`
       )
     ).toBeInTheDocument();
   });
@@ -158,5 +166,26 @@ describe('Organization Profile Component', () => {
   it('does not render employees section when employees array is empty', () => {
     render(<Profile organization={mockOrganization} employees={[]} />);
     expect(document.getElementById(`${mockOrganization.id}_Employees`)).not.toBeInTheDocument();
+  });
+
+  it('does not render employee cards when team section is collapsed', () => {
+    render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).not.toBeInTheDocument();
+  });
+
+  it('toggles employee cards visibility when clicking team section', () => {
+    render(<Profile organization={mockOrganization} employees={mockEmployees} />);
+    const teamButton = screen.getByText('Unser Team').closest('button');
+
+    // Initially collapsed
+    expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).not.toBeInTheDocument();
+
+    // Expand
+    fireEvent.click(teamButton!);
+    expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).toBeInTheDocument();
+
+    // Collapse again
+    fireEvent.click(teamButton!);
+    expect(document.getElementById(`${mockEmployees[0].id}_EmployeeCard`)).not.toBeInTheDocument();
   });
 });

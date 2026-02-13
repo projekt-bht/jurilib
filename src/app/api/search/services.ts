@@ -9,8 +9,8 @@ import type {
 } from '~/generated/prisma/client';
 import type { Organization } from '~/generated/prisma/client';
 
-const similarityOffset = 0.8;
-const threshold = 0.03;
+const similarityOffset = 0.7;
+const threshold = 0.3;
 const zipCodeThreshold = 20.0;
 
 const weights = {
@@ -99,7 +99,7 @@ export async function createSearch(query: string) {
   });
 
   // eslint-disable-next-line no-console
-  console.log(transformedMatches);
+  //   console.log('transformedMatches: ', transformedMatches);
 
   return transformedMatches;
 }

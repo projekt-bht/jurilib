@@ -33,10 +33,7 @@ const secondaryItems = [
 ];
 
 // Add new bottom navigation items here
-const bottomItems = [
-  { href: '/settings', label: 'Einstellungen', icon: Settings },
-  { href: '/docs', label: 'Hilfe', icon: HelpCircle },
-];
+const bottomItems = [{ href: '/docs', label: 'Hilfe', icon: HelpCircle }];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -51,14 +48,14 @@ export function Sidebar() {
     <>
       <aside
         className={`
-          hidden lg:flex lg:fixed lg:top-[90px] lg:left-0 lg:h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30 flex-col
-          transition-all duration-300 ease-in-out will-change-[width]
+          hidden lg:flex lg:fixed lg:top-22.5 lg:left-0 lg:h-[calc(100vh-73px)] bg-background/95 backdrop-blur-xl border-r border-border z-30 flex-col
+          transition-all duration-300 ease-in-out will-change-[width] overflow-hidden
           ${isCollapsed ? 'lg:w-16' : 'lg:w-56'}
         `}
       >
-        <div className="flex flex-col h-full py-3">
+        <div className="flex flex-col h-full py-3 overflow-x-hidden">
           {/* Main Navigation */}
-          <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-2 space-y-1 overflow-y-hidden overflow-x-hidden">
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
@@ -75,14 +72,16 @@ export function Sidebar() {
             </button>
 
             {/* Divider */}
-            <div className="my-3 border-t border-border/50" />
+            <div className=" border-t border-border/50" />
 
             <div className="space-y-0.5">
-              {!isCollapsed && (
-                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Für dich
-                </p>
-              )}
+              <p
+                className={`px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider h-6 transition-opacity duration-300 ${
+                  isCollapsed ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                Für dich
+              </p>
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -115,11 +114,13 @@ export function Sidebar() {
 
             {/* Secondary Navigation */}
             <div className="space-y-0.5">
-              {!isCollapsed && (
-                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Entdecken
-                </p>
-              )}
+              <p
+                className={`px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider h-6 transition-opacity duration-300 ${
+                  isCollapsed ? 'opacity-0' : 'opacity-100'
+                }`}
+              >
+                Entdecken
+              </p>
               {secondaryItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -149,7 +150,7 @@ export function Sidebar() {
           </nav>
 
           {/* Bottom Navigation */}
-          <div className="px-2 pt-2 border-t border-border/50 space-y-0.5">
+          <div className="px-2 pt-2 border-t border-border/50 space-y-0.5 overflow-x-hidden">
             {bottomItems.map((item) => {
               const isActive = pathname === item.href;
               return (

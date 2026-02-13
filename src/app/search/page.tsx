@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { notFound } from '@/components/Dashboard/helper';
+import HowItWorks from '@/components/LandingPage/HowItWorks';
 import { Search } from '@/components/LandingPage/Search';
 import type { User } from '~/generated/prisma/browser';
 
@@ -66,6 +67,7 @@ export default function SearchPage() {
         Beschreibe uns dein Problem und wir finden die passende Lösung für dich.
       </h2>
       <Search />
+      <HowItWorks />
     </div>
   );
 }

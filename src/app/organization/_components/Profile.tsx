@@ -1,5 +1,8 @@
+'use client';
+
 import { Separator } from '@radix-ui/react-separator';
-import { Info, Users } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, PersonStanding, Star, Users } from 'lucide-react';
+import { useState } from 'react';
 
 import type { Employee, Organization } from '~/generated/prisma/client';
 
@@ -15,6 +18,9 @@ export function Profile({
   organization: Organization;
   employees: Employee[];
 }) {
+  const [isTeamExpanded, setIsTeamExpanded] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+
   return (
     <div
       id={`${organization.id}_Profile`}
@@ -35,13 +41,55 @@ export function Profile({
             <div className="pb-2">
               <OrganisationTypeBadge type={organization.type} />
             </div>
-
-            <span className="mb-4 text-foreground text-lg pb-2">
-              {organization.shortDescription}
-            </span>
+            <div className="flex flex-wrap gap-6 mb-6">
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-accent-amber fill-accent-amber" />
+                <div>
+                  <span className="font-bold text-lg text-foreground">
+                    {organization.averageRating}
+                  </span>
+                  <span className="text-sm text-muted-foreground ml-1">
+                    ({organization.numberOfRatings})
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {organization.accessibility.length > 0 && (
+                  <div
+                    className="relative"
+                    onMouseEnter={() => setIsAccessibilityOpen(true)}
+                    onMouseLeave={() => setIsAccessibilityOpen(false)}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setIsAccessibilityOpen((prev) => !prev)}
+                      className="h-6 w-6 rounded-full bg-background flex items-center justify-center text-foreground transition border border-primary"
+                      aria-expanded={isAccessibilityOpen}
+                      aria-label="Barrierefreiheit"
+                    >
+                      <PersonStanding className="w-5 h-5" />
+                    </button>
+                    {isAccessibilityOpen && (
+                      <div className="absolute left-0 top-full mt-2 w-56 rounded-lg border border-border bg-background p-2 shadow-lg z-10">
+                        <div className="space-y-1">
+                          {organization.accessibility.map((acc) => (
+                            <div key={acc.toString()} className="px-2 py-1 text-sm text-foreground">
+                              {acc.toString().replace(/_/g, ' ')}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
             <div>
               <PricingInfo id={organization.id} priceCategory={organization.priceCategory} />
             </div>
+            <span className="mb-4 text-foreground text-lg pb-2">
+              {organization.shortDescription}
+            </span>
             <div className="flex flex-wrap items-start gap-2">
               <ExpertiseAreaBadge areas={organization.expertiseAreas} />
             </div>
@@ -49,12 +97,12 @@ export function Profile({
         </div>
 
         <Separator className="my-6 h-px bg-border w-full" />
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center">
           <ProfileInfos
             id={organization.id}
             website={organization.website}
             phone={organization.phone}
-            address={`${organization.zipCode} ${organization.city}, ${organization.street} ${organization.houseNumber}`}
+            address={`${organization.street} ${organization.houseNumber}, ${organization.zipCode} ${organization.city}`}
             email={organization.email}
           />
         </div>
@@ -65,7 +113,7 @@ export function Profile({
         id={`${organization.id}_Description`}
         className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
       >
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-1">
           <Info className="w-6 h-6 text-accent-blue inline-block mr-2" />
           Über uns
         </h2>
@@ -78,16 +126,26 @@ export function Profile({
           id={`${organization.id}_Employees`}
           className="bg-background border p-6 mt-6 rounded-lg w-full max-w-5xl border-border shadow-md"
         >
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-1">
-            <Users className="w-6 h-6 text-accent-blue inline-block mr-2" />
-            Unser Team
-          </h2>
-          {/* TODO implement pagination */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {employees.map((e) => (
-              <EmployeeCard key={e.id} employee={e} />
-            ))}
-          </div>
+          <button onClick={() => setIsTeamExpanded(!isTeamExpanded)} className="w-full text-left">
+            <h2
+              className={`text-xl font-bold flex items-center gap-2 ${isTeamExpanded ? 'mb-4' : ''}`}
+            >
+              <Users className="w-6 h-6 text-accent-blue shrink-0 mr-2" />
+              <span className="flex-1">Unser Team</span>
+              {isTeamExpanded ? (
+                <ChevronUp className="w-7 h-7 text-foreground shrink-0" />
+              ) : (
+                <ChevronDown className="w-7 h-7 text-foreground shrink-0" />
+              )}
+            </h2>
+          </button>
+          {isTeamExpanded && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {employees.map((e) => (
+                <EmployeeCard key={e.id} employee={e} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

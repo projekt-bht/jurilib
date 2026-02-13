@@ -128,7 +128,13 @@
   /* * {
     @apply border border-border;
   } */
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  button {
+    @apply cursor-pointer;
   }
 }
