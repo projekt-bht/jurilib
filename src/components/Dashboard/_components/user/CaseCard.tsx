@@ -18,7 +18,6 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // TODO: Replace with real progress from case data, currently random for demo purposes
   const [progressBarProgress] = useState(() => Math.floor(Math.random() * 101));
@@ -50,20 +49,11 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
     return notFound(error);
   }
 
-  if (isLoading) {
-    return (
-      <ResultLoading
-        title="Fall wird geladen..."
-        description="Bitte warten Sie, bis der Fall geladen wurde."
-      />
-    );
-  }
   return (
     <div
       id={caseItem.id}
       onClick={() => {
         router.push(`/case/${caseItem.id}`);
-        setIsLoading(true);
       }}
       key={caseItem.title}
       className={` bg-linear-to-br ${color}
