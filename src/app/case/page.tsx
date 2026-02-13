@@ -5,6 +5,7 @@ import { notFound, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { CaseCard } from '@/components/Dashboard/_components/user/CaseCard';
 import { calcActiveCases, fetchBackendData } from '@/components/Dashboard/helper';
 import { Button } from '@/components/ui/button';
 import type { LoginResource } from '@/services/Resources';
@@ -25,7 +26,6 @@ export default function CasePage() {
   const [cases, setCases] = useState<Case[]>([]);
   const [activeCases, setActiveCases] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -42,8 +42,6 @@ export default function CasePage() {
         setError(
           error instanceof Error ? error.message : 'Unbekannter Fehler beim Laden der Daten'
         );
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -83,75 +81,14 @@ export default function CasePage() {
           {activeCases > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.isArray(cases)
-                ? cases.map((caseItem, index) => (
-                    <div
-                      key={caseItem.id}
-                      className="bg-gradient-to-br p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer group relative overflow-hidden"
-                      style={{
-                        backgroundImage: `linear-gradient(to bottom right, var(--color-${caseItem.id.slice(0, 2)}), var(--color-alt))`,
-                      }}
-                    >
-                      {/* Gradient background */}
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-br ${
-                          caseColors[index % caseColors.length]
-                        } rounded-2xl opacity-80`}
+                ? cases
+                    .map((caseItem, index) => (
+                      <CaseCard
+                        key={caseItem.id}
+                        color={caseColors[index % caseColors.length]}
+                        caseItem={caseItem}
                       />
-
-                      {/* Content */}
-                      <div className="relative z-10">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">
-                              {caseItem.title}
-                            </h3>
-                            <p className="text-white/80 text-sm line-clamp-3">
-                              {caseItem.description || 'Keine Beschreibung verfügbar'}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Case Details */}
-                        <div className="space-y-2 mb-4 border-t border-white/20 pt-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-white/70">Fall-ID:</span>
-                            <span className="text-white font-mono text-xs">
-                              {caseItem.id.slice(0, 8)}...
-                            </span>
-                          </div>
-                          {caseItem.createdAt && (
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Erstellt am:</span>
-                              <span className="text-white">
-                                {new Date(caseItem.createdAt).toLocaleDateString('de-DE')}
-                              </span>
-                            </div>
-                          )}
-                          {caseItem.updatedAt && (
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-white/70">Aktualisiert:</span>
-                              <span className="text-white">
-                                {new Date(caseItem.updatedAt).toLocaleDateString('de-DE')}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Status Indicator */}
-                        <div className="flex gap-2 pt-4 border-t border-white/20">
-                          <span className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-medium">
-                            Aktiv
-                          </span>
-                          <button
-                            onClick={() => router.push(`/case/${caseItem.id}`)}
-                            className="ml-auto px-4 py-1 rounded-full bg-white/30 text-white text-xs font-medium hover:bg-white/40 transition-colors"
-                          >
-                            Details →
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))
+                    ))
                 : null}
             </div>
           ) : (

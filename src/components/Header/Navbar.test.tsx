@@ -35,6 +35,11 @@ const { Navbar } = await import('./Navbar');
 const { LoginContext } = await import('@/app/LoginContext');
 
 describe('Test NavBar', () => {
+  beforeEach(() => {
+    // Avoid opening the first-visit info modal in tests to keep the DOM stable.
+    window.localStorage.setItem('jurilib_info_modal_seen', '1');
+  });
+
   it('renders the component text', async () => {
     render(
       <LoginContext.Provider value={{ login: false, setLogin: jest.fn() }}>

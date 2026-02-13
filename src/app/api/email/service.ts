@@ -201,7 +201,7 @@ async function sendAppointmentInformationEmail(
     const { appointmentDate, appointmentTime } = getDateTimeString(appt.dateTimeStart);
     const { empFirstname, empLastname, organizationId } = await getEmployee(appt.employeeId);
     const { orgName, orgEmail } = await getOrganization(organizationId);
-    const caseTitle = await getCaseTitle(appt.caseId!);
+    const caseTitle = appt.caseId ? await getCaseTitle(appt.caseId) : null;
 
     // construct missing variables
     const fullTitle = `Termin ${title}`;

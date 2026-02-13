@@ -1,4 +1,5 @@
 import { MapPin, Video } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import type { Appointment } from '~/generated/prisma/browser';
@@ -7,6 +8,7 @@ import { AppointmentStatus } from '~/generated/prisma/browser';
 import { fetchBackendData, notFound } from '../../helper';
 
 export function AppointmentCard({ appointment }: { appointment: Appointment }) {
+  const router = useRouter();
   const status = statusToTextAndColor(appointment.status);
 
   // fetch backend data
@@ -43,6 +45,7 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   return (
     <div
       id={appointment.id}
+      onClick={() => router.push(`/appointment/${appointment.id}`)}
       key={appointment.id}
       className="group relative bg-background
       rounded-2xl border border-border/60

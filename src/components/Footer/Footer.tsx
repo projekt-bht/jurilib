@@ -52,7 +52,7 @@ export function Footer() {
                   href="/team"
                   className="hover:text-background transition flex items-center gap-2 group"
                 >
-                  Für Uns
+                  Das Team
                   <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
                 </Link>
               </li>
@@ -125,7 +125,10 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-background pt-8 text-center text-background text-sm">
-          <p>&copy; 2025 JuriLib</p>
+          <p>
+            &copy; 2026 JuriLib · Berliner Hochschule für Technik - Studierendenprojekt · Inhalte
+            fiktiv
+          </p>
         </div>
       </div>
     </footer>

@@ -60,7 +60,12 @@ export function Search() {
           <ProblemSearchField onSubmit={(text) => search(text)} />
         </div>
 
-        {loading && <ResultLoading />}
+        {loading && (
+          <ResultLoading
+            title="Analyse läuft"
+            description="Wir suchen passende Ergebnisse für dich."
+          />
+        )}
 
         {!loading && showResults && (
           <>

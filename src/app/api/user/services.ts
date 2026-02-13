@@ -20,6 +20,8 @@ export const createUserTx = async (
         lastname: user.lastname,
         gender: user.gender,
         genderText: user.genderText,
+        pronoun: user.pronoun,
+        pronounText: user.pronounText,
         birthdate: user.birthdate,
         placeOfBirth: user.placeOfBirth,
         phone: user.phone,

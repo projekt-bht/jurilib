@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath: './tsconfig.json',
   },
+  experimental: {
+    proxyClientMaxBodySize: '50mb',
+  },
   images: {
     // Allow loading images from GitHub avatars
     remotePatterns: [
