@@ -32,6 +32,7 @@ jest.unstable_mockModule('next/navigation', () => ({
 // top-level await
 const { render, screen } = await import('@testing-library/react');
 const { Navbar } = await import('./Navbar');
+const { LoginContext } = await import('@/app/LoginContext');
 
 describe('Test NavBar', () => {
   beforeEach(() => {
@@ -40,7 +41,11 @@ describe('Test NavBar', () => {
   });
 
   it('renders the component text', async () => {
-    render(<Navbar />);
+    render(
+      <LoginContext.Provider value={{ login: false, setLogin: jest.fn() }}>
+        <Navbar />
+      </LoginContext.Provider>
+    );
 
     expect(await screen.findByText(/JuriLib/i)).toBeInTheDocument();
     expect(screen.getByText(/Organisationen/i)).toBeInTheDocument();

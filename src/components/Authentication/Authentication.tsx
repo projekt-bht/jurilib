@@ -1,6 +1,9 @@
 'use client';
+import { LogOut, Settings, User as UserIcon } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 //https://ui.shadcn.com/docs/components/dialog
@@ -16,8 +19,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { deleteLogin } from '@/services/api';
+import type { LoginResource } from '@/services/Resources';
+import type { User } from '~/generated/prisma/browser';
 import { TokenType } from '~/generated/prisma/enums';
 
+import { fetchBackendData } from '../Dashboard/helper';
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 import { LoginDialog } from './LoginDialog';
 import NewPasswordDialog from './NewPasswordDialog';
@@ -29,6 +35,9 @@ export const authTimeoutDuration: number = 1000;
 
 export function Authentication() {
   const { login, setLogin } = useLoginContext();
+  const userId = (login as LoginResource).userId;
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [registerStep, setRegisterStep] = useState(1);
@@ -43,25 +52,102 @@ export function Authentication() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const router = useRouter();
 
-  if (login) {
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (!login || !userId) {
+          setIsLoadingUser(false);
+          return;
+        }
+        // Fetch user data
+        const userRes = await fetchBackendData('/user', userId, 'Benutzerinformationen');
+        setUser(await userRes.json());
+      } catch (error) {
+        console.error('Fehler beim Abrufen der Benutzerdaten:', error);
+      } finally {
+        setIsLoadingUser(false);
+      }
+    }
+
+    fetchData();
+  }, [login, userId]);
+
+  if (login && user && !isLoadingUser) {
     return (
       <>
-        <Button
-          onClick={async () => {
-            setSuccessOpen(true);
-            await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+        <div className="relative">
+          <button
+            onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+            className="flex items-center gap-4 rounded-xl transition cursor-pointer pr-6"
+          >
+            <div className="text-right">
+              <p className="text-lg">{user.firstname}</p>
+              <p className="text-xs text-muted-foreground">
+                {user.pronoun ? `(${user.pronoun.replace(/_/g, '/')})` : ''}
+              </p>
+            </div>
+            <div className="w-12 h-12 rounded-full bg-linear-to-br from-accent-blue to-accent-blue/60 flex items-center justify-center overflow-hidden">
+              {user.imageUrl ? (
+                <Image
+                  src={user.imageUrl || '/placeholder.svg'}
+                  alt="Profilbild"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserIcon className="w-5 h-5 text-background" />
+              )}
+            </div>
+          </button>
 
-            await deleteLogin();
-            setLogin(false);
-            setSuccessOpen(false);
-            router.push('/');
-          }}
-        >
-          Abmelden
-        </Button>
+          {profileMenuOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setProfileMenuOpen(false)} />
+              <div className="absolute right-0 top-full mt-2 w-56 bg-background rounded-xl border border-border shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-2">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent-gray-soft text-foreground text-sm transition"
+                    onClick={() => setProfileMenuOpen(false)}
+                  >
+                    <UserIcon className="w-4 h-4 text-foreground" />
+                    <span>Mein Dashboard</span>
+                  </Link>
+                </div>
+                <div className="p-2">
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent-gray-soft text-foreground text-sm transition"
+                    onClick={() => setProfileMenuOpen(false)}
+                  >
+                    <Settings className="w-4 h-4 text-foreground" />
+                    <span>Profileinstellungen</span>
+                  </Link>
+                </div>
+                <div className="p-2 border-t border-border">
+                  <button
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-accent-red-light/20 text-destructive text-sm transition w-full"
+                    onClick={async () => {
+                      setSuccessOpen(true);
+                      await new Promise((resolve) => setTimeout(resolve, authTimeoutDuration));
+                      router.push('/');
+                      await deleteLogin();
+                      setLogin(false);
+                      setSuccessOpen(false);
+                      setProfileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Abmelden</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
 
         {successOpen && (
           <SuccessDialog

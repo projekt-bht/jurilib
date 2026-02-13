@@ -37,13 +37,13 @@ const features = [
 
 export default function FeaturesGrid() {
   return (
-    <section className="py-16 px-4 bg-card">
+    <section className="py-16 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Unser Versprechen an Dich
+          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground tracking-tight mb-4 md:mb-6">
+            Unser Versprechen
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-2xl">
             Rechtliche Unterstützung, die genau zu Dir passt!
           </p>
         </div>

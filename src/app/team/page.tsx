@@ -9,9 +9,11 @@ enum Expertise {
   BE = 'Backend',
   FE = 'Frontend',
   ARC = 'Architecture',
-  DES = 'Design',
-  UIUX = 'UI/UX',
   DEP = 'Deployment',
+  CICD = 'CI/CD Pipeline',
+  CQ = 'Code Quality',
+  PO = 'Project Organization',
+  SP = 'Setup',
 }
 
 enum Role {
@@ -28,7 +30,7 @@ export default function Team() {
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/173495618?v=4',
       bio: 'Test Driven Development ist ihr zweiter Vorname.',
-      expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX],
+      expertise: [Expertise.BE, Expertise.CQ, Expertise.PO],
       profile: 'https://github.com/dolzycka',
     },
     {
@@ -36,7 +38,7 @@ export default function Team() {
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/148480006?v=4',
       bio: '...ist nur ab 24 Uhr erreichbar.',
-      expertise: [Expertise.FS, Expertise.UIUX],
+      expertise: [Expertise.FS],
       profile: 'https://github.com/Romina00',
     },
     {
@@ -44,7 +46,7 @@ export default function Team() {
       role: Role.SA,
       image: 'https://avatars.githubusercontent.com/u/176742631?v=4',
       bio: 'Benutzt Word als IDE.',
-      expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX, Expertise.DES],
+      expertise: [Expertise.FS, Expertise.ARC, Expertise.CICD],
       profile: 'https://github.com/hpbexxter',
     },
     {
@@ -52,7 +54,7 @@ export default function Team() {
       role: Role.FS,
       image: 'https://avatars.githubusercontent.com/u/141875371?v=4',
       bio: 'Linus Torvald`s rechte Hand.',
-      expertise: [Expertise.FS, Expertise.ARC, Expertise.DEP],
+      expertise: [Expertise.FS, Expertise.DEP],
       profile: 'https://github.com/orkzahn',
     },
     {
@@ -60,7 +62,7 @@ export default function Team() {
       role: Role.SA,
       image: 'https://avatars.githubusercontent.com/u/93664429?v=4',
       bio: '...hat auch schon eine Zeile Code ohne GPT geschrieben.',
-      expertise: [Expertise.FS, Expertise.ARC, Expertise.UIUX],
+      expertise: [Expertise.FS, Expertise.ARC, Expertise.CICD, Expertise.SP],
       profile: 'https://github.com/Maxlo158',
     },
   ];

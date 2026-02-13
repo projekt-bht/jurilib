@@ -62,7 +62,7 @@ export function Navbar() {
     return (
       <>
         {InfoModal}
-        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
+        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed top-0 left-0 w-dvw z-50">
           {/* <nav className="bg-background text-foreground flex items-center gap-4 p-5 mx-auto border border-border fixed w-full z-50"> */}
           <div className="gap-4 flex items-center">
             <Logo />
@@ -87,7 +87,7 @@ export function Navbar() {
     <LoginContext.Provider value={{ login, setLogin }}>
       <>
         {InfoModal}
-        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed w-full z-50">
+        <nav className="bg-background text-foreground flex items-center justify-between p-5 mx-auto border border-border fixed top-0 left-0 w-dvw z-50 pr-6">
           {/*Logo source: https://de.vecteezy.com/gratis-vektor/verwaltungssymbol */}
           <Logo />
 

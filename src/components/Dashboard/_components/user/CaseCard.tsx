@@ -3,6 +3,7 @@ import { GripVertical, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import {
   type Case,
   CaseStatus,
@@ -51,7 +52,9 @@ export function CaseCard({ color, caseItem }: { color: string; caseItem: Case })
   return (
     <div
       id={caseItem.id}
-      onClick={() => router.push(`/case/${caseItem.id}`)}
+      onClick={() => {
+        router.push(`/case/${caseItem.id}`);
+      }}
       key={caseItem.title}
       className={` bg-linear-to-br ${color}
                     rounded-2xl p-5

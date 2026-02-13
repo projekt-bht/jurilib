@@ -1,10 +1,11 @@
 'use client';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, WandSparkles } from 'lucide-react';
 
 import { UserDashboard } from '@/components/Dashboard/_components/user/UserDashboard';
 import HowItWorks from '@/components/LandingPage/HowItWorks';
 import OurOffer from '@/components/LandingPage/OurOffer';
 import { Search } from '@/components/LandingPage/Search';
+import TruestedSection from '@/components/LandingPage/TrustedSection';
 
 import { useLoginContext } from './LoginContext';
 
@@ -25,8 +26,8 @@ export default function Home() {
     <>
       <div className="justify-center text-center pt-5">
         <div className="inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full bg-accent-blue-light/40 border border-accent-blue/30 text-xs md:text-sm font-medium text-accent-blue mb-6">
-          <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" />
-          <span>Kostenlose & vertrauliche Suche </span>
+          <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent-purple" />
+          <span>KI-gestützte Suche</span>
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
           <span className="block">Rechtliche Hilfe,</span>
@@ -40,6 +41,7 @@ export default function Home() {
       </div>
       <Search />
       <HowItWorks />
+      <TruestedSection />
       <OurOffer />
     </>
   );

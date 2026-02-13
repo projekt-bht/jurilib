@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
 import { AppointmentCard } from '@/components/Dashboard/_components/user/AppointmentCard';
-import { calcActiveAppointments, fetchBackendData } from '@/components/Dashboard/helper';
+import { fetchBackendData } from '@/components/Dashboard/helper';
 import { Button } from '@/components/ui/button';
 import type { LoginResource } from '@/services/Resources';
-import { AppointmentStatus, type Appointment } from '~/generated/prisma/browser';
+import { type Appointment, AppointmentStatus } from '~/generated/prisma/browser';
 
 const appointmentColors: string[] = [
   'from-accent-blue/85 to-accent-purple/85',

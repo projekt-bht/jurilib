@@ -1,4 +1,4 @@
-import { Briefcase, Building, Building2, Info } from 'lucide-react';
+import { Briefcase, Building, Building2, Info, LanguagesIcon } from 'lucide-react';
 
 import type { Area, Employee } from '~/generated/prisma/browser';
 import { OrganizationType } from '~/generated/prisma/browser';
@@ -10,18 +10,18 @@ export function OrganisationTypeBadge({ type }: { type: OrganizationType }) {
   switch (type) {
     case OrganizationType.LAW_FIRM:
       displayType = 'Kanzlei';
-      icon = <Building className="w-4 h-4 text-accent-gray" />;
+      icon = <Building className="w-4 h-4 text-background" />;
       break;
     case OrganizationType.ASSOCIATION:
       displayType = 'Verein';
-      icon = <Building2 className="w-4 h-4 text-accent-gray" />;
+      icon = <Building2 className="w-4 h-4 text-background" />;
       break;
     default:
       displayType = 'Keine Angabe';
-      icon = <Info className="w-4 h-4 text-accent-gray" />;
+      icon = <Info className="w-4 h-4 text-background" />;
   }
   return (
-    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue-soft border border-accent-gray-light text-foreground inline-flex items-center gap-1 shadow-sm">
+    <span className="px-3 py-1 rounded-full text-sm font-semibold bg-accent-blue/80 border border-accent-blue text-background inline-flex items-center gap-1 shadow-sm">
       {icon}
       {displayType}
     </span>
@@ -64,17 +64,35 @@ export function EmployeeCard({ employee }: { employee: Employee }) {
             .map((n) => n[0])
             .join('')}
         </div>
-        <div>
-          <h3 className="text-xl font-bold text-foreground">
+        <div className="flex flex-col gap-1 flex-1 min-h-24">
+          <h3 className="text-lg font-bold text-foreground">
+            {employee.title ? `${employee.title} ` : ''}
             {employee.firstname} {employee.lastname}
           </h3>
-          <p className="text-sm text-accent-blue font-medium">{employee.position}</p>
+          <p className="text-sm text-muted-foreground flex items-center gap-2 pb-1">
+            {employee.pronoun
+              ? `(${employee.pronounText ?? employee.pronoun.toString().replace(/_/g, '/')})`
+              : null}
+          </p>
+          <p className="text-sm text-accent-blue font-medium flex items-center gap-2">
+            <Briefcase className="w-4 h-4 text-accent-purple" />
+            {employee.position}
+          </p>
         </div>
       </div>
       <div className="space-y-2 mb-4">
         <div className="flex items-center gap-2 text-sm">
-          <Briefcase className="w-4 h-4 text-accent-purple" />
-          <span className="text-muted-foreground">Fachanwältin/ -anwalt</span>
+          <LanguagesIcon className="w-4 h-4 text-accent-emerald" />
+          <span>
+            {employee.languages.length > 0
+              ? employee.languages
+                  .map((lang) => {
+                    const formatted = lang.toString().replace(/_/g, ' ').toLowerCase();
+                    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                  })
+                  .join(', ')
+              : 'Keine Sprachangaben vorhanden'}
+          </span>
         </div>
       </div>
       <div className="flex flex-wrap gap-2">

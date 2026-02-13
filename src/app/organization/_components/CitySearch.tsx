@@ -133,7 +133,7 @@ export default function CitySearch({
   return (
     <div className="w-full" ref={containerRef}>
       <div className="relative">
-        <div className="flex h-11 items-center gap-2 rounded-xl border border-accent-gray bg-background px-2 text-sm text-foreground focus-within:border-accent-black">
+        <div className="flex h-11 items-center gap-2 rounded-xl border border-accent-gray-light bg-background px-2 text-sm text-foreground focus-within:border-accent-gray/50">
           <Search className="h-4 w-4 text-accent-gray" />
           <Input
             value={query}
@@ -148,7 +148,7 @@ export default function CitySearch({
               scheduleSearch(next);
             }}
             placeholder="Stadt suchen"
-            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0"
+            className="h-9 flex-1 border-0 bg-transparent px-0 text-sm text-foreground placeholder:text-accent-gray shadow-none ring-0 focus-visible:border-accent-gray focus-visible:ring-0"
           />
           <div className="h-6 w-px bg-accent-gray-light" />
           <Select
@@ -157,9 +157,9 @@ export default function CitySearch({
             open={radiusOpen}
             onOpenChange={onRadiusOpenChange}
           >
-          <SelectTrigger className="h-9 border-0 bg-transparent px-2 text-sm shadow-none ring-0 focus-visible:ring-0">
-            <SelectValue placeholder="Radius" />
-          </SelectTrigger>
+            <SelectTrigger className="h-9 border-0 bg-transparent px-2 text-sm shadow-none ring-0 focus-visible:ring-0">
+              <SelectValue placeholder="Radius" />
+            </SelectTrigger>
             <SelectContent
               position="popper"
               side="bottom"
@@ -184,12 +184,12 @@ export default function CitySearch({
               <button
                 type="button"
                 onClick={() => onNearbyOpenChange(!nearbyOpen)}
-                className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-foreground transition hover:bg-accent-gray-soft"
+                className="flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-foreground transition"
                 aria-expanded={nearbyOpen}
               >
                 <span>Nachbarstädte</span>
                 <span
-                  className={`min-w-[2rem] rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
+                  className={`min-w-8 rounded-full bg-accent-gray-soft px-2 py-0.5 text-center text-xs font-semibold text-accent-gray ${
                     nearbyCities.filter((city) => selectedCities.includes(city.name)).length > 0
                       ? 'opacity-100'
                       : 'opacity-0'
@@ -224,7 +224,7 @@ export default function CitySearch({
         )}
         {nearbyCities.length > 0 && nearbyOpen && (
           <div
-            className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-[220px] rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
+            className="absolute left-0 top-[calc(100%+0.5rem)] z-20 w-full min-w-55 rounded-xl border border-border bg-background p-3 shadow-lg outline-none"
             data-organization-filters-popover
           >
             <div className="max-h-64 space-y-2 overflow-y-auto">

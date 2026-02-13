@@ -24,6 +24,7 @@ import { fetchBackendData } from '@/components/Dashboard/helper';
 import { Button } from '@/components/ui/button';
 import type { Employee, Organization } from '~/generated/prisma/browser';
 import type { Appointment, Case, CaseStatus } from '~/generated/prisma/client';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 
 export default function CaseDetailPage({ params }: { params: Promise<{ caseID: string }> }) {
   const router = useRouter();
@@ -245,14 +246,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ caseID: s
 
   if (loading) {
     return (
-      <section className="bg-card h-full">
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Fall wird geladen...</p>
-          </div>
-        </div>
-      </section>
+      <ResultLoading title="Fall wird geladen..." description="Bitte warten Sie einen Moment." />
     );
   }
 

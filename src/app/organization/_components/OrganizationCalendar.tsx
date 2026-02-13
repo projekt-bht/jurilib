@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { useLoginContext } from '@/app/LoginContext';
+import { ResultLoading } from '@/components/Loading/ResultLoading';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import type { Appointment, Employee } from '~/generated/prisma/client';
@@ -264,12 +265,13 @@ export default function OrganizationCalendar({
           <div>
             <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
               <User className="w-5 h-5 text-accent-blue" />
-              <span>Wähle eine Mitarbeiter*in</span>
+              <span>Wähle ein*e Mitarbeiter*in</span>
             </h3>
             <div className="relative w-full" ref={employeeDropdownRef}>
-              <button
+              <Button
                 onClick={() => setIsEmployeeDropdownOpen(!isEmployeeDropdownOpen)}
-                className="w-full px-4 py-3 rounded-2xl border-2 border-border bg-accent-white text-foreground text-base transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background cursor-pointer text-left flex justify-between items-center"
+                variant="ghost"
+                className="w-full px-4 py-3 rounded-lg border-2 border-border bg-accent-white text-foreground text-md transition-all duration-200 hover:bg-accent-gray-soft focus:outline-none focus:bg-background text-left flex justify-between items-center"
               >
                 <span>
                   {selectedEmployee
@@ -295,24 +297,25 @@ export default function OrganizationCalendar({
                     d="M19 14l-7 7m0 0l-7-7m7 7V3"
                   />
                 </svg>
-              </button>
+              </Button>
 
               {isEmployeeDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto ">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-accent-white border-2 border-border rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto text-left">
                   {employees.map((employee) => (
-                    <button
+                    <Button
                       key={employee.id}
+                      variant="ghost"
                       onClick={() => {
                         setSelectedEmployee(employee);
                         setIsEmployeeDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                      className={`w-full px-4 py-7 text-left border-b border-border last:border-b-0 transition-colors rounded-none justify-start ${
                         selectedEmployee?.id === employee.id
-                          ? 'bg-accent-blue-soft text-accent-blue font-semibold'
-                          : 'hover:bg-accent-blue-soft'
+                          ? 'bg-accent-gray-soft text-accent-blue font-semibold'
+                          : 'bg-transparent text-foreground hover:bg-accent-gray-soft'
                       }`}
                     >
-                      <div>
+                      <div className="w-full">
                         <div className="font-semibold">
                           {employee.title ? `${employee.title} ` : ''}
                           {employee.firstname} {employee.lastname}
@@ -324,7 +327,7 @@ export default function OrganizationCalendar({
                           <div className="text-sm text-muted-foreground">{employee.position}</div>
                         </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -335,44 +338,55 @@ export default function OrganizationCalendar({
         {/* Calendar view - shown in quick mode or employee mode (disabled if no employee selected) */}
         {(bookingMode === BookingMode.QUICK || bookingMode === BookingMode.EMPLOYEE) && (
           <>
-            {bookingMode === BookingMode.QUICK && availableDays.length === 0 && (
-              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-                <p className="text-sm font-semibold text-accent-blue">
-                  Keine freien Termine verfügbar
-                </p>
-              </div>
-            )}
-
-            {/* Month-level hint when the visible month has no available days */}
-            {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
-              <div className="rounded-lg border border-accent-blue-light bg-accent-blue-soft p-4 text-center">
-                <p className="text-sm font-semibold text-accent-blue">
-                  Keine freien Termine für diesen Monat.
-                </p>
-                {nextAvailableMonthLabel && (
-                  <p className="text-sm text-accent-blue">
-                    Nächster verfügbarer Termin
-                    {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
-                      ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
-                      : ''}{' '}
-                    ist am {nextAvailableMonthLabel}.
-                  </p>
-                )}
-              </div>
-            )}
-
             <div className="flex items-center gap-2 flex-wrap">
               <CalendarDays className="h-5 w-5 text-accent-blue" />
               <h2 className="text-xl font-semibold">Wähle ein Datum</h2>
             </div>
-            <div
-              className={`rounded-xl border border-border space-y-4 w-full shadow-sm p-4 ${
-                bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
-                  ? 'opacity-50 pointer-events-none'
-                  : ''
-              }`}
-            >
-              <div className="h-120">
+
+            <div className="rounded-xl border border-border space-y-4 w-full shadow-sm p-4 relative">
+              {/* Empty state messages positioned absolutely centered over calendar */}
+              {bookingMode === BookingMode.QUICK && !hasDaysInMonth && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-20 w-max">
+                  <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                    Keine freien Termine für diesen Monat
+                  </p>
+                </div>
+              )}
+              {/* Empty state messages positioned absolutely centered over calendar */}
+              {bookingMode === BookingMode.EMPLOYEE && !selectedEmployee && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-50 w-max">
+                  <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                    Bitte wähle eine*e Mitarbeiter*in aus
+                  </p>
+                </div>
+              )}
+
+              {/* Month-level hint when the visible month has no available days */}
+              {bookingMode === BookingMode.EMPLOYEE && !hasDaysInMonth && selectedEmployee && (
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border border-accent-blue bg-accent-blue-soft px-6 py-4 z-20 w-max">
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-accent-blue whitespace-nowrap">
+                      Keine freien Termine für diesen Monat.
+                    </p>
+                    {nextAvailableMonthLabel && (
+                      <p className="text-sm text-accent-blue whitespace-nowrap">
+                        Nächster verfügbarer Termin
+                        {bookingMode === BookingMode.EMPLOYEE && selectedEmployee
+                          ? ` bei ${selectedEmployee.title ? `${selectedEmployee.title} ` : ''}${selectedEmployee.firstname} ${selectedEmployee.lastname}`
+                          : ''}{' '}
+                        ist am {nextAvailableMonthLabel}.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+              <div
+                className={`h-120 ${
+                  bookingMode === BookingMode.EMPLOYEE && !selectedEmployee
+                    ? 'opacity-50 pointer-events-none'
+                    : ''
+                }`}
+              >
                 <Calendar
                   mode="single"
                   today={new Date()}
@@ -462,7 +476,7 @@ export default function OrganizationCalendar({
                           ? 'border-border bg-accent-gray-light text-muted-foreground cursor-not-allowed'
                           : isSelected
                             ? 'bg-accent-blue text-accent-white border-accent-blue hover:bg-accent-blue hover:text-accent-white'
-                            : 'border-border hover:bg-accent-gray-light'
+                            : 'border-border hover:bg-accent-blue hover:border-accent-blue hover:text-accent-white'
                       }`}
                       disabled={isBooked}
                       onClick={() => {
@@ -510,6 +524,10 @@ export default function OrganizationCalendar({
                 {showStatusMessage && (
                   <div className="p-4 bg-accent-emerald-light border border-accent-emerald rounded-lg text-center animate-fade-in">
                     <p className="text-accent-emerald font-medium">Termin erfolgreich gebucht!</p>
+                    <ResultLoading
+                      title="Termin wird gebucht..."
+                      description="Bitte warten Sie, bis der Termin gebucht wurde."
+                    />
                   </div>
                 )}
               </div>
