@@ -27,12 +27,16 @@ export async function createOrganization(organization: Organization): Promise<Or
     });
 
     const expertiseVector = await createEmbedding(organization.expertiseAreas.toString());
+    const descriptionVector = await createEmbedding(organization.description);
+    const cityVector = await createEmbedding(organization.city);
 
     const createdOrganization = await prisma.organization.create({
       data: organization as OrganizationCreateInput,
     });
     await prisma.$executeRaw`UPDATE "Organization"
-            SET "expertiseVector" = ${expertiseVector}::vector
+            SET "expertiseVector" = ${expertiseVector}::vector,
+                "descriptionVector" = ${descriptionVector}::vector,
+                "cityVector" = ${cityVector}::vector
             WHERE "id" = ${createdOrganization.id}`;
     return createdOrganization;
   } catch (error) {
