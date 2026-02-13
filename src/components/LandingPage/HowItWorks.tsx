@@ -15,7 +15,7 @@ const steps = [
     icon: Search,
     title: 'Finde dein Match',
     description:
-      'Mit unserem Algorithmus entdeckst du schnell die besten Angebote für dein Anliegen.',
+      'Mit unserem KI unterstützten Algorithmus entdeckst du schnell die besten Angebote für dein Anliegen.',
     iconBgColor: 'bg-accent-emerald-light shadow-sm',
     iconColor: 'text-accent-emerald',
   },
