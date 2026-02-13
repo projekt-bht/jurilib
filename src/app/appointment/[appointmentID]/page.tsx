@@ -33,10 +33,16 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { cancelAppointment, getCase, getEmployee, getUserAppointment } from '@/services/api';
+import {
+  cancelAppointment,
+  getCase,
+  getEmployee,
+  getOrganization,
+  getUserAppointment,
+} from '@/services/api';
 import type { LoginResource } from '@/services/Resources';
+import type { Appointment, Case, Employee, Organization } from '~/generated/prisma/browser';
 import { AppointmentStatus } from '~/generated/prisma/enums';
-import { Appointment, Case, Employee } from '~/generated/prisma/browser';
 
 export default function AppointmentDetailView() {
   const router = useRouter();
@@ -52,6 +58,7 @@ export default function AppointmentDetailView() {
   const [appointment, setAppointment] = useState<Appointment>();
   const [employee, setEmployee] = useState<Employee>();
   const [_case, setCase] = useState<Case>();
+  const [organization, setOrganization] = useState<Organization>();
 
   const [error, setError] = useState<string | null>(null);
   const { appointmentID } = useParams();
@@ -70,6 +77,10 @@ export default function AppointmentDetailView() {
           if (employeeData) {
             setAppointment(appointmentData);
             setEmployee(employeeData);
+            const organizationData = await getOrganization(employeeData.organizationId);
+            if (organizationData) {
+              setOrganization(organizationData);
+            }
           }
 
           if (appointmentData?.caseId) {
@@ -107,7 +118,7 @@ export default function AppointmentDetailView() {
 
   if (!login || !userId || !fetchesDone) return <></>;
 
-  if (!appointment || !employee) {
+  if (!appointment || !employee || !organization) {
     return notFound();
   }
 
@@ -145,7 +156,9 @@ export default function AppointmentDetailView() {
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <h1 className="text-2xl font-bold text-foreground tracking-tight">Termin</h1>
+              <h1 className="text-2xl font-bold text-foreground tracking-tight">
+                Termin - {organization?.name}
+              </h1>
               <Badge
                 variant="secondary"
                 className={`${config.bgColor} ${config.color} border-0 text-xs px-2 py-0.5 font-medium`}
