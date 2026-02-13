@@ -88,8 +88,7 @@ export function OrganizationCard({ organization }: { organization: Organization 
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-4 h-4" />
                 <span>
-                  {organization.zipCode} {organization.city}, {organization.street}{' '}
-                  {organization.houseNumber}
+                  {organization.zipCode} {organization.city}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
