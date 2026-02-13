@@ -54,7 +54,7 @@ export function Profile({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {organization.accessibility.length > 0 && (
+                {organization.accessibility && organization.accessibility.length > 0 && (
                   <div
                     className="relative"
                     onMouseEnter={() => setIsAccessibilityOpen(true)}
