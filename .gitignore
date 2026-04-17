@@ -37,6 +37,9 @@ yarn-error.log*
 .bruno/environments/*.bru
 !.bruno/environments/*.example.bru
 
+# Kubernetes Kustomization
+/k8s/kustomization.yaml
+
 # vercel
 .vercel
 
