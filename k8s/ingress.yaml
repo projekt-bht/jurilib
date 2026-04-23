@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jurilib
+  labels:
+    app: jurilib
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: jurilib.project.ris.bht-berlin.de
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jurilib
+            port:
+              number: 3000
