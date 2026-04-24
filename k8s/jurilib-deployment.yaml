@@ -45,10 +45,10 @@ spec:
         tier: app
     spec:
       containers:
-      - image: registry.bht-berlin.de/hdolzycka/cluster/jurilib:v2
+      - image: registry.bht-berlin.de/hdolzycka/cluster/jurilib:v6
         name: jurilib
         env: 
-        - name: NEXT_PUBLICK_PASSWORD_LENGTH
+        - name: NEXT_PUBLIC_PASSWORD_LENGTH
           valueFrom:
             secretKeyRef:
               name: jurilib-secrets
