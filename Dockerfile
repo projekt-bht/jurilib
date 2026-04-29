@@ -1,4 +1,3 @@
-# TODO: check image
 FROM node:22-alpine
 
 # Working directory in the container
