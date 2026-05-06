@@ -45,7 +45,7 @@ spec:
         tier: app
     spec:
       containers:
-      - image: registry.bht-berlin.de/hdolzycka/cluster/jurilib:v5.1
+      - image: registry.bht-berlin.de/hdolzycka/cluster/jurilib:v7
         name: jurilib
         env: 
         - name: NEXT_PUBLIC_PASSWORD_LENGTH
